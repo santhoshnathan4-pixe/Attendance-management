@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Growbytee - Admin Login</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            background: #eef2ff;
+        }
+
+        .login-container {
+            width: 380px;
+
+            background: white;
+
+            padding: 35px;
+
+            border-radius: 15px;
+
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .logo {
+            text-align: center;
+
+            margin-bottom: 10px;
+        }
+
+        .logo h1 {
+            color: #4f46e5;
+
+            font-size: 30px;
+        }
+
+        .logo p {
+            color: #777;
+
+            margin-top: 5px;
+
+            font-size: 14px;
+        }
+
+        .admin-title {
+            text-align: center;
+
+            margin: 25px 0;
+
+            color: #333;
+        }
+
+        .input-group {
+            margin-bottom: 18px;
+        }
+
+        .input-group label {
+            display: block;
+
+            margin-bottom: 7px;
+
+            color: #444;
+
+            font-size: 14px;
+
+            font-weight: bold;
+        }
+
+        .input-group input {
+            width: 100%;
+
+            padding: 12px;
+
+            border: 1px solid #ddd;
+
+            border-radius: 8px;
+
+            outline: none;
+
+            font-size: 15px;
+        }
+
+        .input-group input:focus {
+            border-color: #4f46e5;
+        }
+
+        .login-btn {
+            width: 100%;
+
+            padding: 13px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            background: #4f46e5;
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        .login-btn:hover {
+            background: #4338ca;
+        }
+
+        #message {
+            text-align: center;
+
+            margin-top: 15px;
+
+            font-size: 14px;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <div class="login-container">
+
+
+        <div class="logo">
+
+            <h1>GROWBYTEE</h1>
+
+            <p>Attendance Management System</p>
+
+        </div>
+
+
+        <h2 class="admin-title">
+            Admin Login
+        </h2>
+
+
+        <div class="input-group">
+
+            <label>Email</label>
+
+            <input
+                type="email"
+                id="email"
+                placeholder="Enter admin email"
+            >
+
+        </div>
+
+
+        <div class="input-group">
+
+            <label>Password</label>
+
+            <input
+                type="password"
+                id="password"
+                placeholder="Enter admin password"
+            >
+
+        </div>
+
+
+        <button
+            class="login-btn"
+            onclick="adminLogin()">
+
+            Admin Login
+
+        </button>
+
+
+        <p id="message"></p>
+
+
+    </div>
+
+
+    <script>
+
+        function adminLogin() {
+
+            const email =
+                document.getElementById("email").value.trim();
+
+            const password =
+                document.getElementById("password").value;
+
+            const message =
+                document.getElementById("message");
+
+
+            if (email === "" || password === "") {
+
+                message.innerText =
+                    "Please enter email and password.";
+
+                message.style.color = "red";
+
+                return;
+            }
+
+
+            fetch(
+                `/admin/login?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
+                {
+                    method: "POST"
+                }
+            )
+
+            .then(response => {
+
+                if (!response.ok) {
+                    throw new Error("Login request failed");
+                }
+
+                return response.json();
+
+            })
+
+            .then(data => {
+
+                if (data.success) {
+
+                    localStorage.setItem(
+                        "adminEmail",
+                        data.email
+                    );
+
+                    localStorage.setItem(
+                        "adminName",
+                        data.adminName
+                    );
+
+                    window.location.href =
+                        "admin-dashboard.html";
+
+                }
+
+                else {
+
+                    message.innerText =
+                        data.message;
+
+                    message.style.color = "red";
+
+                }
+
+            })
+
+            .catch(error => {
+
+                console.error(error);
+
+                message.innerText =
+                    "Server connection failed.";
+
+                message.style.color = "red";
+
+            });
+
+        }
+
+
+        document
+            .getElementById("password")
+            .addEventListener("keypress", function(event) {
+
+                if (event.key === "Enter") {
+
+                    adminLogin();
+
+                }
+
+            });
+
+    </script>
+
+
+</body>
+
+</html>
