@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Growbytee - Employee Login</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f4f7fb;
+        }
+
+        .login-container {
+            width: 380px;
+            background: white;
+            padding: 35px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .logo h1 {
+            color: #2563eb;
+            font-size: 30px;
+        }
+
+        .logo p {
+            color: #777;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+        .login-title {
+            text-align: center;
+            margin: 25px 0;
+            color: #333;
+        }
+
+        .input-group {
+            margin-bottom: 18px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 7px;
+            color: #444;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .password-wrapper {
+            position: relative;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+            font-size: 15px;
+        }
+
+        .password-wrapper input {
+            padding-right: 45px;
+        }
+
+        .input-group input:focus {
+            border-color: #2563eb;
+        }
+
+        .eye-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 5px;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .login-btn:hover {
+            background: #1d4ed8;
+        }
+
+        #message {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        /* =========================
+           FIRST TIME PASSWORD SETUP
+        ========================= */
+
+        .password-setup {
+            display: none;
+        }
+
+        .password-info {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1e40af;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 18px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .continue-btn {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 8px;
+            background: #16a34a;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .continue-btn:hover {
+            background: #15803d;
+        }
+
+        .continue-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+        }
+
+        .back-btn {
+            width: 100%;
+            padding: 11px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            color: #555;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            background: #f5f5f5;
+        }
+
+        #setupMessage {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+
+        #passwordMatchMessage {
+            font-size: 13px;
+            margin-top: -8px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <div class="login-container">
+
+
+        <!-- =================================
+             EMPLOYEE LOGIN
+        ================================== -->
+
+        <div id="loginSection">
+
+            <div class="logo">
+
+                <h1>GROWBYTEE</h1>
+
+                <p>
+                    Attendance Management System
+                </p>
+
+            </div>
+
+
+            <h2 class="login-title">
+                Employee Login
+            </h2>
+
+
+            <!-- EMAIL -->
+
+            <div class="input-group">
+
+                <label>
+                    Email
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="Enter your email"
+                    autocomplete="off">
+
+            </div>
+
+
+            <!-- PASSWORD -->
+
+            <div class="input-group">
+
+                <label>
+                    Password
+                </label>
+
+                <div class="password-wrapper">
+
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Enter your password"
+                        autocomplete="off">
+
+                    <button
+                        type="button"
+                        class="eye-btn"
+                        onclick="togglePassword(
+                            'password',
+                            this
+                        )">
+
+                        👁
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="login-btn"
+                onclick="login()">
+
+                Login
+
+            </button>
+
+
+            <p id="message"></p>
+
+        </div>
+
+
+
+        <!-- =================================
+             FIRST TIME PASSWORD SETUP
+        ================================== -->
+
+        <div
+            id="passwordSetupSection"
+            class="password-setup">
+
+
+            <div class="logo">
+
+                <h1>GROWBYTEE</h1>
+
+                <p>
+                    Attendance Management System
+                </p>
+
+            </div>
+
+
+            <h2 class="login-title">
+                Set Employee Password
+            </h2>
+
+
+            <div class="password-info">
+
+                This is your first login.<br>
+
+                Enter the same email registered
+                by Admin and create your password.
+
+            </div>
+
+
+            <!-- EMAIL -->
+
+            <div class="input-group">
+
+                <label>
+                    Employee Email
+                </label>
+
+                <input
+                    type="email"
+                    id="setupEmail"
+                    placeholder="Enter your employee email"
+                    autocomplete="off">
+
+            </div>
+
+
+            <!-- NEW PASSWORD -->
+
+            <div class="input-group">
+
+                <label>
+                    New Password
+                </label>
+
+                <div class="password-wrapper">
+
+                    <input
+                        type="password"
+                        id="newPassword"
+                        placeholder="Enter new password"
+                        autocomplete="new-password"
+                        oninput="checkPasswordMatch()">
+
+                    <button
+                        type="button"
+                        class="eye-btn"
+                        onclick="togglePassword(
+                            'newPassword',
+                            this
+                        )">
+
+                        👁
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- CONFIRM PASSWORD -->
+
+            <div class="input-group">
+
+                <label>
+                    Confirm Password
+                </label>
+
+                <div class="password-wrapper">
+
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        placeholder="Confirm your password"
+                        autocomplete="new-password"
+                        oninput="checkPasswordMatch()">
+
+                    <button
+                        type="button"
+                        class="eye-btn"
+                        onclick="togglePassword(
+                            'confirmPassword',
+                            this
+                        )">
+
+                        👁
+
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- PASSWORD MATCH -->
+
+            <p id="passwordMatchMessage"></p>
+
+
+            <!-- CONTINUE -->
+
+            <button
+                id="continueBtn"
+                class="continue-btn"
+                onclick="setEmployeePassword()"
+                disabled>
+
+                Continue
+
+            </button>
+
+
+            <!-- BACK -->
+
+            <button
+                class="back-btn"
+                onclick="backToLogin()">
+
+                Back to Login
+
+            </button>
+
+
+            <p id="setupMessage"></p>
+
+        </div>
+
+    </div>
+
+
+
+    <script>
+
+
+        // ==========================================
+        // PASSWORD SHOW / HIDE
+        // ==========================================
+
+        function togglePassword(
+            inputId,
+            button
+        ) {
+
+            const input =
+                document.getElementById(
+                    inputId
+                );
+
+
+            if (
+                input.type === "password"
+            ) {
+
+                input.type = "text";
+
+                button.innerText = "🙈";
+
+            }
+
+            else {
+
+                input.type = "password";
+
+                button.innerText = "👁";
+
+            }
+
+        }
+
+
+
+        // ==========================================
+        // EMPLOYEE LOGIN
+        // ==========================================
+
+        function login() {
+
+            const email =
+                document.getElementById(
+                    "email"
+                ).value.trim();
+
+
+            const password =
+                document.getElementById(
+                    "password"
+                ).value;
+
+
+            const message =
+                document.getElementById(
+                    "message"
+                );
+
+
+            // EMAIL
+
+            if (email === "") {
+
+                message.innerText =
+                    "Please enter your employee email.";
+
+                message.style.color =
+                    "red";
+
+                return;
+
+            }
+
+
+            // PASSWORD
+
+            if (password === "") {
+
+                message.innerText =
+                    "Please enter your password.";
+
+                message.style.color =
+                    "red";
+
+                return;
+
+            }
+
+
+            message.innerText =
+                "Checking login...";
+
+            message.style.color =
+                "#2563eb";
+
+
+            // ==================================
+            // LOGIN API
+            // ==================================
+
+            fetch(
+                `/employee/login?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
+                {
+                    method: "POST"
+                }
+            )
+
+            .then(response => {
+
+                return response.text()
+                    .then(data => {
+
+                        if (!response.ok) {
+
+                            throw new Error(
+                                data
+                            );
+
+                        }
+
+                        return data;
+
+                    });
+
+            })
+
+
+            .then(data => {
+
+
+                // ==================================
+                // FIRST LOGIN
+                // ==================================
+
+                if (
+                    data ===
+                    "FIRST_LOGIN_REQUIRED"
+                ) {
+
+
+                    document.getElementById(
+                        "loginSection"
+                    ).style.display =
+                        "none";
+
+
+                    document.getElementById(
+                        "passwordSetupSection"
+                    ).style.display =
+                        "block";
+
+
+                    /*
+                     * IMPORTANT
+                     *
+                     * Email is NOT automatically
+                     * filled here.
+                     *
+                     * Employee must manually
+                     * enter the email again.
+                     */
+
+                    document.getElementById(
+                        "setupEmail"
+                    ).value =
+                        "";
+
+
+                    document.getElementById(
+                        "newPassword"
+                    ).value =
+                        "";
+
+
+                    document.getElementById(
+                        "confirmPassword"
+                    ).value =
+                        "";
+
+
+                    document.getElementById(
+                        "passwordMatchMessage"
+                    ).innerText =
+                        "";
+
+
+                    document.getElementById(
+                        "setupMessage"
+                    ).innerText =
+                        "";
+
+
+                    document.getElementById(
+                        "continueBtn"
+                    ).disabled =
+                        true;
+
+
+                    return;
+
+                }
+
+
+
+                // ==================================
+                // NORMAL LOGIN
+                // ==================================
+
+                if (
+                    data ===
+                    "Login Successful"
+                ) {
+
+
+                    localStorage.setItem(
+                        "employeeEmail",
+                        email
+                    );
+
+
+                    window.location.href =
+                        "dashboard.html";
+
+
+                    return;
+
+                }
+
+
+
+                // ==================================
+                // LOGIN FAILED
+                // ==================================
+
+                message.innerText =
+                    data ||
+                    "Invalid Email or Password";
+
+                message.style.color =
+                    "red";
+
+            })
+
+
+            .catch(error => {
+
+                console.error(error);
+
+                message.innerText =
+                    error.message ||
+                    "Server connection failed.";
+
+                message.style.color =
+                    "red";
+
+            });
+
+        }
+
+
+
+        // ==========================================
+        // PASSWORD MATCH
+        // ==========================================
+
+        function checkPasswordMatch() {
+
+            const email =
+                document.getElementById(
+                    "setupEmail"
+                ).value.trim();
+
+
+            const newPassword =
+                document.getElementById(
+                    "newPassword"
+                ).value;
+
+
+            const confirmPassword =
+                document.getElementById(
+                    "confirmPassword"
+                ).value;
+
+
+            const matchMessage =
+                document.getElementById(
+                    "passwordMatchMessage"
+                );
+
+
+            const continueBtn =
+                document.getElementById(
+                    "continueBtn"
+                );
+
+
+            continueBtn.disabled =
+                true;
+
+
+            // NOTHING ENTERED
+
+            if (
+                newPassword === "" &&
+                confirmPassword === ""
+            ) {
+
+                matchMessage.innerText =
+                    "";
+
+                return;
+
+            }
+
+
+            // PASSWORD LENGTH
+
+            if (
+                newPassword.length > 0 &&
+                newPassword.length < 6
+            ) {
+
+                matchMessage.innerText =
+                    "❌ Password must contain at least 6 characters.";
+
+                matchMessage.style.color =
+                    "red";
+
+                return;
+
+            }
+
+
+            // CONFIRM PASSWORD EMPTY
+
+            if (
+                confirmPassword === ""
+            ) {
+
+                matchMessage.innerText =
+                    "";
+
+                return;
+
+            }
+
+
+            // PASSWORD MATCH
+
+            if (
+                newPassword ===
+                confirmPassword
+            ) {
+
+                matchMessage.innerText =
+                    "✅ Passwords match";
+
+                matchMessage.style.color =
+                    "#16a34a";
+
+
+                if (
+                    email !== "" &&
+                    newPassword.length >= 6
+                ) {
+
+                    continueBtn.disabled =
+                        false;
+
+                }
+
+            }
+
+            else {
+
+                matchMessage.innerText =
+                    "❌ Passwords do not match";
+
+                matchMessage.style.color =
+                    "red";
+
+            }
+
+        }
+
+
+
+        // ==========================================
+        // FIRST PASSWORD SETUP
+        // ==========================================
+
+        function setEmployeePassword() {
+
+            const email =
+                document.getElementById(
+                    "setupEmail"
+                ).value.trim();
+
+
+            const newPassword =
+                document.getElementById(
+                    "newPassword"
+                ).value;
+
+
+            const confirmPassword =
+                document.getElementById(
+                    "confirmPassword"
+                ).value;
+
+
+            const setupMessage =
+                document.getElementById(
+                    "setupMessage"
+                );
+
+
+            // EMAIL
+
+            if (email === "") {
+
+                setupMessage.innerText =
+                    "Please enter your employee email.";
+
+                setupMessage.style.color =
+                    "red";
+
+                return;
+
+            }
+
+
+            // PASSWORD
+
+            if (newPassword === "") {
+
+                setupMessage.innerText =
+                    "Please enter a password.";
+
+                setupMessage.style.color =
+                    "red";
+
+                return;
+
+            }
+
+
+            if (
+                newPassword.length < 6
+            ) {
+
+                setupMessage.innerText =
+                    "Password must contain at least 6 characters.";
+
+                setupMessage.style.color =
+                    "red";
+
+                return;
+
+            }
+
+
+            // CONFIRM
+
+            if (confirmPassword === "") {
+
+                setupMessage.innerText =
+                    "Please confirm your password.";
+
+                setupMessage.style.color =
+                    "red";
+
+                return;
+
+            }
+
+
+            // MATCH
+
+            if (
+                newPassword !==
+                confirmPassword
+            ) {
+
+                setupMessage.innerText =
+                    "Password and Confirm Password do not match.";
+
+                setupMessage.style.color =
+                    "red";
+
+                return;
+
+            }
+
+
+            setupMessage.innerText =
+                "Saving password...";
+
+            setupMessage.style.color =
+                "#2563eb";
+
+
+            // ==================================
+            // FIRST PASSWORD API
+            // ==================================
+
+            fetch(
+                "/employee/first-password",
+                {
+
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body: JSON.stringify({
+
+                        email:
+                            email,
+
+                        newPassword:
+                            newPassword,
+
+                        confirmPassword:
+                            confirmPassword
+
+                    })
+
+                }
+            )
+
+
+            .then(response => {
+
+                return response.text()
+                    .then(data => {
+
+                        if (!response.ok) {
+
+                            throw new Error(
+                                data
+                            );
+
+                        }
+
+                        return data;
+
+                    });
+
+            })
+
+
+            .then(data => {
+
+
+                // ==================================
+                // SUCCESS
+                // ==================================
+
+                if (
+                    data ===
+                    "Password set successfully"
+                ) {
+
+
+                    localStorage.setItem(
+                        "employeeEmail",
+                        email
+                    );
+
+
+                    setupMessage.innerText =
+                        "Password set successfully. Opening dashboard...";
+
+                    setupMessage.style.color =
+                        "#16a34a";
+
+
+                    setTimeout(() => {
+
+                        window.location.href =
+                            "dashboard.html";
+
+                    }, 800);
+
+
+                    return;
+
+                }
+
+
+                setupMessage.innerText =
+                    data;
+
+                setupMessage.style.color =
+                    "red";
+
+            })
+
+
+            .catch(error => {
+
+                console.error(error);
+
+                setupMessage.innerText =
+                    error.message ||
+                    "Password setup failed.";
+
+                setupMessage.style.color =
+                    "red";
+
+            });
+
+        }
+
+
+
+        // ==========================================
+        // EMAIL CHANGE
+        // ==========================================
+
+        document.getElementById(
+            "setupEmail"
+        ).addEventListener(
+            "input",
+            checkPasswordMatch
+        );
+
+
+
+        // ==========================================
+        // BACK TO LOGIN
+        // ==========================================
+
+        function backToLogin() {
+
+            document.getElementById(
+                "passwordSetupSection"
+            ).style.display =
+                "none";
+
+
+            document.getElementById(
+                "loginSection"
+            ).style.display =
+                "block";
+
+
+            document.getElementById(
+                "password"
+            ).value =
+                "";
+
+
+            document.getElementById(
+                "message"
+            ).innerText =
+                "";
+
+        }
+
+    </script>
+
+</body>
+
+</html>

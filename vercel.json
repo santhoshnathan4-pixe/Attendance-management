@@ -2,23 +2,23 @@
   "rewrites": [
     {
       "source": "/",
-      "destination": "/src/main/resources/static/login.html"
+      "destination": "/login.html"
     },
     {
       "source": "/admin-login",
-      "destination": "/src/main/resources/static/admin-login.html"
+      "destination": "/admin-login.html"
     },
     {
       "source": "/dashboard",
-      "destination": "/src/main/resources/static/dashboard.html"
+      "destination": "/dashboard.html"
     },
     {
       "source": "/admin-dashboard",
-      "destination": "/src/main/resources/static/admin-dashboard.html"
+      "destination": "/admin-dashboard.html"
     },
     {
       "source": "/set-password",
-      "destination": "/src/main/resources/static/set-password.html"
+      "destination": "/set-password.html"
     }
   ]
 }
