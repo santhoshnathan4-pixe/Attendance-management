@@ -261,10 +261,7 @@
                     <button
                         type="button"
                         class="eye-btn"
-                        onclick="togglePassword(
-                            'password',
-                            this
-                        )">
+                        onclick="togglePassword('password', this)">
 
                         👁
 
@@ -362,10 +359,7 @@
                     <button
                         type="button"
                         class="eye-btn"
-                        onclick="togglePassword(
-                            'newPassword',
-                            this
-                        )">
+                        onclick="togglePassword('newPassword', this)">
 
                         👁
 
@@ -396,10 +390,7 @@
                     <button
                         type="button"
                         class="eye-btn"
-                        onclick="togglePassword(
-                            'confirmPassword',
-                            this
-                        )">
+                        onclick="togglePassword('confirmPassword', this)">
 
                         👁
 
@@ -448,6 +439,13 @@
 
 
     <script>
+
+        // ==========================================
+        // RENDER BACKEND URL
+        // ==========================================
+
+        const API_BASE_URL =
+            "https://attendance-management-d5h6.onrender.com";
 
 
         // ==========================================
@@ -553,7 +551,7 @@
             // ==================================
 
             fetch(
-                `/employee/login?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
+                `${API_BASE_URL}/employee/login?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
                 {
                     method: "POST"
                 }
@@ -603,16 +601,6 @@
                     ).style.display =
                         "block";
 
-
-                    /*
-                     * IMPORTANT
-                     *
-                     * Email is NOT automatically
-                     * filled here.
-                     *
-                     * Employee must manually
-                     * enter the email again.
-                     */
 
                     document.getElementById(
                         "setupEmail"
@@ -960,7 +948,7 @@
             // ==================================
 
             fetch(
-                "/employee/first-password",
+                `${API_BASE_URL}/employee/first-password`,
                 {
 
                     method: "POST",
