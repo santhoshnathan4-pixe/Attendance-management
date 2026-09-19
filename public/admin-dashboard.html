@@ -1185,8 +1185,6 @@
 
         <div class="form-grid">
 
-            <!-- AUTO GENERATED EMPLOYEE CODE -->
-
             <div class="form-group">
 
                 <label>
@@ -1202,8 +1200,6 @@
             </div>
 
 
-            <!-- EMPLOYEE NAME -->
-
             <div class="form-group">
 
                 <label>
@@ -1216,8 +1212,6 @@
 
             </div>
 
-
-            <!-- EMAIL -->
 
             <div class="form-group">
 
@@ -1232,8 +1226,6 @@
             </div>
 
 
-            <!-- CONTACT -->
-
             <div class="form-group">
 
                 <label>
@@ -1246,8 +1238,6 @@
 
             </div>
 
-
-            <!-- ROLE -->
 
             <div class="form-group">
 
@@ -1289,8 +1279,6 @@
 
             </div>
 
-
-            <!-- JOINING DATE -->
 
             <div class="form-group">
 
@@ -1363,8 +1351,6 @@
         </div>
 
 
-        <!-- AUTOMATIC ADMIN EMAIL -->
-
         <div class="form-group">
 
             <label>
@@ -1381,8 +1367,6 @@
 
         <br>
 
-
-        <!-- ONLY PASSWORD MANUAL -->
 
         <div class="form-group">
 
@@ -1607,6 +1591,24 @@
 <script>
 
     /* =====================================================
+       API CONFIGURATION
+    ===================================================== */
+
+    const API_BASE_URL =
+        "https://attendance-management-d5h6.onrender.com";
+
+
+    async function apiFetch(url, options = {}) {
+
+        return fetch(
+            API_BASE_URL + url,
+            options
+        );
+
+    }
+
+
+    /* =====================================================
        GLOBAL VARIABLES
     ===================================================== */
 
@@ -1631,19 +1633,22 @@
        PAGE LOAD
     ===================================================== */
 
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
 
-        setupYears();
+            setupYears();
 
-        loadAdminInfo();
+            loadAdminInfo();
 
-        loadEmployees();
+            loadEmployees();
 
-        loadLeaves();
+            loadLeaves();
 
-        loadHistory();
+            loadHistory();
 
-    });
+        }
+    );
 
 
     /* =====================================================
@@ -1663,7 +1668,8 @@
 
             document.getElementById(
                 "loggedAdminName"
-            ).textContent = adminName;
+            ).textContent =
+                adminName;
 
         }
 
@@ -1672,7 +1678,8 @@
 
             document.getElementById(
                 "verifyAdminEmail"
-            ).value = adminEmail;
+            ).value =
+                adminEmail;
 
         }
 
@@ -1694,41 +1701,54 @@
         ];
 
 
-        yearSelectors.forEach(function (id) {
+        yearSelectors.forEach(
+            function (id) {
 
-            const select =
-                document.getElementById(id);
+                const select =
+                    document.getElementById(id);
 
-            if (!select) return;
-
-
-            select.innerHTML = "";
-
-
-            for (
-                let year = currentYear - 2;
-                year <= currentYear + 1;
-                year++
-            ) {
-
-                const option =
-                    document.createElement("option");
-
-                option.value = year;
-
-                option.textContent = year;
-
-
-                if (year === currentYear) {
-                    option.selected = true;
+                if (!select) {
+                    return;
                 }
 
 
-                select.appendChild(option);
+                select.innerHTML = "";
+
+
+                for (
+                    let year = currentYear - 2;
+                    year <= currentYear + 1;
+                    year++
+                ) {
+
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
+
+                    option.value =
+                        year;
+
+                    option.textContent =
+                        year;
+
+
+                    if (year === currentYear) {
+
+                        option.selected =
+                            true;
+
+                    }
+
+
+                    select.appendChild(
+                        option
+                    );
+
+                }
 
             }
-
-        });
+        );
 
 
         const currentMonth =
@@ -1736,19 +1756,29 @@
 
 
         const salaryMonth =
-            document.getElementById("salaryMonth");
+            document.getElementById(
+                "salaryMonth"
+            );
 
         const reportMonth =
-            document.getElementById("reportMonth");
+            document.getElementById(
+                "reportMonth"
+            );
 
 
         if (salaryMonth) {
-            salaryMonth.value = currentMonth;
+
+            salaryMonth.value =
+                currentMonth;
+
         }
 
 
         if (reportMonth) {
-            reportMonth.value = currentMonth;
+
+            reportMonth.value =
+                currentMonth;
+
         }
 
     }
@@ -1758,41 +1788,65 @@
        SECTION NAVIGATION
     ===================================================== */
 
-    function showSection(sectionId, button) {
+    function showSection(
+        sectionId,
+        button
+    ) {
 
-        document.querySelectorAll(".section")
-            .forEach(function (section) {
+        document.querySelectorAll(
+            ".section"
+        ).forEach(
+            function (section) {
 
-                section.classList.remove("active");
+                section.classList.remove(
+                    "active"
+                );
 
-            });
+            }
+        );
 
 
         const section =
-            document.getElementById(sectionId);
+            document.getElementById(
+                sectionId
+            );
 
 
         if (section) {
-            section.classList.add("active");
+
+            section.classList.add(
+                "active"
+            );
+
         }
 
 
-        document.querySelectorAll(".menu-btn")
-            .forEach(function (btn) {
+        document.querySelectorAll(
+            ".menu-btn"
+        ).forEach(
+            function (btn) {
 
-                btn.classList.remove("active");
+                btn.classList.remove(
+                    "active"
+                );
 
-            });
+            }
+        );
 
 
         if (button) {
-            button.classList.add("active");
+
+            button.classList.add(
+                "active"
+            );
+
         }
 
 
         if (sectionId === "dashboard") {
 
             loadEmployees();
+
             loadLeaves();
 
         }
@@ -1815,6 +1869,7 @@
         if (sectionId === "salary") {
 
             loadEmployees();
+
             calculateSalary();
 
         }
@@ -1845,13 +1900,17 @@
         try {
 
             const response =
-                await fetch("/admin/employees");
+                await apiFetch(
+                    "/admin/employees"
+                );
 
 
             if (!response.ok) {
 
                 throw new Error(
-                    await getErrorMessage(response)
+                    await getErrorMessage(
+                        response
+                    )
                 );
 
             }
@@ -1868,7 +1927,11 @@
         }
         catch (error) {
 
-            console.error(error);
+            console.error(
+                "Load employees error:",
+                error
+            );
+
 
             showMessage(
                 "employeeMessage",
@@ -1885,7 +1948,9 @@
        RENDER EMPLOYEES
     ===================================================== */
 
-    function renderEmployees(list = employees) {
+    function renderEmployees(
+        list = employees
+    ) {
 
         const tbody =
             document.getElementById(
@@ -1893,14 +1958,20 @@
             );
 
 
-        if (!tbody) return;
+        if (!tbody) {
+            return;
+        }
 
 
-        if (!list || list.length === 0) {
+        if (
+            !list ||
+            list.length === 0
+        ) {
 
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="9" class="empty-row">
+                    <td colspan="9"
+                        class="empty-row">
                         No employees found
                     </td>
                 </tr>
@@ -1912,69 +1983,92 @@
 
 
         tbody.innerHTML =
-            list.map(function (employee) {
+            list.map(
+                function (employee) {
 
-                return `
+                    return `
 
-                <tr>
+                    <tr>
 
-                    <td>
-                        ${escapeHtml(employee.id)}
-                    </td>
+                        <td>
+                            ${escapeHtml(
+                                employee.id
+                            )}
+                        </td>
 
-                    <td>
-                        <span class="badge badge-blue">
-                            ${escapeHtml(employee.employeeCode)}
-                        </span>
-                    </td>
+                        <td>
+                            <span class="badge badge-blue">
+                                ${escapeHtml(
+                                    employee.employeeCode
+                                )}
+                            </span>
+                        </td>
 
-                    <td>
-                        <strong>
-                            ${escapeHtml(employee.name)}
-                        </strong>
-                    </td>
+                        <td>
+                            <strong>
+                                ${escapeHtml(
+                                    employee.name
+                                )}
+                            </strong>
+                        </td>
 
-                    <td>
-                        ${escapeHtml(employee.email)}
-                    </td>
+                        <td>
+                            ${escapeHtml(
+                                employee.email
+                            )}
+                        </td>
 
-                    <td>
-                        ${escapeHtml(employee.contactNumber || "-")}
-                    </td>
+                        <td>
+                            ${escapeHtml(
+                                employee.contactNumber || "-"
+                            )}
+                        </td>
 
-                    <td>
-                        ${escapeHtml(employee.role || "-")}
-                    </td>
+                        <td>
+                            ${escapeHtml(
+                                employee.role || "-"
+                            )}
+                        </td>
 
-                    <td>
-                        ₹${formatNumber(employee.salary)}
-                    </td>
+                        <td>
+                            ₹${formatNumber(
+                                employee.salary
+                            )}
+                        </td>
 
-                    <td>
-                        ${formatDate(employee.joiningDate)}
-                    </td>
+                        <td>
+                            ${formatDate(
+                                employee.joiningDate
+                            )}
+                        </td>
 
-                    <td>
+                        <td>
 
-                        <button
-                            class="btn btn-primary btn-small"
-                            onclick="openEmployeeModal('EDIT', ${employee.id})">
-                            Edit
-                        </button>
+                            <button
+                                class="btn btn-primary btn-small"
+                                onclick="openEmployeeModal(
+                                    'EDIT',
+                                    ${employee.id}
+                                )">
+                                Edit
+                            </button>
 
-                        <button
-                            class="btn btn-danger btn-small"
-                            onclick="deleteEmployee(${employee.id})">
-                            Delete
-                        </button>
+                            <button
+                                class="btn btn-danger btn-small"
+                                onclick="deleteEmployee(
+                                    ${employee.id}
+                                )">
+                                Delete
+                            </button>
 
-                    </td>
+                        </td>
 
-                </tr>
+                    </tr>
 
-                `;
+                    `;
 
-            }).join("");
+                }
+            ).join("");
 
     }
 
@@ -1995,7 +2089,9 @@
 
         if (!search) {
 
-            renderEmployees(employees);
+            renderEmployees(
+                employees
+            );
 
             return;
 
@@ -2003,44 +2099,58 @@
 
 
         const filtered =
-            employees.filter(function (employee) {
+            employees.filter(
+                function (employee) {
 
-                return (
+                    return (
 
-                    String(employee.id || "")
-                        .toLowerCase()
-                        .includes(search)
+                        String(
+                            employee.id || ""
+                        )
+                            .toLowerCase()
+                            .includes(search)
 
-                    ||
+                        ||
 
-                    String(employee.employeeCode || "")
-                        .toLowerCase()
-                        .includes(search)
+                        String(
+                            employee.employeeCode || ""
+                        )
+                            .toLowerCase()
+                            .includes(search)
 
-                    ||
+                        ||
 
-                    String(employee.name || "")
-                        .toLowerCase()
-                        .includes(search)
+                        String(
+                            employee.name || ""
+                        )
+                            .toLowerCase()
+                            .includes(search)
 
-                    ||
+                        ||
 
-                    String(employee.email || "")
-                        .toLowerCase()
-                        .includes(search)
+                        String(
+                            employee.email || ""
+                        )
+                            .toLowerCase()
+                            .includes(search)
 
-                    ||
+                        ||
 
-                    String(employee.role || "")
-                        .toLowerCase()
-                        .includes(search)
+                        String(
+                            employee.role || ""
+                        )
+                            .toLowerCase()
+                            .includes(search)
 
-                );
+                    );
 
-            });
+                }
+            );
 
 
-        renderEmployees(filtered);
+        renderEmployees(
+            filtered
+        );
 
     }
 
@@ -2049,16 +2159,23 @@
        OPEN EMPLOYEE MODAL
     ===================================================== */
 
-    function openEmployeeModal(action, employeeId = null) {
+    function openEmployeeModal(
+        action,
+        employeeId = null
+    ) {
 
-        currentEmployeeAction = action;
+        currentEmployeeAction =
+            action;
 
-        editingEmployeeId = employeeId;
+        editingEmployeeId =
+            employeeId;
 
 
         document.getElementById(
             "employeeModal"
-        ).classList.add("show");
+        ).classList.add(
+            "show"
+        );
 
 
         if (action === "ADD") {
@@ -2077,16 +2194,21 @@
 
 
         const employee =
-            employees.find(function (item) {
+            employees.find(
+                function (item) {
 
-                return item.id === employeeId;
+                    return item.id ===
+                        employeeId;
 
-            });
+                }
+            );
 
 
         if (!employee) {
 
-            alert("Employee not found");
+            alert(
+                "Employee not found"
+            );
 
             closeEmployeeModal();
 
@@ -2185,19 +2307,23 @@
 
         document.getElementById(
             "employeeModal"
-        ).classList.remove("show");
+        ).classList.remove(
+            "show"
+        );
 
 
-        currentEmployeeAction = null;
+        currentEmployeeAction =
+            null;
 
-        editingEmployeeId = null;
+        editingEmployeeId =
+            null;
 
     }
 
 
     /* =====================================================
        SAVE EMPLOYEE
-       EMPLOYEE CODE IS AUTO-GENERATED BY BACKEND
+       CODE AUTO-GENERATED BY BACKEND
     ===================================================== */
 
     async function saveEmployee() {
@@ -2232,11 +2358,6 @@
             ).value;
 
 
-        /*
-         * Employee Code is intentionally NOT required.
-         * Backend generates it automatically for ADD.
-         */
-
         if (
             !name ||
             !email ||
@@ -2255,15 +2376,20 @@
 
         const employeeData = {
 
-            name: name,
+            name:
+                name,
 
-            email: email,
+            email:
+                email,
 
-            contactNumber: contactNumber,
+            contactNumber:
+                contactNumber,
 
-            role: role,
+            role:
+                role,
 
-            joiningDate: joiningDate
+            joiningDate:
+                joiningDate
 
         };
 
@@ -2276,7 +2402,10 @@
             employeeData;
 
 
-        if (currentEmployeeAction === "EDIT") {
+        if (
+            currentEmployeeAction ===
+            "EDIT"
+        ) {
 
             pendingEmployeeData.employeeId =
                 editingEmployeeId;
@@ -2295,19 +2424,26 @@
        DELETE EMPLOYEE
     ===================================================== */
 
-    function deleteEmployee(employeeId) {
+    function deleteEmployee(
+        employeeId
+    ) {
 
         const employee =
-            employees.find(function (item) {
+            employees.find(
+                function (item) {
 
-                return item.id === employeeId;
+                    return item.id ===
+                        employeeId;
 
-            });
+                }
+            );
 
 
         if (!employee) {
 
-            alert("Employee not found");
+            alert(
+                "Employee not found"
+            );
 
             return;
 
@@ -2325,11 +2461,15 @@
         }
 
 
-        pendingAction = "DELETE";
+        pendingAction =
+            "DELETE";
 
 
         pendingEmployeeData = {
-            employeeId: employeeId
+
+            employeeId:
+                employeeId
+
         };
 
 
@@ -2350,73 +2490,86 @@
             );
 
 
-        /*
-         * Logged-in admin email is automatically loaded.
-         * Admin does NOT need to type the email.
-         */
-
         document.getElementById(
             "verifyAdminEmail"
         ).value =
             adminEmail || "";
 
 
-        /*
-         * Only password is manually entered.
-         */
-
         document.getElementById(
             "verifyAdminPassword"
-        ).value = "";
+        ).value =
+            "";
 
 
         let message =
             "Verify your password to continue.";
 
 
-        if (pendingAction === "ADD") {
+        if (
+            pendingAction ===
+            "ADD"
+        ) {
 
             message =
                 "You are adding a new employee.";
 
         }
 
-        else if (pendingAction === "EDIT") {
+        else if (
+            pendingAction ===
+            "EDIT"
+        ) {
 
             message =
                 "You are editing employee details. Changed fields will be recorded.";
 
         }
 
-        else if (pendingAction === "DELETE") {
+        else if (
+            pendingAction ===
+            "DELETE"
+        ) {
 
             message =
                 "You are deactivating an employee. Attendance history will be preserved.";
 
         }
 
-        else if (pendingAction === "SALARY_UPDATE") {
+        else if (
+            pendingAction ===
+            "SALARY_UPDATE"
+        ) {
 
             message =
                 "You are changing an employee salary. Old and new salary values will be recorded.";
 
         }
 
-        else if (pendingAction === "EXCEL_IMPORT") {
+        else if (
+            pendingAction ===
+            "EXCEL_IMPORT"
+        ) {
 
             message =
                 "You are importing employees from Excel. The import will be recorded in History.";
 
         }
 
-        else if (pendingAction === "LEAVE_APPROVE") {
+        else if (
+            pendingAction ===
+            "LEAVE_APPROVE"
+        ) {
 
             message =
                 "You are approving a leave request.";
 
         }
 
-        else if (pendingAction === "LEAVE_REJECT") {
+        else if (
+            pendingAction ===
+            "LEAVE_REJECT"
+        ) {
 
             message =
                 "You are rejecting a leave request.";
@@ -2432,7 +2585,9 @@
 
         document.getElementById(
             "passwordModal"
-        ).classList.add("show");
+        ).classList.add(
+            "show"
+        );
 
     }
 
@@ -2445,21 +2600,28 @@
 
         document.getElementById(
             "passwordModal"
-        ).classList.remove("show");
+        ).classList.remove(
+            "show"
+        );
 
 
         document.getElementById(
             "verifyAdminPassword"
-        ).value = "";
+        ).value =
+            "";
 
 
-        pendingAction = null;
+        pendingAction =
+            null;
 
-        pendingEmployeeData = null;
+        pendingEmployeeData =
+            null;
 
-        pendingSalaryData = null;
+        pendingSalaryData =
+            null;
 
-        pendingImportFile = null;
+        pendingImportFile =
+            null;
 
     }
 
@@ -2482,7 +2644,10 @@
             ).value;
 
 
-        if (!adminEmail || !adminPassword) {
+        if (
+            !adminEmail ||
+            !adminPassword
+        ) {
 
             alert(
                 "Please enter your admin password."
@@ -2498,18 +2663,11 @@
         ========================= */
 
         if (
-            pendingAction === "ADD" ||
-            pendingAction === "EDIT"
+            pendingAction ===
+                "ADD" ||
+            pendingAction ===
+                "EDIT"
         ) {
-
-            /*
-             * IMPORTANT:
-             * Employee Code is NOT sent from frontend.
-             *
-             * Backend AdminEmployeeController
-             * automatically generates Employee Code
-             * during ADD.
-             */
 
             const requestBody = {
 
@@ -2546,7 +2704,8 @@
 
 
             if (
-                pendingAction === "EDIT"
+                pendingAction ===
+                "EDIT"
             ) {
 
                 url =
@@ -2562,10 +2721,11 @@
             try {
 
                 const response =
-                    await fetch(
+                    await apiFetch(
                         url,
                         {
-                            method: method,
+                            method:
+                                method,
 
                             headers: {
                                 "Content-Type":
@@ -2583,7 +2743,9 @@
                 if (!response.ok) {
 
                     throw new Error(
-                        await getErrorMessage(response)
+                        await getErrorMessage(
+                            response
+                        )
                     );
 
                 }
@@ -2595,20 +2757,30 @@
 
                 closePasswordModal();
 
+
                 await loadEmployees();
 
                 await loadHistory();
 
+
                 showMessage(
                     "employeeMessage",
+
                     action === "ADD"
                         ? "Employee added successfully."
                         : "Employee updated successfully.",
+
                     "success"
                 );
 
             }
             catch (error) {
+
+                console.error(
+                    "Employee action error:",
+                    error
+                );
+
 
                 showMessage(
                     "employeeMessage",
@@ -2628,16 +2800,20 @@
            DELETE
         ========================= */
 
-        if (pendingAction === "DELETE") {
+        if (
+            pendingAction ===
+            "DELETE"
+        ) {
 
             try {
 
                 const response =
-                    await fetch(
+                    await apiFetch(
                         "/admin/employees/" +
                         pendingEmployeeData.employeeId,
                         {
-                            method: "DELETE",
+                            method:
+                                "DELETE",
 
                             headers: {
                                 "Content-Type":
@@ -2661,7 +2837,9 @@
                 if (!response.ok) {
 
                     throw new Error(
-                        await getErrorMessage(response)
+                        await getErrorMessage(
+                            response
+                        )
                     );
 
                 }
@@ -2669,9 +2847,11 @@
 
                 closePasswordModal();
 
+
                 await loadEmployees();
 
                 await loadHistory();
+
 
                 showMessage(
                     "employeeMessage",
@@ -2700,16 +2880,20 @@
            SALARY UPDATE
         ========================= */
 
-        if (pendingAction === "SALARY_UPDATE") {
+        if (
+            pendingAction ===
+            "SALARY_UPDATE"
+        ) {
 
             try {
 
                 const response =
-                    await fetch(
+                    await apiFetch(
                         "/admin/salary/" +
                         pendingSalaryData.employeeId,
                         {
-                            method: "PUT",
+                            method:
+                                "PUT",
 
                             headers: {
                                 "Content-Type":
@@ -2738,7 +2922,9 @@
                 if (!response.ok) {
 
                     throw new Error(
-                        await getErrorMessage(response)
+                        await getErrorMessage(
+                            response
+                        )
                     );
 
                 }
@@ -2748,11 +2934,13 @@
 
                 closeSalaryModal();
 
+
                 await loadEmployees();
 
                 await calculateSalary();
 
                 await loadHistory();
+
 
                 showMessage(
                     "salaryMessage",
@@ -2781,7 +2969,10 @@
            EXCEL IMPORT
         ========================= */
 
-        if (pendingAction === "EXCEL_IMPORT") {
+        if (
+            pendingAction ===
+            "EXCEL_IMPORT"
+        ) {
 
             if (!pendingImportFile) {
 
@@ -2819,11 +3010,14 @@
 
 
                 const response =
-                    await fetch(
+                    await apiFetch(
                         "/admin/employees/import",
                         {
-                            method: "POST",
-                            body: formData
+                            method:
+                                "POST",
+
+                            body:
+                                formData
                         }
                     );
 
@@ -2831,7 +3025,9 @@
                 if (!response.ok) {
 
                     throw new Error(
-                        await getErrorMessage(response)
+                        await getErrorMessage(
+                            response
+                        )
                     );
 
                 }
@@ -2845,6 +3041,7 @@
 
                 closeExcelImportModal();
 
+
                 await loadEmployees();
 
                 await loadHistory();
@@ -2853,9 +3050,15 @@
                 let message =
                     "Excel import completed. " +
                     "Imported: " +
-                    (result.importedCount ?? 0) +
+                    (
+                        result.importedCount ??
+                        0
+                    ) +
                     ", Skipped: " +
-                    (result.skippedCount ?? 0);
+                    (
+                        result.skippedCount ??
+                        0
+                    );
 
 
                 if (
@@ -2934,18 +3137,23 @@
             "currentSalary"
         ).value =
             "₹" +
-            formatNumber(currentSalary);
+            formatNumber(
+                currentSalary
+            );
 
 
         document.getElementById(
             "newSalary"
         ).value =
-            currentSalary ?? "";
+            currentSalary ??
+            "";
 
 
         document.getElementById(
             "salaryModal"
-        ).classList.add("show");
+        ).classList.add(
+            "show"
+        );
 
     }
 
@@ -2958,21 +3166,27 @@
 
         document.getElementById(
             "salaryModal"
-        ).classList.remove("show");
+        ).classList.remove(
+            "show"
+        );
 
 
         document.getElementById(
             "newSalary"
-        ).value = "";
+        ).value =
+            "";
 
 
         if (
             !document.getElementById(
                 "passwordModal"
-            ).classList.contains("show")
+            ).classList.contains(
+                "show"
+            )
         ) {
 
-            pendingSalaryData = null;
+            pendingSalaryData =
+                null;
 
         }
 
@@ -3073,7 +3287,7 @@
         try {
 
             const response =
-                await fetch(
+                await apiFetch(
                     `/admin/salary/calculate?year=${year}&month=${month}`
                 );
 
@@ -3081,7 +3295,9 @@
             if (!response.ok) {
 
                 throw new Error(
-                    await getErrorMessage(response)
+                    await getErrorMessage(
+                        response
+                    )
                 );
 
             }
@@ -3121,7 +3337,10 @@
             );
 
 
-        if (!data || data.length === 0) {
+        if (
+            !data ||
+            data.length === 0
+        ) {
 
             tbody.innerHTML = `
 
@@ -3144,73 +3363,97 @@
 
 
         tbody.innerHTML =
-            data.map(function (item) {
+            data.map(
+                function (item) {
 
-                return `
+                    return `
 
-                <tr>
+                    <tr>
 
-                    <td>
-                        ${escapeHtml(item.employeeId)}
-                    </td>
+                        <td>
+                            ${escapeHtml(
+                                item.employeeId
+                            )}
+                        </td>
 
-                    <td>
-                        ${escapeHtml(item.employeeCode)}
-                    </td>
+                        <td>
+                            ${escapeHtml(
+                                item.employeeCode
+                            )}
+                        </td>
 
-                    <td>
-                        <strong>
-                            ${escapeHtml(item.employeeName)}
-                        </strong>
-                    </td>
+                        <td>
+                            <strong>
+                                ${escapeHtml(
+                                    item.employeeName
+                                )}
+                            </strong>
+                        </td>
 
-                    <td>
-                        ₹${formatNumber(item.monthlySalary)}
-                    </td>
+                        <td>
+                            ₹${formatNumber(
+                                item.monthlySalary
+                            )}
+                        </td>
 
-                    <td>
-                        ${escapeHtml(item.workingDays)}
-                    </td>
+                        <td>
+                            ${escapeHtml(
+                                item.workingDays
+                            )}
+                        </td>
 
-                    <td>
-                        ${escapeHtml(item.presentDays)}
-                    </td>
+                        <td>
+                            ${escapeHtml(
+                                item.presentDays
+                            )}
+                        </td>
 
-                    <td>
-                        ${formatNumber(item.leaveDays)}
-                    </td>
+                        <td>
+                            ${formatNumber(
+                                item.leaveDays
+                            )}
+                        </td>
 
-                    <td>
-                        ₹${formatNumber(item.lossOfPay)}
-                    </td>
+                        <td>
+                            ₹${formatNumber(
+                                item.lossOfPay
+                            )}
+                        </td>
 
-                    <td>
-                        <strong>
-                            ₹${formatNumber(item.finalSalary)}
-                        </strong>
-                    </td>
+                        <td>
+                            <strong>
+                                ₹${formatNumber(
+                                    item.finalSalary
+                                )}
+                            </strong>
+                        </td>
 
-                    <td>
+                        <td>
 
-                        <button
-                            class="btn btn-warning btn-small"
-                            onclick="openSalaryModal(
-                                ${item.employeeId},
-                                '${escapeJs(item.employeeName)}',
-                                ${Number(item.monthlySalary || 0)}
-                            )">
+                            <button
+                                class="btn btn-warning btn-small"
+                                onclick="openSalaryModal(
+                                    ${item.employeeId},
+                                    '${escapeJs(
+                                        item.employeeName
+                                    )}',
+                                    ${Number(
+                                        item.monthlySalary || 0
+                                    )}
+                                )">
 
-                            Edit Salary
+                                Edit Salary
 
-                        </button>
+                            </button>
 
-                    </td>
+                        </td>
 
-                </tr>
+                    </tr>
 
-                `;
+                    `;
 
-            }).join("");
+                }
+            ).join("");
 
     }
 
@@ -3221,12 +3464,14 @@
 
     function openExcelImportModal() {
 
-        pendingImportFile = null;
+        pendingImportFile =
+            null;
 
 
         document.getElementById(
             "excelFileInput"
-        ).value = "";
+        ).value =
+            "";
 
 
         document.getElementById(
@@ -3237,7 +3482,9 @@
 
         document.getElementById(
             "excelImportModal"
-        ).classList.add("show");
+        ).classList.add(
+            "show"
+        );
 
     }
 
@@ -3255,7 +3502,8 @@
             input.files.length === 0
         ) {
 
-            pendingImportFile = null;
+            pendingImportFile =
+                null;
 
 
             document.getElementById(
@@ -3278,8 +3526,12 @@
 
 
         if (
-            !fileName.endsWith(".xlsx") &&
-            !fileName.endsWith(".xls")
+            !fileName.endsWith(
+                ".xlsx"
+            ) &&
+            !fileName.endsWith(
+                ".xls"
+            )
         ) {
 
             alert(
@@ -3287,22 +3539,26 @@
             );
 
 
-            input.value = "";
+            input.value =
+                "";
 
-            pendingImportFile = null;
+            pendingImportFile =
+                null;
 
             return;
 
         }
 
 
-        pendingImportFile = file;
+        pendingImportFile =
+            file;
 
 
         document.getElementById(
             "selectedFileName"
         ).textContent =
-            "Selected: " + file.name;
+            "Selected: " +
+            file.name;
 
     }
 
@@ -3333,16 +3589,21 @@
 
         document.getElementById(
             "excelImportModal"
-        ).classList.remove("show");
+        ).classList.remove(
+            "show"
+        );
 
 
         if (
             !document.getElementById(
                 "passwordModal"
-            ).classList.contains("show")
+            ).classList.contains(
+                "show"
+            )
         ) {
 
-            pendingImportFile = null;
+            pendingImportFile =
+                null;
 
         }
 
@@ -3358,7 +3619,7 @@
         try {
 
             const response =
-                await fetch(
+                await apiFetch(
                     "/admin/leaves"
                 );
 
@@ -3366,7 +3627,9 @@
             if (!response.ok) {
 
                 throw new Error(
-                    await getErrorMessage(response)
+                    await getErrorMessage(
+                        response
+                    )
                 );
 
             }
@@ -3376,14 +3639,23 @@
                 await response.json();
 
 
-            renderLeaves(leaves);
+            renderLeaves(
+                leaves
+            );
 
-            updatePendingLeaveCount(leaves);
+
+            updatePendingLeaveCount(
+                leaves
+            );
 
         }
         catch (error) {
 
-            console.error(error);
+            console.error(
+                "Load leaves error:",
+                error
+            );
+
 
             showMessage(
                 "leaveMessage",
@@ -3400,7 +3672,9 @@
        RENDER LEAVES
     ===================================================== */
 
-    function renderLeaves(leaves) {
+    function renderLeaves(
+        leaves
+    ) {
 
         const tbody =
             document.getElementById(
@@ -3408,7 +3682,10 @@
             );
 
 
-        if (!leaves || leaves.length === 0) {
+        if (
+            !leaves ||
+            leaves.length === 0
+        ) {
 
             tbody.innerHTML = `
 
@@ -3431,120 +3708,149 @@
 
 
         tbody.innerHTML =
-            leaves.map(function (leave) {
+            leaves.map(
+                function (leave) {
 
-                const status =
-                    String(
-                        leave.status || ""
-                    ).toUpperCase();
-
-
-                let badgeClass =
-                    "badge-gray";
+                    const status =
+                        String(
+                            leave.status || ""
+                        ).toUpperCase();
 
 
-                if (status === "APPROVED") {
-                    badgeClass =
-                        "badge-green";
+                    let badgeClass =
+                        "badge-gray";
+
+
+                    if (
+                        status ===
+                        "APPROVED"
+                    ) {
+
+                        badgeClass =
+                            "badge-green";
+
+                    }
+
+                    else if (
+                        status ===
+                        "PENDING"
+                    ) {
+
+                        badgeClass =
+                            "badge-orange";
+
+                    }
+
+                    else if (
+                        status ===
+                        "REJECTED"
+                    ) {
+
+                        badgeClass =
+                            "badge-red";
+
+                    }
+
+
+                    return `
+
+                    <tr>
+
+                        <td>
+                            ${escapeHtml(
+                                leave.id
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                leave.employeeName ||
+                                leave.name ||
+                                "-"
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                leave.leaveType ||
+                                "-"
+                            )}
+                        </td>
+
+                        <td>
+                            ${formatDate(
+                                leave.leaveDate
+                            )}
+                        </td>
+
+                        <td>
+                            ${formatNumber(
+                                leave.leaveDuration
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                leave.reason ||
+                                "-"
+                            )}
+                        </td>
+
+                        <td>
+
+                            <span
+                                class="badge ${badgeClass}">
+
+                                ${escapeHtml(
+                                    status || "-"
+                                )}
+
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            ${
+                                status ===
+                                "PENDING"
+
+                                ?
+
+                                `
+
+                                <button
+                                    class="btn btn-success btn-small"
+                                    onclick="approveLeave(
+                                        ${leave.id}
+                                    )">
+                                    Approve
+                                </button>
+
+                                <button
+                                    class="btn btn-danger btn-small"
+                                    onclick="rejectLeave(
+                                        ${leave.id}
+                                    )">
+                                    Reject
+                                </button>
+
+                                `
+
+                                :
+
+                                "-"
+
+                            }
+
+                        </td>
+
+                    </tr>
+
+                    `;
+
                 }
-
-                else if (status === "PENDING") {
-                    badgeClass =
-                        "badge-orange";
-                }
-
-                else if (status === "REJECTED") {
-                    badgeClass =
-                        "badge-red";
-                }
-
-
-                return `
-
-                <tr>
-
-                    <td>
-                        ${escapeHtml(leave.id)}
-                    </td>
-
-                    <td>
-                        ${escapeHtml(
-                            leave.employeeName ||
-                            leave.name ||
-                            "-"
-                        )}
-                    </td>
-
-                    <td>
-                        ${escapeHtml(
-                            leave.leaveType ||
-                            "-"
-                        )}
-                    </td>
-
-                    <td>
-                        ${formatDate(
-                            leave.leaveDate
-                        )}
-                    </td>
-
-                    <td>
-                        ${formatNumber(
-                            leave.leaveDuration
-                        )}
-                    </td>
-
-                    <td>
-                        ${escapeHtml(
-                            leave.reason ||
-                            "-"
-                        )}
-                    </td>
-
-                    <td>
-
-                        <span class="badge ${badgeClass}">
-                            ${escapeHtml(status || "-")}
-                        </span>
-
-                    </td>
-
-                    <td>
-
-                        ${
-                            status === "PENDING"
-
-                            ?
-
-                            `
-
-                            <button
-                                class="btn btn-success btn-small"
-                                onclick="approveLeave(${leave.id})">
-                                Approve
-                            </button>
-
-                            <button
-                                class="btn btn-danger btn-small"
-                                onclick="rejectLeave(${leave.id})">
-                                Reject
-                            </button>
-
-                            `
-
-                            :
-
-                            "-"
-
-                        }
-
-                    </td>
-
-                </tr>
-
-                `;
-
-            }).join("");
+            ).join("");
 
     }
 
@@ -3553,14 +3859,19 @@
        APPROVE LEAVE
     ===================================================== */
 
-    function approveLeave(leaveId) {
+    function approveLeave(
+        leaveId
+    ) {
 
         pendingAction =
             "LEAVE_APPROVE";
 
 
         pendingLeaveData = {
-            leaveId: leaveId
+
+            leaveId:
+                leaveId
+
         };
 
 
@@ -3573,14 +3884,19 @@
        REJECT LEAVE
     ===================================================== */
 
-    function rejectLeave(leaveId) {
+    function rejectLeave(
+        leaveId
+    ) {
 
         pendingAction =
             "LEAVE_REJECT";
 
 
         pendingLeaveData = {
-            leaveId: leaveId
+
+            leaveId:
+                leaveId
+
         };
 
 
@@ -3593,15 +3909,20 @@
        UPDATE PENDING LEAVE COUNT
     ===================================================== */
 
-    function updatePendingLeaveCount(leaves) {
+    function updatePendingLeaveCount(
+        leaves
+    ) {
 
         const count =
-            (leaves || []).filter(
+            (
+                leaves || []
+            ).filter(
                 function (leave) {
 
                     return String(
                         leave.status || ""
-                    ).toUpperCase() === "PENDING";
+                    ).toUpperCase() ===
+                        "PENDING";
 
                 }
             ).length;
@@ -3641,7 +3962,7 @@
         try {
 
             const response =
-                await fetch(
+                await apiFetch(
                     `/admin/monthly-report?year=${year}&month=${month}`
                 );
 
@@ -3649,7 +3970,9 @@
             if (!response.ok) {
 
                 throw new Error(
-                    await getErrorMessage(response)
+                    await getErrorMessage(
+                        response
+                    )
                 );
 
             }
@@ -3659,7 +3982,9 @@
                 await response.json();
 
 
-            renderMonthlyReport(data);
+            renderMonthlyReport(
+                data
+            );
 
         }
         catch (error) {
@@ -3681,7 +4006,9 @@
        RENDER MONTHLY REPORT
     ===================================================== */
 
-    function renderMonthlyReport(data) {
+    function renderMonthlyReport(
+        data
+    ) {
 
         const tbody =
             document.getElementById(
@@ -3689,7 +4016,10 @@
             );
 
 
-        if (!data || data.length === 0) {
+        if (
+            !data ||
+            data.length === 0
+        ) {
 
             tbody.innerHTML = `
 
@@ -3712,67 +4042,77 @@
 
 
         tbody.innerHTML =
-            data.map(function (item) {
+            data.map(
+                function (item) {
 
-                return `
+                    return `
 
-                <tr>
+                    <tr>
 
-                    <td>
-                        ${escapeHtml(
-                            item.employeeId ?? "-"
-                        )}
-                    </td>
-
-                    <td>
-                        ${escapeHtml(
-                            item.employeeCode ?? "-"
-                        )}
-                    </td>
-
-                    <td>
-                        <strong>
+                        <td>
                             ${escapeHtml(
-                                item.employeeName ?? "-"
+                                item.employeeId ??
+                                "-"
                             )}
-                        </strong>
-                    </td>
+                        </td>
 
-                    <td>
-                        ${escapeHtml(
-                            item.presentDays ?? 0
-                        )}
-                    </td>
+                        <td>
+                            ${escapeHtml(
+                                item.employeeCode ??
+                                "-"
+                            )}
+                        </td>
 
-                    <td>
-                        ${escapeHtml(
-                            item.absentDays ?? 0
-                        )}
-                    </td>
+                        <td>
+                            <strong>
+                                ${escapeHtml(
+                                    item.employeeName ??
+                                    "-"
+                                )}
+                            </strong>
+                        </td>
 
-                    <td>
-                        ${escapeHtml(
-                            item.leaveDays ?? 0
-                        )}
-                    </td>
+                        <td>
+                            ${escapeHtml(
+                                item.presentDays ??
+                                0
+                            )}
+                        </td>
 
-                    <td>
-                        ${escapeHtml(
-                            item.permissionDays ?? 0
-                        )}
-                    </td>
+                        <td>
+                            ${escapeHtml(
+                                item.absentDays ??
+                                0
+                            )}
+                        </td>
 
-                    <td>
-                        ${escapeHtml(
-                            item.workingDays ?? 0
-                        )}
-                    </td>
+                        <td>
+                            ${escapeHtml(
+                                item.leaveDays ??
+                                0
+                            )}
+                        </td>
 
-                </tr>
+                        <td>
+                            ${escapeHtml(
+                                item.permissionDays ??
+                                0
+                            )}
+                        </td>
 
-                `;
+                        <td>
+                            ${escapeHtml(
+                                item.workingDays ??
+                                0
+                            )}
+                        </td>
 
-            }).join("");
+                    </tr>
+
+                    `;
+
+                }
+            ).join("");
 
     }
 
@@ -3786,7 +4126,7 @@
         try {
 
             const response =
-                await fetch(
+                await apiFetch(
                     "/admin/history"
                 );
 
@@ -3794,7 +4134,9 @@
             if (!response.ok) {
 
                 throw new Error(
-                    await getErrorMessage(response)
+                    await getErrorMessage(
+                        response
+                    )
                 );
 
             }
@@ -3804,12 +4146,18 @@
                 await response.json();
 
 
-            renderHistory(data);
+            renderHistory(
+                data
+            );
 
         }
         catch (error) {
 
-            console.error(error);
+            console.error(
+                "Load history error:",
+                error
+            );
+
 
             showMessage(
                 "historyMessage",
@@ -3826,7 +4174,9 @@
        RENDER HISTORY
     ===================================================== */
 
-    function renderHistory(data) {
+    function renderHistory(
+        data
+    ) {
 
         const tbody =
             document.getElementById(
@@ -3834,7 +4184,10 @@
             );
 
 
-        if (!data || data.length === 0) {
+        if (
+            !data ||
+            data.length === 0
+        ) {
 
             tbody.innerHTML = `
 
@@ -3857,132 +4210,144 @@
 
 
         tbody.innerHTML =
-            data.map(function (item) {
+            data.map(
+                function (item) {
 
-                const action =
-                    String(
-                        item.action || ""
-                    ).toUpperCase();
-
-
-                let badgeClass =
-                    "badge-blue";
+                    const action =
+                        String(
+                            item.action || ""
+                        ).toUpperCase();
 
 
-                if (
-                    action.includes("DELETE")
-                ) {
-
-                    badgeClass =
-                        "badge-red";
-
-                }
-
-                else if (
-                    action.includes("SALARY")
-                ) {
-
-                    badgeClass =
-                        "badge-orange";
-
-                }
-
-                else if (
-                    action.includes("ADD")
-                ) {
-
-                    badgeClass =
-                        "badge-green";
-
-                }
+                    let badgeClass =
+                        "badge-blue";
 
 
-                return `
+                    if (
+                        action.includes(
+                            "DELETE"
+                        )
+                    ) {
 
-                <tr>
+                        badgeClass =
+                            "badge-red";
 
-                    <td>
-                        ${formatDate(
-                            item.actionDate
-                        )}
-                    </td>
+                    }
 
-                    <td>
-                        ${formatTime(
-                            item.actionTime
-                        )}
-                    </td>
+                    else if (
+                        action.includes(
+                            "SALARY"
+                        )
+                    ) {
 
-                    <td>
-                        <strong>
-                            ${escapeHtml(
-                                item.adminName ||
-                                "ADMIN"
+                        badgeClass =
+                            "badge-orange";
+
+                    }
+
+                    else if (
+                        action.includes(
+                            "ADD"
+                        )
+                    ) {
+
+                        badgeClass =
+                            "badge-green";
+
+                    }
+
+
+                    return `
+
+                    <tr>
+
+                        <td>
+                            ${formatDate(
+                                item.actionDate
                             )}
-                        </strong>
-                    </td>
+                        </td>
 
-                    <td>
-
-                        <span class="badge ${badgeClass}">
-                            ${escapeHtml(
-                                action || "-"
+                        <td>
+                            ${formatTime(
+                                item.actionTime
                             )}
-                        </span>
+                        </td>
 
-                    </td>
+                        <td>
+                            <strong>
+                                ${escapeHtml(
+                                    item.adminName ||
+                                    "ADMIN"
+                                )}
+                            </strong>
+                        </td>
 
-                    <td>
+                        <td>
 
-                        ${escapeHtml(
-                            item.employeeName ||
-                            "-"
-                        )}
+                            <span
+                                class="badge ${badgeClass}">
 
-                        ${
-                            item.employeeCode
-                                ? " (" +
-                                  escapeHtml(
-                                      item.employeeCode
-                                  ) +
-                                  ")"
-                                : ""
-                        }
+                                ${escapeHtml(
+                                    action || "-"
+                                )}
 
-                    </td>
+                            </span>
 
-                    <td>
-                        ${escapeHtml(
-                            item.fieldName ||
-                            "-"
-                        )}
-                    </td>
+                        </td>
 
-                    <td>
-                        ${escapeHtml(
-                            item.oldValue ||
-                            "-"
-                        )}
-                    </td>
+                        <td>
 
-                    <td>
-                        ${escapeHtml(
-                            item.newValue ||
-                            "-"
-                        )}
-                    </td>
+                            ${escapeHtml(
+                                item.employeeName ||
+                                "-"
+                            )}
 
-                </tr>
+                            ${
+                                item.employeeCode
+                                    ? " (" +
+                                      escapeHtml(
+                                          item.employeeCode
+                                      ) +
+                                      ")"
+                                    : ""
+                            }
 
-                `;
+                        </td>
 
-            }).join("");
+                        <td>
+                            ${escapeHtml(
+                                item.fieldName ||
+                                "-"
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                item.oldValue ||
+                                "-"
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                item.newValue ||
+                                "-"
+                            )}
+                        </td>
+
+                    </tr>
+
+                    `;
+
+                }
+            ).join("");
 
     }
 
 
     /* =====================================================
        DASHBOARD STATS
+       Uses existing AttendanceController endpoint
     ===================================================== */
 
     async function updateDashboardStats() {
@@ -3999,14 +4364,27 @@
 
         try {
 
+            const today =
+                new Date()
+                    .toISOString()
+                    .split("T")[0];
+
+
             const response =
-                await fetch(
-                    "/admin/attendance/today"
+                await apiFetch(
+                    "/attendance/admin/all?date=" +
+                    today
                 );
 
 
             if (!response.ok) {
-                return;
+
+                throw new Error(
+                    await getErrorMessage(
+                        response
+                    )
+                );
+
             }
 
 
@@ -4014,40 +4392,49 @@
                 await response.json();
 
 
-            let present = 0;
-
-            let absent = 0;
-
-
-            if (Array.isArray(data)) {
-
-                data.forEach(function (item) {
-
-                    const status =
-                        String(
-                            item.status || ""
-                        ).toUpperCase();
+            let present =
+                0;
 
 
-                    if (
-                        status === "PRESENT"
-                    ) {
+            if (
+                Array.isArray(data)
+            ) {
 
-                        present++;
+                data.forEach(
+                    function (item) {
+
+                        const status =
+                            String(
+                                item.status || ""
+                            ).toUpperCase();
+
+
+                        if (
+                            status ===
+                                "PRESENT" ||
+
+                            status ===
+                                "LATE" ||
+
+                            status ===
+                                "LATE / EARLY CHECK-OUT"
+                        ) {
+
+                            present++;
+
+                        }
 
                     }
-
-                    else if (
-                        status === "ABSENT"
-                    ) {
-
-                        absent++;
-
-                    }
-
-                });
+                );
 
             }
+
+
+            const absent =
+                Math.max(
+                    total - present,
+                    0
+                );
 
 
             document.getElementById(
@@ -4069,6 +4456,18 @@
                 error
             );
 
+
+            document.getElementById(
+                "presentToday"
+            ).textContent =
+                "0";
+
+
+            document.getElementById(
+                "absentToday"
+            ).textContent =
+                total;
+
         }
 
     }
@@ -4078,7 +4477,9 @@
        ERROR MESSAGE
     ===================================================== */
 
-    async function getErrorMessage(response) {
+    async function getErrorMessage(
+        response
+    ) {
 
         try {
 
@@ -4180,7 +4581,9 @@
        FORMAT NUMBER
     ===================================================== */
 
-    function formatNumber(value) {
+    function formatNumber(
+        value
+    ) {
 
         if (
             value === null ||
@@ -4197,7 +4600,9 @@
             Number(value);
 
 
-        if (Number.isNaN(number)) {
+        if (
+            Number.isNaN(number)
+        ) {
 
             return "0.00";
 
@@ -4207,8 +4612,11 @@
         return number.toLocaleString(
             "en-IN",
             {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
+                minimumFractionDigits:
+                    2,
+
+                maximumFractionDigits:
+                    2
             }
         );
 
@@ -4219,7 +4627,9 @@
        FORMAT DATE
     ===================================================== */
 
-    function formatDate(value) {
+    function formatDate(
+        value
+    ) {
 
         if (!value) {
             return "-";
@@ -4230,9 +4640,11 @@
             new Date(value);
 
 
-        if (Number.isNaN(
-            date.getTime()
-        )) {
+        if (
+            Number.isNaN(
+                date.getTime()
+            )
+        ) {
 
             return escapeHtml(
                 String(value)
@@ -4244,13 +4656,19 @@
         const day =
             String(
                 date.getDate()
-            ).padStart(2, "0");
+            ).padStart(
+                2,
+                "0"
+            );
 
 
         const month =
             String(
                 date.getMonth() + 1
-            ).padStart(2, "0");
+            ).padStart(
+                2,
+                "0"
+            );
 
 
         const year =
@@ -4272,7 +4690,9 @@
        FORMAT TIME
     ===================================================== */
 
-    function formatTime(value) {
+    function formatTime(
+        value
+    ) {
 
         if (!value) {
             return "-";
@@ -4291,10 +4711,14 @@
                 text.split(":");
 
 
-            if (parts.length >= 2) {
+            if (
+                parts.length >= 2
+            ) {
 
                 let hour =
-                    Number(parts[0]);
+                    Number(
+                        parts[0]
+                    );
 
 
                 const minute =
@@ -4303,7 +4727,8 @@
 
                 const second =
                     parts[2]
-                        ? parts[2].split(".")[0]
+                        ? parts[2]
+                            .split(".")[0]
                         : "00";
 
 
@@ -4314,11 +4739,14 @@
 
 
                 hour =
-                    hour % 12 || 12;
+                    hour % 12 ||
+                    12;
 
 
                 return (
-                    String(hour).padStart(
+                    String(
+                        hour
+                    ).padStart(
                         2,
                         "0"
                     ) +
@@ -4335,7 +4763,9 @@
         }
 
 
-        return escapeHtml(text);
+        return escapeHtml(
+            text
+        );
 
     }
 
@@ -4344,7 +4774,9 @@
        ESCAPE HTML
     ===================================================== */
 
-    function escapeHtml(value) {
+    function escapeHtml(
+        value
+    ) {
 
         if (
             value === null ||
@@ -4357,11 +4789,26 @@
 
 
         return String(value)
-            .replaceAll("&", "&amp;")
-            .replaceAll("<", "&lt;")
-            .replaceAll(">", "&gt;")
-            .replaceAll('"', "&quot;")
-            .replaceAll("'", "&#039;");
+            .replaceAll(
+                "&",
+                "&amp;"
+            )
+            .replaceAll(
+                "<",
+                "&lt;"
+            )
+            .replaceAll(
+                ">",
+                "&gt;"
+            )
+            .replaceAll(
+                '"',
+                "&quot;"
+            )
+            .replaceAll(
+                "'",
+                "&#039;"
+            );
 
     }
 
@@ -4370,7 +4817,9 @@
        ESCAPE JAVASCRIPT STRING
     ===================================================== */
 
-    function escapeJs(value) {
+    function escapeJs(
+        value
+    ) {
 
         if (
             value === null ||
@@ -4383,10 +4832,22 @@
 
 
         return String(value)
-            .replaceAll("\\", "\\\\")
-            .replaceAll("'", "\\'")
-            .replaceAll("\n", "\\n")
-            .replaceAll("\r", "\\r");
+            .replaceAll(
+                "\\",
+                "\\\\"
+            )
+            .replaceAll(
+                "'",
+                "\\'"
+            )
+            .replaceAll(
+                "\n",
+                "\\n"
+            )
+            .replaceAll(
+                "\r",
+                "\\r"
+            );
 
     }
 
@@ -4454,7 +4915,7 @@
         try {
 
             const response =
-                await fetch(
+                await apiFetch(
                     "/admin/leaves/" +
                     pendingLeaveData.leaveId +
                     "/" +
@@ -4464,7 +4925,8 @@
                             : "reject"
                     ),
                     {
-                        method: "PUT",
+                        method:
+                            "PUT",
 
                         headers: {
                             "Content-Type":
@@ -4488,7 +4950,9 @@
             if (!response.ok) {
 
                 throw new Error(
-                    await getErrorMessage(response)
+                    await getErrorMessage(
+                        response
+                    )
                 );
 
             }
@@ -4496,17 +4960,22 @@
 
             closePasswordModal();
 
-            pendingLeaveData = null;
+            pendingLeaveData =
+                null;
+
 
             await loadLeaves();
 
             await loadHistory();
 
+
             showMessage(
                 "leaveMessage",
+
                 approve
                     ? "Leave approved successfully."
                     : "Leave rejected successfully.",
+
                 "success"
             );
 
@@ -4532,40 +5001,45 @@
         confirmAdminAction;
 
 
-    confirmAdminAction = async function () {
+    confirmAdminAction =
+        async function () {
 
-        if (
-            pendingAction ===
-            "LEAVE_APPROVE" ||
-            pendingAction ===
-            "LEAVE_REJECT"
-        ) {
+            if (
+                pendingAction ===
+                    "LEAVE_APPROVE" ||
 
-            await processLeaveAction();
+                pendingAction ===
+                    "LEAVE_REJECT"
+            ) {
 
-            return;
+                await processLeaveAction();
 
-        }
+                return;
+
+            }
 
 
-        await employeeConfirmFunction();
+            await employeeConfirmFunction();
 
-    };
+        };
 
 
     /* =====================================================
        CLOSE MODAL WHEN CLICKING OUTSIDE
     ===================================================== */
 
-    document.querySelectorAll(".modal")
-        .forEach(function (modal) {
+    document.querySelectorAll(
+        ".modal"
+    ).forEach(
+        function (modal) {
 
             modal.addEventListener(
                 "click",
                 function (event) {
 
                     if (
-                        event.target === modal
+                        event.target ===
+                        modal
                     ) {
 
                         modal.classList.remove(
@@ -4577,7 +5051,8 @@
                 }
             );
 
-        });
+        }
+    );
 
 </script>
 
