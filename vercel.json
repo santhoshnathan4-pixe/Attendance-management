@@ -2,23 +2,27 @@
   "rewrites": [
     {
       "source": "/",
-      "destination": "/login.html"
+      "destination": "/src/main/resources/static/login.html"
+    },
+    {
+      "source": "/login.html",
+      "destination": "/src/main/resources/static/login.html"
     },
     {
       "source": "/admin-login",
-      "destination": "/admin-login.html"
+      "destination": "/src/main/resources/static/admin-login.html"
     },
     {
       "source": "/dashboard",
-      "destination": "/dashboard.html"
+      "destination": "/src/main/resources/static/dashboard.html"
     },
     {
       "source": "/admin-dashboard",
-      "destination": "/admin-dashboard.html"
+      "destination": "/src/main/resources/static/admin-dashboard.html"
     },
     {
       "source": "/set-password",
-      "destination": "/set-password.html"
+      "destination": "/src/main/resources/static/set-password.html"
     }
   ]
 }
