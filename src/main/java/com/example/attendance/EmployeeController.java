@@ -1,3 +1,4 @@
+
 package com.example.attendance;
 
 import org.springframework.http.HttpStatus;
@@ -5,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
+@CrossOrigin(origins = "https://attendance-management-3d-webinar.vercel.app")
 @RequestMapping("/employee")
 public class EmployeeController {
 
@@ -208,3 +210,4 @@ public class EmployeeController {
         return response;
     }
 }
+
