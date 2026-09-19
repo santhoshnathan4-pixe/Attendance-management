@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -1043,6 +1044,14 @@
     <script>
 
         // =========================================
+        // RENDER BACKEND API URL
+        // =========================================
+
+        const API_BASE_URL =
+            "https://attendance-management-d5h6.onrender.com";
+
+
+        // =========================================
         // GET LOGGED-IN EMPLOYEE EMAIL
         // =========================================
 
@@ -1069,7 +1078,7 @@
         function loadEmployeeDetails() {
 
             fetch(
-                `/employee/details?email=${encodeURIComponent(employeeEmail)}`
+                `${API_BASE_URL}/employee/details?email=${encodeURIComponent(employeeEmail)}`
             )
 
             .then(response =>
@@ -1119,7 +1128,7 @@
             button.disabled = true;
 
             fetch(
-                `/attendance/check-in?email=${encodeURIComponent(employeeEmail)}`,
+                `${API_BASE_URL}/attendance/check-in?email=${encodeURIComponent(employeeEmail)}`,
                 {
                     method: "POST"
                 }
@@ -1189,7 +1198,7 @@
             button.disabled = true;
 
             fetch(
-                `/attendance/check-out?email=${encodeURIComponent(employeeEmail)}`,
+                `${API_BASE_URL}/attendance/check-out?email=${encodeURIComponent(employeeEmail)}`,
                 {
                     method: "POST"
                 }
@@ -1544,7 +1553,7 @@
             // =====================================
 
             fetch(
-                `/leave/apply?${params.toString()}`,
+                `${API_BASE_URL}/leave/apply?${params.toString()}`,
                 {
                     method: "POST"
                 }
@@ -1644,7 +1653,7 @@
         function loadLeaveBalance() {
 
             fetch(
-                `/leave/balance?email=${encodeURIComponent(employeeEmail)}`
+                `${API_BASE_URL}/leave/balance?email=${encodeURIComponent(employeeEmail)}`
             )
 
             .then(response =>
@@ -1712,7 +1721,7 @@
         function loadAttendanceHistory() {
 
             fetch(
-                `/attendance/history?email=${encodeURIComponent(employeeEmail)}`
+                `${API_BASE_URL}/attendance/history?email=${encodeURIComponent(employeeEmail)}`
             )
 
             .then(response =>
@@ -1931,7 +1940,7 @@
         function loadLeaveHistory() {
 
             fetch(
-                `/leave/history?email=${encodeURIComponent(employeeEmail)}`
+                `${API_BASE_URL}/leave/history?email=${encodeURIComponent(employeeEmail)}`
             )
 
             .then(response =>
@@ -2093,3 +2102,4 @@
 </body>
 
 </html>
+
