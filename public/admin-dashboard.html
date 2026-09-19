@@ -21,18 +21,10 @@
             color: #1f2937;
         }
 
-        /* =========================
-           LAYOUT
-        ========================= */
-
         .container {
             display: flex;
             min-height: 100vh;
         }
-
-        /* =========================
-           SIDEBAR
-        ========================= */
 
         .sidebar {
             width: 250px;
@@ -95,10 +87,6 @@
             background: #b91c1c !important;
         }
 
-        /* =========================
-           MAIN
-        ========================= */
-
         .main {
             margin-left: 250px;
             width: calc(100% - 250px);
@@ -144,10 +132,6 @@
             padding: 30px;
         }
 
-        /* =========================
-           SECTIONS
-        ========================= */
-
         .section {
             display: none;
         }
@@ -167,10 +151,6 @@
             margin-bottom: 25px;
             font-size: 14px;
         }
-
-        /* =========================
-           DASHBOARD CARDS
-        ========================= */
 
         .stats-grid {
             display: grid;
@@ -214,10 +194,6 @@
             border-left: 5px solid #dc2626;
         }
 
-        /* =========================
-           TOP BAR
-        ========================= */
-
         .top-bar {
             background: white;
             padding: 18px;
@@ -241,10 +217,6 @@
             align-items: center;
             gap: 10px;
         }
-
-        /* =========================
-           BUTTONS
-        ========================= */
 
         .btn {
             border: none;
@@ -306,10 +278,6 @@
             font-size: 12px;
         }
 
-        /* =========================
-           TABLE
-        ========================= */
-
         .table-card {
             background: white;
             border-radius: 14px;
@@ -354,10 +322,6 @@
             padding: 30px;
         }
 
-        /* =========================
-           BADGES
-        ========================= */
-
         .badge {
             display: inline-block;
             padding: 5px 9px;
@@ -390,10 +354,6 @@
             background: #e5e7eb;
             color: #374151;
         }
-
-        /* =========================
-           FORM
-        ========================= */
 
         .form-grid {
             display: grid;
@@ -438,10 +398,6 @@
             background: #f1f5f9 !important;
             cursor: not-allowed;
         }
-
-        /* =========================
-           MODAL
-        ========================= */
 
         .modal {
             display: none;
@@ -506,10 +462,6 @@
             margin-top: 25px;
         }
 
-        /* =========================
-           INFO BOX
-        ========================= */
-
         .info-box {
             background: #eff6ff;
             border: 1px solid #bfdbfe;
@@ -531,10 +483,6 @@
             line-height: 1.6;
             margin-bottom: 18px;
         }
-
-        /* =========================
-           FILE
-        ========================= */
 
         .file-box {
             border: 2px dashed #94a3b8;
@@ -560,10 +508,6 @@
             word-break: break-word;
         }
 
-        /* =========================
-           MESSAGE
-        ========================= */
-
         .message {
             display: none;
             margin-bottom: 18px;
@@ -587,10 +531,6 @@
             color: #991b1b;
         }
 
-        /* =========================
-           FILTER
-        ========================= */
-
         .filter-box {
             display: flex;
             gap: 10px;
@@ -604,10 +544,6 @@
             border-radius: 8px;
             outline: none;
         }
-
-        /* =========================
-           SALARY
-        ========================= */
 
         .salary-summary {
             display: grid;
@@ -633,10 +569,6 @@
         .salary-box strong {
             font-size: 20px;
         }
-
-        /* =========================
-           RESPONSIVE
-        ========================= */
 
         @media (max-width: 1100px) {
 
@@ -706,10 +638,6 @@
 
 <div class="container">
 
-    <!-- =========================
-         SIDEBAR
-    ========================= -->
-
     <aside class="sidebar">
 
         <div class="logo">
@@ -762,10 +690,6 @@
     </aside>
 
 
-    <!-- =========================
-         MAIN
-    ========================= -->
-
     <main class="main">
 
         <header class="header">
@@ -791,10 +715,6 @@
 
         <div class="content">
 
-            <!-- =========================
-                 DASHBOARD
-            ========================= -->
-
             <section id="dashboard"
                      class="section active">
 
@@ -814,40 +734,28 @@
 
                     <div class="stat-card stat-blue">
                         <h4>Total Employees</h4>
-                        <h2 id="totalEmployees">
-                            0
-                        </h2>
+                        <h2 id="totalEmployees">0</h2>
                     </div>
 
                     <div class="stat-card stat-green">
                         <h4>Present Today</h4>
-                        <h2 id="presentToday">
-                            0
-                        </h2>
+                        <h2 id="presentToday">0</h2>
                     </div>
 
                     <div class="stat-card stat-orange">
                         <h4>Pending Leaves</h4>
-                        <h2 id="pendingLeaves">
-                            0
-                        </h2>
+                        <h2 id="pendingLeaves">0</h2>
                     </div>
 
                     <div class="stat-card stat-red">
                         <h4>Absent Today</h4>
-                        <h2 id="absentToday">
-                            0
-                        </h2>
+                        <h2 id="absentToday">0</h2>
                     </div>
 
                 </div>
 
             </section>
 
-
-            <!-- =========================
-                 EMPLOYEES
-            ========================= -->
 
             <section id="employees"
                      class="section">
@@ -907,7 +815,6 @@
                             <thead>
 
                             <tr>
-
                                 <th>ID</th>
                                 <th>Employee Code</th>
                                 <th>Name</th>
@@ -917,7 +824,6 @@
                                 <th>Salary</th>
                                 <th>Joining Date</th>
                                 <th>Action</th>
-
                             </tr>
 
                             </thead>
@@ -941,10 +847,6 @@
 
             </section>
 
-
-            <!-- =========================
-                 LEAVE
-            ========================= -->
 
             <section id="leave"
                      class="section">
@@ -970,7 +872,6 @@
                             <thead>
 
                             <tr>
-
                                 <th>ID</th>
                                 <th>Employee</th>
                                 <th>Leave Type</th>
@@ -979,7 +880,6 @@
                                 <th>Reason</th>
                                 <th>Status</th>
                                 <th>Action</th>
-
                             </tr>
 
                             </thead>
@@ -1004,10 +904,6 @@
             </section>
 
 
-            <!-- =========================
-                 SALARY
-            ========================= -->
-
             <section id="salary"
                      class="section">
 
@@ -1027,8 +923,7 @@
 
                     <div class="filter-box">
 
-                        <select id="salaryYear">
-                        </select>
+                        <select id="salaryYear"></select>
 
                         <select id="salaryMonth">
 
@@ -1066,7 +961,6 @@
                             <thead>
 
                             <tr>
-
                                 <th>Employee ID</th>
                                 <th>Employee Code</th>
                                 <th>Name</th>
@@ -1077,7 +971,6 @@
                                 <th>LOP</th>
                                 <th>Final Salary</th>
                                 <th>Action</th>
-
                             </tr>
 
                             </thead>
@@ -1102,10 +995,6 @@
             </section>
 
 
-            <!-- =========================
-                 MONTHLY REPORT
-            ========================= -->
-
             <section id="monthly"
                      class="section">
 
@@ -1125,8 +1014,7 @@
 
                     <div class="filter-box">
 
-                        <select id="reportYear">
-                        </select>
+                        <select id="reportYear"></select>
 
                         <select id="reportMonth">
 
@@ -1164,7 +1052,6 @@
                             <thead>
 
                             <tr>
-
                                 <th>Employee ID</th>
                                 <th>Employee Code</th>
                                 <th>Name</th>
@@ -1173,7 +1060,6 @@
                                 <th>Leave</th>
                                 <th>Permission</th>
                                 <th>Working Days</th>
-
                             </tr>
 
                             </thead>
@@ -1197,10 +1083,6 @@
 
             </section>
 
-
-            <!-- =========================
-                 HISTORY
-            ========================= -->
 
             <section id="history"
                      class="section">
@@ -1226,7 +1108,6 @@
                             <thead>
 
                             <tr>
-
                                 <th>Date</th>
                                 <th>Time</th>
                                 <th>Admin</th>
@@ -1235,7 +1116,6 @@
                                 <th>Field</th>
                                 <th>Old Value</th>
                                 <th>New Value</th>
-
                             </tr>
 
                             </thead>
@@ -1291,13 +1171,21 @@
 
         <div class="info-box">
 
-            Employee ID is generated automatically by the database.
+            <strong>Employee Code is generated automatically.</strong>
+            <br>
+
+            You do not need to enter Employee ID or Employee Code manually.
+
+            <br>
+
             Salary is managed separately from this form.
 
         </div>
 
 
         <div class="form-grid">
+
+            <!-- AUTO GENERATED EMPLOYEE CODE -->
 
             <div class="form-group">
 
@@ -1307,10 +1195,14 @@
 
                 <input type="text"
                        id="employeeCode"
-                       placeholder="EMP001">
+                       class="readonly"
+                       placeholder="Auto-generated"
+                       readonly>
 
             </div>
 
+
+            <!-- EMPLOYEE NAME -->
 
             <div class="form-group">
 
@@ -1325,6 +1217,8 @@
             </div>
 
 
+            <!-- EMAIL -->
+
             <div class="form-group">
 
                 <label>
@@ -1337,6 +1231,8 @@
 
             </div>
 
+
+            <!-- CONTACT -->
 
             <div class="form-group">
 
@@ -1351,18 +1247,50 @@
             </div>
 
 
+            <!-- ROLE -->
+
             <div class="form-group">
 
                 <label>
                     Role
                 </label>
 
-                <input type="text"
-                       id="employeeRole"
-                       placeholder="Developer">
+                <select id="employeeRole">
+
+                    <option value="">
+                        Select Role
+                    </option>
+
+                    <option value="EMPLOYEE">
+                        EMPLOYEE
+                    </option>
+
+                    <option value="DEVELOPER">
+                        DEVELOPER
+                    </option>
+
+                    <option value="HR">
+                        HR
+                    </option>
+
+                    <option value="TEAM_LEAD">
+                        TEAM_LEAD
+                    </option>
+
+                    <option value="MANAGER">
+                        MANAGER
+                    </option>
+
+                    <option value="ADMIN">
+                        ADMIN
+                    </option>
+
+                </select>
 
             </div>
 
+
+            <!-- JOINING DATE -->
 
             <div class="form-group">
 
@@ -1435,6 +1363,8 @@
         </div>
 
 
+        <!-- AUTOMATIC ADMIN EMAIL -->
+
         <div class="form-group">
 
             <label>
@@ -1451,6 +1381,8 @@
 
         <br>
 
+
+        <!-- ONLY PASSWORD MANUAL -->
 
         <div class="form-group">
 
@@ -1690,6 +1622,10 @@
 
     let pendingAction = null;
 
+    let pendingEmployeeData = null;
+
+    let pendingLeaveData = null;
+
 
     /* =====================================================
        PAGE LOAD
@@ -1722,6 +1658,7 @@
         const adminName =
             localStorage.getItem("adminName");
 
+
         if (adminName) {
 
             document.getElementById(
@@ -1729,6 +1666,7 @@
             ).textContent = adminName;
 
         }
+
 
         if (adminEmail) {
 
@@ -1755,6 +1693,7 @@
             "reportYear"
         ];
 
+
         yearSelectors.forEach(function (id) {
 
             const select =
@@ -1762,7 +1701,9 @@
 
             if (!select) return;
 
+
             select.innerHTML = "";
+
 
             for (
                 let year = currentYear - 2;
@@ -1774,11 +1715,14 @@
                     document.createElement("option");
 
                 option.value = year;
+
                 option.textContent = year;
+
 
                 if (year === currentYear) {
                     option.selected = true;
                 }
+
 
                 select.appendChild(option);
 
@@ -1790,15 +1734,18 @@
         const currentMonth =
             new Date().getMonth() + 1;
 
+
         const salaryMonth =
             document.getElementById("salaryMonth");
 
         const reportMonth =
             document.getElementById("reportMonth");
 
+
         if (salaryMonth) {
             salaryMonth.value = currentMonth;
         }
+
 
         if (reportMonth) {
             reportMonth.value = currentMonth;
@@ -1823,6 +1770,7 @@
 
         const section =
             document.getElementById(sectionId);
+
 
         if (section) {
             section.classList.add("active");
@@ -1867,7 +1815,6 @@
         if (sectionId === "salary") {
 
             loadEmployees();
-
             calculateSalary();
 
         }
@@ -1945,6 +1892,7 @@
                 "employeeTableBody"
             );
 
+
         if (!tbody) return;
 
 
@@ -1959,6 +1907,7 @@
             `;
 
             return;
+
         }
 
 
@@ -2200,21 +2149,26 @@
             "employeeCode"
         ).value = "";
 
+
         document.getElementById(
             "employeeName"
         ).value = "";
+
 
         document.getElementById(
             "employeeEmail"
         ).value = "";
 
+
         document.getElementById(
             "employeeContact"
         ).value = "";
 
+
         document.getElementById(
             "employeeRole"
         ).value = "";
+
 
         document.getElementById(
             "employeeJoiningDate"
@@ -2233,6 +2187,7 @@
             "employeeModal"
         ).classList.remove("show");
 
+
         currentEmployeeAction = null;
 
         editingEmployeeId = null;
@@ -2242,15 +2197,10 @@
 
     /* =====================================================
        SAVE EMPLOYEE
+       EMPLOYEE CODE IS AUTO-GENERATED BY BACKEND
     ===================================================== */
 
     async function saveEmployee() {
-
-        const employeeCode =
-            document.getElementById(
-                "employeeCode"
-            ).value.trim();
-
 
         const name =
             document.getElementById(
@@ -2282,8 +2232,12 @@
             ).value;
 
 
+        /*
+         * Employee Code is intentionally NOT required.
+         * Backend generates it automatically for ADD.
+         */
+
         if (
-            !employeeCode ||
             !name ||
             !email ||
             !role ||
@@ -2300,8 +2254,6 @@
 
 
         const employeeData = {
-
-            employeeCode: employeeCode,
 
             name: name,
 
@@ -2337,9 +2289,6 @@
         openPasswordModal();
 
     }
-
-
-    let pendingEmployeeData = null;
 
 
     /* =====================================================
@@ -2401,11 +2350,20 @@
             );
 
 
+        /*
+         * Logged-in admin email is automatically loaded.
+         * Admin does NOT need to type the email.
+         */
+
         document.getElementById(
             "verifyAdminEmail"
         ).value =
             adminEmail || "";
 
+
+        /*
+         * Only password is manually entered.
+         */
 
         document.getElementById(
             "verifyAdminPassword"
@@ -2544,10 +2502,16 @@
             pendingAction === "EDIT"
         ) {
 
-            const requestBody = {
+            /*
+             * IMPORTANT:
+             * Employee Code is NOT sent from frontend.
+             *
+             * Backend AdminEmployeeController
+             * automatically generates Employee Code
+             * during ADD.
+             */
 
-                employeeCode:
-                    pendingEmployeeData.employeeCode,
+            const requestBody = {
 
                 name:
                     pendingEmployeeData.name,
@@ -2625,6 +2589,10 @@
                 }
 
 
+                const action =
+                    pendingAction;
+
+
                 closePasswordModal();
 
                 await loadEmployees();
@@ -2633,7 +2601,7 @@
 
                 showMessage(
                     "employeeMessage",
-                    pendingAction === "ADD"
+                    action === "ADD"
                         ? "Employee added successfully."
                         : "Employee updated successfully.",
                     "success"
@@ -2881,6 +2849,7 @@
 
                 await loadHistory();
 
+
                 let message =
                     "Excel import completed. " +
                     "Imported: " +
@@ -2896,6 +2865,7 @@
 
                     message +=
                         " | Some rows were skipped.";
+
 
                     console.warn(
                         "Excel import errors:",
@@ -3272,10 +3242,6 @@
     }
 
 
-    /* =====================================================
-       FILE SELECTED
-    ===================================================== */
-
     function handleExcelFileSelected() {
 
         const input =
@@ -3291,10 +3257,12 @@
 
             pendingImportFile = null;
 
+
             document.getElementById(
                 "selectedFileName"
             ).textContent =
                 "No file selected";
+
 
             return;
 
@@ -3318,6 +3286,7 @@
                 "Please select an Excel file (.xlsx or .xls)."
             );
 
+
             input.value = "";
 
             pendingImportFile = null;
@@ -3337,10 +3306,6 @@
 
     }
 
-
-    /* =====================================================
-       START EXCEL IMPORT
-    ===================================================== */
 
     function startExcelImport() {
 
@@ -3363,10 +3328,6 @@
 
     }
 
-
-    /* =====================================================
-       CLOSE EXCEL MODAL
-    ===================================================== */
 
     function closeExcelImportModal() {
 
@@ -3574,6 +3535,7 @@
                             :
 
                             "-"
+
                         }
 
                     </td>
@@ -3625,9 +3587,6 @@
         openPasswordModal();
 
     }
-
-
-    let pendingLeaveData = null;
 
 
     /* =====================================================
@@ -3761,59 +3720,51 @@
 
                     <td>
                         ${escapeHtml(
-                            item.employeeId ??
-                            "-"
+                            item.employeeId ?? "-"
                         )}
                     </td>
 
                     <td>
                         ${escapeHtml(
-                            item.employeeCode ??
-                            "-"
+                            item.employeeCode ?? "-"
                         )}
                     </td>
 
                     <td>
                         <strong>
                             ${escapeHtml(
-                                item.employeeName ??
-                                "-"
+                                item.employeeName ?? "-"
                             )}
                         </strong>
                     </td>
 
                     <td>
                         ${escapeHtml(
-                            item.presentDays ??
-                            0
+                            item.presentDays ?? 0
                         )}
                     </td>
 
                     <td>
                         ${escapeHtml(
-                            item.absentDays ??
-                            0
+                            item.absentDays ?? 0
                         )}
                     </td>
 
                     <td>
                         ${escapeHtml(
-                            item.leaveDays ??
-                            0
+                            item.leaveDays ?? 0
                         )}
                     </td>
 
                     <td>
                         ${escapeHtml(
-                            item.permissionDays ??
-                            0
+                            item.permissionDays ?? 0
                         )}
                     </td>
 
                     <td>
                         ${escapeHtml(
-                            item.workingDays ??
-                            0
+                            item.workingDays ?? 0
                         )}
                     </td>
 
@@ -4055,9 +4006,7 @@
 
 
             if (!response.ok) {
-
                 return;
-
             }
 
 
@@ -4475,18 +4424,8 @@
 
 
     /* =====================================================
-       PASSWORD MODAL OVERRIDE
-       HANDLE LEAVE ACTIONS
+       LEAVE ACTION
     ===================================================== */
-
-    const originalConfirmAdminAction =
-        confirmAdminAction;
-
-
-    /*
-       Leave approval/rejection needs to be
-       handled before the normal employee logic.
-    */
 
     async function processLeaveAction() {
 
@@ -4585,10 +4524,9 @@
     }
 
 
-    /*
-       Wrap confirmAdminAction so leave actions
-       are handled correctly.
-    */
+    /* =====================================================
+       CONFIRM ACTION WRAPPER
+    ===================================================== */
 
     const employeeConfirmFunction =
         confirmAdminAction;
