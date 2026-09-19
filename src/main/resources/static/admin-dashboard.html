@@ -1,1289 +1,1034 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Growbytee - Admin Dashboard</title>
 
-    <title>GROWBYTEE - Admin Dashboard</title>
+<style>
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+    }
 
-    <style>
+    body {
+        background: #f4f6f9;
+        color: #222;
+    }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, Helvetica, sans-serif;
+    .header {
+        background: #1f2937;
+        color: white;
+        padding: 18px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .header h1 {
+        font-size: 24px;
+    }
+
+    .logout-btn {
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .logout-btn:hover {
+        background: #b02a37;
+    }
+
+    .summary {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        padding: 25px 30px;
+    }
+
+    .card {
+        background: white;
+        padding: 25px;
+        border-radius: 10px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    .card h3 {
+        color: #666;
+        margin-bottom: 10px;
+    }
+
+    .card h2 {
+        font-size: 28px;
+    }
+
+    .attendance-summary {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .attendance-card {
+        background: white;
+        padding: 18px;
+        border-radius: 10px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    .attendance-card h4 {
+        color: #666;
+        margin-bottom: 8px;
+    }
+
+    .attendance-card h3 {
+        font-size: 25px;
+    }
+
+    .attendance-tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .attendance-tab {
+        border: none;
+        padding: 10px 16px;
+        border-radius: 6px;
+        background: #6b7280;
+        color: white;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .attendance-tab.active {
+        background: #2563eb;
+    }
+
+    .attendance-tab:hover {
+        background: #1d4ed8;
+    }
+
+    .main {
+        display: flex;
+        min-height: calc(100vh - 160px);
+    }
+
+    .sidebar {
+        width: 230px;
+        background: #111827;
+        padding: 20px 10px;
+    }
+
+    .menu-btn {
+        width: 100%;
+        padding: 14px;
+        margin-bottom: 10px;
+        border: none;
+        border-radius: 6px;
+        background: #374151;
+        color: white;
+        cursor: pointer;
+        text-align: left;
+        font-size: 15px;
+    }
+
+    .menu-btn:hover {
+        background: #4b5563;
+    }
+
+    .menu-btn.active {
+        background: #2563eb;
+    }
+
+    .content {
+        flex: 1;
+        padding: 30px;
+        overflow-x: auto;
+    }
+
+    .section {
+        display: none;
+    }
+
+    .section.active {
+        display: block;
+    }
+
+    .section h2 {
+        margin-bottom: 20px;
+    }
+
+    .top-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .top-actions h2 {
+        margin-bottom: 0;
+    }
+
+    .primary-btn,
+    .secondary-btn,
+    .calculate-btn {
+        color: white;
+        border: none;
+        padding: 10px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    .primary-btn,
+    .calculate-btn {
+        background: #2563eb;
+    }
+
+    .primary-btn:hover,
+    .calculate-btn:hover {
+        background: #1d4ed8;
+    }
+
+    .secondary-btn {
+        background: #6b7280;
+    }
+
+    .table-container {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 850px;
+    }
+
+    th {
+        background: #1f2937;
+        color: white;
+        padding: 12px;
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    td {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+        white-space: nowrap;
+    }
+
+    tr:hover {
+        background: #f8f9fa;
+    }
+
+    .edit-btn,
+    .delete-btn,
+    .approve-btn,
+    .reject-btn {
+        color: white;
+        border: none;
+        padding: 7px 12px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+    .edit-btn {
+        background: #0d6efd;
+        margin-right: 5px;
+    }
+
+    .delete-btn,
+    .reject-btn {
+        background: #dc3545;
+    }
+
+    .approve-btn {
+        background: #198754;
+        margin-right: 5px;
+    }
+
+    .edit-btn:hover {
+        background: #0b5ed7;
+    }
+
+    .delete-btn:hover,
+    .reject-btn:hover {
+        background: #b02a37;
+    }
+
+    .approve-btn:hover {
+        background: #146c43;
+    }
+
+    .approved {
+        color: #198754;
+        font-weight: bold;
+    }
+
+    .rejected {
+        color: #dc3545;
+        font-weight: bold;
+    }
+
+    .pending {
+        color: #d97706;
+        font-weight: bold;
+    }
+
+    .salary-value {
+        font-weight: bold;
+        font-size: 16px;
+    }
+
+    .message {
+        display: none;
+        padding: 14px 18px;
+        margin-bottom: 15px;
+        border-radius: 6px;
+        font-weight: bold;
+    }
+
+    .message.show {
+        display: block;
+    }
+
+    .message.success {
+        background: #d1e7dd;
+        color: #0f5132;
+    }
+
+    .message.error {
+        background: #f8d7da;
+        color: #842029;
+    }
+
+    .empty-message {
+        padding: 30px;
+        text-align: center;
+        color: #666;
+    }
+
+    .salary-controls {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .salary-controls label {
+        font-weight: bold;
+    }
+
+    .salary-controls select,
+    .salary-controls input {
+        padding: 10px 14px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 15px;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.55);
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .modal.show {
+        display: flex;
+    }
+
+    .modal-content {
+        background: white;
+        width: 100%;
+        max-width: 550px;
+        max-height: 90vh;
+        overflow-y: auto;
+        border-radius: 10px;
+        padding: 25px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .modal-header h3 {
+        font-size: 21px;
+    }
+
+    .close-btn {
+        background: transparent;
+        border: none;
+        font-size: 26px;
+        cursor: pointer;
+        color: #555;
+    }
+
+    .form-group {
+        margin-bottom: 16px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 7px;
+        font-weight: bold;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        padding: 11px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 15px;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: #2563eb;
+    }
+
+    .form-group input.readonly {
+        background: #f1f3f5;
+        color: #555;
+        cursor: not-allowed;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .save-btn {
+        background: #198754;
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    .cancel-btn {
+        background: #6c757d;
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+    .info-box {
+        background: #e7f1ff;
+        color: #084298;
+        padding: 12px 15px;
+        border-radius: 6px;
+        margin-bottom: 18px;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .warning-box {
+        background: #fff3cd;
+        color: #664d03;
+        padding: 12px 15px;
+        border-radius: 6px;
+        margin-bottom: 18px;
+        font-size: 14px;
+    }
+
+    .import-box {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    @media (max-width: 900px) {
+        .summary {
+            grid-template-columns: repeat(2, 1fr);
         }
 
-        body {
-            background: #f4f7fb;
-            color: #1f2937;
+        .attendance-summary {
+            grid-template-columns: 1fr;
         }
 
-        /* =========================
-           LAYOUT
-        ========================= */
-
-        .container {
-            display: flex;
-            min-height: 100vh;
+        .main {
+            flex-direction: column;
         }
-
-        /* =========================
-           SIDEBAR
-        ========================= */
 
         .sidebar {
-            width: 250px;
-            background: linear-gradient(180deg, #111827, #1e3a8a);
-            color: white;
-            position: fixed;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            padding: 25px 15px;
-            overflow-y: auto;
-        }
-
-        .logo {
-            text-align: center;
-            font-size: 25px;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-
-        .admin-title {
-            text-align: center;
-            color: #cbd5e1;
-            font-size: 13px;
-            margin-bottom: 30px;
-        }
-
-        .menu {
+            width: 100%;
             display: flex;
-            flex-direction: column;
+            overflow-x: auto;
             gap: 8px;
         }
 
-        .menu button {
-            border: none;
-            background: transparent;
-            color: #e5e7eb;
-            text-align: left;
-            padding: 14px 15px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 15px;
-            transition: 0.2s;
-        }
-
-        .menu button:hover,
-        .menu button.active {
-            background: rgba(255, 255, 255, 0.15);
-            color: white;
-        }
-
-        .logout-btn {
-            margin-top: 25px;
-            background: #dc2626 !important;
-            color: white !important;
-            text-align: center !important;
-        }
-
-        .logout-btn:hover {
-            background: #b91c1c !important;
-        }
-
-        /* =========================
-           MAIN
-        ========================= */
-
-        .main {
-            margin-left: 250px;
-            width: calc(100% - 250px);
-            min-height: 100vh;
-        }
-
-        .header {
-            height: 75px;
-            background: white;
-            border-bottom: 1px solid #e5e7eb;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 30px;
-            position: sticky;
-            top: 0;
-            z-index: 20;
-        }
-
-        .header h1 {
-            font-size: 23px;
-            color: #111827;
-        }
-
-        .admin-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #475569;
-            font-size: 14px;
-        }
-
-        .admin-badge {
-            background: #2563eb;
-            color: white;
-            padding: 8px 13px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
+        .menu-btn {
+            min-width: 160px;
+            margin-bottom: 0;
         }
 
         .content {
-            padding: 30px;
-        }
-
-        /* =========================
-           SECTIONS
-        ========================= */
-
-        .section {
-            display: none;
-        }
-
-        .section.active {
-            display: block;
-        }
-
-        .section-title {
-            font-size: 25px;
-            margin-bottom: 8px;
-            color: #111827;
-        }
-
-        .section-subtitle {
-            color: #64748b;
-            margin-bottom: 25px;
-            font-size: 14px;
-        }
-
-        /* =========================
-           DASHBOARD CARDS
-        ========================= */
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 23px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(15, 23, 42, 0.07);
-            border: 1px solid #e5e7eb;
-        }
-
-        .stat-card h4 {
-            color: #64748b;
-            font-size: 14px;
-            margin-bottom: 12px;
-        }
-
-        .stat-card h2 {
-            font-size: 30px;
-            color: #111827;
-        }
-
-        .stat-blue {
-            border-left: 5px solid #2563eb;
-        }
-
-        .stat-green {
-            border-left: 5px solid #16a34a;
-        }
-
-        .stat-orange {
-            border-left: 5px solid #f97316;
-        }
-
-        .stat-red {
-            border-left: 5px solid #dc2626;
-        }
-
-        /* =========================
-           TOP BAR
-        ========================= */
-
-        .top-bar {
-            background: white;
-            padding: 18px;
-            border-radius: 13px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
-        }
-
-        .top-bar-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .top-bar-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* =========================
-           BUTTONS
-        ========================= */
-
-        .btn {
-            border: none;
-            border-radius: 8px;
-            padding: 10px 16px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: 0.2s;
-        }
-
-        .btn-primary {
-            background: #2563eb;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #1d4ed8;
-        }
-
-        .btn-success {
-            background: #16a34a;
-            color: white;
-        }
-
-        .btn-success:hover {
-            background: #15803d;
-        }
-
-        .btn-danger {
-            background: #dc2626;
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #b91c1c;
-        }
-
-        .btn-warning {
-            background: #f59e0b;
-            color: white;
-        }
-
-        .btn-warning:hover {
-            background: #d97706;
-        }
-
-        .btn-secondary {
-            background: #64748b;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #475569;
-        }
-
-        .btn-small {
-            padding: 7px 11px;
-            font-size: 12px;
-        }
-
-        /* =========================
-           TABLE
-        ========================= */
-
-        .table-card {
-            background: white;
-            border-radius: 14px;
-            box-shadow: 0 5px 20px rgba(15, 23, 42, 0.06);
-            overflow: hidden;
-            border: 1px solid #e5e7eb;
-        }
-
-        .table-wrapper {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 900px;
-        }
-
-        th {
-            background: #eff6ff;
-            color: #1e3a8a;
-            font-size: 13px;
-            text-align: left;
-            padding: 14px;
-            white-space: nowrap;
-        }
-
-        td {
-            padding: 13px 14px;
-            border-top: 1px solid #e5e7eb;
-            font-size: 13px;
-            white-space: nowrap;
-        }
-
-        tr:hover td {
-            background: #f8fafc;
-        }
-
-        .empty-row {
-            text-align: center;
-            color: #64748b;
-            padding: 30px;
-        }
-
-        /* =========================
-           BADGES
-        ========================= */
-
-        .badge {
-            display: inline-block;
-            padding: 5px 9px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: bold;
-        }
-
-        .badge-green {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .badge-blue {
-            background: #dbeafe;
-            color: #1e40af;
-        }
-
-        .badge-orange {
-            background: #ffedd5;
-            color: #9a3412;
-        }
-
-        .badge-red {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .badge-gray {
-            background: #e5e7eb;
-            color: #374151;
-        }
-
-        /* =========================
-           FORM
-        ========================= */
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 17px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 7px;
-        }
-
-        .form-group.full {
-            grid-column: 1 / -1;
-        }
-
-        .form-group label {
-            font-size: 13px;
-            font-weight: 600;
-            color: #374151;
-        }
-
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 11px 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            outline: none;
-            font-size: 14px;
-            background: white;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-
-        .readonly {
-            background: #f1f5f9 !important;
-            cursor: not-allowed;
-        }
-
-        /* =========================
-           MODAL
-        ========================= */
-
-        .modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.65);
-            z-index: 100;
-            align-items: center;
-            justify-content: center;
             padding: 20px;
         }
+    }
 
-        .modal.show {
-            display: flex;
+    @media (max-width: 600px) {
+        .header {
+            padding: 15px;
         }
 
-        .modal-box {
-            width: 100%;
-            max-width: 650px;
-            background: white;
-            border-radius: 16px;
-            padding: 25px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
-        }
-
-        .modal-box.small {
-            max-width: 450px;
-        }
-
-        .modal-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 22px;
-        }
-
-        .modal-header h2 {
-            font-size: 20px;
-            color: #111827;
-        }
-
-        .close-btn {
-            border: none;
-            background: #f1f5f9;
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            cursor: pointer;
+        .header h1 {
             font-size: 18px;
         }
 
-        .close-btn:hover {
-            background: #e2e8f0;
+        .summary {
+            grid-template-columns: 1fr;
+            padding: 15px;
         }
 
-        .modal-footer {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 25px;
+        .content {
+            padding: 15px;
         }
 
-        /* =========================
-           INFO BOX
-        ========================= */
-
-        .info-box {
-            background: #eff6ff;
-            border: 1px solid #bfdbfe;
-            color: #1e40af;
-            border-radius: 10px;
-            padding: 13px 15px;
-            font-size: 13px;
-            line-height: 1.6;
-            margin-bottom: 18px;
+        .salary-controls {
+            align-items: stretch;
+            flex-direction: column;
         }
 
-        .warning-box {
-            background: #fff7ed;
-            border: 1px solid #fed7aa;
-            color: #9a3412;
-            border-radius: 10px;
-            padding: 13px 15px;
-            font-size: 13px;
-            line-height: 1.6;
-            margin-bottom: 18px;
+        .salary-controls select,
+        .salary-controls input,
+        .calculate-btn {
+            width: 100%;
         }
+    }
+</style>
 
-        /* =========================
-           FILE
-        ========================= */
-
-        .file-box {
-            border: 2px dashed #94a3b8;
-            padding: 25px;
-            text-align: center;
-            border-radius: 12px;
-            background: #f8fafc;
-        }
-
-        .file-box:hover {
-            border-color: #2563eb;
-        }
-
-        .file-box input {
-            margin-top: 15px;
-        }
-
-        .file-name {
-            margin-top: 12px;
-            font-size: 13px;
-            color: #2563eb;
-            font-weight: 600;
-            word-break: break-word;
-        }
-
-        /* =========================
-           MESSAGE
-        ========================= */
-
-        .message {
-            display: none;
-            margin-bottom: 18px;
-            padding: 12px 15px;
-            border-radius: 9px;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .message.show {
-            display: block;
-        }
-
-        .message.success {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .message.error {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        /* =========================
-           FILTER
-        ========================= */
-
-        .filter-box {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .filter-box input,
-        .filter-box select {
-            padding: 10px 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            outline: none;
-        }
-
-        /* =========================
-           SALARY
-        ========================= */
-
-        .salary-summary {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .salary-box {
-            background: white;
-            border: 1px solid #e5e7eb;
-            padding: 18px;
-            border-radius: 12px;
-        }
-
-        .salary-box span {
-            display: block;
-            color: #64748b;
-            font-size: 12px;
-            margin-bottom: 7px;
-        }
-
-        .salary-box strong {
-            font-size: 20px;
-        }
-
-        /* =========================
-           RESPONSIVE
-        ========================= */
-
-        @media (max-width: 1100px) {
-
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .salary-summary {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 800px) {
-
-            .sidebar {
-                width: 210px;
-            }
-
-            .main {
-                margin-left: 210px;
-                width: calc(100% - 210px);
-            }
-
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .header {
-                padding: 0 15px;
-            }
-
-            .content {
-                padding: 20px 15px;
-            }
-        }
-
-        @media (max-width: 600px) {
-
-            .sidebar {
-                position: relative;
-                width: 100%;
-                min-height: auto;
-            }
-
-            .container {
-                display: block;
-            }
-
-            .main {
-                margin-left: 0;
-                width: 100%;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .header {
-                position: relative;
-            }
-        }
-
-    </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="header">
 
-    <!-- =========================
-         SIDEBAR
-    ========================= -->
+    <h1>Growbytee Admin Management Panel</h1>
 
-    <aside class="sidebar">
-
-        <div class="logo">
-            GROWBYTEE
-        </div>
-
-        <div class="admin-title">
-            Admin / CEO Dashboard
-        </div>
-
-        <div class="menu">
-
-            <button class="menu-btn active"
-                    onclick="showSection('dashboard', this)">
-                📊 Dashboard
-            </button>
-
-            <button class="menu-btn"
-                    onclick="showSection('employees', this)">
-                👨‍💼 Employees
-            </button>
-
-            <button class="menu-btn"
-                    onclick="showSection('leave', this)">
-                📝 Leave
-            </button>
-
-            <button class="menu-btn"
-                    onclick="showSection('salary', this)">
-                💰 Salary
-            </button>
-
-            <button class="menu-btn"
-                    onclick="showSection('monthly', this)">
-                📅 Monthly Report
-            </button>
-
-            <button class="menu-btn"
-                    onclick="showSection('history', this)">
-                🕘 History
-            </button>
-
-            <button class="menu-btn logout-btn"
-                    onclick="logout()">
-                🚪 Logout
-            </button>
-
-        </div>
-
-    </aside>
-
-
-    <!-- =========================
-         MAIN
-    ========================= -->
-
-    <main class="main">
-
-        <header class="header">
-
-            <h1>
-                GROWBYTEE - Admin Dashboard
-            </h1>
-
-            <div class="admin-info">
-
-                <span id="loggedAdminName">
-                    ADMIN
-                </span>
-
-                <span class="admin-badge">
-                    ADMIN
-                </span>
-
-            </div>
-
-        </header>
-
-
-        <div class="content">
-
-            <!-- =========================
-                 DASHBOARD
-            ========================= -->
-
-            <section id="dashboard"
-                     class="section active">
-
-                <h2 class="section-title">
-                    Dashboard
-                </h2>
-
-                <p class="section-subtitle">
-                    Employee and attendance management overview
-                </p>
-
-                <div id="dashboardMessage"
-                     class="message">
-                </div>
-
-                <div class="stats-grid">
-
-                    <div class="stat-card stat-blue">
-                        <h4>Total Employees</h4>
-                        <h2 id="totalEmployees">
-                            0
-                        </h2>
-                    </div>
-
-                    <div class="stat-card stat-green">
-                        <h4>Present Today</h4>
-                        <h2 id="presentToday">
-                            0
-                        </h2>
-                    </div>
-
-                    <div class="stat-card stat-orange">
-                        <h4>Pending Leaves</h4>
-                        <h2 id="pendingLeaves">
-                            0
-                        </h2>
-                    </div>
-
-                    <div class="stat-card stat-red">
-                        <h4>Absent Today</h4>
-                        <h2 id="absentToday">
-                            0
-                        </h2>
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- =========================
-                 EMPLOYEES
-            ========================= -->
-
-            <section id="employees"
-                     class="section">
-
-                <h2 class="section-title">
-                    Employee Management
-                </h2>
-
-                <p class="section-subtitle">
-                    Add, edit, import and manage employees
-                </p>
-
-                <div id="employeeMessage"
-                     class="message">
-                </div>
-
-                <div class="top-bar">
-
-                    <div class="top-bar-left">
-
-                        <button class="btn btn-primary"
-                                onclick="openEmployeeModal('ADD')">
-                            + Add Employee
-                        </button>
-
-                        <button class="btn btn-success"
-                                onclick="openExcelImportModal()">
-                            📥 Import Excel
-                        </button>
-
-                    </div>
-
-                    <div class="top-bar-right">
-
-                        <input type="text"
-                               id="employeeSearch"
-                               placeholder="Search employee..."
-                               oninput="filterEmployees()"
-                               style="
-                               padding:10px 12px;
-                               border:1px solid #cbd5e1;
-                               border-radius:8px;
-                               outline:none;
-                               ">
-
-                    </div>
-
-                </div>
-
-
-                <div class="table-card">
-
-                    <div class="table-wrapper">
-
-                        <table>
-
-                            <thead>
-
-                            <tr>
-
-                                <th>ID</th>
-                                <th>Employee Code</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>Role</th>
-                                <th>Salary</th>
-                                <th>Joining Date</th>
-                                <th>Action</th>
-
-                            </tr>
-
-                            </thead>
-
-                            <tbody id="employeeTableBody">
-
-                            <tr>
-                                <td colspan="9"
-                                    class="empty-row">
-                                    Loading employees...
-                                </td>
-                            </tr>
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- =========================
-                 LEAVE
-            ========================= -->
-
-            <section id="leave"
-                     class="section">
-
-                <h2 class="section-title">
-                    Leave Management
-                </h2>
-
-                <p class="section-subtitle">
-                    Review and manage employee leave requests
-                </p>
-
-                <div id="leaveMessage"
-                     class="message">
-                </div>
-
-                <div class="table-card">
-
-                    <div class="table-wrapper">
-
-                        <table>
-
-                            <thead>
-
-                            <tr>
-
-                                <th>ID</th>
-                                <th>Employee</th>
-                                <th>Leave Type</th>
-                                <th>Date</th>
-                                <th>Duration</th>
-                                <th>Reason</th>
-                                <th>Status</th>
-                                <th>Action</th>
-
-                            </tr>
-
-                            </thead>
-
-                            <tbody id="leaveTableBody">
-
-                            <tr>
-                                <td colspan="8"
-                                    class="empty-row">
-                                    Loading leave requests...
-                                </td>
-                            </tr>
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- =========================
-                 SALARY
-            ========================= -->
-
-            <section id="salary"
-                     class="section">
-
-                <h2 class="section-title">
-                    Salary Management
-                </h2>
-
-                <p class="section-subtitle">
-                    Manage employee salary separately from employee creation
-                </p>
-
-                <div id="salaryMessage"
-                     class="message">
-                </div>
-
-                <div class="top-bar">
-
-                    <div class="filter-box">
-
-                        <select id="salaryYear">
-                        </select>
-
-                        <select id="salaryMonth">
-
-                            <option value="1">January</option>
-                            <option value="2">February</option>
-                            <option value="3">March</option>
-                            <option value="4">April</option>
-                            <option value="5">May</option>
-                            <option value="6">June</option>
-                            <option value="7">July</option>
-                            <option value="8">August</option>
-                            <option value="9">September</option>
-                            <option value="10">October</option>
-                            <option value="11">November</option>
-                            <option value="12">December</option>
-
-                        </select>
-
-                    </div>
-
-                    <button class="btn btn-primary"
-                            onclick="calculateSalary()">
-                        Calculate Salary
-                    </button>
-
-                </div>
-
-
-                <div class="table-card">
-
-                    <div class="table-wrapper">
-
-                        <table>
-
-                            <thead>
-
-                            <tr>
-
-                                <th>Employee ID</th>
-                                <th>Employee Code</th>
-                                <th>Name</th>
-                                <th>Monthly Salary</th>
-                                <th>Working Days</th>
-                                <th>Present Days</th>
-                                <th>Leave Days</th>
-                                <th>LOP</th>
-                                <th>Final Salary</th>
-                                <th>Action</th>
-
-                            </tr>
-
-                            </thead>
-
-                            <tbody id="salaryTableBody">
-
-                            <tr>
-                                <td colspan="10"
-                                    class="empty-row">
-                                    Select year/month and calculate salary
-                                </td>
-                            </tr>
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- =========================
-                 MONTHLY REPORT
-            ========================= -->
-
-            <section id="monthly"
-                     class="section">
-
-                <h2 class="section-title">
-                    Monthly Report
-                </h2>
-
-                <p class="section-subtitle">
-                    Employee attendance monthly report
-                </p>
-
-                <div id="monthlyMessage"
-                     class="message">
-                </div>
-
-                <div class="top-bar">
-
-                    <div class="filter-box">
-
-                        <select id="reportYear">
-                        </select>
-
-                        <select id="reportMonth">
-
-                            <option value="1">January</option>
-                            <option value="2">February</option>
-                            <option value="3">March</option>
-                            <option value="4">April</option>
-                            <option value="5">May</option>
-                            <option value="6">June</option>
-                            <option value="7">July</option>
-                            <option value="8">August</option>
-                            <option value="9">September</option>
-                            <option value="10">October</option>
-                            <option value="11">November</option>
-                            <option value="12">December</option>
-
-                        </select>
-
-                    </div>
-
-                    <button class="btn btn-primary"
-                            onclick="loadMonthlyReport()">
-                        Generate Report
-                    </button>
-
-                </div>
-
-
-                <div class="table-card">
-
-                    <div class="table-wrapper">
-
-                        <table>
-
-                            <thead>
-
-                            <tr>
-
-                                <th>Employee ID</th>
-                                <th>Employee Code</th>
-                                <th>Name</th>
-                                <th>Present</th>
-                                <th>Absent</th>
-                                <th>Leave</th>
-                                <th>Permission</th>
-                                <th>Working Days</th>
-
-                            </tr>
-
-                            </thead>
-
-                            <tbody id="monthlyTableBody">
-
-                            <tr>
-                                <td colspan="8"
-                                    class="empty-row">
-                                    Generate monthly report
-                                </td>
-                            </tr>
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- =========================
-                 HISTORY
-            ========================= -->
-
-            <section id="history"
-                     class="section">
-
-                <h2 class="section-title">
-                    Admin Action History
-                </h2>
-
-                <p class="section-subtitle">
-                    Common audit history visible to all administrators
-                </p>
-
-                <div id="historyMessage"
-                     class="message">
-                </div>
-
-                <div class="table-card">
-
-                    <div class="table-wrapper">
-
-                        <table>
-
-                            <thead>
-
-                            <tr>
-
-                                <th>Date</th>
-                                <th>Time</th>
-                                <th>Admin</th>
-                                <th>Action</th>
-                                <th>Employee</th>
-                                <th>Field</th>
-                                <th>Old Value</th>
-                                <th>New Value</th>
-
-                            </tr>
-
-                            </thead>
-
-                            <tbody id="historyTableBody">
-
-                            <tr>
-                                <td colspan="8"
-                                    class="empty-row">
-                                    Loading history...
-                                </td>
-                            </tr>
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-        </div>
-
-    </main>
+    <button class="logout-btn" onclick="logout()">
+        Logout
+    </button>
 
 </div>
 
 
-<!-- =====================================================
-     EMPLOYEE ADD / EDIT MODAL
-===================================================== -->
+<div class="summary">
+
+    <div class="card">
+        <h3>Employees</h3>
+        <h2 id="employeeCount">0</h2>
+    </div>
+
+    <div class="card">
+        <h3>Total Attendance</h3>
+        <h2 id="attendanceCount">0</h2>
+    </div>
+
+    <div class="card">
+        <h3>Leave Requests</h3>
+        <h2 id="leaveCount">0</h2>
+    </div>
+
+    <div class="card">
+        <h3>Admin</h3>
+        <h2 id="adminNameCard">Admin</h2>
+    </div>
+
+</div>
+
+
+<div class="main">
+
+    <div class="sidebar">
+
+        <button class="menu-btn active"
+                id="employeeBtn"
+                onclick="showEmployees()">
+            👨‍💼 Employees
+        </button>
+
+        <button class="menu-btn"
+                id="attendanceBtn"
+                onclick="showAttendance()">
+            📋 Attendance
+        </button>
+
+        <button class="menu-btn"
+                id="leaveBtn"
+                onclick="showLeaves()">
+            📝 Leave Requests
+        </button>
+
+        <button class="menu-btn"
+                id="salaryBtn"
+                onclick="showSalary()">
+            💰 Salary
+        </button>
+
+        <button class="menu-btn"
+                id="monthlyBtn"
+                onclick="showMonthlyReport()">
+            📊 Monthly Report
+        </button>
+
+        <button class="menu-btn"
+                id="historyBtn"
+                onclick="showHistory()">
+            🕒 History
+        </button>
+
+    </div>
+
+
+    <div class="content">
+
+        <!-- EMPLOYEES -->
+
+        <section id="employeesSection"
+                 class="section active">
+
+            <div class="top-actions">
+
+                <h2>Employee Management</h2>
+
+                <div>
+
+                    <button class="primary-btn"
+                            onclick="openEmployeeModal('ADD')">
+                        + Add Employee
+                    </button>
+
+                    <button class="secondary-btn"
+                            onclick="document.getElementById('excelFile').click()">
+                        Import Excel
+                    </button>
+
+                    <input type="file"
+                           id="excelFile"
+                           accept=".xlsx,.xls,.csv"
+                           style="display:none"
+                           onchange="prepareExcelImport(this)">
+
+                </div>
+
+            </div>
+
+
+            <div id="employeeMessage"
+                 class="message">
+            </div>
+
+
+            <div class="import-box">
+
+                <strong>Excel Import</strong>
+
+                <p style="margin-top:8px;color:#666;">
+                    Required columns:
+                    Name, Email, Contact Number,
+                    Role, Joining Date.
+                    Employee ID and Employee Code are generated automatically.
+                </p>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                    <tr>
+                        <th>ID</th>
+                        <th>Employee Code</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Role</th>
+                        <th>Salary</th>
+                        <th>Joining Date</th>
+                        <th>Action</th>
+                    </tr>
+
+                    </thead>
+
+                    <tbody id="employeeTableBody"></tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- ATTENDANCE -->
+
+        <section id="attendanceSection"
+                 class="section">
+
+            <div class="top-actions">
+
+                <h2>Attendance Management</h2>
+
+                <button class="secondary-btn"
+                        onclick="loadAttendance()">
+                    Refresh
+                </button>
+
+            </div>
+
+
+            <div id="attendanceMessage"
+                 class="message">
+            </div>
+
+
+            <div class="attendance-summary">
+
+                <div class="attendance-card">
+                    <h4>Total Attendance Records</h4>
+                    <h3 id="totalAttendanceCard">0</h3>
+                </div>
+
+                <div class="attendance-card">
+                    <h4>Today's Present</h4>
+                    <h3 id="todayPresentCard">0</h3>
+                </div>
+
+                <div class="attendance-card">
+                    <h4>Today's Attendance Records</h4>
+                    <h3 id="todayAttendanceCard">0</h3>
+                </div>
+
+            </div>
+
+
+            <div class="attendance-tabs">
+
+                <button id="totalAttendanceTab"
+                        class="attendance-tab active"
+                        onclick="showTotalAttendance()">
+                    Total Attendance
+                </button>
+
+                <button id="todayAttendanceTab"
+                        class="attendance-tab"
+                        onclick="showTodayAttendance()">
+                    Today's Attendance
+                </button>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                    <tr>
+                        <th>Employee ID</th>
+                        <th>Employee Code</th>
+                        <th>Name</th>
+                        <th>Date</th>
+                        <th>Check In</th>
+                        <th>Check Out</th>
+                        <th>Status</th>
+                    </tr>
+
+                    </thead>
+
+                    <tbody id="attendanceTableBody"></tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- LEAVES -->
+
+        <section id="leavesSection"
+                 class="section">
+
+            <h2>Leave Requests</h2>
+
+            <div id="leaveMessage"
+                 class="message">
+            </div>
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                    <tr>
+                        <th>ID</th>
+                        <th>Employee</th>
+                        <th>Leave Date</th>
+                        <th>Type</th>
+                        <th>Duration</th>
+                        <th>Reason</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+
+                    </thead>
+
+                    <tbody id="leaveTableBody"></tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- SALARY -->
+
+        <section id="salarySection"
+                 class="section">
+
+            <h2>Salary Management</h2>
+
+            <div class="salary-controls">
+
+                <label>Year</label>
+
+                <select id="salaryYear"></select>
+
+                <label>Month</label>
+
+                <select id="salaryMonth">
+
+                    <option value="1">January</option>
+                    <option value="2">February</option>
+                    <option value="3">March</option>
+                    <option value="4">April</option>
+                    <option value="5">May</option>
+                    <option value="6">June</option>
+                    <option value="7">July</option>
+                    <option value="8">August</option>
+                    <option value="9">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+
+                </select>
+
+                <button class="calculate-btn"
+                        onclick="calculateSalary()">
+                    Calculate Salary
+                </button>
+
+            </div>
+
+
+            <div id="salaryMessage"
+                 class="message">
+            </div>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                    <tr>
+                        <th>Employee ID</th>
+                        <th>Employee Code</th>
+                        <th>Name</th>
+                        <th>Role</th>
+                        <th>Salary</th>
+                        <th>Action</th>
+                    </tr>
+
+                    </thead>
+
+                    <tbody id="salaryTableBody"></tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- MONTHLY REPORT -->
+
+        <section id="monthlyReportSection"
+                 class="section">
+
+            <h2>Monthly Report</h2>
+
+            <div class="salary-controls">
+
+                <label>Year</label>
+
+                <select id="reportYear"></select>
+
+                <label>Month</label>
+
+                <select id="reportMonth">
+
+                    <option value="1">January</option>
+                    <option value="2">February</option>
+                    <option value="3">March</option>
+                    <option value="4">April</option>
+                    <option value="5">May</option>
+                    <option value="6">June</option>
+                    <option value="7">July</option>
+                    <option value="8">August</option>
+                    <option value="9">September</option>
+                    <option value="10">October</option>
+                    <option value="11">November</option>
+                    <option value="12">December</option>
+
+                </select>
+
+                <button class="calculate-btn"
+                        onclick="loadMonthlyReport()">
+                    Load Report
+                </button>
+
+            </div>
+
+
+            <div id="monthlyMessage"
+                 class="message">
+            </div>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                    <tr>
+                        <th>Employee ID</th>
+                        <th>Employee Code</th>
+                        <th>Name</th>
+                        <th>Present</th>
+                        <th>Absent</th>
+                        <th>Leave</th>
+                        <th>Total Days</th>
+                    </tr>
+
+                    </thead>
+
+                    <tbody id="monthlyReportBody"></tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- HISTORY -->
+
+        <section id="historySection"
+                 class="section">
+
+            <h2>Admin History</h2>
+
+            <div id="historyMessage"
+                 class="message">
+            </div>
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                    <tr>
+                        <th>ID</th>
+                        <th>Action</th>
+                        <th>Employee</th>
+                        <th>Details</th>
+                        <th>Date / Time</th>
+                    </tr>
+
+                    </thead>
+
+                    <tbody id="historyTableBody"></tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</div>
+
+
+<!-- EMPLOYEE MODAL -->
 
 <div id="employeeModal"
      class="modal">
 
-    <div class="modal-box">
+    <div class="modal-content">
 
         <div class="modal-header">
 
-            <h2 id="employeeModalTitle">
+            <h3 id="employeeModalTitle">
                 Add Employee
-            </h2>
+            </h3>
 
             <button class="close-btn"
                     onclick="closeEmployeeModal()">
-                ×
+                &times;
             </button>
 
         </div>
@@ -1291,101 +1036,132 @@
 
         <div class="info-box">
 
-            Employee ID is generated automatically by the database.
-            Salary is managed separately from this form.
+            Employee ID and Employee Code are generated
+            automatically by the system.
+
+            Employee Code cannot be manually changed.
+
+            Salary is managed separately.
 
         </div>
 
 
-        <div class="form-grid">
+        <div class="form-group">
 
-            <div class="form-group">
+            <label>Employee ID</label>
 
-                <label>
-                    Employee Code
-                </label>
-
-                <input type="text"
-                       id="employeeCode"
-                       placeholder="EMP001">
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Employee Name
-                </label>
-
-                <input type="text"
-                       id="employeeName"
-                       placeholder="Employee name">
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Email
-                </label>
-
-                <input type="email"
-                       id="employeeEmail"
-                       placeholder="employee@example.com">
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Contact Number
-                </label>
-
-                <input type="text"
-                       id="employeeContact"
-                       placeholder="Contact number">
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Role
-                </label>
-
-                <input type="text"
-                       id="employeeRole"
-                       placeholder="Developer">
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Joining Date
-                </label>
-
-                <input type="date"
-                       id="employeeJoiningDate">
-
-            </div>
+            <input type="text"
+                   id="employeeId"
+                   class="readonly"
+                   placeholder="Auto generated"
+                   readonly>
 
         </div>
 
 
-        <div class="modal-footer">
+        <div class="form-group">
 
-            <button class="btn btn-secondary"
+            <label>Employee Code</label>
+
+            <input type="text"
+                   id="employeeCode"
+                   class="readonly"
+                   placeholder="Auto generated"
+                   readonly>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Employee Name *</label>
+
+            <input type="text"
+                   id="employeeName"
+                   placeholder="Enter employee name">
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Email *</label>
+
+            <input type="email"
+                   id="employeeEmail"
+                   placeholder="employee@example.com">
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Contact Number</label>
+
+            <input type="text"
+                   id="employeeContact"
+                   placeholder="Enter contact number">
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Role *</label>
+
+            <select id="employeeRole">
+
+                <option value="">
+                    Select Role
+                </option>
+
+                <option value="EMPLOYEE">
+                    EMPLOYEE
+                </option>
+
+                <option value="DEVELOPER">
+                    DEVELOPER
+                </option>
+
+                <option value="HR">
+                    HR
+                </option>
+
+                <option value="TEAM_LEAD">
+                    TEAM_LEAD
+                </option>
+
+                <option value="MANAGER">
+                    MANAGER
+                </option>
+
+                <option value="ADMIN">
+                    ADMIN
+                </option>
+
+            </select>
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label>Joining Date *</label>
+
+            <input type="date"
+                   id="employeeJoiningDate">
+
+        </div>
+
+
+        <div class="form-actions">
+
+            <button class="cancel-btn"
                     onclick="closeEmployeeModal()">
                 Cancel
             </button>
 
-            <button class="btn btn-primary"
+            <button class="save-btn"
                     onclick="saveEmployee()">
                 Save Employee
             </button>
@@ -1397,24 +1173,20 @@
 </div>
 
 
-<!-- =====================================================
-     ADMIN PASSWORD MODAL
-===================================================== -->
+<!-- ADMIN VERIFICATION MODAL -->
 
-<div id="passwordModal"
+<div id="adminVerifyModal"
      class="modal">
 
-    <div class="modal-box small">
+    <div class="modal-content">
 
         <div class="modal-header">
 
-            <h2>
-                Admin Verification
-            </h2>
+            <h3>Admin Verification</h3>
 
             <button class="close-btn"
-                    onclick="closePasswordModal()">
-                ×
+                    onclick="closeAdminVerifyModal()">
+                &times;
             </button>
 
         </div>
@@ -1422,57 +1194,47 @@
 
         <div class="warning-box">
 
-            <strong>Admin password required.</strong>
+            Please enter your admin email and password
+            to confirm this action.
 
-            <br>
+        </div>
 
-            Your own admin password is required to confirm this action.
 
-            <p id="passwordActionDescription"
-               style="margin-top:8px;">
-            </p>
-
+        <div id="adminVerifyMessage"
+             class="message">
         </div>
 
 
         <div class="form-group">
 
-            <label>
-                Admin Email
-            </label>
+            <label>Admin Email</label>
 
             <input type="email"
                    id="verifyAdminEmail"
-                   class="readonly"
-                   readonly>
+                   placeholder="Enter admin email">
 
         </div>
-
-
-        <br>
 
 
         <div class="form-group">
 
-            <label>
-                Admin Password
-            </label>
+            <label>Admin Password</label>
 
             <input type="password"
                    id="verifyAdminPassword"
-                   placeholder="Enter your admin password">
+                   placeholder="Enter admin password">
 
         </div>
 
 
-        <div class="modal-footer">
+        <div class="form-actions">
 
-            <button class="btn btn-secondary"
-                    onclick="closePasswordModal()">
+            <button class="cancel-btn"
+                    onclick="closeAdminVerifyModal()">
                 Cancel
             </button>
 
-            <button class="btn btn-primary"
+            <button class="save-btn"
                     onclick="confirmAdminAction()">
                 Confirm
             </button>
@@ -1484,1070 +1246,797 @@
 </div>
 
 
-<!-- =====================================================
-     SALARY EDIT MODAL
-===================================================== -->
-
-<div id="salaryModal"
-     class="modal">
-
-    <div class="modal-box small">
-
-        <div class="modal-header">
-
-            <h2>
-                Edit Employee Salary
-            </h2>
-
-            <button class="close-btn"
-                    onclick="closeSalaryModal()">
-                ×
-            </button>
-
-        </div>
-
-
-        <div class="info-box">
-
-            Salary changes require your own admin password.
-            The old and new salary values will be recorded in History.
-
-        </div>
-
-
-        <div class="form-group">
-
-            <label>
-                Employee
-            </label>
-
-            <input type="text"
-                   id="salaryEmployeeName"
-                   class="readonly"
-                   readonly>
-
-        </div>
-
-
-        <br>
-
-
-        <div class="form-group">
-
-            <label>
-                Current Salary
-            </label>
-
-            <input type="text"
-                   id="currentSalary"
-                   class="readonly"
-                   readonly>
-
-        </div>
-
-
-        <br>
-
-
-        <div class="form-group">
-
-            <label>
-                New Salary
-            </label>
-
-            <input type="number"
-                   id="newSalary"
-                   min="0"
-                   step="0.01"
-                   placeholder="Enter new salary">
-
-        </div>
-
-
-        <div class="modal-footer">
-
-            <button class="btn btn-secondary"
-                    onclick="closeSalaryModal()">
-                Cancel
-            </button>
-
-            <button class="btn btn-primary"
-                    onclick="saveSalaryEdit()">
-                Update Salary
-            </button>
-
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- =====================================================
-     EXCEL IMPORT MODAL
-===================================================== -->
-
-<div id="excelImportModal"
-     class="modal">
-
-    <div class="modal-box">
-
-        <div class="modal-header">
-
-            <h2>
-                Import Employees from Excel
-            </h2>
-
-            <button class="close-btn"
-                    onclick="closeExcelImportModal()">
-                ×
-            </button>
-
-        </div>
-
-
-        <div class="info-box">
-
-            <strong>Required Excel columns:</strong>
-
-            <br>
-
-            Employee Code, Name, Email, Contact Number,
-            Role, Joining Date
-
-            <br><br>
-
-            Extra columns will be ignored automatically.
-
-            <br>
-
-            Salary is not imported from Excel.
-
-        </div>
-
-
-        <div class="file-box">
-
-            <strong>
-                Select Excel file
-            </strong>
-
-            <p style="
-                margin-top:7px;
-                color:#64748b;
-                font-size:12px;
-            ">
-                Supported: .xlsx / .xls
-            </p>
-
-            <input type="file"
-                   id="excelFileInput"
-                   accept=".xlsx,.xls"
-                   onchange="handleExcelFileSelected()">
-
-            <div id="selectedFileName"
-                 class="file-name">
-                No file selected
-            </div>
-
-        </div>
-
-
-        <div class="modal-footer">
-
-            <button class="btn btn-secondary"
-                    onclick="closeExcelImportModal()">
-                Cancel
-            </button>
-
-            <button class="btn btn-success"
-                    onclick="startExcelImport()">
-                Import Excel
-            </button>
-
-        </div>
-
-    </div>
-
-</div>
-
-
 <script>
 
-    /* =====================================================
-       GLOBAL VARIABLES
-    ===================================================== */
+let employees = [];
+let attendanceRecords = [];
+let currentAttendanceView = "TOTAL";
 
-    let employees = [];
+let currentEmployeeAction = null;
+let editingEmployeeId = null;
 
-    let currentEmployeeAction = null;
-
-    let editingEmployeeId = null;
-
-    let pendingSalaryData = null;
-
-    let pendingImportFile = null;
-
-    let pendingAction = null;
+let pendingSalaryData = null;
+let pendingImportFile = null;
+let pendingAction = null;
+let pendingEmployeeData = null;
+let pendingLeaveData = null;
 
 
-    /* =====================================================
-       PAGE LOAD
-    ===================================================== */
+/* =========================
+   PAGE LOAD
+========================= */
 
-    document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", function () {
 
-        setupYears();
+    setupYears();
 
-        loadAdminInfo();
+    loadAdminInfo();
 
-        loadEmployees();
+    loadEmployees();
 
-        loadLeaves();
+    loadLeaves();
 
-        loadHistory();
+    loadAttendance();
 
-    });
+    loadHistory();
+
+});
 
 
-    /* =====================================================
-       ADMIN INFO
-    ===================================================== */
+/* =========================
+   ADMIN INFO
+========================= */
 
-    function loadAdminInfo() {
+function loadAdminInfo() {
 
-        const adminEmail =
-            localStorage.getItem("adminEmail");
+    const adminEmail =
+        localStorage.getItem("adminEmail");
 
-        const adminName =
-            localStorage.getItem("adminName");
+    const adminName =
+        localStorage.getItem("adminName");
 
-        if (adminName) {
+    const verifyEmail =
+        document.getElementById("verifyAdminEmail");
 
-            document.getElementById(
-                "loggedAdminName"
-            ).textContent = adminName;
+    if (verifyEmail) {
+        verifyEmail.value = adminEmail || "";
+    }
 
+    const adminNameCard =
+        document.getElementById("adminNameCard");
+
+    if (adminNameCard) {
+        adminNameCard.textContent =
+            adminName || "Admin";
+    }
+
+}
+
+
+/* =========================
+   YEARS
+========================= */
+
+function setupYears() {
+
+    const currentYear =
+        new Date().getFullYear();
+
+    const salaryYear =
+        document.getElementById("salaryYear");
+
+    const reportYear =
+        document.getElementById("reportYear");
+
+    for (
+        let year = currentYear - 2;
+        year <= currentYear + 2;
+        year++
+    ) {
+
+        if (salaryYear) {
+
+            const option =
+                document.createElement("option");
+
+            option.value = year;
+            option.textContent = year;
+
+            salaryYear.appendChild(option);
         }
 
-        if (adminEmail) {
+        if (reportYear) {
 
-            document.getElementById(
-                "verifyAdminEmail"
-            ).value = adminEmail;
+            const option =
+                document.createElement("option");
 
+            option.value = year;
+            option.textContent = year;
+
+            reportYear.appendChild(option);
         }
 
     }
 
+    if (salaryYear) {
+        salaryYear.value = currentYear;
+    }
 
-    /* =====================================================
-       YEARS
-    ===================================================== */
+    if (reportYear) {
+        reportYear.value = currentYear;
+    }
 
-    function setupYears() {
+    const currentMonth =
+        new Date().getMonth() + 1;
 
-        const currentYear =
-            new Date().getFullYear();
+    const salaryMonth =
+        document.getElementById("salaryMonth");
 
-        const yearSelectors = [
-            "salaryYear",
-            "reportYear"
-        ];
+    const reportMonth =
+        document.getElementById("reportMonth");
 
-        yearSelectors.forEach(function (id) {
+    if (salaryMonth) {
+        salaryMonth.value = currentMonth;
+    }
 
-            const select =
-                document.getElementById(id);
+    if (reportMonth) {
+        reportMonth.value = currentMonth;
+    }
 
-            if (!select) return;
+}
 
-            select.innerHTML = "";
 
-            for (
-                let year = currentYear - 2;
-                year <= currentYear + 1;
-                year++
-            ) {
+/* =========================
+   SECTION CONTROL
+========================= */
 
-                const option =
-                    document.createElement("option");
+function hideAllSections() {
 
-                option.value = year;
-                option.textContent = year;
+    document
+        .querySelectorAll(".section")
+        .forEach(function (section) {
 
-                if (year === currentYear) {
-                    option.selected = true;
-                }
-
-                select.appendChild(option);
-
-            }
+            section.classList.remove("active");
 
         });
 
+    document
+        .querySelectorAll(".menu-btn")
+        .forEach(function (button) {
 
-        const currentMonth =
-            new Date().getMonth() + 1;
+            button.classList.remove("active");
 
-        const salaryMonth =
-            document.getElementById("salaryMonth");
+        });
 
-        const reportMonth =
-            document.getElementById("reportMonth");
+}
 
-        if (salaryMonth) {
-            salaryMonth.value = currentMonth;
-        }
 
-        if (reportMonth) {
-            reportMonth.value = currentMonth;
-        }
+function showEmployees() {
 
-    }
+    hideAllSections();
 
+    document
+        .getElementById("employeesSection")
+        .classList.add("active");
 
-    /* =====================================================
-       SECTION NAVIGATION
-    ===================================================== */
+    document
+        .getElementById("employeeBtn")
+        .classList.add("active");
 
-    function showSection(sectionId, button) {
+    loadEmployees();
 
-        document.querySelectorAll(".section")
-            .forEach(function (section) {
+}
 
-                section.classList.remove("active");
 
-            });
+function showAttendance() {
 
+    hideAllSections();
 
-        const section =
-            document.getElementById(sectionId);
+    document
+        .getElementById("attendanceSection")
+        .classList.add("active");
 
-        if (section) {
-            section.classList.add("active");
-        }
+    document
+        .getElementById("attendanceBtn")
+        .classList.add("active");
 
+    loadAttendance();
 
-        document.querySelectorAll(".menu-btn")
-            .forEach(function (btn) {
+}
 
-                btn.classList.remove("active");
 
-            });
+function showLeaves() {
 
+    hideAllSections();
 
-        if (button) {
-            button.classList.add("active");
-        }
+    document
+        .getElementById("leavesSection")
+        .classList.add("active");
 
+    document
+        .getElementById("leaveBtn")
+        .classList.add("active");
 
-        if (sectionId === "dashboard") {
+    loadLeaves();
 
-            loadEmployees();
-            loadLeaves();
+}
 
-        }
 
+function showSalary() {
 
-        if (sectionId === "employees") {
+    hideAllSections();
 
-            loadEmployees();
+    document
+        .getElementById("salarySection")
+        .classList.add("active");
 
-        }
+    document
+        .getElementById("salaryBtn")
+        .classList.add("active");
 
+    loadEmployees();
+    calculateSalary();
 
-        if (sectionId === "leave") {
+}
 
-            loadLeaves();
 
-        }
+function showMonthlyReport() {
 
+    hideAllSections();
 
-        if (sectionId === "salary") {
+    document
+        .getElementById("monthlyReportSection")
+        .classList.add("active");
 
-            loadEmployees();
+    document
+        .getElementById("monthlyBtn")
+        .classList.add("active");
 
-            calculateSalary();
+    loadMonthlyReport();
 
-        }
+}
 
 
-        if (sectionId === "monthly") {
+function showHistory() {
 
-            loadMonthlyReport();
+    hideAllSections();
 
-        }
+    document
+        .getElementById("historySection")
+        .classList.add("active");
 
+    document
+        .getElementById("historyBtn")
+        .classList.add("active");
 
-        if (sectionId === "history") {
+    loadHistory();
 
-            loadHistory();
+}
 
-        }
 
-    }
+/* =========================
+   EMPLOYEES
+========================= */
 
+async function loadEmployees() {
 
-    /* =====================================================
-       LOAD EMPLOYEES
-    ===================================================== */
+    try {
 
-    async function loadEmployees() {
+        const response =
+            await fetch("/admin/employees");
 
-        try {
+        if (!response.ok) {
 
-            const response =
-                await fetch("/admin/employees");
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    await getErrorMessage(response)
-                );
-
-            }
-
-
-            employees =
-                await response.json();
-
-
-            renderEmployees();
-
-            updateDashboardStats();
-
-        }
-        catch (error) {
-
-            console.error(error);
-
-            showMessage(
-                "employeeMessage",
-                error.message,
-                "error"
+            throw new Error(
+                await getErrorMessage(response)
             );
 
         }
 
-    }
+        employees =
+            await response.json();
 
+        renderEmployees();
 
-    /* =====================================================
-       RENDER EMPLOYEES
-    ===================================================== */
+        document
+            .getElementById("employeeCount")
+            .textContent =
+            employees.length;
 
-    function renderEmployees(list = employees) {
+    } catch (error) {
 
-        const tbody =
-            document.getElementById(
-                "employeeTableBody"
-            );
-
-        if (!tbody) return;
-
-
-        if (!list || list.length === 0) {
-
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="9" class="empty-row">
-                        No employees found
-                    </td>
-                </tr>
-            `;
-
-            return;
-        }
-
-
-        tbody.innerHTML =
-            list.map(function (employee) {
-
-                return `
-
-                <tr>
-
-                    <td>
-                        ${escapeHtml(employee.id)}
-                    </td>
-
-                    <td>
-                        <span class="badge badge-blue">
-                            ${escapeHtml(employee.employeeCode)}
-                        </span>
-                    </td>
-
-                    <td>
-                        <strong>
-                            ${escapeHtml(employee.name)}
-                        </strong>
-                    </td>
-
-                    <td>
-                        ${escapeHtml(employee.email)}
-                    </td>
-
-                    <td>
-                        ${escapeHtml(employee.contactNumber || "-")}
-                    </td>
-
-                    <td>
-                        ${escapeHtml(employee.role || "-")}
-                    </td>
-
-                    <td>
-                        ₹${formatNumber(employee.salary)}
-                    </td>
-
-                    <td>
-                        ${formatDate(employee.joiningDate)}
-                    </td>
-
-                    <td>
-
-                        <button
-                            class="btn btn-primary btn-small"
-                            onclick="openEmployeeModal('EDIT', ${employee.id})">
-                            Edit
-                        </button>
-
-                        <button
-                            class="btn btn-danger btn-small"
-                            onclick="deleteEmployee(${employee.id})">
-                            Delete
-                        </button>
-
-                    </td>
-
-                </tr>
-
-                `;
-
-            }).join("");
+        showMessage(
+            "employeeMessage",
+            error.message ||
+            "Unable to load employees.",
+            "error"
+        );
 
     }
 
-
-    /* =====================================================
-       SEARCH EMPLOYEES
-    ===================================================== */
-
-    function filterEmployees() {
-
-        const search =
-            document.getElementById(
-                "employeeSearch"
-            ).value
-                .toLowerCase()
-                .trim();
+}
 
 
-        if (!search) {
+/* =========================
+   RENDER EMPLOYEES
+========================= */
 
-            renderEmployees(employees);
+function renderEmployees() {
 
-            return;
+    const tbody =
+        document.getElementById("employeeTableBody");
 
-        }
+    tbody.innerHTML = "";
+
+    if (!employees.length) {
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="9"
+                    class="empty-message">
+                    No employees found.
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+    employees.forEach(function (employee) {
+
+        const row =
+            document.createElement("tr");
+
+        row.innerHTML = `
+
+            <td>
+                ${escapeHtml(employee.id ?? "")}
+            </td>
+
+            <td>
+                ${escapeHtml(employee.employeeCode ?? "")}
+            </td>
+
+            <td>
+                ${escapeHtml(employee.name ?? "")}
+            </td>
+
+            <td>
+                ${escapeHtml(employee.email ?? "")}
+            </td>
+
+            <td>
+                ${escapeHtml(employee.contactNumber ?? "")}
+            </td>
+
+            <td>
+                ${escapeHtml(employee.role ?? "")}
+            </td>
+
+            <td class="salary-value">
+                ₹${formatNumber(employee.salary ?? 0)}
+            </td>
+
+            <td>
+                ${escapeHtml(employee.joiningDate ?? "")}
+            </td>
+
+            <td>
+
+                <button
+                    class="edit-btn"
+                    onclick="openEmployeeModal('EDIT', ${employee.id})">
+                    Edit
+                </button>
+
+                <button
+                    class="delete-btn"
+                    onclick="deleteEmployee(${employee.id})">
+                    Delete
+                </button>
+
+            </td>
+
+        `;
+
+        tbody.appendChild(row);
+
+    });
+
+}
 
 
-        const filtered =
-            employees.filter(function (employee) {
+/* =========================
+   EMPLOYEE MODAL
+========================= */
 
-                return (
+function openEmployeeModal(action, employeeId = null) {
 
-                    String(employee.id || "")
-                        .toLowerCase()
-                        .includes(search)
+    currentEmployeeAction = action;
+    editingEmployeeId = employeeId;
 
-                    ||
+    const modal =
+        document.getElementById("employeeModal");
 
-                    String(employee.employeeCode || "")
-                        .toLowerCase()
-                        .includes(search)
-
-                    ||
-
-                    String(employee.name || "")
-                        .toLowerCase()
-                        .includes(search)
-
-                    ||
-
-                    String(employee.email || "")
-                        .toLowerCase()
-                        .includes(search)
-
-                    ||
-
-                    String(employee.role || "")
-                        .toLowerCase()
-                        .includes(search)
-
-                );
-
-            });
+    const title =
+        document.getElementById("employeeModalTitle");
 
 
-        renderEmployees(filtered);
+    if (action === "ADD") {
+
+        title.textContent = "Add Employee";
+
+        /*
+         * Employee ID and Employee Code are generated
+         * by the backend/system.
+         *
+         * Do NOT generate or calculate them here.
+         */
+
+        document.getElementById("employeeId").value =
+            "Generated by system";
+
+        document.getElementById("employeeCode").value =
+            "Generated by system";
+
+        document.getElementById("employeeName").value =
+            "";
+
+        document.getElementById("employeeEmail").value =
+            "";
+
+        document.getElementById("employeeContact").value =
+            "";
+
+        document.getElementById("employeeRole").value =
+            "";
+
+        document.getElementById("employeeJoiningDate").value =
+            "";
 
     }
 
 
-    /* =====================================================
-       OPEN EMPLOYEE MODAL
-    ===================================================== */
+    if (action === "EDIT" && employeeId !== null) {
 
-    function openEmployeeModal(action, employeeId = null) {
-
-        currentEmployeeAction = action;
-
-        editingEmployeeId = employeeId;
-
-
-        document.getElementById(
-            "employeeModal"
-        ).classList.add("show");
-
-
-        if (action === "ADD") {
-
-            document.getElementById(
-                "employeeModalTitle"
-            ).textContent =
-                "Add Employee";
-
-
-            clearEmployeeForm();
-
-            return;
-
-        }
-
+        title.textContent = "Edit Employee";
 
         const employee =
             employees.find(function (item) {
 
-                return item.id === employeeId;
+                return item.id == employeeId;
 
             });
 
-
         if (!employee) {
 
-            alert("Employee not found");
-
-            closeEmployeeModal();
-
+            alert("Employee not found.");
             return;
 
         }
 
+        document.getElementById("employeeId").value =
+            employee.id ?? "";
 
-        document.getElementById(
-            "employeeModalTitle"
-        ).textContent =
-            "Edit Employee";
-
-
-        document.getElementById(
-            "employeeCode"
-        ).value =
+        document.getElementById("employeeCode").value =
             employee.employeeCode || "";
 
-
-        document.getElementById(
-            "employeeName"
-        ).value =
+        document.getElementById("employeeName").value =
             employee.name || "";
 
-
-        document.getElementById(
-            "employeeEmail"
-        ).value =
+        document.getElementById("employeeEmail").value =
             employee.email || "";
 
-
-        document.getElementById(
-            "employeeContact"
-        ).value =
+        document.getElementById("employeeContact").value =
             employee.contactNumber || "";
 
-
-        document.getElementById(
-            "employeeRole"
-        ).value =
+        document.getElementById("employeeRole").value =
             employee.role || "";
 
-
-        document.getElementById(
-            "employeeJoiningDate"
-        ).value =
+        document.getElementById("employeeJoiningDate").value =
             employee.joiningDate || "";
 
     }
 
+    modal.classList.add("show");
 
-    /* =====================================================
-       CLEAR EMPLOYEE FORM
-    ===================================================== */
+}
 
-    function clearEmployeeForm() {
 
-        document.getElementById(
-            "employeeCode"
-        ).value = "";
+function closeEmployeeModal() {
 
-        document.getElementById(
-            "employeeName"
-        ).value = "";
+    document
+        .getElementById("employeeModal")
+        .classList.remove("show");
 
-        document.getElementById(
-            "employeeEmail"
-        ).value = "";
+}
 
-        document.getElementById(
-            "employeeContact"
-        ).value = "";
 
-        document.getElementById(
-            "employeeRole"
-        ).value = "";
+/* =========================
+   SAVE EMPLOYEE
+========================= */
 
-        document.getElementById(
-            "employeeJoiningDate"
-        ).value = "";
+function saveEmployee() {
 
+    const name =
+        document.getElementById("employeeName")
+            .value.trim();
+
+    const email =
+        document.getElementById("employeeEmail")
+            .value.trim();
+
+    const contactNumber =
+        document.getElementById("employeeContact")
+            .value.trim();
+
+    const role =
+        document.getElementById("employeeRole")
+            .value.trim();
+
+    const joiningDate =
+        document.getElementById("employeeJoiningDate")
+            .value;
+
+
+    if (!name || !email || !role || !joiningDate) {
+
+        alert(
+            "Please fill all required employee details."
+        );
+
+        return;
     }
 
 
-    /* =====================================================
-       CLOSE EMPLOYEE MODAL
-    ===================================================== */
+    const emailPattern =
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    function closeEmployeeModal() {
 
-        document.getElementById(
-            "employeeModal"
-        ).classList.remove("show");
+    if (!emailPattern.test(email)) {
 
-        currentEmployeeAction = null;
+        showMessage(
+            "employeeMessage",
+            "Please enter a valid email address.",
+            "error"
+        );
 
-        editingEmployeeId = null;
-
+        return;
     }
 
 
-    /* =====================================================
-       SAVE EMPLOYEE
-    ===================================================== */
+    /* DUPLICATE EMAIL CHECK */
 
-    async function saveEmployee() {
+    const normalizedEmail =
+        email.toLowerCase().trim();
 
-        const employeeCode =
+
+    const duplicateEmail =
+        employees.find(function (employee) {
+
+            const existingEmail =
+                String(employee.email || "")
+                    .toLowerCase()
+                    .trim();
+
+            const sameEmployee =
+                currentEmployeeAction === "EDIT" &&
+                employee.id == editingEmployeeId;
+
+            return (
+                existingEmail === normalizedEmail &&
+                !sameEmployee
+            );
+
+        });
+
+
+    if (duplicateEmail) {
+
+        showMessage(
+            "employeeMessage",
+            "This email is already registered with another employee.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    const employeeData = {
+
+        name: name,
+
+        email: email,
+
+        contactNumber: contactNumber,
+
+        role: role,
+
+        joiningDate: joiningDate
+
+    };
+
+
+    /*
+     * Employee Code is sent only during EDIT.
+     * During ADD, backend generates it.
+     */
+
+    if (currentEmployeeAction === "EDIT") {
+
+        employeeData.employeeCode =
             document.getElementById(
                 "employeeCode"
             ).value.trim();
 
-
-        const name =
-            document.getElementById(
-                "employeeName"
-            ).value.trim();
+    }
 
 
-        const email =
-            document.getElementById(
-                "employeeEmail"
-            ).value.trim();
+    pendingEmployeeData =
+        employeeData;
+
+    pendingAction =
+        currentEmployeeAction;
 
 
-        const contactNumber =
-            document.getElementById(
-                "employeeContact"
-            ).value.trim();
+    if (currentEmployeeAction === "EDIT") {
 
-
-        const role =
-            document.getElementById(
-                "employeeRole"
-            ).value.trim();
-
-
-        const joiningDate =
-            document.getElementById(
-                "employeeJoiningDate"
-            ).value;
-
-
-        if (
-            !employeeCode ||
-            !name ||
-            !email ||
-            !role ||
-            !joiningDate
-        ) {
-
-            alert(
-                "Please fill all required employee details."
-            );
-
-            return;
-
-        }
-
-
-        const employeeData = {
-
-            employeeCode: employeeCode,
-
-            name: name,
-
-            email: email,
-
-            contactNumber: contactNumber,
-
-            role: role,
-
-            joiningDate: joiningDate
-
-        };
-
-
-        pendingAction =
-            currentEmployeeAction;
-
-
-        pendingEmployeeData =
-            employeeData;
-
-
-        if (currentEmployeeAction === "EDIT") {
-
-            pendingEmployeeData.employeeId =
-                editingEmployeeId;
-
-        }
-
-
-        closeEmployeeModal();
-
-        openPasswordModal();
+        pendingEmployeeData.employeeId =
+            editingEmployeeId;
 
     }
 
 
-    let pendingEmployeeData = null;
+    closeEmployeeModal();
+
+    openAdminVerifyModal();
+
+}
 
 
-    /* =====================================================
-       DELETE EMPLOYEE
-    ===================================================== */
+/* =========================
+   DELETE EMPLOYEE
+========================= */
 
-    function deleteEmployee(employeeId) {
+function deleteEmployee(employeeId) {
 
-        const employee =
-            employees.find(function (item) {
+    const employee =
+        employees.find(function (item) {
 
-                return item.id === employeeId;
+            return item.id == employeeId;
 
-            });
-
-
-        if (!employee) {
-
-            alert("Employee not found");
-
-            return;
-
-        }
+        });
 
 
-        const confirmed =
-            confirm(
-                `Are you sure you want to delete ${employee.name}?`
-            );
+    if (!employee) {
 
-
-        if (!confirmed) {
-            return;
-        }
-
-
-        pendingAction = "DELETE";
-
-
-        pendingEmployeeData = {
-            employeeId: employeeId
-        };
-
-
-        openPasswordModal();
+        alert("Employee not found.");
+        return;
 
     }
 
 
-    /* =====================================================
-       PASSWORD MODAL
-    ===================================================== */
-
-    function openPasswordModal() {
-
-        const adminEmail =
-            localStorage.getItem(
-                "adminEmail"
-            );
+    const confirmDelete =
+        confirm(
+            "Are you sure you want to delete " +
+            employee.name +
+            "?"
+        );
 
 
+    if (!confirmDelete) {
+        return;
+    }
+
+
+    pendingAction = "DELETE";
+
+    pendingEmployeeData = {
+        employeeId: employeeId
+    };
+
+    openAdminVerifyModal();
+
+}
+
+
+/* =========================
+   ADMIN VERIFY
+========================= */
+
+function openAdminVerifyModal() {
+
+    const adminEmail =
+        localStorage.getItem("adminEmail") || "";
+
+    document.getElementById(
+        "verifyAdminEmail"
+    ).value = adminEmail;
+
+    document.getElementById(
+        "verifyAdminPassword"
+    ).value = "";
+
+    document.getElementById(
+        "adminVerifyMessage"
+    ).className = "message";
+
+    document
+        .getElementById("adminVerifyModal")
+        .classList.add("show");
+
+}
+
+
+function closeAdminVerifyModal() {
+
+    document
+        .getElementById("adminVerifyModal")
+        .classList.remove("show");
+
+    document.getElementById(
+        "verifyAdminPassword"
+    ).value = "";
+
+}
+
+
+/* =========================
+   CONFIRM ADMIN ACTION
+========================= */
+
+async function confirmAdminAction() {
+
+    /*
+     * Do NOT depend only on localStorage.
+     * The email field can be corrected manually.
+     */
+
+    const adminEmail =
         document.getElementById(
             "verifyAdminEmail"
-        ).value =
-            adminEmail || "";
+        ).value.trim();
 
-
+    const adminPassword =
         document.getElementById(
             "verifyAdminPassword"
-        ).value = "";
+        ).value;
 
 
-        let message =
-            "Verify your password to continue.";
+    if (!adminEmail) {
 
+        showMessage(
+            "adminVerifyMessage",
+            "Please enter admin email.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    if (!adminPassword) {
+
+        showMessage(
+            "adminVerifyMessage",
+            "Please enter admin password.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    try {
+
+        /* =========================
+           ADD
+        ========================= */
 
         if (pendingAction === "ADD") {
 
-            message =
-                "You are adding a new employee.";
-
-        }
-
-        else if (pendingAction === "EDIT") {
-
-            message =
-                "You are editing employee details. Changed fields will be recorded.";
-
-        }
-
-        else if (pendingAction === "DELETE") {
-
-            message =
-                "You are deactivating an employee. Attendance history will be preserved.";
-
-        }
-
-        else if (pendingAction === "SALARY_UPDATE") {
-
-            message =
-                "You are changing an employee salary. Old and new salary values will be recorded.";
-
-        }
-
-        else if (pendingAction === "EXCEL_IMPORT") {
-
-            message =
-                "You are importing employees from Excel. The import will be recorded in History.";
-
-        }
-
-        else if (pendingAction === "LEAVE_APPROVE") {
-
-            message =
-                "You are approving a leave request.";
-
-        }
-
-        else if (pendingAction === "LEAVE_REJECT") {
-
-            message =
-                "You are rejecting a leave request.";
-
-        }
-
-
-        document.getElementById(
-            "passwordActionDescription"
-        ).textContent =
-            message;
-
-
-        document.getElementById(
-            "passwordModal"
-        ).classList.add("show");
-
-    }
-
-
-    /* =====================================================
-       CLOSE PASSWORD MODAL
-    ===================================================== */
-
-    function closePasswordModal() {
-
-        document.getElementById(
-            "passwordModal"
-        ).classList.remove("show");
-
-
-        document.getElementById(
-            "verifyAdminPassword"
-        ).value = "";
-
-
-        pendingAction = null;
-
-        pendingEmployeeData = null;
-
-        pendingSalaryData = null;
-
-        pendingImportFile = null;
-
-    }
-
-
-    /* =====================================================
-       CONFIRM ADMIN ACTION
-    ===================================================== */
-
-    async function confirmAdminAction() {
-
-        const adminEmail =
-            document.getElementById(
-                "verifyAdminEmail"
-            ).value.trim();
-
-
-        const adminPassword =
-            document.getElementById(
-                "verifyAdminPassword"
-            ).value;
-
-
-        if (!adminEmail || !adminPassword) {
-
-            alert(
-                "Please enter your admin password."
-            );
-
-            return;
-
-        }
-
-
-        /* =========================
-           ADD / EDIT
-        ========================= */
-
-        if (
-            pendingAction === "ADD" ||
-            pendingAction === "EDIT"
-        ) {
-
-            const requestBody = {
-
-                employeeCode:
-                    pendingEmployeeData.employeeCode,
+            const requestData = {
 
                 name:
                     pendingEmployeeData.name,
@@ -2573,85 +2062,116 @@
             };
 
 
-            let url =
-                "/admin/employees";
+            const response =
+                await fetch(
+                    "/admin/employees",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify(requestData)
+                    }
+                );
 
 
-            let method =
-                "POST";
+            if (!response.ok) {
+
+                throw new Error(
+                    await getErrorMessage(response)
+                );
+
+            }
 
 
-            if (
-                pendingAction === "EDIT"
-            ) {
+            closeAdminVerifyModal();
 
-                url =
+            showMessage(
+                "employeeMessage",
+                "Employee added successfully.",
+                "success"
+            );
+
+            await loadEmployees();
+
+        }
+
+
+        /* =========================
+           EDIT
+        ========================= */
+
+        else if (pendingAction === "EDIT") {
+
+            const requestData = {
+
+                name:
+                    pendingEmployeeData.name,
+
+                email:
+                    pendingEmployeeData.email,
+
+                contactNumber:
+                    pendingEmployeeData.contactNumber,
+
+                role:
+                    pendingEmployeeData.role,
+
+                joiningDate:
+                    pendingEmployeeData.joiningDate,
+
+                employeeCode:
+                    pendingEmployeeData.employeeCode,
+
+                adminEmail:
+                    adminEmail,
+
+                adminPassword:
+                    adminPassword
+
+            };
+
+
+            const response =
+                await fetch(
                     "/admin/employees/" +
-                    pendingEmployeeData.employeeId;
+                    pendingEmployeeData.employeeId,
+                    {
+                        method: "PUT",
 
-                method =
-                    "PUT";
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
 
-            }
-
-
-            try {
-
-                const response =
-                    await fetch(
-                        url,
-                        {
-                            method: method,
-
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
-
-                            body:
-                                JSON.stringify(
-                                    requestBody
-                                )
-                        }
-                    );
-
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        await getErrorMessage(response)
-                    );
-
-                }
-
-
-                closePasswordModal();
-
-                await loadEmployees();
-
-                await loadHistory();
-
-                showMessage(
-                    "employeeMessage",
-                    pendingAction === "ADD"
-                        ? "Employee added successfully."
-                        : "Employee updated successfully.",
-                    "success"
+                        body:
+                            JSON.stringify(requestData)
+                    }
                 );
 
-            }
-            catch (error) {
 
-                showMessage(
-                    "employeeMessage",
-                    error.message,
-                    "error"
+            if (!response.ok) {
+
+                throw new Error(
+                    await getErrorMessage(response)
                 );
 
             }
 
 
-            return;
+            closeAdminVerifyModal();
+
+            showMessage(
+                "employeeMessage",
+                "Employee updated successfully.",
+                "success"
+            );
+
+            await loadEmployees();
 
         }
 
@@ -2660,1869 +2180,111 @@
            DELETE
         ========================= */
 
-        if (pendingAction === "DELETE") {
+        else if (pendingAction === "DELETE") {
 
-            try {
+            const requestData = {
 
-                const response =
-                    await fetch(
-                        "/admin/employees/" +
-                        pendingEmployeeData.employeeId,
-                        {
-                            method: "DELETE",
+                adminEmail:
+                    adminEmail,
 
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
-
-                            body:
-                                JSON.stringify({
-
-                                    adminEmail:
-                                        adminEmail,
-
-                                    adminPassword:
-                                        adminPassword
-
-                                })
-                        }
-                    );
-
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        await getErrorMessage(response)
-                    );
-
-                }
-
-
-                closePasswordModal();
-
-                await loadEmployees();
-
-                await loadHistory();
-
-                showMessage(
-                    "employeeMessage",
-                    "Employee deleted successfully.",
-                    "success"
-                );
-
-            }
-            catch (error) {
-
-                showMessage(
-                    "employeeMessage",
-                    error.message,
-                    "error"
-                );
-
-            }
-
-
-            return;
-
-        }
-
-
-        /* =========================
-           SALARY UPDATE
-        ========================= */
-
-        if (pendingAction === "SALARY_UPDATE") {
-
-            try {
-
-                const response =
-                    await fetch(
-                        "/admin/salary/" +
-                        pendingSalaryData.employeeId,
-                        {
-                            method: "PUT",
-
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
-
-                            body:
-                                JSON.stringify({
-
-                                    newSalary:
-                                        Number(
-                                            pendingSalaryData.newSalary
-                                        ),
-
-                                    adminEmail:
-                                        adminEmail,
-
-                                    adminPassword:
-                                        adminPassword
-
-                                })
-                        }
-                    );
-
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        await getErrorMessage(response)
-                    );
-
-                }
-
-
-                closePasswordModal();
-
-                closeSalaryModal();
-
-                await loadEmployees();
-
-                await calculateSalary();
-
-                await loadHistory();
-
-                showMessage(
-                    "salaryMessage",
-                    "Salary updated successfully.",
-                    "success"
-                );
-
-            }
-            catch (error) {
-
-                showMessage(
-                    "salaryMessage",
-                    error.message,
-                    "error"
-                );
-
-            }
-
-
-            return;
-
-        }
-
-
-        /* =========================
-           EXCEL IMPORT
-        ========================= */
-
-        if (pendingAction === "EXCEL_IMPORT") {
-
-            if (!pendingImportFile) {
-
-                alert(
-                    "Please select an Excel file."
-                );
-
-                return;
-
-            }
-
-
-            try {
-
-                const formData =
-                    new FormData();
-
-
-                formData.append(
-                    "file",
-                    pendingImportFile
-                );
-
-
-                formData.append(
-                    "adminEmail",
-                    adminEmail
-                );
-
-
-                formData.append(
-                    "adminPassword",
+                adminPassword:
                     adminPassword
-                );
 
+            };
 
-                const response =
-                    await fetch(
-                        "/admin/employees/import",
-                        {
-                            method: "POST",
-                            body: formData
-                        }
-                    );
-
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        await getErrorMessage(response)
-                    );
-
-                }
-
-
-                const result =
-                    await response.json();
-
-
-                closePasswordModal();
-
-                closeExcelImportModal();
-
-                await loadEmployees();
-
-                await loadHistory();
-
-                let message =
-                    "Excel import completed. " +
-                    "Imported: " +
-                    (result.importedCount ?? 0) +
-                    ", Skipped: " +
-                    (result.skippedCount ?? 0);
-
-
-                if (
-                    result.errors &&
-                    result.errors.length > 0
-                ) {
-
-                    message +=
-                        " | Some rows were skipped.";
-
-                    console.warn(
-                        "Excel import errors:",
-                        result.errors
-                    );
-
-                }
-
-
-                showMessage(
-                    "employeeMessage",
-                    message,
-                    "success"
-                );
-
-            }
-            catch (error) {
-
-                showMessage(
-                    "employeeMessage",
-                    error.message,
-                    "error"
-                );
-
-            }
-
-
-            return;
-
-        }
-
-    }
-
-
-    /* =====================================================
-       SALARY MODAL
-    ===================================================== */
-
-    function openSalaryModal(
-        employeeId,
-        employeeName,
-        currentSalary
-    ) {
-
-        pendingSalaryData = {
-
-            employeeId:
-                employeeId,
-
-            employeeName:
-                employeeName,
-
-            currentSalary:
-                currentSalary
-
-        };
-
-
-        document.getElementById(
-            "salaryEmployeeName"
-        ).value =
-            employeeName;
-
-
-        document.getElementById(
-            "currentSalary"
-        ).value =
-            "₹" +
-            formatNumber(currentSalary);
-
-
-        document.getElementById(
-            "newSalary"
-        ).value =
-            currentSalary ?? "";
-
-
-        document.getElementById(
-            "salaryModal"
-        ).classList.add("show");
-
-    }
-
-
-    /* =====================================================
-       CLOSE SALARY MODAL
-    ===================================================== */
-
-    function closeSalaryModal() {
-
-        document.getElementById(
-            "salaryModal"
-        ).classList.remove("show");
-
-
-        document.getElementById(
-            "newSalary"
-        ).value = "";
-
-
-        if (
-            !document.getElementById(
-                "passwordModal"
-            ).classList.contains("show")
-        ) {
-
-            pendingSalaryData = null;
-
-        }
-
-    }
-
-
-    /* =====================================================
-       SAVE SALARY
-    ===================================================== */
-
-    function saveSalaryEdit() {
-
-        if (!pendingSalaryData) {
-
-            alert(
-                "Salary data not found."
-            );
-
-            return;
-
-        }
-
-
-        const newSalary =
-            document.getElementById(
-                "newSalary"
-            ).value;
-
-
-        if (
-            newSalary === "" ||
-            Number(newSalary) < 0
-        ) {
-
-            alert(
-                "Please enter a valid salary."
-            );
-
-            return;
-
-        }
-
-
-        if (
-            Number(newSalary) ===
-            Number(
-                pendingSalaryData.currentSalary
-            )
-        ) {
-
-            alert(
-                "New salary is same as current salary."
-            );
-
-            return;
-
-        }
-
-
-        pendingSalaryData.newSalary =
-            Number(newSalary);
-
-
-        pendingAction =
-            "SALARY_UPDATE";
-
-
-        closeSalaryModal();
-
-        openPasswordModal();
-
-    }
-
-
-    /* =====================================================
-       CALCULATE SALARY
-    ===================================================== */
-
-    async function calculateSalary() {
-
-        const year =
-            document.getElementById(
-                "salaryYear"
-            ).value;
-
-
-        const month =
-            document.getElementById(
-                "salaryMonth"
-            ).value;
-
-
-        if (!year || !month) {
-            return;
-        }
-
-
-        try {
 
             const response =
                 await fetch(
-                    `/admin/salary/calculate?year=${year}&month=${month}`
-                );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    await getErrorMessage(response)
-                );
-
-            }
-
-
-            const data =
-                await response.json();
-
-
-            renderSalary(data);
-
-        }
-        catch (error) {
-
-            console.error(error);
-
-            showMessage(
-                "salaryMessage",
-                error.message,
-                "error"
-            );
-
-        }
-
-    }
-
-
-    /* =====================================================
-       RENDER SALARY
-    ===================================================== */
-
-    function renderSalary(data) {
-
-        const tbody =
-            document.getElementById(
-                "salaryTableBody"
-            );
-
-
-        if (!data || data.length === 0) {
-
-            tbody.innerHTML = `
-
-                <tr>
-
-                    <td colspan="10"
-                        class="empty-row">
-
-                        No salary data found.
-
-                    </td>
-
-                </tr>
-
-            `;
-
-            return;
-
-        }
-
-
-        tbody.innerHTML =
-            data.map(function (item) {
-
-                return `
-
-                <tr>
-
-                    <td>
-                        ${escapeHtml(item.employeeId)}
-                    </td>
-
-                    <td>
-                        ${escapeHtml(item.employeeCode)}
-                    </td>
-
-                    <td>
-                        <strong>
-                            ${escapeHtml(item.employeeName)}
-                        </strong>
-                    </td>
-
-                    <td>
-                        ₹${formatNumber(item.monthlySalary)}
-                    </td>
-
-                    <td>
-                        ${escapeHtml(item.workingDays)}
-                    </td>
-
-                    <td>
-                        ${escapeHtml(item.presentDays)}
-                    </td>
-
-                    <td>
-                        ${formatNumber(item.leaveDays)}
-                    </td>
-
-                    <td>
-                        ₹${formatNumber(item.lossOfPay)}
-                    </td>
-
-                    <td>
-                        <strong>
-                            ₹${formatNumber(item.finalSalary)}
-                        </strong>
-                    </td>
-
-                    <td>
-
-                        <button
-                            class="btn btn-warning btn-small"
-                            onclick="openSalaryModal(
-                                ${item.employeeId},
-                                '${escapeJs(item.employeeName)}',
-                                ${Number(item.monthlySalary || 0)}
-                            )">
-
-                            Edit Salary
-
-                        </button>
-
-                    </td>
-
-                </tr>
-
-                `;
-
-            }).join("");
-
-    }
-
-
-    /* =====================================================
-       EXCEL IMPORT
-    ===================================================== */
-
-    function openExcelImportModal() {
-
-        pendingImportFile = null;
-
-
-        document.getElementById(
-            "excelFileInput"
-        ).value = "";
-
-
-        document.getElementById(
-            "selectedFileName"
-        ).textContent =
-            "No file selected";
-
-
-        document.getElementById(
-            "excelImportModal"
-        ).classList.add("show");
-
-    }
-
-
-    /* =====================================================
-       FILE SELECTED
-    ===================================================== */
-
-    function handleExcelFileSelected() {
-
-        const input =
-            document.getElementById(
-                "excelFileInput"
-            );
-
-
-        if (
-            !input.files ||
-            input.files.length === 0
-        ) {
-
-            pendingImportFile = null;
-
-            document.getElementById(
-                "selectedFileName"
-            ).textContent =
-                "No file selected";
-
-            return;
-
-        }
-
-
-        const file =
-            input.files[0];
-
-
-        const fileName =
-            file.name.toLowerCase();
-
-
-        if (
-            !fileName.endsWith(".xlsx") &&
-            !fileName.endsWith(".xls")
-        ) {
-
-            alert(
-                "Please select an Excel file (.xlsx or .xls)."
-            );
-
-            input.value = "";
-
-            pendingImportFile = null;
-
-            return;
-
-        }
-
-
-        pendingImportFile = file;
-
-
-        document.getElementById(
-            "selectedFileName"
-        ).textContent =
-            "Selected: " + file.name;
-
-    }
-
-
-    /* =====================================================
-       START EXCEL IMPORT
-    ===================================================== */
-
-    function startExcelImport() {
-
-        if (!pendingImportFile) {
-
-            alert(
-                "Please select an Excel file first."
-            );
-
-            return;
-
-        }
-
-
-        pendingAction =
-            "EXCEL_IMPORT";
-
-
-        openPasswordModal();
-
-    }
-
-
-    /* =====================================================
-       CLOSE EXCEL MODAL
-    ===================================================== */
-
-    function closeExcelImportModal() {
-
-        document.getElementById(
-            "excelImportModal"
-        ).classList.remove("show");
-
-
-        if (
-            !document.getElementById(
-                "passwordModal"
-            ).classList.contains("show")
-        ) {
-
-            pendingImportFile = null;
-
-        }
-
-    }
-
-
-    /* =====================================================
-       LOAD LEAVES
-    ===================================================== */
-
-    async function loadLeaves() {
-
-        try {
-
-            const response =
-                await fetch(
-                    "/admin/leaves"
-                );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    await getErrorMessage(response)
-                );
-
-            }
-
-
-            const leaves =
-                await response.json();
-
-
-            renderLeaves(leaves);
-
-            updatePendingLeaveCount(leaves);
-
-        }
-        catch (error) {
-
-            console.error(error);
-
-            showMessage(
-                "leaveMessage",
-                error.message,
-                "error"
-            );
-
-        }
-
-    }
-
-
-    /* =====================================================
-       RENDER LEAVES
-    ===================================================== */
-
-    function renderLeaves(leaves) {
-
-        const tbody =
-            document.getElementById(
-                "leaveTableBody"
-            );
-
-
-        if (!leaves || leaves.length === 0) {
-
-            tbody.innerHTML = `
-
-                <tr>
-
-                    <td colspan="8"
-                        class="empty-row">
-
-                        No leave requests found.
-
-                    </td>
-
-                </tr>
-
-            `;
-
-            return;
-
-        }
-
-
-        tbody.innerHTML =
-            leaves.map(function (leave) {
-
-                const status =
-                    String(
-                        leave.status || ""
-                    ).toUpperCase();
-
-
-                let badgeClass =
-                    "badge-gray";
-
-
-                if (status === "APPROVED") {
-                    badgeClass =
-                        "badge-green";
-                }
-
-                else if (status === "PENDING") {
-                    badgeClass =
-                        "badge-orange";
-                }
-
-                else if (status === "REJECTED") {
-                    badgeClass =
-                        "badge-red";
-                }
-
-
-                return `
-
-                <tr>
-
-                    <td>
-                        ${escapeHtml(leave.id)}
-                    </td>
-
-                    <td>
-                        ${escapeHtml(
-                            leave.employeeName ||
-                            leave.name ||
-                            "-"
-                        )}
-                    </td>
-
-                    <td>
-                        ${escapeHtml(
-                            leave.leaveType ||
-                            "-"
-                        )}
-                    </td>
-
-                    <td>
-                        ${formatDate(
-                            leave.leaveDate
-                        )}
-                    </td>
-
-                    <td>
-                        ${formatNumber(
-                            leave.leaveDuration
-                        )}
-                    </td>
-
-                    <td>
-                        ${escapeHtml(
-                            leave.reason ||
-                            "-"
-                        )}
-                    </td>
-
-                    <td>
-
-                        <span class="badge ${badgeClass}">
-                            ${escapeHtml(status || "-")}
-                        </span>
-
-                    </td>
-
-                    <td>
-
-                        ${
-                            status === "PENDING"
-
-                            ?
-
-                            `
-
-                            <button
-                                class="btn btn-success btn-small"
-                                onclick="approveLeave(${leave.id})">
-                                Approve
-                            </button>
-
-                            <button
-                                class="btn btn-danger btn-small"
-                                onclick="rejectLeave(${leave.id})">
-                                Reject
-                            </button>
-
-                            `
-
-                            :
-
-                            "-"
-                        }
-
-                    </td>
-
-                </tr>
-
-                `;
-
-            }).join("");
-
-    }
-
-
-    /* =====================================================
-       APPROVE LEAVE
-    ===================================================== */
-
-    function approveLeave(leaveId) {
-
-        pendingAction =
-            "LEAVE_APPROVE";
-
-
-        pendingLeaveData = {
-            leaveId: leaveId
-        };
-
-
-        openPasswordModal();
-
-    }
-
-
-    /* =====================================================
-       REJECT LEAVE
-    ===================================================== */
-
-    function rejectLeave(leaveId) {
-
-        pendingAction =
-            "LEAVE_REJECT";
-
-
-        pendingLeaveData = {
-            leaveId: leaveId
-        };
-
-
-        openPasswordModal();
-
-    }
-
-
-    let pendingLeaveData = null;
-
-
-    /* =====================================================
-       UPDATE PENDING LEAVE COUNT
-    ===================================================== */
-
-    function updatePendingLeaveCount(leaves) {
-
-        const count =
-            (leaves || []).filter(
-                function (leave) {
-
-                    return String(
-                        leave.status || ""
-                    ).toUpperCase() === "PENDING";
-
-                }
-            ).length;
-
-
-        document.getElementById(
-            "pendingLeaves"
-        ).textContent =
-            count;
-
-    }
-
-
-    /* =====================================================
-       MONTHLY REPORT
-    ===================================================== */
-
-    async function loadMonthlyReport() {
-
-        const year =
-            document.getElementById(
-                "reportYear"
-            ).value;
-
-
-        const month =
-            document.getElementById(
-                "reportMonth"
-            ).value;
-
-
-        if (!year || !month) {
-            return;
-        }
-
-
-        try {
-
-            const response =
-                await fetch(
-                    `/admin/monthly-report?year=${year}&month=${month}`
-                );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    await getErrorMessage(response)
-                );
-
-            }
-
-
-            const data =
-                await response.json();
-
-
-            renderMonthlyReport(data);
-
-        }
-        catch (error) {
-
-            console.error(error);
-
-            showMessage(
-                "monthlyMessage",
-                error.message,
-                "error"
-            );
-
-        }
-
-    }
-
-
-    /* =====================================================
-       RENDER MONTHLY REPORT
-    ===================================================== */
-
-    function renderMonthlyReport(data) {
-
-        const tbody =
-            document.getElementById(
-                "monthlyTableBody"
-            );
-
-
-        if (!data || data.length === 0) {
-
-            tbody.innerHTML = `
-
-                <tr>
-
-                    <td colspan="8"
-                        class="empty-row">
-
-                        No monthly report data found.
-
-                    </td>
-
-                </tr>
-
-            `;
-
-            return;
-
-        }
-
-
-        tbody.innerHTML =
-            data.map(function (item) {
-
-                return `
-
-                <tr>
-
-                    <td>
-                        ${escapeHtml(
-                            item.employeeId ??
-                            "-"
-                        )}
-                    </td>
-
-                    <td>
-                        ${escapeHtml(
-                            item.employeeCode ??
-                            "-"
-                        )}
-                    </td>
-
-                    <td>
-                        <strong>
-                            ${escapeHtml(
-                                item.employeeName ??
-                                "-"
-                            )}
-                        </strong>
-                    </td>
-
-                    <td>
-                        ${escapeHtml(
-                            item.presentDays ??
-                            0
-                        )}
-                    </td>
-
-                    <td>
-                        ${escapeHtml(
-                            item.absentDays ??
-                            0
-                        )}
-                    </td>
-
-                    <td>
-                        ${escapeHtml(
-                            item.leaveDays ??
-                            0
-                        )}
-                    </td>
-
-                    <td>
-                        ${escapeHtml(
-                            item.permissionDays ??
-                            0
-                        )}
-                    </td>
-
-                    <td>
-                        ${escapeHtml(
-                            item.workingDays ??
-                            0
-                        )}
-                    </td>
-
-                </tr>
-
-                `;
-
-            }).join("");
-
-    }
-
-
-    /* =====================================================
-       HISTORY
-    ===================================================== */
-
-    async function loadHistory() {
-
-        try {
-
-            const response =
-                await fetch(
-                    "/admin/history"
-                );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    await getErrorMessage(response)
-                );
-
-            }
-
-
-            const data =
-                await response.json();
-
-
-            renderHistory(data);
-
-        }
-        catch (error) {
-
-            console.error(error);
-
-            showMessage(
-                "historyMessage",
-                error.message,
-                "error"
-            );
-
-        }
-
-    }
-
-
-    /* =====================================================
-       RENDER HISTORY
-    ===================================================== */
-
-    function renderHistory(data) {
-
-        const tbody =
-            document.getElementById(
-                "historyTableBody"
-            );
-
-
-        if (!data || data.length === 0) {
-
-            tbody.innerHTML = `
-
-                <tr>
-
-                    <td colspan="8"
-                        class="empty-row">
-
-                        No admin history found.
-
-                    </td>
-
-                </tr>
-
-            `;
-
-            return;
-
-        }
-
-
-        tbody.innerHTML =
-            data.map(function (item) {
-
-                const action =
-                    String(
-                        item.action || ""
-                    ).toUpperCase();
-
-
-                let badgeClass =
-                    "badge-blue";
-
-
-                if (
-                    action.includes("DELETE")
-                ) {
-
-                    badgeClass =
-                        "badge-red";
-
-                }
-
-                else if (
-                    action.includes("SALARY")
-                ) {
-
-                    badgeClass =
-                        "badge-orange";
-
-                }
-
-                else if (
-                    action.includes("ADD")
-                ) {
-
-                    badgeClass =
-                        "badge-green";
-
-                }
-
-
-                return `
-
-                <tr>
-
-                    <td>
-                        ${formatDate(
-                            item.actionDate
-                        )}
-                    </td>
-
-                    <td>
-                        ${formatTime(
-                            item.actionTime
-                        )}
-                    </td>
-
-                    <td>
-                        <strong>
-                            ${escapeHtml(
-                                item.adminName ||
-                                "ADMIN"
-                            )}
-                        </strong>
-                    </td>
-
-                    <td>
-
-                        <span class="badge ${badgeClass}">
-                            ${escapeHtml(
-                                action || "-"
-                            )}
-                        </span>
-
-                    </td>
-
-                    <td>
-
-                        ${escapeHtml(
-                            item.employeeName ||
-                            "-"
-                        )}
-
-                        ${
-                            item.employeeCode
-                                ? " (" +
-                                  escapeHtml(
-                                      item.employeeCode
-                                  ) +
-                                  ")"
-                                : ""
-                        }
-
-                    </td>
-
-                    <td>
-                        ${escapeHtml(
-                            item.fieldName ||
-                            "-"
-                        )}
-                    </td>
-
-                    <td>
-                        ${escapeHtml(
-                            item.oldValue ||
-                            "-"
-                        )}
-                    </td>
-
-                    <td>
-                        ${escapeHtml(
-                            item.newValue ||
-                            "-"
-                        )}
-                    </td>
-
-                </tr>
-
-                `;
-
-            }).join("");
-
-    }
-
-
-    /* =====================================================
-       DASHBOARD STATS
-    ===================================================== */
-
-    async function updateDashboardStats() {
-
-        const total =
-            employees.length;
-
-
-        document.getElementById(
-            "totalEmployees"
-        ).textContent =
-            total;
-
-
-        try {
-
-            const response =
-                await fetch(
-                    "/admin/attendance/today"
-                );
-
-
-            if (!response.ok) {
-
-                return;
-
-            }
-
-
-            const data =
-                await response.json();
-
-
-            let present = 0;
-
-            let absent = 0;
-
-
-            if (Array.isArray(data)) {
-
-                data.forEach(function (item) {
-
-                    const status =
-                        String(
-                            item.status || ""
-                        ).toUpperCase();
-
-
-                    if (
-                        status === "PRESENT"
-                    ) {
-
-                        present++;
-
+                    "/admin/employees/" +
+                    pendingEmployeeData.employeeId,
+                    {
+                        method: "DELETE",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify(requestData)
                     }
-
-                    else if (
-                        status === "ABSENT"
-                    ) {
-
-                        absent++;
-
-                    }
-
-                });
-
-            }
+                );
 
 
-            document.getElementById(
-                "presentToday"
-            ).textContent =
-                present;
+            if (!response.ok) {
 
-
-            document.getElementById(
-                "absentToday"
-            ).textContent =
-                absent;
-
-        }
-        catch (error) {
-
-            console.error(
-                "Dashboard attendance error:",
-                error
-            );
-
-        }
-
-    }
-
-
-    /* =====================================================
-       ERROR MESSAGE
-    ===================================================== */
-
-    async function getErrorMessage(response) {
-
-        try {
-
-            const text =
-                await response.text();
-
-
-            if (!text) {
-
-                return (
-                    "Request failed. HTTP " +
-                    response.status
+                throw new Error(
+                    await getErrorMessage(response)
                 );
 
             }
 
 
-            try {
+            closeAdminVerifyModal();
 
-                const json =
-                    JSON.parse(text);
-
-
-                return (
-                    json.message ||
-                    json.error ||
-                    text
-                );
-
-            }
-            catch {
-
-                return text;
-
-            }
-
-        }
-        catch {
-
-            return (
-                "Request failed. HTTP " +
-                response.status
+            showMessage(
+                "employeeMessage",
+                "Employee deleted successfully.",
+                "success"
             );
 
-        }
-
-    }
-
-
-    /* =====================================================
-       MESSAGE
-    ===================================================== */
-
-    function showMessage(
-        elementId,
-        message,
-        type
-    ) {
-
-        const element =
-            document.getElementById(
-                elementId
-            );
-
-
-        if (!element) {
-            return;
-        }
-
-
-        element.textContent =
-            message;
-
-
-        element.className =
-            "message show " +
-            (
-                type === "success"
-                    ? "success"
-                    : "error"
-            );
-
-
-        setTimeout(
-            function () {
-
-                element.classList.remove(
-                    "show"
-                );
-
-            },
-            5000
-        );
-
-    }
-
-
-    /* =====================================================
-       FORMAT NUMBER
-    ===================================================== */
-
-    function formatNumber(value) {
-
-        if (
-            value === null ||
-            value === undefined ||
-            value === ""
-        ) {
-
-            return "0.00";
+            await loadEmployees();
 
         }
 
 
-        const number =
-            Number(value);
+        /* =========================
+           SALARY
+        ========================= */
 
+        else if (pendingAction === "SALARY") {
 
-        if (Number.isNaN(number)) {
+            if (!pendingSalaryData ||
+                !pendingSalaryData.employeeId) {
 
-            return "0.00";
-
-        }
-
-
-        return number.toLocaleString(
-            "en-IN",
-            {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2
-            }
-        );
-
-    }
-
-
-    /* =====================================================
-       FORMAT DATE
-    ===================================================== */
-
-    function formatDate(value) {
-
-        if (!value) {
-            return "-";
-        }
-
-
-        const date =
-            new Date(value);
-
-
-        if (Number.isNaN(
-            date.getTime()
-        )) {
-
-            return escapeHtml(
-                String(value)
-            );
-
-        }
-
-
-        const day =
-            String(
-                date.getDate()
-            ).padStart(2, "0");
-
-
-        const month =
-            String(
-                date.getMonth() + 1
-            ).padStart(2, "0");
-
-
-        const year =
-            date.getFullYear();
-
-
-        return (
-            day +
-            "-" +
-            month +
-            "-" +
-            year
-        );
-
-    }
-
-
-    /* =====================================================
-       FORMAT TIME
-    ===================================================== */
-
-    function formatTime(value) {
-
-        if (!value) {
-            return "-";
-        }
-
-
-        const text =
-            String(value);
-
-
-        if (
-            text.includes(":")
-        ) {
-
-            const parts =
-                text.split(":");
-
-
-            if (parts.length >= 2) {
-
-                let hour =
-                    Number(parts[0]);
-
-
-                const minute =
-                    parts[1];
-
-
-                const second =
-                    parts[2]
-                        ? parts[2].split(".")[0]
-                        : "00";
-
-
-                const ampm =
-                    hour >= 12
-                        ? "PM"
-                        : "AM";
-
-
-                hour =
-                    hour % 12 || 12;
-
-
-                return (
-                    String(hour).padStart(
-                        2,
-                        "0"
-                    ) +
-                    ":" +
-                    minute +
-                    ":" +
-                    second +
-                    " " +
-                    ampm
+                throw new Error(
+                    "Salary employee information not found."
                 );
 
             }
 
-        }
+
+            const requestData = {
+
+                newSalary:
+                    Number(
+                        pendingSalaryData.newSalary
+                    ),
+
+                adminEmail:
+                    adminEmail,
+
+                adminPassword:
+                    adminPassword
+
+            };
 
 
-        return escapeHtml(text);
+            console.log(
+                "Salary update request:",
+                {
+                    employeeId:
+                        pendingSalaryData.employeeId,
 
-    }
+                    newSalary:
+                        requestData.newSalary,
 
-
-    /* =====================================================
-       ESCAPE HTML
-    ===================================================== */
-
-    function escapeHtml(value) {
-
-        if (
-            value === null ||
-            value === undefined
-        ) {
-
-            return "";
-
-        }
-
-
-        return String(value)
-            .replaceAll("&", "&amp;")
-            .replaceAll("<", "&lt;")
-            .replaceAll(">", "&gt;")
-            .replaceAll('"', "&quot;")
-            .replaceAll("'", "&#039;");
-
-    }
-
-
-    /* =====================================================
-       ESCAPE JAVASCRIPT STRING
-    ===================================================== */
-
-    function escapeJs(value) {
-
-        if (
-            value === null ||
-            value === undefined
-        ) {
-
-            return "";
-
-        }
-
-
-        return String(value)
-            .replaceAll("\\", "\\\\")
-            .replaceAll("'", "\\'")
-            .replaceAll("\n", "\\n")
-            .replaceAll("\r", "\\r");
-
-    }
-
-
-    /* =====================================================
-       LOGOUT
-    ===================================================== */
-
-    function logout() {
-
-        const confirmed =
-            confirm(
-                "Are you sure you want to logout?"
+                    adminEmail:
+                        requestData.adminEmail
+                }
             );
 
-
-        if (!confirmed) {
-            return;
-        }
-
-
-        localStorage.removeItem(
-            "adminEmail"
-        );
-
-        localStorage.removeItem(
-            "adminName"
-        );
-
-
-        window.location.href =
-            "admin-login.html";
-
-    }
-
-
-    /* =====================================================
-       PASSWORD MODAL OVERRIDE
-       HANDLE LEAVE ACTIONS
-    ===================================================== */
-
-    const originalConfirmAdminAction =
-        confirmAdminAction;
-
-
-    /*
-       Leave approval/rejection needs to be
-       handled before the normal employee logic.
-    */
-
-    async function processLeaveAction() {
-
-        if (!pendingLeaveData) {
-            return;
-        }
-
-
-        const adminEmail =
-            document.getElementById(
-                "verifyAdminEmail"
-            ).value.trim();
-
-
-        const adminPassword =
-            document.getElementById(
-                "verifyAdminPassword"
-            ).value;
-
-
-        const approve =
-            pendingAction ===
-            "LEAVE_APPROVE";
-
-
-        try {
 
             const response =
                 await fetch(
-                    "/admin/leaves/" +
-                    pendingLeaveData.leaveId +
-                    "/" +
-                    (
-                        approve
-                            ? "approve"
-                            : "reject"
+                    "/admin/salary/" +
+                    encodeURIComponent(
+                        pendingSalaryData.employeeId
                     ),
                     {
                         method: "PUT",
@@ -4533,15 +2295,7 @@
                         },
 
                         body:
-                            JSON.stringify({
-
-                                adminEmail:
-                                    adminEmail,
-
-                                adminPassword:
-                                    adminPassword
-
-                            })
+                            JSON.stringify(requestData)
                     }
                 );
 
@@ -4555,91 +2309,1639 @@
             }
 
 
-            closePasswordModal();
-
-            pendingLeaveData = null;
-
-            await loadLeaves();
-
-            await loadHistory();
+            closeAdminVerifyModal();
 
             showMessage(
-                "leaveMessage",
-                approve
-                    ? "Leave approved successfully."
-                    : "Leave rejected successfully.",
+                "salaryMessage",
+                "Salary updated successfully.",
                 "success"
             );
 
+            pendingSalaryData = null;
+
+            await loadEmployees();
+
+            await calculateSalary();
+
         }
-        catch (error) {
+
+
+        /* =========================
+           IMPORT
+        ========================= */
+
+        else if (pendingAction === "IMPORT") {
+
+            if (!pendingImportFile) {
+
+                throw new Error(
+                    "Excel file not found."
+                );
+
+            }
+
+
+            const formData =
+                new FormData();
+
+            formData.append(
+                "file",
+                pendingImportFile
+            );
+
+            formData.append(
+                "adminEmail",
+                adminEmail
+            );
+
+            formData.append(
+                "adminPassword",
+                adminPassword
+            );
+
+
+            const response =
+                await fetch(
+                    "/admin/employees/import",
+                    {
+                        method: "POST",
+                        body: formData
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    await getErrorMessage(response)
+                );
+
+            }
+
+
+            closeAdminVerifyModal();
 
             showMessage(
-                "leaveMessage",
-                error.message,
-                "error"
+                "employeeMessage",
+                "Employees imported successfully.",
+                "success"
+            );
+
+            pendingImportFile = null;
+
+            await loadEmployees();
+
+        }
+
+
+        /* =========================
+           LEAVE
+        ========================= */
+
+        else if (
+            pendingAction === "LEAVE_APPROVE" ||
+            pendingAction === "LEAVE_REJECT"
+        ) {
+
+            await processLeaveAction(
+                adminEmail,
+                adminPassword
             );
 
         }
+
+
+        pendingAction = null;
+
+    } catch (error) {
+
+        showMessage(
+            "adminVerifyMessage",
+            error.message ||
+            "Action failed.",
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =========================
+   ATTENDANCE
+========================= */
+
+async function loadAttendance() {
+
+    const tbody =
+        document.getElementById(
+            "attendanceTableBody"
+        );
+
+
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="7"
+                class="empty-message">
+                Loading attendance...
+            </td>
+        </tr>
+    `;
+
+
+    try {
+
+        /*
+         * Backend:
+         * GET /admin/attendance
+         */
+
+        const response =
+            await fetch(
+                "/admin/attendance"
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                await getErrorMessage(response)
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        attendanceRecords =
+            Array.isArray(data)
+                ? data
+                : [];
+
+
+        updateAttendanceSummary();
+
+
+        document
+            .getElementById("attendanceCount")
+            .textContent =
+            attendanceRecords.length;
+
+
+        if (currentAttendanceView === "TODAY") {
+
+            renderTodayAttendance();
+
+        } else {
+
+            renderTotalAttendance();
+
+        }
+
+
+    } catch (error) {
+
+        attendanceRecords = [];
+
+        document
+            .getElementById("attendanceCount")
+            .textContent = "0";
+
+        document
+            .getElementById("totalAttendanceCard")
+            .textContent = "0";
+
+        document
+            .getElementById("todayPresentCard")
+            .textContent = "0";
+
+        document
+            .getElementById("todayAttendanceCard")
+            .textContent = "0";
+
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7"
+                    class="empty-message">
+                    ${escapeHtml(
+                        error.message ||
+                        "Unable to load attendance."
+                    )}
+                </td>
+            </tr>
+        `;
+
+    }
+
+}
+
+
+/* =========================
+   ATTENDANCE DATE HELPERS
+========================= */
+
+function getTodayDateString() {
+
+    const today =
+        new Date();
+
+    const year =
+        today.getFullYear();
+
+    const month =
+        String(
+            today.getMonth() + 1
+        ).padStart(2, "0");
+
+    const day =
+        String(
+            today.getDate()
+        ).padStart(2, "0");
+
+    return (
+        year +
+        "-" +
+        month +
+        "-" +
+        day
+    );
+
+}
+
+
+function normalizeAttendanceDate(value) {
+
+    if (!value) {
+        return "";
+    }
+
+    const text =
+        String(value).trim();
+
+    /*
+     * Handles:
+     * 2026-09-19
+     * 2026-09-19T10:30:00
+     * 2026-09-19 10:30:00
+     */
+
+    if (text.length >= 10) {
+
+        return text.substring(0, 10);
+
+    }
+
+    return text;
+
+}
+
+
+function isTodayAttendance(item) {
+
+    const attendanceDate =
+        normalizeAttendanceDate(
+            item.attendanceDate
+        );
+
+    return (
+        attendanceDate ===
+        getTodayDateString()
+    );
+
+}
+
+
+/* =========================
+   ATTENDANCE SUMMARY
+========================= */
+
+function updateAttendanceSummary() {
+
+    const total =
+        attendanceRecords.length;
+
+
+    const todayRecords =
+        attendanceRecords.filter(
+            function (item) {
+                return isTodayAttendance(item);
+            }
+        );
+
+
+    const todayPresent =
+        todayRecords.filter(
+            function (item) {
+
+                return (
+                    String(
+                        item.status || ""
+                    ).toUpperCase() ===
+                    "PRESENT"
+                );
+
+            }
+        );
+
+
+    document
+        .getElementById(
+            "totalAttendanceCard"
+        )
+        .textContent =
+        total;
+
+
+    document
+        .getElementById(
+            "todayAttendanceCard"
+        )
+        .textContent =
+        todayRecords.length;
+
+
+    document
+        .getElementById(
+            "todayPresentCard"
+        )
+        .textContent =
+        todayPresent.length;
+
+}
+
+
+/* =========================
+   TOTAL ATTENDANCE
+========================= */
+
+function showTotalAttendance() {
+
+    currentAttendanceView =
+        "TOTAL";
+
+
+    document
+        .getElementById(
+            "totalAttendanceTab"
+        )
+        .classList.add("active");
+
+
+    document
+        .getElementById(
+            "todayAttendanceTab"
+        )
+        .classList.remove("active");
+
+
+    renderTotalAttendance();
+
+}
+
+
+function renderTotalAttendance() {
+
+    renderAttendance(
+        attendanceRecords
+    );
+
+}
+
+
+/* =========================
+   TODAY ATTENDANCE
+========================= */
+
+function showTodayAttendance() {
+
+    currentAttendanceView =
+        "TODAY";
+
+
+    document
+        .getElementById(
+            "todayAttendanceTab"
+        )
+        .classList.add("active");
+
+
+    document
+        .getElementById(
+            "totalAttendanceTab"
+        )
+        .classList.remove("active");
+
+
+    renderTodayAttendance();
+
+}
+
+
+function renderTodayAttendance() {
+
+    const todayData =
+        attendanceRecords.filter(
+            function (item) {
+
+                return isTodayAttendance(item);
+
+            }
+        );
+
+
+    renderAttendance(todayData);
+
+}
+
+
+/* =========================
+   RENDER ATTENDANCE
+========================= */
+
+function renderAttendance(data) {
+
+    const tbody =
+        document.getElementById(
+            "attendanceTableBody"
+        );
+
+
+    tbody.innerHTML = "";
+
+
+    if (!data || !data.length) {
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7"
+                    class="empty-message">
+
+                    ${
+                        currentAttendanceView === "TODAY"
+                            ? "No attendance records found for today."
+                            : "No attendance records found."
+                    }
+
+                </td>
+            </tr>
+        `;
+
+        return;
 
     }
 
 
-    /*
-       Wrap confirmAdminAction so leave actions
-       are handled correctly.
-    */
+    data.forEach(function (item) {
 
-    const employeeConfirmFunction =
-        confirmAdminAction;
+        const row =
+            document.createElement("tr");
 
 
-    confirmAdminAction = async function () {
+        row.innerHTML = `
 
-        if (
-            pendingAction ===
-            "LEAVE_APPROVE" ||
-            pendingAction ===
-            "LEAVE_REJECT"
-        ) {
+            <td>
+                ${escapeHtml(
+                    item.employeeId ??
+                    item.id ??
+                    ""
+                )}
+            </td>
 
-            await processLeaveAction();
+            <td>
+                ${escapeHtml(
+                    item.employeeCode ??
+                    ""
+                )}
+            </td>
 
-            return;
+            <td>
+                ${escapeHtml(
+                    item.name ??
+                    ""
+                )}
+            </td>
+
+            <td>
+                ${escapeHtml(
+                    item.attendanceDate ??
+                    ""
+                )}
+            </td>
+
+            <td>
+                ${escapeHtml(
+                    item.checkIn ??
+                    "-"
+                )}
+            </td>
+
+            <td>
+                ${escapeHtml(
+                    item.checkOut ??
+                    "-"
+                )}
+            </td>
+
+            <td class="${getStatusClass(item.status)}">
+                ${escapeHtml(
+                    item.status ??
+                    ""
+                )}
+            </td>
+
+        `;
+
+
+        tbody.appendChild(row);
+
+    });
+
+}
+
+
+/* =========================
+   LEAVES
+========================= */
+
+async function loadLeaves() {
+
+    try {
+
+        const response =
+            await fetch("/admin/leaves");
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                await getErrorMessage(response)
+            );
 
         }
 
 
-        await employeeConfirmFunction();
+        const leaves =
+            await response.json();
+
+
+        renderLeaves(leaves);
+
+
+        document
+            .getElementById("leaveCount")
+            .textContent =
+            leaves.length;
+
+
+    } catch (error) {
+
+        showMessage(
+            "leaveMessage",
+            error.message ||
+            "Unable to load leave requests.",
+            "error"
+        );
+
+    }
+
+}
+
+
+function renderLeaves(leaves) {
+
+    const tbody =
+        document.getElementById(
+            "leaveTableBody"
+        );
+
+
+    tbody.innerHTML = "";
+
+
+    if (!leaves || !leaves.length) {
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8"
+                    class="empty-message">
+                    No leave requests found.
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+
+    leaves.forEach(function (leave) {
+
+        const status =
+            String(
+                leave.status || ""
+            ).toUpperCase();
+
+
+        let actionHtml = "-";
+
+
+        if (status === "PENDING") {
+
+            actionHtml = `
+
+                <button
+                    class="approve-btn"
+                    onclick="approveLeave(${leave.id})">
+                    Approve
+                </button>
+
+                <button
+                    class="reject-btn"
+                    onclick="rejectLeave(${leave.id})">
+                    Reject
+                </button>
+
+            `;
+
+        }
+
+
+        const row =
+            document.createElement("tr");
+
+
+        row.innerHTML = `
+
+            <td>
+                ${escapeHtml(leave.id ?? "")}
+            </td>
+
+            <td>
+                ${escapeHtml(
+                    leave.employeeName ??
+                    leave.name ??
+                    leave.employeeId ??
+                    ""
+                )}
+            </td>
+
+            <td>
+                ${escapeHtml(
+                    leave.leaveDate ??
+                    ""
+                )}
+            </td>
+
+            <td>
+                ${escapeHtml(
+                    leave.leaveType ??
+                    ""
+                )}
+            </td>
+
+            <td>
+                ${escapeHtml(
+                    leave.leaveDuration ??
+                    ""
+                )}
+            </td>
+
+            <td>
+                ${escapeHtml(
+                    leave.reason ??
+                    ""
+                )}
+            </td>
+
+            <td class="${getStatusClass(status)}">
+                ${escapeHtml(status)}
+            </td>
+
+            <td>
+                ${actionHtml}
+            </td>
+
+        `;
+
+
+        tbody.appendChild(row);
+
+    });
+
+}
+
+
+function approveLeave(leaveId) {
+
+    pendingLeaveData = {
+        leaveId: leaveId
+    };
+
+    pendingAction =
+        "LEAVE_APPROVE";
+
+    openAdminVerifyModal();
+
+}
+
+
+function rejectLeave(leaveId) {
+
+    pendingLeaveData = {
+        leaveId: leaveId
+    };
+
+    pendingAction =
+        "LEAVE_REJECT";
+
+    openAdminVerifyModal();
+
+}
+
+
+async function processLeaveAction(
+    adminEmail,
+    adminPassword
+) {
+
+    if (!pendingLeaveData) {
+
+        throw new Error(
+            "Leave information not found."
+        );
+
+    }
+
+
+    const action =
+        pendingAction === "LEAVE_APPROVE"
+            ? "approve"
+            : "reject";
+
+
+    const requestData = {
+
+        adminEmail:
+            adminEmail,
+
+        adminPassword:
+            adminPassword
 
     };
 
 
-    /* =====================================================
-       CLOSE MODAL WHEN CLICKING OUTSIDE
-    ===================================================== */
+    const response =
+        await fetch(
+            "/admin/leaves/" +
+            pendingLeaveData.leaveId +
+            "/" +
+            action,
+            {
+                method: "PUT",
 
-    document.querySelectorAll(".modal")
-        .forEach(function (modal) {
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
 
-            modal.addEventListener(
-                "click",
-                function (event) {
+                body:
+                    JSON.stringify(requestData)
+            }
+        );
 
-                    if (
-                        event.target === modal
-                    ) {
 
-                        modal.classList.remove(
-                            "show"
-                        );
+    if (!response.ok) {
 
-                    }
+        throw new Error(
+            await getErrorMessage(response)
+        );
 
-                }
+    }
+
+
+    closeAdminVerifyModal();
+
+
+    showMessage(
+        "leaveMessage",
+        action === "approve"
+            ? "Leave approved successfully."
+            : "Leave rejected successfully.",
+        "success"
+    );
+
+
+    pendingLeaveData = null;
+
+    pendingAction = null;
+
+    await loadLeaves();
+
+}
+
+
+/* =========================
+   SALARY
+========================= */
+
+async function calculateSalary() {
+
+    const year =
+        document.getElementById(
+            "salaryYear"
+        ).value;
+
+
+    const month =
+        document.getElementById(
+            "salaryMonth"
+        ).value;
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/admin/salary/calculate?year=" +
+                encodeURIComponent(year) +
+                "&month=" +
+                encodeURIComponent(month)
             );
 
-        });
+
+        if (!response.ok) {
+
+            throw new Error(
+                await getErrorMessage(response)
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        renderSalary(data);
+
+
+    } catch (error) {
+
+        showMessage(
+            "salaryMessage",
+            error.message ||
+            "Unable to calculate salary.",
+            "error"
+        );
+
+    }
+
+}
+
+
+function renderSalary(data) {
+
+    const tbody =
+        document.getElementById(
+            "salaryTableBody"
+        );
+
+
+    tbody.innerHTML = "";
+
+
+    if (!data || !data.length) {
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="6"
+                    class="empty-message">
+                    No salary records found.
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+
+    data.forEach(function (item) {
+
+        const employeeId =
+            item.employeeId ??
+            item.id;
+
+
+        const salaryValue =
+            Number(
+                item.salary ??
+                item.newSalary ??
+                0
+            );
+
+
+        const row =
+            document.createElement("tr");
+
+
+        row.innerHTML = `
+
+            <td>
+                ${escapeHtml(employeeId ?? "")}
+            </td>
+
+            <td>
+                ${escapeHtml(
+                    item.employeeCode ??
+                    ""
+                )}
+            </td>
+
+            <td>
+                ${escapeHtml(
+                    item.name ??
+                    ""
+                )}
+            </td>
+
+            <td>
+                ${escapeHtml(
+                    item.role ??
+                    "EMPLOYEE"
+                )}
+            </td>
+
+            <td class="salary-value">
+                ₹${formatNumber(salaryValue)}
+            </td>
+
+            <td>
+
+                <button
+                    class="edit-btn"
+                    onclick="editSalary(
+                        ${employeeId},
+                        ${salaryValue}
+                    )">
+                    Edit Salary
+                </button>
+
+            </td>
+
+        `;
+
+
+        tbody.appendChild(row);
+
+    });
+
+}
+
+
+/* =========================
+   EDIT SALARY
+========================= */
+
+function editSalary(
+    employeeId,
+    currentSalary
+) {
+
+    if (
+        employeeId === null ||
+        employeeId === undefined ||
+        employeeId === ""
+    ) {
+
+        showMessage(
+            "salaryMessage",
+            "Employee ID not found. Cannot update salary.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    const newSalary =
+        prompt(
+            "Enter new salary:",
+            currentSalary || ""
+        );
+
+
+    if (newSalary === null) {
+        return;
+    }
+
+
+    const cleanSalary =
+        String(newSalary).trim();
+
+
+    if (!cleanSalary) {
+
+        alert(
+            "Please enter salary."
+        );
+
+        return;
+
+    }
+
+
+    const salary =
+        Number(cleanSalary);
+
+
+    if (
+        !Number.isFinite(salary) ||
+        salary < 0
+    ) {
+
+        alert(
+            "Please enter a valid salary."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        Number(currentSalary) ===
+        Number(salary)
+    ) {
+
+        alert(
+            "No salary change detected."
+        );
+
+        return;
+
+    }
+
+
+    pendingSalaryData = {
+
+        employeeId:
+            Number(employeeId),
+
+        newSalary:
+            salary
+
+    };
+
+
+    pendingAction = "SALARY";
+
+
+    openAdminVerifyModal();
+
+}
+
+
+/* =========================
+   MONTHLY REPORT
+========================= */
+
+async function loadMonthlyReport() {
+
+    const year =
+        document.getElementById(
+            "reportYear"
+        ).value;
+
+
+    const month =
+        document.getElementById(
+            "reportMonth"
+        ).value;
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/admin/monthly-report?year=" +
+                encodeURIComponent(year) +
+                "&month=" +
+                encodeURIComponent(month)
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                await getErrorMessage(response)
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        renderMonthlyReport(data);
+
+
+    } catch (error) {
+
+        showMessage(
+            "monthlyMessage",
+            error.message ||
+            "Unable to load monthly report.",
+            "error"
+        );
+
+    }
+
+}
+
+
+function renderMonthlyReport(data) {
+
+    const tbody =
+        document.getElementById(
+            "monthlyReportBody"
+        );
+
+
+    tbody.innerHTML = "";
+
+
+    if (!data || !data.length) {
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7"
+                    class="empty-message">
+                    No monthly report found.
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+
+    data.forEach(function (item) {
+
+        const row =
+            document.createElement("tr");
+
+
+        row.innerHTML = `
+
+            <td>
+                ${escapeHtml(
+                    item.employeeId ??
+                    item.id ??
+                    ""
+                )}
+            </td>
+
+            <td>
+                ${escapeHtml(
+                    item.employeeCode ??
+                    ""
+                )}
+            </td>
+
+            <td>
+                ${escapeHtml(
+                    item.name ??
+                    ""
+                )}
+            </td>
+
+            <td>
+                ${escapeHtml(
+                    item.present ??
+                    item.presentDays ??
+                    0
+                )}
+            </td>
+
+            <td>
+                ${escapeHtml(
+                    item.absent ??
+                    item.absentDays ??
+                    0
+                )}
+            </td>
+
+            <td>
+                ${escapeHtml(
+                    item.leave ??
+                    item.leaveDays ??
+                    0
+                )}
+            </td>
+
+            <td>
+                ${escapeHtml(
+                    item.totalDays ??
+                    0
+                )}
+            </td>
+
+        `;
+
+
+        tbody.appendChild(row);
+
+    });
+
+}
+
+
+/* =========================
+   HISTORY
+========================= */
+
+async function loadHistory() {
+
+    try {
+
+        const response =
+            await fetch("/admin/history");
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                await getErrorMessage(response)
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        renderHistory(data);
+
+
+    } catch (error) {
+
+        showMessage(
+            "historyMessage",
+            error.message ||
+            "Unable to load history.",
+            "error"
+        );
+
+    }
+
+}
+
+
+function renderHistory(data) {
+
+    const tbody =
+        document.getElementById(
+            "historyTableBody"
+        );
+
+
+    tbody.innerHTML = "";
+
+
+    if (!data || !data.length) {
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5"
+                    class="empty-message">
+                    No history found.
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+
+    data.forEach(function (item) {
+
+        const row =
+            document.createElement("tr");
+
+
+        row.innerHTML = `
+
+            <td>
+                ${escapeHtml(
+                    item.id ??
+                    ""
+                )}
+            </td>
+
+            <td>
+                ${escapeHtml(
+                    item.action ??
+                    item.actionType ??
+                    ""
+                )}
+            </td>
+
+            <td>
+                ${escapeHtml(
+                    item.employeeName ??
+                    item.employeeId ??
+                    ""
+                )}
+            </td>
+
+            <td>
+                ${escapeHtml(
+                    item.details ??
+                    item.description ??
+                    ""
+                )}
+            </td>
+
+            <td>
+                ${escapeHtml(
+                    item.createdAt ??
+                    item.timestamp ??
+                    ""
+                )}
+            </td>
+
+        `;
+
+
+        tbody.appendChild(row);
+
+    });
+
+}
+
+
+/* =========================
+   EXCEL IMPORT
+========================= */
+
+function prepareExcelImport(input) {
+
+    if (
+        !input.files ||
+        !input.files.length
+    ) {
+        return;
+    }
+
+
+    pendingImportFile =
+        input.files[0];
+
+    pendingAction =
+        "IMPORT";
+
+    openAdminVerifyModal();
+
+}
+
+
+/* =========================
+   MESSAGE
+========================= */
+
+function showMessage(
+    elementId,
+    message,
+    type
+) {
+
+    const element =
+        document.getElementById(elementId);
+
+
+    if (!element) {
+        return;
+    }
+
+
+    element.textContent =
+        message;
+
+
+    element.className =
+        "message show " +
+        type;
+
+
+    setTimeout(function () {
+
+        element.className =
+            "message";
+
+    }, 5000);
+
+}
+
+
+/* =========================
+   ERROR
+========================= */
+
+async function getErrorMessage(response) {
+
+    try {
+
+        const text =
+            await response.text();
+
+
+        if (!text) {
+
+            return (
+                "Request failed. HTTP " +
+                response.status
+            );
+
+        }
+
+
+        try {
+
+            const json =
+                JSON.parse(text);
+
+
+            return (
+                json.message ||
+                json.error ||
+                json.details ||
+                text
+            );
+
+
+        } catch (e) {
+
+            return text;
+
+        }
+
+
+    } catch (error) {
+
+        return (
+            "Request failed. HTTP " +
+            response.status
+        );
+
+    }
+
+}
+
+
+/* =========================
+   STATUS CLASS
+========================= */
+
+function getStatusClass(status) {
+
+    const value =
+        String(status || "")
+            .toUpperCase();
+
+
+    if (
+        value === "APPROVED" ||
+        value === "PRESENT" ||
+        value === "COMPLETED" ||
+        value === "WORKING"
+    ) {
+
+        return "approved";
+
+    }
+
+
+    if (
+        value === "REJECTED" ||
+        value === "ABSENT" ||
+        value === "EARLY_EXIT"
+    ) {
+
+        return "rejected";
+
+    }
+
+
+    if (
+        value === "PENDING" ||
+        value === "LATE"
+    ) {
+
+        return "pending";
+
+    }
+
+
+    return "";
+
+}
+
+
+/* =========================
+   NUMBER FORMAT
+========================= */
+
+function formatNumber(value) {
+
+    const number =
+        Number(value);
+
+
+    if (!Number.isFinite(number)) {
+        return "0";
+    }
+
+
+    return number.toLocaleString("en-IN");
+
+}
+
+
+/* =========================
+   HTML ESCAPE
+========================= */
+
+function escapeHtml(value) {
+
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+function logout() {
+
+    localStorage.removeItem("adminEmail");
+
+    localStorage.removeItem("adminName");
+
+    window.location.href =
+        "admin-login.html";
+
+}
+
+
+/* =========================
+   MODAL OUTSIDE CLICK
+========================= */
+
+window.addEventListener(
+    "click",
+    function (event) {
+
+        const employeeModal =
+            document.getElementById(
+                "employeeModal"
+            );
+
+        const adminVerifyModal =
+            document.getElementById(
+                "adminVerifyModal"
+            );
+
+
+        if (event.target === employeeModal) {
+
+            closeEmployeeModal();
+
+        }
+
+
+        if (event.target === adminVerifyModal) {
+
+            closeAdminVerifyModal();
+
+        }
+
+    }
+);
 
 </script>
 
