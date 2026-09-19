@@ -7,6 +7,11 @@ import java.time.LocalTime;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = {
+        "https://attendance-management-3d-webinar.vercel.app",
+        "https://attendance-management-git-main-3d-webinar.vercel.app",
+        "https://attendance-management-lhsosyu8t-3d-webinar.vercel.app"
+})
 @RequestMapping("/attendance")
 public class AttendanceController {
 
