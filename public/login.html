@@ -261,10 +261,7 @@
                     <button
                         type="button"
                         class="eye-btn"
-                        onclick="togglePassword(
-                            'password',
-                            this
-                        )">
+                        onclick="togglePassword('password', this)">
 
                         👁
 
@@ -362,10 +359,7 @@
                     <button
                         type="button"
                         class="eye-btn"
-                        onclick="togglePassword(
-                            'newPassword',
-                            this
-                        )">
+                        onclick="togglePassword('newPassword', this)">
 
                         👁
 
@@ -396,10 +390,7 @@
                     <button
                         type="button"
                         class="eye-btn"
-                        onclick="togglePassword(
-                            'confirmPassword',
-                            this
-                        )">
+                        onclick="togglePassword('confirmPassword', this)">
 
                         👁
 
@@ -449,33 +440,30 @@
 
     <script>
 
+        // ==========================================
+        // RENDER BACKEND URL
+        // ==========================================
+
+        const API_BASE_URL =
+            "https://attendance-management-d5h6.onrender.com";
+
 
         // ==========================================
         // PASSWORD SHOW / HIDE
         // ==========================================
 
-        function togglePassword(
-            inputId,
-            button
-        ) {
+        function togglePassword(inputId, button) {
 
             const input =
-                document.getElementById(
-                    inputId
-                );
+                document.getElementById(inputId);
 
-
-            if (
-                input.type === "password"
-            ) {
+            if (input.type === "password") {
 
                 input.type = "text";
 
                 button.innerText = "🙈";
 
-            }
-
-            else {
+            } else {
 
                 input.type = "password";
 
@@ -494,21 +482,13 @@
         function login() {
 
             const email =
-                document.getElementById(
-                    "email"
-                ).value.trim();
-
+                document.getElementById("email").value.trim();
 
             const password =
-                document.getElementById(
-                    "password"
-                ).value;
-
+                document.getElementById("password").value;
 
             const message =
-                document.getElementById(
-                    "message"
-                );
+                document.getElementById("message");
 
 
             // EMAIL
@@ -518,8 +498,7 @@
                 message.innerText =
                     "Please enter your employee email.";
 
-                message.style.color =
-                    "red";
+                message.style.color = "red";
 
                 return;
 
@@ -533,8 +512,7 @@
                 message.innerText =
                     "Please enter your password.";
 
-                message.style.color =
-                    "red";
+                message.style.color = "red";
 
                 return;
 
@@ -553,7 +531,7 @@
             // ==================================
 
             fetch(
-                `/employee/login?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
+                `${API_BASE_URL}/employee/login?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
                 {
                     method: "POST"
                 }
@@ -566,9 +544,7 @@
 
                         if (!response.ok) {
 
-                            throw new Error(
-                                data
-                            );
+                            throw new Error(data);
 
                         }
 
@@ -581,73 +557,52 @@
 
             .then(data => {
 
-
                 // ==================================
                 // FIRST LOGIN
                 // ==================================
 
                 if (
-                    data ===
-                    "FIRST_LOGIN_REQUIRED"
+                    data === "FIRST_LOGIN_REQUIRED"
                 ) {
-
 
                     document.getElementById(
                         "loginSection"
-                    ).style.display =
-                        "none";
+                    ).style.display = "none";
 
 
                     document.getElementById(
                         "passwordSetupSection"
-                    ).style.display =
-                        "block";
+                    ).style.display = "block";
 
-
-                    /*
-                     * IMPORTANT
-                     *
-                     * Email is NOT automatically
-                     * filled here.
-                     *
-                     * Employee must manually
-                     * enter the email again.
-                     */
 
                     document.getElementById(
                         "setupEmail"
-                    ).value =
-                        "";
+                    ).value = "";
 
 
                     document.getElementById(
                         "newPassword"
-                    ).value =
-                        "";
+                    ).value = "";
 
 
                     document.getElementById(
                         "confirmPassword"
-                    ).value =
-                        "";
+                    ).value = "";
 
 
                     document.getElementById(
                         "passwordMatchMessage"
-                    ).innerText =
-                        "";
+                    ).innerText = "";
 
 
                     document.getElementById(
                         "setupMessage"
-                    ).innerText =
-                        "";
+                    ).innerText = "";
 
 
                     document.getElementById(
                         "continueBtn"
-                    ).disabled =
-                        true;
+                    ).disabled = true;
 
 
                     return;
@@ -661,10 +616,8 @@
                 // ==================================
 
                 if (
-                    data ===
-                    "Login Successful"
+                    data === "Login Successful"
                 ) {
-
 
                     localStorage.setItem(
                         "employeeEmail",
@@ -690,8 +643,7 @@
                     data ||
                     "Invalid Email or Password";
 
-                message.style.color =
-                    "red";
+                message.style.color = "red";
 
             })
 
@@ -704,8 +656,7 @@
                     error.message ||
                     "Server connection failed.";
 
-                message.style.color =
-                    "red";
+                message.style.color = "red";
 
             });
 
@@ -749,8 +700,7 @@
                 );
 
 
-            continueBtn.disabled =
-                true;
+            continueBtn.disabled = true;
 
 
             // NOTHING ENTERED
@@ -760,8 +710,7 @@
                 confirmPassword === ""
             ) {
 
-                matchMessage.innerText =
-                    "";
+                matchMessage.innerText = "";
 
                 return;
 
@@ -778,8 +727,7 @@
                 matchMessage.innerText =
                     "❌ Password must contain at least 6 characters.";
 
-                matchMessage.style.color =
-                    "red";
+                matchMessage.style.color = "red";
 
                 return;
 
@@ -792,8 +740,7 @@
                 confirmPassword === ""
             ) {
 
-                matchMessage.innerText =
-                    "";
+                matchMessage.innerText = "";
 
                 return;
 
@@ -803,8 +750,7 @@
             // PASSWORD MATCH
 
             if (
-                newPassword ===
-                confirmPassword
+                newPassword === confirmPassword
             ) {
 
                 matchMessage.innerText =
@@ -819,20 +765,16 @@
                     newPassword.length >= 6
                 ) {
 
-                    continueBtn.disabled =
-                        false;
+                    continueBtn.disabled = false;
 
                 }
 
-            }
-
-            else {
+            } else {
 
                 matchMessage.innerText =
                     "❌ Passwords do not match";
 
-                matchMessage.style.color =
-                    "red";
+                matchMessage.style.color = "red";
 
             }
 
@@ -877,8 +819,7 @@
                 setupMessage.innerText =
                     "Please enter your employee email.";
 
-                setupMessage.style.color =
-                    "red";
+                setupMessage.style.color = "red";
 
                 return;
 
@@ -892,8 +833,7 @@
                 setupMessage.innerText =
                     "Please enter a password.";
 
-                setupMessage.style.color =
-                    "red";
+                setupMessage.style.color = "red";
 
                 return;
 
@@ -907,8 +847,7 @@
                 setupMessage.innerText =
                     "Password must contain at least 6 characters.";
 
-                setupMessage.style.color =
-                    "red";
+                setupMessage.style.color = "red";
 
                 return;
 
@@ -922,8 +861,7 @@
                 setupMessage.innerText =
                     "Please confirm your password.";
 
-                setupMessage.style.color =
-                    "red";
+                setupMessage.style.color = "red";
 
                 return;
 
@@ -933,15 +871,13 @@
             // MATCH
 
             if (
-                newPassword !==
-                confirmPassword
+                newPassword !== confirmPassword
             ) {
 
                 setupMessage.innerText =
                     "Password and Confirm Password do not match.";
 
-                setupMessage.style.color =
-                    "red";
+                setupMessage.style.color = "red";
 
                 return;
 
@@ -960,28 +896,21 @@
             // ==================================
 
             fetch(
-                "/employee/first-password",
+                `${API_BASE_URL}/employee/first-password`,
                 {
-
                     method: "POST",
 
                     headers: {
-
-                        "Content-Type":
-                            "application/json"
-
+                        "Content-Type": "application/json"
                     },
 
                     body: JSON.stringify({
 
-                        email:
-                            email,
+                        email: email,
 
-                        newPassword:
-                            newPassword,
+                        newPassword: newPassword,
 
-                        confirmPassword:
-                            confirmPassword
+                        confirmPassword: confirmPassword
 
                     })
 
@@ -996,9 +925,7 @@
 
                         if (!response.ok) {
 
-                            throw new Error(
-                                data
-                            );
+                            throw new Error(data);
 
                         }
 
@@ -1011,7 +938,6 @@
 
             .then(data => {
 
-
                 // ==================================
                 // SUCCESS
                 // ==================================
@@ -1020,7 +946,6 @@
                     data ===
                     "Password set successfully"
                 ) {
-
 
                     localStorage.setItem(
                         "employeeEmail",
@@ -1048,11 +973,9 @@
                 }
 
 
-                setupMessage.innerText =
-                    data;
+                setupMessage.innerText = data;
 
-                setupMessage.style.color =
-                    "red";
+                setupMessage.style.color = "red";
 
             })
 
@@ -1065,8 +988,7 @@
                     error.message ||
                     "Password setup failed.";
 
-                setupMessage.style.color =
-                    "red";
+                setupMessage.style.color = "red";
 
             });
 
@@ -1095,26 +1017,22 @@
 
             document.getElementById(
                 "passwordSetupSection"
-            ).style.display =
-                "none";
+            ).style.display = "none";
 
 
             document.getElementById(
                 "loginSection"
-            ).style.display =
-                "block";
+            ).style.display = "block";
 
 
             document.getElementById(
                 "password"
-            ).value =
-                "";
+            ).value = "";
 
 
             document.getElementById(
                 "message"
-            ).innerText =
-                "";
+            ).innerText = "";
 
         }
 
