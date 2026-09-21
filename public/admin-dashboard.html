@@ -2284,100 +2284,148 @@
        SAVE EMPLOYEE
     ===================================================== */
 
-    async function saveEmployee() {
+  async function saveEmployee() {
 
-        const name =
-            document.getElementById(
-                "employeeName"
-            ).value.trim();
+    const name =
+        document.getElementById(
+            "employeeName"
+        ).value.trim();
 
+    const email =
+        document.getElementById(
+            "employeeEmail"
+        ).value.trim();
 
-        const email =
-            document.getElementById(
-                "employeeEmail"
-            ).value.trim();
+    const contactNumber =
+        document.getElementById(
+            "employeeContact"
+        ).value.trim();
 
+    const role =
+        document.getElementById(
+            "employeeRole"
+        ).value.trim();
 
-        const contactNumber =
-            document.getElementById(
-                "employeeContact"
-            ).value.trim();
-
-
-        const role =
-            document.getElementById(
-                "employeeRole"
-            ).value.trim();
-
-
-        const joiningDate =
-            document.getElementById(
-                "employeeJoiningDate"
-            ).value;
+    const joiningDate =
+        document.getElementById(
+            "employeeJoiningDate"
+        ).value;
 
 
-        if (
-            !name ||
-            !email ||
-            !role ||
-            !joiningDate
-        ) {
+    if (!name) {
 
-            alert(
-                "Please fill all required employee details."
-            );
+        alert(
+            "Please enter Employee Name."
+        );
 
-            return;
+        document.getElementById(
+            "employeeName"
+        ).focus();
 
-        }
+        return;
+    }
 
 
-        const employeeData = {
+    if (!email) {
 
-            name:
-                name,
+        alert(
+            "Please enter Employee Email."
+        );
 
-            email:
-                email,
+        document.getElementById(
+            "employeeEmail"
+        ).focus();
 
-            contactNumber:
-                contactNumber,
-
-            role:
-                role,
-
-            joiningDate:
-                joiningDate
-
-        };
+        return;
+    }
 
 
-        pendingAction =
-            currentEmployeeAction;
+    if (!contactNumber) {
+
+        alert(
+            "Please enter Contact Number."
+        );
+
+        document.getElementById(
+            "employeeContact"
+        ).focus();
+
+        return;
+    }
 
 
-        pendingEmployeeData =
-            employeeData;
+    if (!role) {
+
+        alert(
+            "Please select Employee Role."
+        );
+
+        document.getElementById(
+            "employeeRole"
+        ).focus();
+
+        return;
+    }
 
 
-        if (
-            currentEmployeeAction ===
-            "EDIT"
-        ) {
+    if (!joiningDate) {
 
-            pendingEmployeeData.employeeId =
-                editingEmployeeId;
+        alert(
+            "Please select Joining Date."
+        );
 
-        }
+        document.getElementById(
+            "employeeJoiningDate"
+        ).focus();
+
+        return;
+    }
 
 
-        closeEmployeeModal();
+    const employeeData = {
 
-        openPasswordModal();
+        name:
+            name,
+
+        email:
+            email,
+
+        contactNumber:
+            contactNumber,
+
+        role:
+            role,
+
+        joiningDate:
+            joiningDate
+
+    };
+
+
+    pendingAction =
+        currentEmployeeAction;
+
+
+    pendingEmployeeData =
+        employeeData;
+
+
+    if (
+        currentEmployeeAction ===
+        "EDIT"
+    ) {
+
+        pendingEmployeeData.employeeId =
+            editingEmployeeId;
 
     }
 
 
+    closeEmployeeModal();
+
+    openPasswordModal();
+
+}
     /* =====================================================
        DELETE EMPLOYEE
     ===================================================== */
