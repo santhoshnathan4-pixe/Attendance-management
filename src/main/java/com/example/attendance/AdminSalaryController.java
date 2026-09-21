@@ -42,9 +42,9 @@ public class AdminSalaryController {
         return employeeRepository.findAll()
                 .stream()
                 .filter(employee ->
-                        "EMPLOYEE".equalsIgnoreCase(employee.getRole()))
-                .filter(employee ->
                         Boolean.TRUE.equals(employee.getActive()))
+                .filter(employee ->
+                        !"ADMIN".equalsIgnoreCase(employee.getRole()))
                 .map(employee ->
                         new AdminSalaryResponse(
                                 employee.getId(),
@@ -120,12 +120,15 @@ public class AdminSalaryController {
             );
         }
 
-        if (!"EMPLOYEE".equalsIgnoreCase(
-                employee.getRole())) {
+        // -----------------------------------------
+        // ADMIN ROLE CANNOT HAVE SALARY
+        // -----------------------------------------
+
+        if ("ADMIN".equalsIgnoreCase(employee.getRole())) {
 
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    "Salary can be updated only for employees"
+                    "Salary cannot be updated for admin"
             );
         }
 
@@ -201,9 +204,9 @@ public class AdminSalaryController {
         return employeeRepository.findAll()
                 .stream()
                 .filter(employee ->
-                        "EMPLOYEE".equalsIgnoreCase(employee.getRole()))
-                .filter(employee ->
                         Boolean.TRUE.equals(employee.getActive()))
+                .filter(employee ->
+                        !"ADMIN".equalsIgnoreCase(employee.getRole()))
                 .map(employee -> {
 
                     // =========================================
