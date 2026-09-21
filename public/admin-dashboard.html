@@ -4076,179 +4076,169 @@ if (
        MONTHLY REPORT
     ===================================================== */
 
-    async function loadMonthlyReport() {
+  async function loadMonthlyReport() {
 
-        const year =
-            document.getElementById(
-                "reportYear"
-            ).value;
+    const year =
+        document.getElementById(
+            "reportYear"
+        ).value;
 
+    const month =
+        document.getElementById(
+            "reportMonth"
+        ).value;
 
-        const month =
-            document.getElementById(
-                "reportMonth"
-            ).value;
-
-
-        if (!year || !month) {
-            return;
-        }
-
-
-        try {
-
-            const response =
-                await apiFetch(
-                    `/admin/monthly-report?year=${year}&month=${month}`
-                );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    await getErrorMessage(
-                        response
-                    )
-                );
-
-            }
-
-
-            const data =
-                await response.json();
-
-
-            renderMonthlyReport(
-                data
-            );
-
-        }
-        catch (error) {
-
-            console.error(error);
-
-
-            showMessage(
-                "monthlyMessage",
-                error.message,
-                "error"
-            );
-
-        }
-
+    if (!year || !month) {
+        return;
     }
 
+    try {
 
-    function renderMonthlyReport(
-        data
-    ) {
-
-        const tbody =
-            document.getElementById(
-                "monthlyTableBody"
+        const response =
+            await apiFetch(
+                `/admin/monthly-report?year=${year}&month=${month}`
             );
 
+        if (!response.ok) {
 
-        if (
-            !data ||
-            data.length === 0
-        ) {
+            throw new Error(
+                await getErrorMessage(
+                    response
+                )
+            );
+        }
 
-            tbody.innerHTML = `
+        const data =
+            await response.json();
+
+        renderMonthlyReport(
+            data
+        );
+
+    }
+    catch (error) {
+
+        console.error(error);
+
+        showMessage(
+            "monthlyMessage",
+            error.message,
+            "error"
+        );
+    }
+}
+
+
+function renderMonthlyReport(
+    data
+) {
+
+    const tbody =
+        document.getElementById(
+            "monthlyTableBody"
+        );
+
+    if (
+        !data ||
+        data.length === 0
+    ) {
+
+        tbody.innerHTML = `
+
+            <tr>
+
+                <td colspan="8"
+                    class="empty-row">
+
+                    No monthly report data found.
+
+                </td>
+
+            </tr>
+
+        `;
+
+        return;
+    }
+
+    tbody.innerHTML =
+        data.map(
+            function (item) {
+
+                const leaveDays =
+                    Number(item.sickLeave || 0) +
+                    Number(item.casualLeave || 0) +
+                    Number(item.halfDay || 0);
+
+                return `
 
                 <tr>
 
-                    <td colspan="8"
-                        class="empty-row">
+                    <td>
+                        ${escapeHtml(
+                            item.employeeId ??
+                            "-"
+                        )}
+                    </td>
 
-                        No monthly report data found.
+                    <td>
+                        ${escapeHtml(
+                            item.employeeCode ??
+                            "-"
+                        )}
+                    </td>
 
+                    <td>
+                        <strong>
+                            ${escapeHtml(
+                                item.employeeName ??
+                                "-"
+                            )}
+                        </strong>
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            item.presentDays ??
+                            0
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            item.absent ??
+                            0
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            leaveDays
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            item.permission ??
+                            0
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            item.workingDays ??
+                            0
+                        )}
                     </td>
 
                 </tr>
 
-            `;
+                `;
 
-            return;
+            }
+        ).join("");
 
-        }
-
-
-        tbody.innerHTML =
-            data.map(
-                function (item) {
-
-                    return `
-
-                    <tr>
-
-                        <td>
-                            ${escapeHtml(
-                                item.employeeId ??
-                                "-"
-                            )}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(
-                                item.employeeCode ??
-                                "-"
-                            )}
-                        </td>
-
-                        <td>
-                            <strong>
-                                ${escapeHtml(
-                                    item.employeeName ??
-                                    "-"
-                                )}
-                            </strong>
-                        </td>
-
-                        <td>
-                            ${escapeHtml(
-                                item.presentDays ??
-                                0
-                            )}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(
-                                item.absentDays ??
-                                0
-                            )}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(
-                                item.leaveDays ??
-                                0
-                            )}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(
-                                item.permissionDays ??
-                                0
-                            )}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(
-                                item.workingDays ??
-                                0
-                            )}
-                        </td>
-
-                    </tr>
-
-                    `;
-
-                }
-            ).join("");
-
-    }
-
+}
 
     /* =====================================================
        HISTORY
