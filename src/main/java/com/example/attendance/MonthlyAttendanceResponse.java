@@ -2,6 +2,7 @@ package com.example.attendance;
 
 public class MonthlyAttendanceResponse {
 
+    private Integer employeeId;
     private String employeeCode;
     private String employeeName;
 
@@ -11,8 +12,10 @@ public class MonthlyAttendanceResponse {
     private double halfDay;
     private int permission;
     private double absent;
+    private int workingDays;
 
     public MonthlyAttendanceResponse(
+            Integer employeeId,
             String employeeCode,
             String employeeName,
             int presentDays,
@@ -20,8 +23,10 @@ public class MonthlyAttendanceResponse {
             double casualLeave,
             double halfDay,
             int permission,
-            double absent) {
+            double absent,
+            int workingDays) {
 
+        this.employeeId = employeeId;
         this.employeeCode = employeeCode;
         this.employeeName = employeeName;
         this.presentDays = presentDays;
@@ -30,6 +35,11 @@ public class MonthlyAttendanceResponse {
         this.halfDay = halfDay;
         this.permission = permission;
         this.absent = absent;
+        this.workingDays = workingDays;
+    }
+
+    public Integer getEmployeeId() {
+        return employeeId;
     }
 
     public String getEmployeeCode() {
@@ -63,5 +73,8 @@ public class MonthlyAttendanceResponse {
     public double getAbsent() {
         return absent;
     }
-}
 
+    public int getWorkingDays() {
+        return workingDays;
+    }
+}
