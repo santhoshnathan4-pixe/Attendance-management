@@ -4,19 +4,25 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
 
 @RestController
 @CrossOrigin(origins = {
         "https://attendance-management-3d-webinar.vercel.app",
         "https://attendance-management-git-main-3d-webinar.vercel.app",
-        "https://attendance-management-lhsosyu8t-3d-webinar.vercel.app"
+        "https://attendance-management-lhsosyu8t-3d-webinar.vercel.app",
+        "https://attendance-management-nine-beige.vercel.app"
 })
 @RequestMapping("/attendance")
 public class AttendanceController {
 
     private final AttendanceRepository attendanceRepository;
     private final EmployeeRepository employeeRepository;
+
+    // India Time Zone
+    private static final ZoneId INDIA_ZONE =
+            ZoneId.of("Asia/Kolkata");
 
     // Office Timing
     private static final LocalTime OFFICE_START_TIME =
@@ -61,8 +67,11 @@ public class AttendanceController {
             return "Attendance is available only for employees";
         }
 
-        LocalDate today = LocalDate.now();
-        LocalTime currentTime = LocalTime.now();
+        LocalDate today =
+                LocalDate.now(INDIA_ZONE);
+
+        LocalTime currentTime =
+                LocalTime.now(INDIA_ZONE);
 
         // Duplicate check-in prevention
         if (attendanceRepository
@@ -121,8 +130,11 @@ public class AttendanceController {
             return "Attendance is available only for employees";
         }
 
-        LocalDate today = LocalDate.now();
-        LocalTime currentTime = LocalTime.now();
+        LocalDate today =
+                LocalDate.now(INDIA_ZONE);
+
+        LocalTime currentTime =
+                LocalTime.now(INDIA_ZONE);
 
         Attendance attendance = attendanceRepository
                 .findByEmployeeIdAndAttendanceDate(
