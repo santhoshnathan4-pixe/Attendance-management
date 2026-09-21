@@ -227,12 +227,12 @@
             }
 
 
-           fetch(
-    `https://attendance-management-d5h6.onrender.com/admin/login?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
-    {
-        method: "POST"
-    }
-)
+            fetch(
+                `https://attendance-management-d5h6.onrender.com/admin/login?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
+                {
+                    method: "POST"
+                }
+            )
 
             .then(response => {
 
@@ -248,10 +248,22 @@
 
                 if (data.success) {
 
-                    console.log("ADMIN LOGIN RESPONSE:", data);
+                    console.log(
+                        "ADMIN LOGIN RESPONSE:",
+                        data
+                    );
+
+                    /*
+                     * Store the email actually used
+                     * for the successful admin login.
+                     *
+                     * This email will automatically
+                     * appear in the admin verification
+                     * popup on the dashboard.
+                     */
                     localStorage.setItem(
                         "adminEmail",
-                        data.email
+                        email
                     );
 
                     localStorage.setItem(
@@ -291,15 +303,18 @@
 
         document
             .getElementById("password")
-            .addEventListener("keypress", function(event) {
+            .addEventListener(
+                "keypress",
+                function(event) {
 
-                if (event.key === "Enter") {
+                    if (event.key === "Enter") {
 
-                    adminLogin();
+                        adminLogin();
+
+                    }
 
                 }
-
-            });
+            );
 
     </script>
 
