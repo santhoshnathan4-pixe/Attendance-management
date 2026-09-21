@@ -3341,36 +3341,38 @@ if (reason.length < 3) {
     }
 
 
-    function closeSalaryModal() {
+function closeSalaryModal() {
 
-        document.getElementById(
-            "salaryModal"
-        ).classList.remove(
+    document.getElementById(
+        "salaryModal"
+    ).classList.remove(
+        "show"
+    );
+
+
+    document.getElementById(
+        "newSalary"
+    ).value =
+        "";
+
+
+    if (
+        !document.getElementById(
+            "passwordModal"
+        ).classList.contains(
             "show"
-        );
+        )
+        &&
+        pendingAction !==
+            "SALARY_UPDATE"
+    ) {
 
-
-        document.getElementById(
-            "newSalary"
-        ).value =
-            "";
-
-
-        if (
-            !document.getElementById(
-                "passwordModal"
-            ).classList.contains(
-                "show"
-            )
-        ) {
-
-            pendingSalaryData =
-                null;
-
-        }
+        pendingSalaryData =
+            null;
 
     }
 
+}
 
     function saveSalaryEdit() {
 
