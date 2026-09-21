@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+
+   <!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -691,7 +692,6 @@
 
     </aside>
 
-
     <main class="main">
 
         <header class="header">
@@ -711,7 +711,6 @@
             </div>
 
         </header>
-
 
         <div class="content">
 
@@ -753,7 +752,6 @@
 
             </section>
 
-
             <section id="employees" class="section">
 
                 <h2 class="section-title">
@@ -794,7 +792,6 @@
 
                 </div>
 
-
                 <div class="table-card">
 
                     <div class="table-wrapper">
@@ -834,7 +831,6 @@
                 </div>
 
             </section>
-
 
             <section id="leave" class="section">
 
@@ -887,7 +883,6 @@
 
             </section>
 
-
             <section id="salary" class="section">
 
                 <h2 class="section-title">
@@ -932,7 +927,6 @@
 
                 </div>
 
-
                 <div class="table-card">
 
                     <div class="table-wrapper">
@@ -973,7 +967,6 @@
                 </div>
 
             </section>
-
 
             <section id="monthly" class="section">
 
@@ -1019,7 +1012,6 @@
 
                 </div>
 
-
                 <div class="table-card">
 
                     <div class="table-wrapper">
@@ -1058,7 +1050,6 @@
                 </div>
 
             </section>
-
 
             <section id="history" class="section">
 
@@ -1119,9 +1110,7 @@
 </div>
 
 
-<!-- =====================================================
-     EMPLOYEE ADD / EDIT MODAL
-===================================================== -->
+<!-- EMPLOYEE MODAL -->
 
 <div id="employeeModal" class="modal">
 
@@ -1140,10 +1129,10 @@
 
         </div>
 
-
         <div class="info-box">
 
             <strong>Employee Code is generated automatically.</strong>
+
             <br>
 
             You do not need to enter Employee ID or Employee Code manually.
@@ -1153,7 +1142,6 @@
             Salary is managed separately from this form.
 
         </div>
-
 
         <div class="form-grid">
 
@@ -1169,7 +1157,6 @@
 
             </div>
 
-
             <div class="form-group">
 
                 <label>Employee Name</label>
@@ -1179,7 +1166,6 @@
                        placeholder="Employee name">
 
             </div>
-
 
             <div class="form-group">
 
@@ -1191,7 +1177,6 @@
 
             </div>
 
-
             <div class="form-group">
 
                 <label>Contact Number</label>
@@ -1201,7 +1186,6 @@
                        placeholder="Contact number">
 
             </div>
-
 
             <div class="form-group">
 
@@ -1241,7 +1225,6 @@
 
             </div>
 
-
             <div class="form-group">
 
                 <label>Joining Date</label>
@@ -1252,7 +1235,6 @@
             </div>
 
         </div>
-
 
         <div class="modal-footer">
 
@@ -1273,9 +1255,7 @@
 </div>
 
 
-<!-- =====================================================
-     ADMIN PASSWORD + REASON MODAL
-===================================================== -->
+<!-- PASSWORD MODAL -->
 
 <div id="passwordModal" class="modal">
 
@@ -1294,7 +1274,6 @@
 
         </div>
 
-
         <div class="warning-box">
 
             <strong>Admin verification required.</strong>
@@ -1310,7 +1289,6 @@
 
         </div>
 
-
         <div class="form-group">
 
             <label>
@@ -1324,9 +1302,7 @@
 
         </div>
 
-
         <br>
-
 
         <div class="form-group">
 
@@ -1340,9 +1316,7 @@
 
         </div>
 
-
         <br>
-
 
         <div class="form-group">
 
@@ -1354,7 +1328,6 @@
                       placeholder="Enter why you are performing this action..."></textarea>
 
         </div>
-
 
         <div class="modal-footer">
 
@@ -1375,9 +1348,7 @@
 </div>
 
 
-<!-- =====================================================
-     SALARY EDIT MODAL
-===================================================== -->
+<!-- SALARY MODAL -->
 
 <div id="salaryModal" class="modal">
 
@@ -1396,14 +1367,12 @@
 
         </div>
 
-
         <div class="info-box">
 
             Salary changes require your own admin password.
             The old and new salary values will be recorded in History.
 
         </div>
-
 
         <div class="form-group">
 
@@ -1416,9 +1385,7 @@
 
         </div>
 
-
         <br>
-
 
         <div class="form-group">
 
@@ -1431,9 +1398,7 @@
 
         </div>
 
-
         <br>
-
 
         <div class="form-group">
 
@@ -1446,7 +1411,6 @@
                    placeholder="Enter new salary">
 
         </div>
-
 
         <div class="modal-footer">
 
@@ -1467,9 +1431,7 @@
 </div>
 
 
-<!-- =====================================================
-     EXCEL IMPORT MODAL
-===================================================== -->
+<!-- EXCEL MODAL -->
 
 <div id="excelImportModal" class="modal">
 
@@ -1487,7 +1449,6 @@
             </button>
 
         </div>
-
 
         <div class="info-box">
 
@@ -1507,7 +1468,6 @@
             Salary is not imported from Excel.
 
         </div>
-
 
         <div class="file-box">
 
@@ -1531,7 +1491,6 @@
 
         </div>
 
-
         <div class="modal-footer">
 
             <button class="btn btn-secondary"
@@ -1554,7 +1513,7 @@
 <script>
 
     /* =====================================================
-       API CONFIGURATION
+       API
     ===================================================== */
 
     const API_BASE_URL =
@@ -1621,10 +1580,14 @@
     function loadAdminInfo() {
 
         const adminEmail =
-            localStorage.getItem("adminEmail");
+            localStorage.getItem(
+                "adminEmail"
+            );
 
         const adminName =
-            localStorage.getItem("adminName");
+            localStorage.getItem(
+                "adminName"
+            );
 
 
         if (adminName) {
@@ -1658,6 +1621,7 @@
         const currentYear =
             new Date().getFullYear();
 
+
         const yearSelectors = [
             "salaryYear",
             "reportYear"
@@ -1669,6 +1633,7 @@
 
                 const select =
                     document.getElementById(id);
+
 
                 if (!select) {
                     return;
@@ -1689,14 +1654,19 @@
                             "option"
                         );
 
+
                     option.value =
                         year;
+
 
                     option.textContent =
                         year;
 
 
-                    if (year === currentYear) {
+                    if (
+                        year ===
+                        currentYear
+                    ) {
 
                         option.selected =
                             true;
@@ -1718,31 +1688,16 @@
             new Date().getMonth() + 1;
 
 
-        const salaryMonth =
-            document.getElementById(
-                "salaryMonth"
-            );
-
-        const reportMonth =
-            document.getElementById(
-                "reportMonth"
-            );
+        document.getElementById(
+            "salaryMonth"
+        ).value =
+            currentMonth;
 
 
-        if (salaryMonth) {
-
-            salaryMonth.value =
-                currentMonth;
-
-        }
-
-
-        if (reportMonth) {
-
-            reportMonth.value =
-                currentMonth;
-
-        }
+        document.getElementById(
+            "reportMonth"
+        ).value =
+            currentMonth;
 
     }
 
@@ -1806,7 +1761,10 @@
         }
 
 
-        if (sectionId === "dashboard") {
+        if (
+            sectionId ===
+            "dashboard"
+        ) {
 
             loadEmployees();
 
@@ -1815,21 +1773,30 @@
         }
 
 
-        if (sectionId === "employees") {
+        if (
+            sectionId ===
+            "employees"
+        ) {
 
             loadEmployees();
 
         }
 
 
-        if (sectionId === "leave") {
+        if (
+            sectionId ===
+            "leave"
+        ) {
 
             loadLeaves();
 
         }
 
 
-        if (sectionId === "salary") {
+        if (
+            sectionId ===
+            "salary"
+        ) {
 
             loadEmployees();
 
@@ -1838,14 +1805,20 @@
         }
 
 
-        if (sectionId === "monthly") {
+        if (
+            sectionId ===
+            "monthly"
+        ) {
 
             loadMonthlyReport();
 
         }
 
 
-        if (sectionId === "history") {
+        if (
+            sectionId ===
+            "history"
+        ) {
 
             loadHistory();
 
@@ -1882,9 +1855,10 @@
             employees =
                 await response.json();
 
+
             renderEmployees();
 
-            updateDashboardStats();
+            await updateDashboardStats();
 
         }
         catch (error) {
@@ -1982,13 +1956,15 @@
 
                         <td>
                             ${escapeHtml(
-                                employee.contactNumber || "-"
+                                employee.contactNumber ||
+                                "-"
                             )}
                         </td>
 
                         <td>
                             ${escapeHtml(
-                                employee.role || "-"
+                                employee.role ||
+                                "-"
                             )}
                         </td>
 
@@ -2036,7 +2012,7 @@
 
 
     /* =====================================================
-       SEARCH EMPLOYEES
+       SEARCH
     ===================================================== */
 
     function filterEmployees() {
@@ -2067,7 +2043,8 @@
                     return (
 
                         String(
-                            employee.id || ""
+                            employee.id ||
+                            ""
                         )
                             .toLowerCase()
                             .includes(search)
@@ -2075,7 +2052,8 @@
                         ||
 
                         String(
-                            employee.employeeCode || ""
+                            employee.employeeCode ||
+                            ""
                         )
                             .toLowerCase()
                             .includes(search)
@@ -2083,7 +2061,8 @@
                         ||
 
                         String(
-                            employee.name || ""
+                            employee.name ||
+                            ""
                         )
                             .toLowerCase()
                             .includes(search)
@@ -2091,7 +2070,8 @@
                         ||
 
                         String(
-                            employee.email || ""
+                            employee.email ||
+                            ""
                         )
                             .toLowerCase()
                             .includes(search)
@@ -2099,7 +2079,8 @@
                         ||
 
                         String(
-                            employee.role || ""
+                            employee.role ||
+                            ""
                         )
                             .toLowerCase()
                             .includes(search)
@@ -2133,92 +2114,108 @@
             employeeId;
 
 
-        document.getElementById(
-            "employeeModal"
-        ).classList.add(
-            "show"
-        );
+        const modal =
+            document.getElementById(
+                "employeeModal"
+            );
 
 
-        if (action === "ADD") {
-
+        const title =
             document.getElementById(
                 "employeeModalTitle"
-            ).textContent =
+            );
+
+
+        if (
+            action ===
+            "ADD"
+        ) {
+
+            title.textContent =
                 "Add Employee";
 
 
             clearEmployeeForm();
 
-            return;
+        }
+        else {
+
+            title.textContent =
+                "Edit Employee";
+
+
+            const employee =
+                employees.find(
+                    function (item) {
+
+                        return Number(
+                            item.id
+                        ) === Number(
+                            employeeId
+                        );
+
+                    }
+                );
+
+
+            if (!employee) {
+
+                alert(
+                    "Employee not found."
+                );
+
+                return;
+
+            }
+
+
+            document.getElementById(
+                "employeeCode"
+            ).value =
+                employee.employeeCode ||
+                "";
+
+
+            document.getElementById(
+                "employeeName"
+            ).value =
+                employee.name ||
+                "";
+
+
+            document.getElementById(
+                "employeeEmail"
+            ).value =
+                employee.email ||
+                "";
+
+
+            document.getElementById(
+                "employeeContact"
+            ).value =
+                employee.contactNumber ||
+                "";
+
+
+            document.getElementById(
+                "employeeRole"
+            ).value =
+                employee.role ||
+                "";
+
+
+            document.getElementById(
+                "employeeJoiningDate"
+            ).value =
+                employee.joiningDate ||
+                "";
 
         }
 
 
-        const employee =
-            employees.find(
-                function (item) {
-
-                    return item.id ===
-                        employeeId;
-
-                }
-            );
-
-
-        if (!employee) {
-
-            alert(
-                "Employee not found"
-            );
-
-            closeEmployeeModal();
-
-            return;
-
-        }
-
-
-        document.getElementById(
-            "employeeModalTitle"
-        ).textContent =
-            "Edit Employee";
-
-
-        document.getElementById(
-            "employeeCode"
-        ).value =
-            employee.employeeCode || "";
-
-
-        document.getElementById(
-            "employeeName"
-        ).value =
-            employee.name || "";
-
-
-        document.getElementById(
-            "employeeEmail"
-        ).value =
-            employee.email || "";
-
-
-        document.getElementById(
-            "employeeContact"
-        ).value =
-            employee.contactNumber || "";
-
-
-        document.getElementById(
-            "employeeRole"
-        ).value =
-            employee.role || "";
-
-
-        document.getElementById(
-            "employeeJoiningDate"
-        ).value =
-            employee.joiningDate || "";
+        modal.classList.add(
+            "show"
+        );
 
     }
 
@@ -2285,7 +2282,6 @@
 
     /* =====================================================
        SAVE EMPLOYEE
-       CODE AUTO-GENERATED BY BACKEND
     ===================================================== */
 
     async function saveEmployee() {
@@ -2359,6 +2355,7 @@
         pendingAction =
             currentEmployeeAction;
 
+
         pendingEmployeeData =
             employeeData;
 
@@ -2393,8 +2390,11 @@
             employees.find(
                 function (item) {
 
-                    return item.id ===
-                        employeeId;
+                    return Number(
+                        item.id
+                    ) === Number(
+                        employeeId
+                    );
 
                 }
             );
@@ -2403,7 +2403,7 @@
         if (!employee) {
 
             alert(
-                "Employee not found"
+                "Employee not found."
             );
 
             return;
@@ -2440,7 +2440,7 @@
 
 
     /* =====================================================
-       PASSWORD + REASON MODAL
+       PASSWORD MODAL
     ===================================================== */
 
     function openPasswordModal() {
@@ -2482,7 +2482,6 @@
                 "You are adding a new employee. Please enter the reason for adding this employee.";
 
         }
-
         else if (
             pendingAction ===
             "EDIT"
@@ -2492,7 +2491,6 @@
                 "You are editing employee details. Please enter why the employee details are being changed.";
 
         }
-
         else if (
             pendingAction ===
             "DELETE"
@@ -2502,7 +2500,6 @@
                 "You are deactivating an employee. Please enter the reason for deletion/deactivation.";
 
         }
-
         else if (
             pendingAction ===
             "SALARY_UPDATE"
@@ -2512,7 +2509,6 @@
                 "You are changing an employee salary. Old and new salary values will be recorded.";
 
         }
-
         else if (
             pendingAction ===
             "EXCEL_IMPORT"
@@ -2522,7 +2518,6 @@
                 "You are importing employees from Excel. The import will be recorded in History.";
 
         }
-
         else if (
             pendingAction ===
             "LEAVE_APPROVE"
@@ -2532,7 +2527,6 @@
                 "You are approving a leave request.";
 
         }
-
         else if (
             pendingAction ===
             "LEAVE_REJECT"
@@ -2587,13 +2581,20 @@
         pendingAction =
             null;
 
+
         pendingEmployeeData =
             null;
+
 
         pendingSalaryData =
             null;
 
+
         pendingImportFile =
+            null;
+
+
+        pendingLeaveData =
             null;
 
     }
@@ -2601,26 +2602,61 @@
 
     /* =====================================================
        CONFIRM ADMIN ACTION
+       SINGLE CLEAN FUNCTION
     ===================================================== */
 
     async function confirmAdminAction() {
 
-        const adminEmail =
+        const adminEmailField =
             document.getElementById(
                 "verifyAdminEmail"
-            ).value.trim();
+            );
+
+
+        const adminPasswordField =
+            document.getElementById(
+                "verifyAdminPassword"
+            );
+
+
+        const reasonField =
+            document.getElementById(
+                "adminActionReason"
+            );
+
+
+        const storedAdminEmail =
+    localStorage.getItem("adminEmail");
+
+const adminEmail =
+    adminEmailField &&
+    adminEmailField.value.trim()
+        ? adminEmailField.value.trim()
+        : (
+            storedAdminEmail
+                ? storedAdminEmail.trim()
+                : ""
+        );
+
+if (
+    adminEmailField &&
+    adminEmail
+) {
+    adminEmailField.value =
+        adminEmail;
+}
 
 
         const adminPassword =
-            document.getElementById(
-                "verifyAdminPassword"
-            ).value;
+            adminPasswordField
+                ? adminPasswordField.value
+                : "";
 
 
         const reason =
-            document.getElementById(
-                "adminActionReason"
-            ).value.trim();
+            reasonField
+                ? reasonField.value.trim()
+                : "";
 
 
         if (!adminEmail) {
@@ -2645,9 +2681,10 @@
         }
 
 
-        /* =================================================
-           REASON REQUIRED ONLY FOR EMPLOYEE ADD / EDIT / DELETE
-        ================================================= */
+        /*
+         * Employee ADD / EDIT / DELETE
+         * Reason is compulsory.
+         */
 
         if (
             pendingAction === "ADD" ||
@@ -2661,9 +2698,7 @@
                     "Please enter the reason for this action."
                 );
 
-                document.getElementById(
-                    "adminActionReason"
-                ).focus();
+                reasonField.focus();
 
                 return;
 
@@ -2676,9 +2711,7 @@
                     "Please enter a valid reason."
                 );
 
-                document.getElementById(
-                    "adminActionReason"
-                ).focus();
+                reasonField.focus();
 
                 return;
 
@@ -2687,70 +2720,78 @@
         }
 
 
-        /* =========================
-           ADD / EDIT
-        ========================= */
+        try {
 
-        if (
-            pendingAction ===
-                "ADD" ||
-            pendingAction ===
-                "EDIT"
-        ) {
-
-            const requestBody = {
-
-                name:
-                    pendingEmployeeData.name,
-
-                email:
-                    pendingEmployeeData.email,
-
-                contactNumber:
-                    pendingEmployeeData.contactNumber,
-
-                role:
-                    pendingEmployeeData.role,
-
-                joiningDate:
-                    pendingEmployeeData.joiningDate,
-
-                adminEmail:
-                    adminEmail,
-
-                adminPassword:
-                    adminPassword,
-
-                reason:
-                    reason
-
-            };
-
-
-            let url =
-                "/admin/employees";
-
-
-            let method =
-                "POST";
-
+            /* =================================================
+               ADD / EDIT
+            ================================================= */
 
             if (
-                pendingAction ===
-                "EDIT"
+                pendingAction === "ADD" ||
+                pendingAction === "EDIT"
             ) {
 
-                url =
-                    "/admin/employees/" +
-                    pendingEmployeeData.employeeId;
+                if (!pendingEmployeeData) {
 
-                method =
-                    "PUT";
+                    throw new Error(
+                        "Employee data not found."
+                    );
 
-            }
+                }
 
 
-            try {
+                const requestBody = {
+
+                    name:
+                        pendingEmployeeData.name,
+
+                    email:
+                        pendingEmployeeData.email,
+
+                    contactNumber:
+                        pendingEmployeeData.contactNumber,
+
+                    role:
+                        pendingEmployeeData.role,
+
+                    joiningDate:
+                        pendingEmployeeData.joiningDate,
+
+                    adminEmail:
+                        adminEmail,
+
+                    adminPassword:
+                        adminPassword,
+
+                    reason:
+                        reason
+
+                };
+
+
+                let url =
+                    "/admin/employees";
+
+
+                let method =
+                    "POST";
+
+
+                if (
+                    pendingAction ===
+                    "EDIT"
+                ) {
+
+                    url =
+                        "/admin/employees/" +
+                        pendingEmployeeData.employeeId;
+
+
+                    method =
+                        "PUT";
+
+                }
+
 
                 const response =
                     await apiFetch(
@@ -2768,6 +2809,7 @@
                                 JSON.stringify(
                                     requestBody
                                 )
+
                         }
                     );
 
@@ -2805,39 +2847,32 @@
                     "success"
                 );
 
-            }
-            catch (error) {
 
-                console.error(
-                    "Employee action error:",
-                    error
-                );
-
-
-                showMessage(
-                    "employeeMessage",
-                    error.message,
-                    "error"
-                );
+                return;
 
             }
 
 
-            return;
+            /* =================================================
+               DELETE
+            ================================================= */
 
-        }
+            if (
+                pendingAction ===
+                "DELETE"
+            ) {
 
+                if (
+                    !pendingEmployeeData ||
+                    !pendingEmployeeData.employeeId
+                ) {
 
-        /* =========================
-           DELETE
-        ========================= */
+                    throw new Error(
+                        "Employee data not found."
+                    );
 
-        if (
-            pendingAction ===
-            "DELETE"
-        ) {
+                }
 
-            try {
 
                 const response =
                     await apiFetch(
@@ -2865,6 +2900,7 @@
                                         reason
 
                                 })
+
                         }
                     );
 
@@ -2894,33 +2930,29 @@
                     "success"
                 );
 
-            }
-            catch (error) {
 
-                showMessage(
-                    "employeeMessage",
-                    error.message,
-                    "error"
-                );
+                return;
 
             }
 
 
-            return;
+            /* =================================================
+               SALARY UPDATE
+            ================================================= */
 
-        }
+            if (
+                pendingAction ===
+                "SALARY_UPDATE"
+            ) {
 
+                if (!pendingSalaryData) {
 
-        /* =========================
-           SALARY UPDATE
-        ========================= */
+                    throw new Error(
+                        "Salary data not found."
+                    );
 
-        if (
-            pendingAction ===
-            "SALARY_UPDATE"
-        ) {
+                }
 
-            try {
 
                 const response =
                     await apiFetch(
@@ -2950,6 +2982,7 @@
                                         adminPassword
 
                                 })
+
                         }
                     );
 
@@ -2983,44 +3016,31 @@
                     "success"
                 );
 
-            }
-            catch (error) {
-
-                showMessage(
-                    "salaryMessage",
-                    error.message,
-                    "error"
-                );
-
-            }
-
-
-            return;
-
-        }
-
-
-        /* =========================
-           EXCEL IMPORT
-        ========================= */
-
-        if (
-            pendingAction ===
-            "EXCEL_IMPORT"
-        ) {
-
-            if (!pendingImportFile) {
-
-                alert(
-                    "Please select an Excel file."
-                );
 
                 return;
 
             }
 
 
-            try {
+            /* =================================================
+               EXCEL IMPORT
+            ================================================= */
+
+            if (
+                pendingAction ===
+                "EXCEL_IMPORT"
+            ) {
+
+                if (!pendingImportFile) {
+
+                    alert(
+                        "Please select an Excel file."
+                    );
+
+                    return;
+
+                }
+
 
                 const formData =
                     new FormData();
@@ -3053,6 +3073,7 @@
 
                             body:
                                 formData
+
                         }
                     );
 
@@ -3118,19 +3139,75 @@
                     "success"
                 );
 
+
+                return;
+
             }
-            catch (error) {
+
+         /* =================================================
+               LEAVE APPROVE / REJECT
+            ================================================= */
+
+            if (
+                pendingAction ===
+                    "LEAVE_APPROVE" ||
+                pendingAction ===
+                    "LEAVE_REJECT"
+            ) {
+
+                await processLeaveAction();
+
+                return;
+
+            }
+
+        }
+        catch (error) {
+
+            console.error(
+                "Admin action error:",
+                error
+            );
+
+
+            if (
+                pendingAction ===
+                    "SALARY_UPDATE"
+            ) {
 
                 showMessage(
-                    "employeeMessage",
-                    error.message,
+                    "salaryMessage",
+                    error.message ||
+                    "Unable to update salary.",
                     "error"
                 );
 
             }
+            else if (
+                pendingAction ===
+                    "LEAVE_APPROVE" ||
+                pendingAction ===
+                    "LEAVE_REJECT"
+            ) {
 
+                showMessage(
+                    "leaveMessage",
+                    error.message ||
+                    "Unable to process leave.",
+                    "error"
+                );
 
-            return;
+            }
+            else {
+
+                showMessage(
+                    "employeeMessage",
+                    error.message ||
+                    "Unable to complete employee action.",
+                    "error"
+                );
+
+            }
 
         }
 
@@ -3192,10 +3269,6 @@
     }
 
 
-    /* =====================================================
-       CLOSE SALARY MODAL
-    ===================================================== */
-
     function closeSalaryModal() {
 
         document.getElementById(
@@ -3226,10 +3299,6 @@
 
     }
 
-
-    /* =====================================================
-       SAVE SALARY
-    ===================================================== */
 
     function saveSalaryEdit() {
 
@@ -3341,12 +3410,15 @@
                 await response.json();
 
 
-            renderSalary(data);
+            renderSalary(
+                data
+            );
 
         }
         catch (error) {
 
             console.error(error);
+
 
             showMessage(
                 "salaryMessage",
@@ -3493,7 +3565,7 @@
 
 
     /* =====================================================
-       EXCEL IMPORT
+       EXCEL
     ===================================================== */
 
     function openExcelImportModal() {
@@ -3560,12 +3632,8 @@
 
 
         if (
-            !fileName.endsWith(
-                ".xlsx"
-            ) &&
-            !fileName.endsWith(
-                ".xls"
-            )
+            !fileName.endsWith(".xlsx") &&
+            !fileName.endsWith(".xls")
         ) {
 
             alert(
@@ -3647,7 +3715,7 @@
 
 
     /* =====================================================
-       LOAD LEAVES
+       LEAVES
     ===================================================== */
 
     async function loadLeaves() {
@@ -3704,10 +3772,6 @@
     }
 
 
-    /* =====================================================
-       RENDER LEAVES
-    ===================================================== */
-
     function renderLeaves(
         leaves
     ) {
@@ -3749,7 +3813,8 @@
 
                     const status =
                         String(
-                            leave.status || ""
+                            leave.status ||
+                            ""
                         ).toUpperCase();
 
 
@@ -3766,7 +3831,6 @@
                             "badge-green";
 
                     }
-
                     else if (
                         status ===
                         "PENDING"
@@ -3776,7 +3840,6 @@
                             "badge-orange";
 
                     }
-
                     else if (
                         status ===
                         "REJECTED"
@@ -3891,10 +3954,6 @@
     }
 
 
-    /* =====================================================
-       APPROVE LEAVE
-    ===================================================== */
-
     function approveLeave(
         leaveId
     ) {
@@ -3915,10 +3974,6 @@
 
     }
 
-
-    /* =====================================================
-       REJECT LEAVE
-    ===================================================== */
 
     function rejectLeave(
         leaveId
@@ -3941,10 +3996,6 @@
     }
 
 
-    /* =====================================================
-       UPDATE PENDING LEAVE COUNT
-    ===================================================== */
-
     function updatePendingLeaveCount(
         leaves
     ) {
@@ -3956,7 +4007,8 @@
                 function (leave) {
 
                     return String(
-                        leave.status || ""
+                        leave.status ||
+                        ""
                     ).toUpperCase() ===
                         "PENDING";
 
@@ -4027,6 +4079,7 @@
 
             console.error(error);
 
+
             showMessage(
                 "monthlyMessage",
                 error.message,
@@ -4037,10 +4090,6 @@
 
     }
 
-
-    /* =====================================================
-       RENDER MONTHLY REPORT
-    ===================================================== */
 
     function renderMonthlyReport(
         data
@@ -4206,10 +4255,6 @@
     }
 
 
-    /* =====================================================
-       RENDER HISTORY
-    ===================================================== */
-
     function renderHistory(
         data
     ) {
@@ -4251,7 +4296,8 @@
 
                     const action =
                         String(
-                            item.action || ""
+                            item.action ||
+                            ""
                         ).toUpperCase();
 
 
@@ -4269,7 +4315,6 @@
                             "badge-red";
 
                     }
-
                     else if (
                         action.includes(
                             "SALARY"
@@ -4280,7 +4325,6 @@
                             "badge-orange";
 
                     }
-
                     else if (
                         action.includes(
                             "ADD"
@@ -4291,6 +4335,23 @@
                             "badge-green";
 
                     }
+
+
+                    const employeeDisplay =
+                        item.employeeName
+                            ? escapeHtml(
+                                item.employeeName
+                            ) +
+                            (
+                                item.employeeCode
+                                    ? " (" +
+                                      escapeHtml(
+                                          item.employeeCode
+                                      ) +
+                                      ")"
+                                    : ""
+                            )
+                            : "-";
 
 
                     return `
@@ -4312,7 +4373,6 @@
                         <td>
                             <strong>
                                 ${escapeHtml(
-                                    item.adminEmail ||
                                     item.adminName ||
                                     "ADMIN"
                                 )}
@@ -4333,22 +4393,7 @@
                         </td>
 
                         <td>
-
-                            ${escapeHtml(
-                                item.employeeName ||
-                                "-"
-                            )}
-
-                            ${
-                                item.employeeCode
-                                    ? " (" +
-                                      escapeHtml(
-                                          item.employeeCode
-                                      ) +
-                                      ")"
-                                    : ""
-                            }
-
+                            ${employeeDisplay}
                         </td>
 
                         <td>
@@ -4448,19 +4493,16 @@
 
                         const status =
                             String(
-                                item.status || ""
+                                item.status ||
+                                ""
                             ).toUpperCase();
 
 
                         if (
+                            status === "PRESENT" ||
+                            status === "LATE" ||
                             status ===
-                                "PRESENT" ||
-
-                            status ===
-                                "LATE" ||
-
-                            status ===
-                                "LATE / EARLY CHECK-OUT"
+                            "LATE / EARLY CHECK-OUT"
                         ) {
 
                             present++;
@@ -4517,7 +4559,127 @@
 
 
     /* =====================================================
-       ERROR MESSAGE
+       LEAVE ACTION
+    ===================================================== */
+
+    async function processLeaveAction() {
+
+        if (!pendingLeaveData) {
+
+            throw new Error(
+                "Leave data not found."
+            );
+
+        }
+
+
+        const adminEmail =
+            document.getElementById(
+                "verifyAdminEmail"
+            ).value.trim();
+
+
+        const adminPassword =
+            document.getElementById(
+                "verifyAdminPassword"
+            ).value;
+
+
+        if (!adminEmail) {
+
+            throw new Error(
+                "Logged-in admin email not found. Please login again."
+            );
+
+        }
+
+
+        if (!adminPassword) {
+
+            throw new Error(
+                "Please enter your admin password."
+            );
+
+        }
+
+
+        const approve =
+            pendingAction ===
+            "LEAVE_APPROVE";
+
+
+        const response =
+            await apiFetch(
+                "/admin/leaves/" +
+                pendingLeaveData.leaveId +
+                "/" +
+                (
+                    approve
+                        ? "approve"
+                        : "reject"
+                ),
+                {
+                    method:
+                        "PUT",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            adminEmail:
+                                adminEmail,
+
+                            adminPassword:
+                                adminPassword
+
+                        })
+
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                await getErrorMessage(
+                    response
+                )
+            );
+
+        }
+
+
+        closePasswordModal();
+
+
+        pendingLeaveData =
+            null;
+
+
+        await loadLeaves();
+
+        await loadHistory();
+
+
+        showMessage(
+            "leaveMessage",
+
+            approve
+                ? "Leave approved successfully."
+                : "Leave rejected successfully.",
+
+            "success"
+        );
+
+    }
+
+
+    /* =====================================================
+       ERROR
     ===================================================== */
 
     async function getErrorMessage(
@@ -4543,7 +4705,9 @@
             try {
 
                 const json =
-                    JSON.parse(text);
+                    JSON.parse(
+                        text
+                    );
 
 
                 return (
@@ -4857,7 +5021,7 @@
 
 
     /* =====================================================
-       ESCAPE JAVASCRIPT STRING
+       ESCAPE JS
     ===================================================== */
 
     function escapeJs(
@@ -4929,147 +5093,7 @@
 
 
     /* =====================================================
-       LEAVE ACTION
-    ===================================================== */
-
-    async function processLeaveAction() {
-
-        if (!pendingLeaveData) {
-            return;
-        }
-
-
-        const adminEmail =
-            document.getElementById(
-                "verifyAdminEmail"
-            ).value.trim();
-
-
-        const adminPassword =
-            document.getElementById(
-                "verifyAdminPassword"
-            ).value;
-
-
-        const approve =
-            pendingAction ===
-            "LEAVE_APPROVE";
-
-
-        try {
-
-            const response =
-                await apiFetch(
-                    "/admin/leaves/" +
-                    pendingLeaveData.leaveId +
-                    "/" +
-                    (
-                        approve
-                            ? "approve"
-                            : "reject"
-                    ),
-                    {
-                        method:
-                            "PUT",
-
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-
-                        body:
-                            JSON.stringify({
-
-                                adminEmail:
-                                    adminEmail,
-
-                                adminPassword:
-                                    adminPassword
-
-                            })
-                    }
-                );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    await getErrorMessage(
-                        response
-                    )
-                );
-
-            }
-
-
-            closePasswordModal();
-
-            pendingLeaveData =
-                null;
-
-
-            await loadLeaves();
-
-            await loadHistory();
-
-
-            showMessage(
-                "leaveMessage",
-
-                approve
-                    ? "Leave approved successfully."
-                    : "Leave rejected successfully.",
-
-                "success"
-            );
-
-        }
-        catch (error) {
-
-            showMessage(
-                "leaveMessage",
-                error.message,
-                "error"
-            );
-
-        }
-
-    }
-
-
-    /* =====================================================
-       CONFIRM ACTION WRAPPER
-    ===================================================== */
-
-    const employeeConfirmFunction =
-        confirmAdminAction;
-
-
-    confirmAdminAction =
-        async function () {
-
-            if (
-                pendingAction ===
-                    "LEAVE_APPROVE" ||
-
-                pendingAction ===
-                    "LEAVE_REJECT"
-            ) {
-
-                await processLeaveAction();
-
-                return;
-
-            }
-
-
-            await employeeConfirmFunction();
-
-        };
-
-
-    /* =====================================================
-       CLOSE MODAL WHEN CLICKING OUTSIDE
+       CLOSE MODAL OUTSIDE CLICK
     ===================================================== */
 
     document.querySelectorAll(

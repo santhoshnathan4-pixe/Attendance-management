@@ -227,12 +227,12 @@
             }
 
 
-            fetch(
-                `/admin/login?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
-                {
-                    method: "POST"
-                }
-            )
+           fetch(
+    `https://attendance-management-d5h6.onrender.com/admin/login?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
+    {
+        method: "POST"
+    }
+)
 
             .then(response => {
 
@@ -248,6 +248,7 @@
 
                 if (data.success) {
 
+                    console.log("ADMIN LOGIN RESPONSE:", data);
                     localStorage.setItem(
                         "adminEmail",
                         data.email
