@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Attendance Management</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 500px;
+            background: white;
+            padding: 45px 35px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #222;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 35px;
+        }
+
+        .login-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin: 15px 0;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .employee-btn {
+            background: #2563eb;
+        }
+
+        .employee-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .admin-btn {
+            background: #16a34a;
+        }
+
+        .admin-btn:hover {
+            background: #15803d;
+        }
+
+        .footer {
+            margin-top: 25px;
+            color: #888;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Attendance Management</h1>
+
+        <p class="subtitle">
+            Please select your login
+        </p>
+
+        <a
+            href="login.html"
+            class="login-btn employee-btn"
+        >
+            Employee Login
+        </a>
+
+        <a
+            href="admin-login.html"
+            class="login-btn admin-btn"
+        >
+            Admin Login
+        </a>
+
+        <div class="footer">
+            Attendance Management System
+        </div>
+
+    </div>
+
+</body>
+</html>
