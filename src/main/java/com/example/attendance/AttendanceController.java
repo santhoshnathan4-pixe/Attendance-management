@@ -21,15 +21,12 @@ public class AttendanceController {
     private final EmployeeRepository employeeRepository;
 
     // India Time Zone
-    private static final ZoneId INDIA_ZONE =
-            ZoneId.of("Asia/Kolkata");
+    private static final ZoneId INDIA_ZONE = ZoneId.of("Asia/Kolkata");
 
     // Office Timing
-    private static final LocalTime OFFICE_START_TIME =
-            LocalTime.of(10, 0);
+    private static final LocalTime OFFICE_START_TIME = LocalTime.of(10, 0);
 
-    private static final LocalTime OFFICE_END_TIME =
-            LocalTime.of(17, 30);
+    private static final LocalTime OFFICE_END_TIME = LocalTime.of(17, 30);
 
     public AttendanceController(
             AttendanceRepository attendanceRepository,
@@ -62,23 +59,15 @@ public class AttendanceController {
             return "Employee Not Found or Employee is Inactive";
         }
 
-        // Employee attendance only
-        if (!"EMPLOYEE".equalsIgnoreCase(employee.getRole())) {
-            return "Attendance is available only for employees";
-        }
+        LocalDate today = LocalDate.now(INDIA_ZONE);
 
-        LocalDate today =
-                LocalDate.now(INDIA_ZONE);
-
-        LocalTime currentTime =
-                LocalTime.now(INDIA_ZONE);
+        LocalTime currentTime = LocalTime.now(INDIA_ZONE);
 
         // Duplicate check-in prevention
         if (attendanceRepository
                 .findByEmployeeIdAndAttendanceDate(
                         employee.getId(),
-                        today
-                )
+                        today)
                 .isPresent()) {
 
             return "Already Checked In";
@@ -125,22 +114,14 @@ public class AttendanceController {
             return "Employee Not Found or Employee is Inactive";
         }
 
-        // Employee attendance only
-        if (!"EMPLOYEE".equalsIgnoreCase(employee.getRole())) {
-            return "Attendance is available only for employees";
-        }
+        LocalDate today = LocalDate.now(INDIA_ZONE);
 
-        LocalDate today =
-                LocalDate.now(INDIA_ZONE);
-
-        LocalTime currentTime =
-                LocalTime.now(INDIA_ZONE);
+        LocalTime currentTime = LocalTime.now(INDIA_ZONE);
 
         Attendance attendance = attendanceRepository
                 .findByEmployeeIdAndAttendanceDate(
                         employee.getId(),
-                        today
-                )
+                        today)
                 .orElse(null);
 
         // Check-in required
@@ -202,23 +183,16 @@ public class AttendanceController {
             return List.of();
         }
 
-        // Employee attendance only
-        if (!"EMPLOYEE".equalsIgnoreCase(employee.getRole())) {
-            return List.of();
-        }
-
         return attendanceRepository
                 .findByEmployeeIdOrderByAttendanceDateDesc(
-                        employee.getId()
-                )
+                        employee.getId())
                 .stream()
                 .map(attendance -> new AttendanceResponse(
                         employee.getName(),
                         attendance.getAttendanceDate(),
                         attendance.getCheckIn(),
                         attendance.getCheckOut(),
-                        attendance.getStatus()
-                ))
+                        attendance.getStatus()))
                 .toList();
     }
 
@@ -231,13 +205,11 @@ public class AttendanceController {
 
         if (date != null && !date.isBlank()) {
 
-            LocalDate attendanceDate =
-                    LocalDate.parse(date);
+            LocalDate attendanceDate = LocalDate.parse(date);
 
             return attendanceRepository
                     .findByAttendanceDateOrderByAttendanceDateDesc(
-                            attendanceDate
-                    );
+                            attendanceDate);
         }
 
         return attendanceRepository.findAll();
