@@ -1006,8 +1006,8 @@
                     </div>
 
                     <button class="btn btn-primary"
-                            onclick="loadMonthlyReport()">
-                        Generate Report
+                            onclick="generateMonthlyReport()">
+                            Generate Report
                     </button>
 
                 </div>
@@ -4128,6 +4128,27 @@ if (
     }
 }
 
+function generateMonthlyReport() {
+
+    console.log("GENERATE REPORT CLICKED");
+
+    loadMonthlyReport();
+
+    const year =
+        document.getElementById("reportYear").value;
+
+    const month =
+        document.getElementById("reportMonth").value;
+
+    if (!year || !month) {
+        return;
+    }
+
+    const url =
+        `${API_BASE_URL}/admin/monthly-report/excel?year=${year}&month=${month}`;
+
+    window.open(url, "_blank");
+}
 
 function renderMonthlyReport(
     data
