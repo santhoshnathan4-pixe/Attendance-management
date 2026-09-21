@@ -3001,6 +3001,30 @@ if (
 
                 }
 
+                if (!reason) {
+
+    alert(
+        "Please enter the reason for changing the salary."
+    );
+
+    reasonField.focus();
+
+    return;
+
+}
+
+if (reason.length < 3) {
+
+    alert(
+        "Please enter a valid reason."
+    );
+
+    reasonField.focus();
+
+    return;
+
+}
+
 
                 const response =
                     await apiFetch(
