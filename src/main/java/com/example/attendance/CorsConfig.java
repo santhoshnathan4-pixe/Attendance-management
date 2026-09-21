@@ -14,7 +14,8 @@ public class CorsConfig implements WebMvcConfigurer {
                 .allowedOrigins(
                         "https://attendance-management-3d-webinar.vercel.app",
                         "https://attendance-management-git-main-3d-webinar.vercel.app",
-                        "https://attendance-management-lhsosyu8t-3d-webinar.vercel.app"
+                        "https://attendance-management-lhsosyu8t-3d-webinar.vercel.app",
+                        "https://attendance-management-nine-beige.vercel.app"
                 )
                 .allowedMethods(
                         "GET",
