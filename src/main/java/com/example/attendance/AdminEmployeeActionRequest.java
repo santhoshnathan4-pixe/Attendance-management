@@ -14,6 +14,9 @@ public class AdminEmployeeActionRequest {
     private String adminEmail;
     private String adminPassword;
 
+    // Reason for ADD / EDIT / DELETE
+    private String reason;
+
     public String getEmployeeCode() {
         return employeeCode;
     }
@@ -84,5 +87,17 @@ public class AdminEmployeeActionRequest {
 
     public void setAdminPassword(String adminPassword) {
         this.adminPassword = adminPassword;
+    }
+
+    // =========================================
+    // REASON
+    // =========================================
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 }

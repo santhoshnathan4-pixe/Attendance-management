@@ -33,7 +33,10 @@ public class AdminActionHistory {
     @Column(name = "action_time")
     private LocalTime actionTime;
 
-    // NEW
+    // =========================================
+    // ACTION DETAILS
+    // =========================================
+
     @Column(name = "field_name")
     private String fieldName;
 
@@ -43,6 +46,12 @@ public class AdminActionHistory {
     @Column(name = "new_value")
     private String newValue;
 
+    // =========================================
+    // REASON
+    // =========================================
+
+    @Column(name = "reason")
+    private String reason;
 
     // =========================================
     // GETTERS & SETTERS
@@ -56,7 +65,6 @@ public class AdminActionHistory {
         this.id = id;
     }
 
-
     public String getAdminName() {
         return adminName;
     }
@@ -64,7 +72,6 @@ public class AdminActionHistory {
     public void setAdminName(String adminName) {
         this.adminName = adminName;
     }
-
 
     public String getAction() {
         return action;
@@ -74,7 +81,6 @@ public class AdminActionHistory {
         this.action = action;
     }
 
-
     public Integer getEmployeeId() {
         return employeeId;
     }
@@ -82,7 +88,6 @@ public class AdminActionHistory {
     public void setEmployeeId(Integer employeeId) {
         this.employeeId = employeeId;
     }
-
 
     public String getEmployeeCode() {
         return employeeCode;
@@ -92,7 +97,6 @@ public class AdminActionHistory {
         this.employeeCode = employeeCode;
     }
 
-
     public String getEmployeeName() {
         return employeeName;
     }
@@ -100,7 +104,6 @@ public class AdminActionHistory {
     public void setEmployeeName(String employeeName) {
         this.employeeName = employeeName;
     }
-
 
     public LocalDate getActionDate() {
         return actionDate;
@@ -110,7 +113,6 @@ public class AdminActionHistory {
         this.actionDate = actionDate;
     }
 
-
     public LocalTime getActionTime() {
         return actionTime;
     }
@@ -118,7 +120,6 @@ public class AdminActionHistory {
     public void setActionTime(LocalTime actionTime) {
         this.actionTime = actionTime;
     }
-
 
     public String getFieldName() {
         return fieldName;
@@ -128,7 +129,6 @@ public class AdminActionHistory {
         this.fieldName = fieldName;
     }
 
-
     public String getOldValue() {
         return oldValue;
     }
@@ -137,12 +137,19 @@ public class AdminActionHistory {
         this.oldValue = oldValue;
     }
 
-
     public String getNewValue() {
         return newValue;
     }
 
     public void setNewValue(String newValue) {
         this.newValue = newValue;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 }

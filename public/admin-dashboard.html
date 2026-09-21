@@ -378,7 +378,8 @@
         }
 
         .form-group input,
-        .form-group select {
+        .form-group select,
+        .form-group textarea {
             width: 100%;
             padding: 11px 12px;
             border: 1px solid #cbd5e1;
@@ -388,8 +389,14 @@
             background: white;
         }
 
+        .form-group textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+
         .form-group input:focus,
-        .form-group select:focus {
+        .form-group select:focus,
+        .form-group textarea:focus {
             border-color: #2563eb;
             box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
@@ -571,7 +578,6 @@
         }
 
         @media (max-width: 1100px) {
-
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
@@ -582,7 +588,6 @@
         }
 
         @media (max-width: 800px) {
-
             .sidebar {
                 width: 210px;
             }
@@ -606,7 +611,6 @@
         }
 
         @media (max-width: 600px) {
-
             .sidebar {
                 position: relative;
                 width: 100%;
@@ -640,9 +644,7 @@
 
     <aside class="sidebar">
 
-        <div class="logo">
-            GROWBYTEE
-        </div>
+        <div class="logo">GROWBYTEE</div>
 
         <div class="admin-title">
             Admin / CEO Dashboard
@@ -694,9 +696,7 @@
 
         <header class="header">
 
-            <h1>
-                GROWBYTEE - Admin Dashboard
-            </h1>
+            <h1>GROWBYTEE - Admin Dashboard</h1>
 
             <div class="admin-info">
 
@@ -715,8 +715,7 @@
 
         <div class="content">
 
-            <section id="dashboard"
-                     class="section active">
+            <section id="dashboard" class="section active">
 
                 <h2 class="section-title">
                     Dashboard
@@ -726,9 +725,7 @@
                     Employee and attendance management overview
                 </p>
 
-                <div id="dashboardMessage"
-                     class="message">
-                </div>
+                <div id="dashboardMessage" class="message"></div>
 
                 <div class="stats-grid">
 
@@ -757,8 +754,7 @@
             </section>
 
 
-            <section id="employees"
-                     class="section">
+            <section id="employees" class="section">
 
                 <h2 class="section-title">
                     Employee Management
@@ -768,9 +764,7 @@
                     Add, edit, import and manage employees
                 </p>
 
-                <div id="employeeMessage"
-                     class="message">
-                </div>
+                <div id="employeeMessage" class="message"></div>
 
                 <div class="top-bar">
 
@@ -794,12 +788,7 @@
                                id="employeeSearch"
                                placeholder="Search employee..."
                                oninput="filterEmployees()"
-                               style="
-                               padding:10px 12px;
-                               border:1px solid #cbd5e1;
-                               border-radius:8px;
-                               outline:none;
-                               ">
+                               style="padding:10px 12px;border:1px solid #cbd5e1;border-radius:8px;outline:none;">
 
                     </div>
 
@@ -831,8 +820,7 @@
                             <tbody id="employeeTableBody">
 
                             <tr>
-                                <td colspan="9"
-                                    class="empty-row">
+                                <td colspan="9" class="empty-row">
                                     Loading employees...
                                 </td>
                             </tr>
@@ -848,8 +836,7 @@
             </section>
 
 
-            <section id="leave"
-                     class="section">
+            <section id="leave" class="section">
 
                 <h2 class="section-title">
                     Leave Management
@@ -859,9 +846,7 @@
                     Review and manage employee leave requests
                 </p>
 
-                <div id="leaveMessage"
-                     class="message">
-                </div>
+                <div id="leaveMessage" class="message"></div>
 
                 <div class="table-card">
 
@@ -887,8 +872,7 @@
                             <tbody id="leaveTableBody">
 
                             <tr>
-                                <td colspan="8"
-                                    class="empty-row">
+                                <td colspan="8" class="empty-row">
                                     Loading leave requests...
                                 </td>
                             </tr>
@@ -904,8 +888,7 @@
             </section>
 
 
-            <section id="salary"
-                     class="section">
+            <section id="salary" class="section">
 
                 <h2 class="section-title">
                     Salary Management
@@ -915,9 +898,7 @@
                     Manage employee salary separately from employee creation
                 </p>
 
-                <div id="salaryMessage"
-                     class="message">
-                </div>
+                <div id="salaryMessage" class="message"></div>
 
                 <div class="top-bar">
 
@@ -978,8 +959,7 @@
                             <tbody id="salaryTableBody">
 
                             <tr>
-                                <td colspan="10"
-                                    class="empty-row">
+                                <td colspan="10" class="empty-row">
                                     Select year/month and calculate salary
                                 </td>
                             </tr>
@@ -995,8 +975,7 @@
             </section>
 
 
-            <section id="monthly"
-                     class="section">
+            <section id="monthly" class="section">
 
                 <h2 class="section-title">
                     Monthly Report
@@ -1006,9 +985,7 @@
                     Employee attendance monthly report
                 </p>
 
-                <div id="monthlyMessage"
-                     class="message">
-                </div>
+                <div id="monthlyMessage" class="message"></div>
 
                 <div class="top-bar">
 
@@ -1067,8 +1044,7 @@
                             <tbody id="monthlyTableBody">
 
                             <tr>
-                                <td colspan="8"
-                                    class="empty-row">
+                                <td colspan="8" class="empty-row">
                                     Generate monthly report
                                 </td>
                             </tr>
@@ -1084,8 +1060,7 @@
             </section>
 
 
-            <section id="history"
-                     class="section">
+            <section id="history" class="section">
 
                 <h2 class="section-title">
                     Admin Action History
@@ -1095,9 +1070,7 @@
                     Common audit history visible to all administrators
                 </p>
 
-                <div id="historyMessage"
-                     class="message">
-                </div>
+                <div id="historyMessage" class="message"></div>
 
                 <div class="table-card">
 
@@ -1113,6 +1086,7 @@
                                 <th>Admin</th>
                                 <th>Action</th>
                                 <th>Employee</th>
+                                <th>Reason</th>
                                 <th>Field</th>
                                 <th>Old Value</th>
                                 <th>New Value</th>
@@ -1123,8 +1097,7 @@
                             <tbody id="historyTableBody">
 
                             <tr>
-                                <td colspan="8"
-                                    class="empty-row">
+                                <td colspan="9" class="empty-row">
                                     Loading history...
                                 </td>
                             </tr>
@@ -1150,8 +1123,7 @@
      EMPLOYEE ADD / EDIT MODAL
 ===================================================== -->
 
-<div id="employeeModal"
-     class="modal">
+<div id="employeeModal" class="modal">
 
     <div class="modal-box">
 
@@ -1187,9 +1159,7 @@
 
             <div class="form-group">
 
-                <label>
-                    Employee Code
-                </label>
+                <label>Employee Code</label>
 
                 <input type="text"
                        id="employeeCode"
@@ -1202,9 +1172,7 @@
 
             <div class="form-group">
 
-                <label>
-                    Employee Name
-                </label>
+                <label>Employee Name</label>
 
                 <input type="text"
                        id="employeeName"
@@ -1215,9 +1183,7 @@
 
             <div class="form-group">
 
-                <label>
-                    Email
-                </label>
+                <label>Email</label>
 
                 <input type="email"
                        id="employeeEmail"
@@ -1228,9 +1194,7 @@
 
             <div class="form-group">
 
-                <label>
-                    Contact Number
-                </label>
+                <label>Contact Number</label>
 
                 <input type="text"
                        id="employeeContact"
@@ -1241,9 +1205,7 @@
 
             <div class="form-group">
 
-                <label>
-                    Role
-                </label>
+                <label>Role</label>
 
                 <select id="employeeRole">
 
@@ -1282,9 +1244,7 @@
 
             <div class="form-group">
 
-                <label>
-                    Joining Date
-                </label>
+                <label>Joining Date</label>
 
                 <input type="date"
                        id="employeeJoiningDate">
@@ -1314,11 +1274,10 @@
 
 
 <!-- =====================================================
-     ADMIN PASSWORD MODAL
+     ADMIN PASSWORD + REASON MODAL
 ===================================================== -->
 
-<div id="passwordModal"
-     class="modal">
+<div id="passwordModal" class="modal">
 
     <div class="modal-box small">
 
@@ -1338,11 +1297,12 @@
 
         <div class="warning-box">
 
-            <strong>Admin password required.</strong>
+            <strong>Admin verification required.</strong>
 
             <br>
 
-            Your own admin password is required to confirm this action.
+            Your logged-in admin email is shown automatically.
+            Enter only your password and the reason for this action.
 
             <p id="passwordActionDescription"
                style="margin-top:8px;">
@@ -1354,7 +1314,7 @@
         <div class="form-group">
 
             <label>
-                Admin Email
+                Logged-in Admin Email
             </label>
 
             <input type="email"
@@ -1377,6 +1337,21 @@
             <input type="password"
                    id="verifyAdminPassword"
                    placeholder="Enter your admin password">
+
+        </div>
+
+
+        <br>
+
+
+        <div class="form-group">
+
+            <label>
+                Reason <span style="color:#dc2626;">*</span>
+            </label>
+
+            <textarea id="adminActionReason"
+                      placeholder="Enter why you are performing this action..."></textarea>
 
         </div>
 
@@ -1404,8 +1379,7 @@
      SALARY EDIT MODAL
 ===================================================== -->
 
-<div id="salaryModal"
-     class="modal">
+<div id="salaryModal" class="modal">
 
     <div class="modal-box small">
 
@@ -1433,9 +1407,7 @@
 
         <div class="form-group">
 
-            <label>
-                Employee
-            </label>
+            <label>Employee</label>
 
             <input type="text"
                    id="salaryEmployeeName"
@@ -1450,9 +1422,7 @@
 
         <div class="form-group">
 
-            <label>
-                Current Salary
-            </label>
+            <label>Current Salary</label>
 
             <input type="text"
                    id="currentSalary"
@@ -1467,9 +1437,7 @@
 
         <div class="form-group">
 
-            <label>
-                New Salary
-            </label>
+            <label>New Salary</label>
 
             <input type="number"
                    id="newSalary"
@@ -1503,8 +1471,7 @@
      EXCEL IMPORT MODAL
 ===================================================== -->
 
-<div id="excelImportModal"
-     class="modal">
+<div id="excelImportModal" class="modal">
 
     <div class="modal-box">
 
@@ -1548,11 +1515,7 @@
                 Select Excel file
             </strong>
 
-            <p style="
-                margin-top:7px;
-                color:#64748b;
-                font-size:12px;
-            ">
+            <p style="margin-top:7px;color:#64748b;font-size:12px;">
                 Supported: .xlsx / .xls
             </p>
 
@@ -1918,7 +1881,6 @@
 
             employees =
                 await response.json();
-
 
             renderEmployees();
 
@@ -2397,7 +2359,6 @@
         pendingAction =
             currentEmployeeAction;
 
-
         pendingEmployeeData =
             employeeData;
 
@@ -2479,7 +2440,7 @@
 
 
     /* =====================================================
-       PASSWORD MODAL
+       PASSWORD + REASON MODAL
     ===================================================== */
 
     function openPasswordModal() {
@@ -2502,6 +2463,12 @@
             "";
 
 
+        document.getElementById(
+            "adminActionReason"
+        ).value =
+            "";
+
+
         let message =
             "Verify your password to continue.";
 
@@ -2512,7 +2479,7 @@
         ) {
 
             message =
-                "You are adding a new employee.";
+                "You are adding a new employee. Please enter the reason for adding this employee.";
 
         }
 
@@ -2522,7 +2489,7 @@
         ) {
 
             message =
-                "You are editing employee details. Changed fields will be recorded.";
+                "You are editing employee details. Please enter why the employee details are being changed.";
 
         }
 
@@ -2532,7 +2499,7 @@
         ) {
 
             message =
-                "You are deactivating an employee. Attendance history will be preserved.";
+                "You are deactivating an employee. Please enter the reason for deletion/deactivation.";
 
         }
 
@@ -2611,6 +2578,12 @@
             "";
 
 
+        document.getElementById(
+            "adminActionReason"
+        ).value =
+            "";
+
+
         pendingAction =
             null;
 
@@ -2644,16 +2617,72 @@
             ).value;
 
 
-        if (
-            !adminEmail ||
-            !adminPassword
-        ) {
+        const reason =
+            document.getElementById(
+                "adminActionReason"
+            ).value.trim();
+
+
+        if (!adminEmail) {
+
+            alert(
+                "Logged-in admin email not found. Please login again."
+            );
+
+            return;
+
+        }
+
+
+        if (!adminPassword) {
 
             alert(
                 "Please enter your admin password."
             );
 
             return;
+
+        }
+
+
+        /* =================================================
+           REASON REQUIRED ONLY FOR EMPLOYEE ADD / EDIT / DELETE
+        ================================================= */
+
+        if (
+            pendingAction === "ADD" ||
+            pendingAction === "EDIT" ||
+            pendingAction === "DELETE"
+        ) {
+
+            if (!reason) {
+
+                alert(
+                    "Please enter the reason for this action."
+                );
+
+                document.getElementById(
+                    "adminActionReason"
+                ).focus();
+
+                return;
+
+            }
+
+
+            if (reason.length < 3) {
+
+                alert(
+                    "Please enter a valid reason."
+                );
+
+                document.getElementById(
+                    "adminActionReason"
+                ).focus();
+
+                return;
+
+            }
 
         }
 
@@ -2690,7 +2719,10 @@
                     adminEmail,
 
                 adminPassword:
-                    adminPassword
+                    adminPassword,
+
+                reason:
+                    reason
 
             };
 
@@ -2827,7 +2859,10 @@
                                         adminEmail,
 
                                     adminPassword:
-                                        adminPassword
+                                        adminPassword,
+
+                                    reason:
+                                        reason
 
                                 })
                         }
@@ -3068,7 +3103,6 @@
 
                     message +=
                         " | Some rows were skipped.";
-
 
                     console.warn(
                         "Excel import errors:",
@@ -3542,8 +3576,10 @@
             input.value =
                 "";
 
+
             pendingImportFile =
                 null;
+
 
             return;
 
@@ -4193,7 +4229,7 @@
 
                 <tr>
 
-                    <td colspan="8"
+                    <td colspan="9"
                         class="empty-row">
 
                         No admin history found.
@@ -4276,6 +4312,7 @@
                         <td>
                             <strong>
                                 ${escapeHtml(
+                                    item.adminEmail ||
                                     item.adminName ||
                                     "ADMIN"
                                 )}
@@ -4316,6 +4353,13 @@
 
                         <td>
                             ${escapeHtml(
+                                item.reason ||
+                                "-"
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
                                 item.fieldName ||
                                 "-"
                             )}
@@ -4347,7 +4391,6 @@
 
     /* =====================================================
        DASHBOARD STATS
-       Uses existing AttendanceController endpoint
     ===================================================== */
 
     async function updateDashboardStats() {
@@ -4872,6 +4915,7 @@
         localStorage.removeItem(
             "adminEmail"
         );
+
 
         localStorage.removeItem(
             "adminName"
