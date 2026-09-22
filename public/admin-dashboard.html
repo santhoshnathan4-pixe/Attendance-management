@@ -1,1598 +1,1604 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>GROWBYTEE - Admin Dashboard</title>
+```
+<title>GROWBYTEE - Admin Dashboard</title>
 
-    <script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
 
-    <style>
+<style>
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: Arial, Helvetica, sans-serif;
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+        background: #f4f7fb;
+        color: #1f2937;
+    }
+
+    .container {
+        display: flex;
+        min-height: 100vh;
+    }
+
+    .sidebar {
+        width: 250px;
+        background: #334155;
+        color: white;
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        padding: 25px 15px;
+        overflow-y: auto;
+    }
+
+    .logo {
+        text-align: center;
+        font-size: 25px;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+
+    .admin-title {
+        text-align: center;
+        color: #cbd5e1;
+        font-size: 13px;
+        margin-bottom: 30px;
+    }
+
+    .menu {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .menu button {
+        border: none;
+        background: transparent;
+        color: #e5e7eb;
+        text-align: left;
+        padding: 14px 15px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 15px;
+        transition: 0.2s;
+
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .menu button svg {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+    }
+
+    .menu button:hover,
+    .menu button.active {
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
+    }
+
+    .logout-btn {
+        margin-top: 25px;
+        background: #dc2626 !important;
+        color: white !important;
+        text-align: center !important;
+    }
+
+    .logout-btn:hover {
+        background: #b91c1c !important;
+    }
+
+    .main {
+        margin-left: 250px;
+        width: calc(100% - 250px);
+        min-height: 100vh;
+    }
+
+    .header {
+        height: 75px;
+        background: white;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 30px;
+        position: sticky;
+        top: 0;
+        z-index: 20;
+    }
+
+    .header h1 {
+        font-size: 23px;
+        color: #111827;
+    }
+
+    .admin-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #475569;
+        font-size: 14px;
+    }
+
+    .admin-badge {
+        background: #2563eb;
+        color: white;
+        padding: 8px 13px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .content {
+        padding: 30px;
+    }
+
+    .section {
+        display: none;
+        padding: 24px;
+        border-radius: 16px;
+        min-height: calc(100vh - 135px);
+        border: 1px solid #e5e7eb;
+    }
+
+    .section.active {
+        display: block;
+    }
+
+    /* Mild section backgrounds */
+
+    #dashboard {
+        background: #f8fafc;
+    }
+
+    #employees {
+        background: #f8fbff;
+    }
+
+    #leave {
+        background: #fbfaf8;
+    }
+
+    #salary {
+        background: #f8fbfa;
+    }
+
+    #monthly {
+        background: #faf9fc;
+    }
+
+    #history {
+        background: #f8fafb;
+    }
+
+    .section-title {
+        font-size: 25px;
+        margin-bottom: 8px;
+        color: #111827;
+    }
+
+    .section-subtitle {
+        color: #64748b;
+        margin-bottom: 25px;
+        font-size: 14px;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 23px;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(15, 23, 42, 0.07);
+        border: 1px solid #e5e7eb;
+    }
+
+    .stat-card h4 {
+        color: #64748b;
+        font-size: 14px;
+        margin-bottom: 12px;
+    }
+
+    .stat-card h2 {
+        font-size: 30px;
+        color: #111827;
+    }
+
+    .stat-blue {
+        border-left: 5px solid #2563eb;
+    }
+
+    .stat-green {
+        border-left: 5px solid #16a34a;
+    }
+
+    .stat-orange {
+        border-left: 5px solid #f97316;
+    }
+
+    .stat-red {
+        border-left: 5px solid #dc2626;
+    }
+
+    .top-bar {
+        background: white;
+        padding: 18px;
+        border-radius: 13px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
+    }
+
+    .top-bar-left,
+    .top-bar-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn {
+        border: none;
+        border-radius: 8px;
+        padding: 10px 16px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+    .btn-primary {
+        background: #2563eb;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #1d4ed8;
+    }
+
+    .btn-success {
+        background: #16a34a;
+        color: white;
+    }
+
+    .btn-success:hover {
+        background: #15803d;
+    }
+
+    .btn-danger {
+        background: #dc2626;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background: #b91c1c;
+    }
+
+    .btn-warning {
+        background: #f59e0b;
+        color: white;
+    }
+
+    .btn-warning:hover {
+        background: #d97706;
+    }
+
+    .btn-secondary {
+        background: #64748b;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background: #475569;
+    }
+
+    .btn-small {
+        padding: 7px 11px;
+        font-size: 12px;
+    }
+
+    .table-card {
+        background: white;
+        border-radius: 14px;
+        box-shadow: 0 5px 20px rgba(15, 23, 42, 0.06);
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 900px;
+    }
+
+    th {
+        background: #eff6ff;
+        color: #1e3a8a;
+        font-size: 13px;
+        text-align: left;
+        padding: 14px;
+        white-space: nowrap;
+    }
+
+    td {
+        padding: 13px 14px;
+        border-top: 1px solid #e5e7eb;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+    tr:hover td {
+        background: #f8fafc;
+    }
+
+    .empty-row {
+        text-align: center;
+        color: #64748b;
+        padding: 30px;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 5px 9px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: bold;
+    }
+
+    .badge-green {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .badge-blue {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+
+    .badge-orange {
+        background: #ffedd5;
+        color: #9a3412;
+    }
+
+    .badge-red {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .badge-gray {
+        background: #e5e7eb;
+        color: #374151;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 17px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .form-group.full {
+        grid-column: 1 / -1;
+    }
+
+    .form-group label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #374151;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 11px 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        outline: none;
+        font-size: 14px;
+        background: white;
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 90px;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .readonly {
+        background: #f1f5f9 !important;
+        cursor: not-allowed;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.65);
+        z-index: 100;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .modal.show {
+        display: flex;
+    }
+
+    .modal-box {
+        width: 100%;
+        max-width: 650px;
+        background: white;
+        border-radius: 16px;
+        padding: 25px;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-box.small {
+        max-width: 450px;
+    }
+
+    .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 22px;
+    }
+
+    .modal-header h2 {
+        font-size: 20px;
+        color: #111827;
+    }
+
+    .close-btn {
+        border: none;
+        background: #f1f5f9;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 18px;
+    }
+
+    .close-btn:hover {
+        background: #e2e8f0;
+    }
+
+    .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 25px;
+    }
+
+    .info-box {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        color: #1e40af;
+        border-radius: 10px;
+        padding: 13px 15px;
+        font-size: 13px;
+        line-height: 1.6;
+        margin-bottom: 18px;
+    }
+
+    .warning-box {
+        background: #fff7ed;
+        border: 1px solid #fed7aa;
+        color: #9a3412;
+        border-radius: 10px;
+        padding: 13px 15px;
+        font-size: 13px;
+        line-height: 1.6;
+        margin-bottom: 18px;
+    }
+
+    .file-box {
+        border: 2px dashed #94a3b8;
+        padding: 25px;
+        text-align: center;
+        border-radius: 12px;
+        background: #f8fafc;
+    }
+
+    .file-box:hover {
+        border-color: #2563eb;
+    }
+
+    .file-box input {
+        margin-top: 15px;
+    }
+
+    .file-name {
+        margin-top: 12px;
+        font-size: 13px;
+        color: #2563eb;
+        font-weight: 600;
+        word-break: break-word;
+    }
+
+    .message {
+        display: none;
+        margin-bottom: 18px;
+        padding: 12px 15px;
+        border-radius: 9px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .message.show {
+        display: block;
+    }
+
+    .message.success {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .message.error {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .filter-box {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+    .filter-box input,
+    .filter-box select {
+        padding: 10px 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        outline: none;
+    }
+
+    @media (max-width: 1100px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
         }
+    }
 
-        body {
-            background: #f4f7fb;
-            color: #1f2937;
-        }
-
-        .container {
-            display: flex;
-            min-height: 100vh;
-        }
-
+    @media (max-width: 800px) {
         .sidebar {
-            width: 250px;
-            background: #263b5e;
-            color: white;
-            position: fixed;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            padding: 25px 15px;
-            overflow-y: auto;
-        }
-
-        .logo {
-            text-align: center;
-            font-size: 25px;
-            font-weight: bold;
-            margin-bottom: 8px;
-        }
-
-        .admin-title {
-            text-align: center;
-            color: #cbd5e1;
-            font-size: 13px;
-            margin-bottom: 30px;
-        }
-
-        .menu {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .menu button {
-            border: none;
-            background: transparent;
-            color: #e5e7eb;
-            text-align: left;
-            padding: 14px 15px;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 15px;
-            transition: 0.2s;
-
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .menu button svg {
-            width: 18px;
-            height: 18px;
-            flex-shrink: 0;
-        }
-
-        .menu button:hover,
-        .menu button.active {
-            background: rgba(255, 255, 255, 0.15);
-            color: white;
-        }
-
-        .logout-btn {
-            margin-top: 25px;
-            background: #dc2626 !important;
-            color: white !important;
-            text-align: center !important;
-        }
-
-        .logout-btn:hover {
-            background: #b91c1c !important;
+            width: 210px;
         }
 
         .main {
-            margin-left: 250px;
-            width: calc(100% - 250px);
-            min-height: 100vh;
-        }
-
-        .header {
-            height: 75px;
-            background: white;
-            border-bottom: 1px solid #e5e7eb;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 30px;
-            position: sticky;
-            top: 0;
-            z-index: 20;
-        }
-
-        .header h1 {
-            font-size: 23px;
-            color: #111827;
-        }
-
-        .admin-info {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #475569;
-            font-size: 14px;
-        }
-
-        .admin-badge {
-            background: #2563eb;
-            color: white;
-            padding: 8px 13px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-        }
-
-        .content {
-            padding: 30px;
-        }
-
-        .section {
-            display: none;
-            padding: 24px;
-            border-radius: 16px;
-            min-height: calc(100vh - 135px);
-            border: 1px solid #e5e7eb;
-        }
-
-        .section.active {
-            display: block;
-        }
-
-        /* Mild section backgrounds */
-
-        #dashboard {
-            background: #f8fafc;
-        }
-
-        #employees {
-            background: #f8fbff;
-        }
-
-        #leave {
-            background: #fbfaf8;
-        }
-
-        #salary {
-            background: #f8fbfa;
-        }
-
-        #monthly {
-            background: #faf9fc;
-        }
-
-        #history {
-            background: #f8fafb;
-        }
-
-        .section-title {
-            font-size: 25px;
-            margin-bottom: 8px;
-            color: #111827;
-        }
-
-        .section-subtitle {
-            color: #64748b;
-            margin-bottom: 25px;
-            font-size: 14px;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 23px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(15, 23, 42, 0.07);
-            border: 1px solid #e5e7eb;
-        }
-
-        .stat-card h4 {
-            color: #64748b;
-            font-size: 14px;
-            margin-bottom: 12px;
-        }
-
-        .stat-card h2 {
-            font-size: 30px;
-            color: #111827;
-        }
-
-        .stat-blue {
-            border-left: 5px solid #2563eb;
-        }
-
-        .stat-green {
-            border-left: 5px solid #16a34a;
-        }
-
-        .stat-orange {
-            border-left: 5px solid #f97316;
-        }
-
-        .stat-red {
-            border-left: 5px solid #dc2626;
-        }
-
-        .top-bar {
-            background: white;
-            padding: 18px;
-            border-radius: 13px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 15px;
-            box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
-        }
-
-        .top-bar-left,
-        .top-bar-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .btn {
-            border: none;
-            border-radius: 8px;
-            padding: 10px 16px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: 0.2s;
-        }
-
-        .btn-primary {
-            background: #2563eb;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #1d4ed8;
-        }
-
-        .btn-success {
-            background: #16a34a;
-            color: white;
-        }
-
-        .btn-success:hover {
-            background: #15803d;
-        }
-
-        .btn-danger {
-            background: #dc2626;
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background: #b91c1c;
-        }
-
-        .btn-warning {
-            background: #f59e0b;
-            color: white;
-        }
-
-        .btn-warning:hover {
-            background: #d97706;
-        }
-
-        .btn-secondary {
-            background: #64748b;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background: #475569;
-        }
-
-        .btn-small {
-            padding: 7px 11px;
-            font-size: 12px;
-        }
-
-        .table-card {
-            background: white;
-            border-radius: 14px;
-            box-shadow: 0 5px 20px rgba(15, 23, 42, 0.06);
-            overflow: hidden;
-            border: 1px solid #e5e7eb;
-        }
-
-        .table-wrapper {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 900px;
-        }
-
-        th {
-            background: #eff6ff;
-            color: #1e3a8a;
-            font-size: 13px;
-            text-align: left;
-            padding: 14px;
-            white-space: nowrap;
-        }
-
-        td {
-            padding: 13px 14px;
-            border-top: 1px solid #e5e7eb;
-            font-size: 13px;
-            white-space: nowrap;
-        }
-
-        tr:hover td {
-            background: #f8fafc;
-        }
-
-        .empty-row {
-            text-align: center;
-            color: #64748b;
-            padding: 30px;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 5px 9px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: bold;
-        }
-
-        .badge-green {
-            background: #dcfce7;
-            color: #166534;
-        }
-
-        .badge-blue {
-            background: #dbeafe;
-            color: #1e40af;
-        }
-
-        .badge-orange {
-            background: #ffedd5;
-            color: #9a3412;
-        }
-
-        .badge-red {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .badge-gray {
-            background: #e5e7eb;
-            color: #374151;
+            margin-left: 210px;
+            width: calc(100% - 210px);
         }
 
         .form-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 17px;
+            grid-template-columns: 1fr;
         }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 7px;
+        .header {
+            padding: 0 15px;
         }
 
-        .form-group.full {
-            grid-column: 1 / -1;
+        .content {
+            padding: 20px 15px;
         }
 
-        .form-group label {
-            font-size: 13px;
-            font-weight: 600;
-            color: #374151;
+        .section {
+            padding: 18px;
         }
+    }
 
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
+    @media (max-width: 600px) {
+        .sidebar {
+            position: relative;
             width: 100%;
-            padding: 11px 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            outline: none;
-            font-size: 14px;
-            background: white;
+            min-height: auto;
         }
 
-        .form-group textarea {
-            resize: vertical;
-            min-height: 90px;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-
-        .readonly {
-            background: #f1f5f9 !important;
-            cursor: not-allowed;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.65);
-            z-index: 100;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .modal.show {
-            display: flex;
-        }
-
-        .modal-box {
-            width: 100%;
-            max-width: 650px;
-            background: white;
-            border-radius: 16px;
-            padding: 25px;
-            max-height: 90vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
-        }
-
-        .modal-box.small {
-            max-width: 450px;
-        }
-
-        .modal-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 22px;
-        }
-
-        .modal-header h2 {
-            font-size: 20px;
-            color: #111827;
-        }
-
-        .close-btn {
-            border: none;
-            background: #f1f5f9;
-            width: 34px;
-            height: 34px;
-            border-radius: 50%;
-            cursor: pointer;
-            font-size: 18px;
-        }
-
-        .close-btn:hover {
-            background: #e2e8f0;
-        }
-
-        .modal-footer {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 25px;
-        }
-
-        .info-box {
-            background: #eff6ff;
-            border: 1px solid #bfdbfe;
-            color: #1e40af;
-            border-radius: 10px;
-            padding: 13px 15px;
-            font-size: 13px;
-            line-height: 1.6;
-            margin-bottom: 18px;
-        }
-
-        .warning-box {
-            background: #fff7ed;
-            border: 1px solid #fed7aa;
-            color: #9a3412;
-            border-radius: 10px;
-            padding: 13px 15px;
-            font-size: 13px;
-            line-height: 1.6;
-            margin-bottom: 18px;
-        }
-
-        .file-box {
-            border: 2px dashed #94a3b8;
-            padding: 25px;
-            text-align: center;
-            border-radius: 12px;
-            background: #f8fafc;
-        }
-
-        .file-box:hover {
-            border-color: #2563eb;
-        }
-
-        .file-box input {
-            margin-top: 15px;
-        }
-
-        .file-name {
-            margin-top: 12px;
-            font-size: 13px;
-            color: #2563eb;
-            font-weight: 600;
-            word-break: break-word;
-        }
-
-        .message {
-            display: none;
-            margin-bottom: 18px;
-            padding: 12px 15px;
-            border-radius: 9px;
-            font-size: 13px;
-            font-weight: 600;
-        }
-
-        .message.show {
+        .container {
             display: block;
         }
 
-        .message.success {
-            background: #dcfce7;
-            color: #166534;
+        .main {
+            margin-left: 0;
+            width: 100%;
         }
 
-        .message.error {
-            background: #fee2e2;
-            color: #991b1b;
+        .stats-grid {
+            grid-template-columns: 1fr;
         }
 
-        .filter-box {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
+        .header {
+            position: relative;
         }
 
-        .filter-box input,
-        .filter-box select {
-            padding: 10px 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            outline: none;
+        .top-bar {
+            flex-direction: column;
+            align-items: stretch;
         }
 
-        @media (max-width: 1100px) {
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+        .admin-info {
+            display: none;
         }
+    }
 
-        @media (max-width: 800px) {
-            .sidebar {
-                width: 210px;
-            }
+</style>
+```
 
-            .main {
-                margin-left: 210px;
-                width: calc(100% - 210px);
-            }
-
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .header {
-                padding: 0 15px;
-            }
-
-            .content {
-                padding: 20px 15px;
-            }
-
-            .section {
-                padding: 18px;
-            }
-        }
-
-        @media (max-width: 600px) {
-            .sidebar {
-                position: relative;
-                width: 100%;
-                min-height: auto;
-            }
-
-            .container {
-                display: block;
-            }
-
-            .main {
-                margin-left: 0;
-                width: 100%;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .header {
-                position: relative;
-            }
-
-            .top-bar {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .admin-info {
-                display: none;
-            }
-        }
-
-    </style>
 </head>
 
 <body>
 
 <div class="container">
 
-    <aside class="sidebar">
+```
+<aside class="sidebar">
 
-        <div class="logo">GROWBYTEE</div>
+    <div class="logo">GROWBYTEE</div>
 
-        <div class="admin-title">
-            Admin / CEO Dashboard
+    <div class="admin-title">
+        Admin / CEO Dashboard
+    </div>
+
+    <div class="menu">
+
+        <button class="menu-btn active"
+                onclick="showSection('dashboard', this)">
+            <i data-lucide="layout-dashboard"></i>
+            Dashboard
+        </button>
+
+        <button class="menu-btn"
+                onclick="showSection('employees', this)">
+            <i data-lucide="users"></i>
+            Employees
+        </button>
+
+        <button class="menu-btn"
+                onclick="showSection('leave', this)">
+            <i data-lucide="clipboard-list"></i>
+            Leave
+        </button>
+
+        <button class="menu-btn"
+                onclick="showSection('salary', this)">
+            <i data-lucide="wallet"></i>
+            Salary
+        </button>
+
+        <button class="menu-btn"
+                onclick="showSection('monthly', this)">
+            <i data-lucide="calendar-days"></i>
+            Monthly Report
+        </button>
+
+        <button class="menu-btn"
+                onclick="showSection('history', this)">
+            <i data-lucide="history"></i>
+            History
+        </button>
+
+        <button class="menu-btn logout-btn"
+                onclick="logout()">
+            <i data-lucide="log-out"></i>
+            Logout
+        </button>
+
+    </div>
+
+</aside>
+
+<main class="main">
+
+    <header class="header">
+
+        <h1>GROWBYTEE - Admin Dashboard</h1>
+
+        <div class="admin-info" id="adminInfo">
+
+            <span id="loggedAdminName">
+                Welcome, Admin
+            </span>
+
+            <span class="admin-badge">
+                ADMIN
+            </span>
+
         </div>
 
-        <div class="menu">
+    </header>
 
-            <button class="menu-btn active"
-                    onclick="showSection('dashboard', this)">
-                <i data-lucide="layout-dashboard"></i>
+    <div class="content">
+
+        <!-- DASHBOARD -->
+
+        <section id="dashboard" class="section active">
+
+            <h2 class="section-title">
                 Dashboard
-            </button>
+            </h2>
 
-            <button class="menu-btn"
-                    onclick="showSection('employees', this)">
-                <i data-lucide="users"></i>
-                Employees
-            </button>
+            <p class="section-subtitle">
+                Employee and attendance management overview
+            </p>
 
-            <button class="menu-btn"
-                    onclick="showSection('leave', this)">
-                <i data-lucide="clipboard-list"></i>
-                Leave
-            </button>
+            <div id="dashboardMessage" class="message"></div>
 
-            <button class="menu-btn"
-                    onclick="showSection('salary', this)">
-                <i data-lucide="wallet"></i>
-                Salary
-            </button>
+            <div class="stats-grid">
 
-            <button class="menu-btn"
-                    onclick="showSection('monthly', this)">
-                <i data-lucide="calendar-days"></i>
-                Monthly Report
-            </button>
+                <div class="stat-card stat-blue">
+                    <h4>Total Employees</h4>
+                    <h2 id="totalEmployees">0</h2>
+                </div>
 
-            <button class="menu-btn"
-                    onclick="showSection('history', this)">
-                <i data-lucide="history"></i>
-                History
-            </button>
+                <div class="stat-card stat-green">
+                    <h4>Present Today</h4>
+                    <h2 id="presentToday">0</h2>
+                </div>
 
-            <button class="menu-btn logout-btn"
-                    onclick="logout()">
-                <i data-lucide="log-out"></i>
-                Logout
-            </button>
+                <div class="stat-card stat-orange">
+                    <h4>Pending Leaves</h4>
+                    <h2 id="pendingLeaves">0</h2>
+                </div>
 
-        </div>
-
-    </aside>
-
-    <main class="main">
-
-        <header class="header">
-
-            <h1>GROWBYTEE - Admin Dashboard</h1>
-
-            <div class="admin-info" id="adminInfo">
-
-                <span id="loggedAdminName">
-                    Welcome, Admin
-                </span>
-
-                <span class="admin-badge">
-                    ADMIN
-                </span>
+                <div class="stat-card stat-red">
+                    <h4>Absent Today</h4>
+                    <h2 id="absentToday">0</h2>
+                </div>
 
             </div>
 
-        </header>
+        </section>
 
-        <div class="content">
 
-            <!-- DASHBOARD -->
+        <!-- EMPLOYEES -->
 
-            <section id="dashboard" class="section active">
+        <section id="employees" class="section">
 
-                <h2 class="section-title">
-                    Dashboard
-                </h2>
+            <h2 class="section-title">
+                Employee Management
+            </h2>
 
-                <p class="section-subtitle">
-                    Employee and attendance management overview
-                </p>
+            <p class="section-subtitle">
+                Add, edit, import and manage employees
+            </p>
 
-                <div id="dashboardMessage" class="message"></div>
+            <div id="employeeMessage" class="message"></div>
 
-                <div class="stats-grid">
+            <div class="top-bar">
 
-                    <div class="stat-card stat-blue">
-                        <h4>Total Employees</h4>
-                        <h2 id="totalEmployees">0</h2>
-                    </div>
-
-                    <div class="stat-card stat-green">
-                        <h4>Present Today</h4>
-                        <h2 id="presentToday">0</h2>
-                    </div>
-
-                    <div class="stat-card stat-orange">
-                        <h4>Pending Leaves</h4>
-                        <h2 id="pendingLeaves">0</h2>
-                    </div>
-
-                    <div class="stat-card stat-red">
-                        <h4>Absent Today</h4>
-                        <h2 id="absentToday">0</h2>
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- EMPLOYEES -->
-
-            <section id="employees" class="section">
-
-                <h2 class="section-title">
-                    Employee Management
-                </h2>
-
-                <p class="section-subtitle">
-                    Add, edit, import and manage employees
-                </p>
-
-                <div id="employeeMessage" class="message"></div>
-
-                <div class="top-bar">
-
-                    <div class="top-bar-left">
-
-                        <button class="btn btn-primary"
-                                onclick="openEmployeeModal('ADD')">
-                            + Add Employee
-                        </button>
-
-                        <button class="btn btn-success"
-                                onclick="openExcelImportModal()">
-                            📥 Import Excel
-                        </button>
-
-                    </div>
-
-                    <div class="top-bar-right">
-
-                        <input type="text"
-                               id="employeeSearch"
-                               placeholder="Search employee..."
-                               oninput="filterEmployees()"
-                               style="padding:10px 12px;border:1px solid #cbd5e1;border-radius:8px;outline:none;">
-
-                    </div>
-
-                </div>
-
-                <div class="table-card">
-
-                    <div class="table-wrapper">
-
-                        <table>
-
-                            <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Employee Code</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>Role</th>
-                                <th>Salary</th>
-                                <th>Joining Date</th>
-                                <th>Action</th>
-                            </tr>
-                            </thead>
-
-                            <tbody id="employeeTableBody">
-
-                            <tr>
-                                <td colspan="9" class="empty-row">
-                                    Loading employees...
-                                </td>
-                            </tr>
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- LEAVE -->
-
-            <section id="leave" class="section">
-
-                <h2 class="section-title">
-                    Leave Management
-                </h2>
-
-                <p class="section-subtitle">
-                    Review and manage employee leave requests
-                </p>
-
-                <div id="leaveMessage" class="message"></div>
-
-                <div class="table-card">
-
-                    <div class="table-wrapper">
-
-                        <table>
-
-                            <thead>
-
-                            <tr>
-                                <th>ID</th>
-                                <th>Employee</th>
-                                <th>Leave Type</th>
-                                <th>Date</th>
-                                <th>Duration</th>
-                                <th>Reason</th>
-                                <th>Status</th>
-                                <th>Action</th>
-                            </tr>
-
-                            </thead>
-
-                            <tbody id="leaveTableBody">
-
-                            <tr>
-                                <td colspan="8" class="empty-row">
-                                    Loading leave requests...
-                                </td>
-                            </tr>
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- SALARY -->
-
-            <section id="salary" class="section">
-
-                <h2 class="section-title">
-                    Salary Management
-                </h2>
-
-                <p class="section-subtitle">
-                    Manage employee salary separately from employee creation
-                </p>
-
-                <div id="salaryMessage" class="message"></div>
-
-                <div class="top-bar">
-
-                    <div class="filter-box">
-
-                        <select id="salaryYear"></select>
-
-                        <select id="salaryMonth">
-
-                            <option value="1">January</option>
-                            <option value="2">February</option>
-                            <option value="3">March</option>
-                            <option value="4">April</option>
-                            <option value="5">May</option>
-                            <option value="6">June</option>
-                            <option value="7">July</option>
-                            <option value="8">August</option>
-                            <option value="9">September</option>
-                            <option value="10">October</option>
-                            <option value="11">November</option>
-                            <option value="12">December</option>
-
-                        </select>
-
-                    </div>
+                <div class="top-bar-left">
 
                     <button class="btn btn-primary"
-                            onclick="calculateSalary()">
-                        Calculate Salary
+                            onclick="openEmployeeModal('ADD')">
+                        + Add Employee
+                    </button>
+
+                    <button class="btn btn-success"
+                            onclick="openExcelImportModal()">
+                        📥 Import Excel
                     </button>
 
                 </div>
 
-                <div class="table-card">
+                <div class="top-bar-right">
 
-                    <div class="table-wrapper">
-
-                        <table>
-
-                            <thead>
-
-                            <tr>
-                                <th>Employee ID</th>
-                                <th>Employee Code</th>
-                                <th>Name</th>
-                                <th>Monthly Salary</th>
-                                <th>Working Days</th>
-                                <th>Present Days</th>
-                                <th>Leave Days</th>
-                                <th>LOP</th>
-                                <th>Final Salary</th>
-                                <th>Action</th>
-                            </tr>
-
-                            </thead>
-
-                            <tbody id="salaryTableBody">
-
-                            <tr>
-                                <td colspan="10" class="empty-row">
-                                    Select year/month and calculate salary
-                                </td>
-                            </tr>
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
+                    <input type="text"
+                           id="employeeSearch"
+                           placeholder="Search employee..."
+                           oninput="filterEmployees()"
+                           style="padding:10px 12px;border:1px solid #cbd5e1;border-radius:8px;outline:none;">
 
                 </div>
 
-            </section>
+            </div>
 
+            <div class="table-card">
 
-            <!-- MONTHLY -->
+                <div class="table-wrapper">
 
-            <section id="monthly" class="section">
+                    <table>
 
-                <h2 class="section-title">
-                    Monthly Report
-                </h2>
+                        <thead>
+                        <tr>
+                            <th>Employee Code</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Role</th>
+                            <th>Salary</th>
+                            <th>Joining Date</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
 
-                <p class="section-subtitle">
-                    Employee attendance monthly report
-                </p>
+                        <tbody id="employeeTableBody">
 
-                <div id="monthlyMessage" class="message"></div>
+                        <tr>
+                            <td colspan="8" class="empty-row">
+                                Loading employees...
+                            </td>
+                        </tr>
 
-                <div class="top-bar">
+                        </tbody>
 
-                    <div class="filter-box">
-
-                        <select id="reportYear"></select>
-
-                        <select id="reportMonth">
-
-                            <option value="1">January</option>
-                            <option value="2">February</option>
-                            <option value="3">March</option>
-                            <option value="4">April</option>
-                            <option value="5">May</option>
-                            <option value="6">June</option>
-                            <option value="7">July</option>
-                            <option value="8">August</option>
-                            <option value="9">September</option>
-                            <option value="10">October</option>
-                            <option value="11">November</option>
-                            <option value="12">December</option>
-
-                        </select>
-
-                    </div>
-
-                    <button class="btn btn-primary"
-                            onclick="generateMonthlyReport()">
-                        Generate Report
-                    </button>
+                    </table>
 
                 </div>
 
-                <div class="table-card">
+            </div>
 
-                    <div class="table-wrapper">
-
-                        <table>
-
-                            <thead>
-
-                            <tr>
-                                <th>Employee ID</th>
-                                <th>Employee Code</th>
-                                <th>Name</th>
-                                <th>Present</th>
-                                <th>Absent</th>
-                                <th>Leave</th>
-                                <th>Permission</th>
-                                <th>Working Days</th>
-                            </tr>
-
-                            </thead>
-
-                            <tbody id="monthlyTableBody">
-
-                            <tr>
-                                <td colspan="8" class="empty-row">
-                                    Generate monthly report
-                                </td>
-                            </tr>
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-                </div>
-
-            </section>
+        </section>
 
 
-            <!-- HISTORY -->
+        <!-- LEAVE -->
 
-            <section id="history" class="section">
+        <section id="leave" class="section">
 
-                <h2 class="section-title">
-                    Admin Action History
-                </h2>
+            <h2 class="section-title">
+                Leave Management
+            </h2>
 
-                <p class="section-subtitle">
-                    Common audit history visible to all administrators
-                </p>
+            <p class="section-subtitle">
+                Review and manage employee leave requests
+            </p>
 
-                <div id="historyMessage" class="message"></div>
+            <div id="leaveMessage" class="message"></div>
 
-                <div class="table-card">
+            <div class="table-card">
 
-                    <div class="table-wrapper">
+                <div class="table-wrapper">
 
-                        <table>
+                    <table>
 
-                            <thead>
+                        <thead>
 
-                            <tr>
-                                <th>Date</th>
-                                <th>Time</th>
-                                <th>Admin</th>
-                                <th>Action</th>
-                                <th>Employee</th>
-                                <th>Reason</th>
-                                <th>Field</th>
-                                <th>Old Value</th>
-                                <th>New Value</th>
-                            </tr>
+                        <tr>
+                            <th>Employee</th>
+                            <th>Leave Type</th>
+                            <th>Date</th>
+                            <th>Duration</th>
+                            <th>Reason</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
 
-                            </thead>
+                        </thead>
 
-                            <tbody id="historyTableBody">
+                        <tbody id="leaveTableBody">
 
-                            <tr>
-                                <td colspan="9" class="empty-row">
-                                    Loading history...
-                                </td>
-                            </tr>
+                        <tr>
+                            <td colspan="7" class="empty-row">
+                                Loading leave requests...
+                            </td>
+                        </tr>
 
-                            </tbody>
+                        </tbody>
 
-                        </table>
-
-                    </div>
+                    </table>
 
                 </div>
 
-            </section>
+            </div>
 
-        </div>
+        </section>
 
-    </main>
+
+        <!-- SALARY -->
+
+        <section id="salary" class="section">
+
+            <h2 class="section-title">
+                Salary Management
+            </h2>
+
+            <p class="section-subtitle">
+                Manage employee salary separately from employee creation
+            </p>
+
+            <div id="salaryMessage" class="message"></div>
+
+            <div class="top-bar">
+
+                <div class="filter-box">
+
+                    <select id="salaryYear"></select>
+
+                    <select id="salaryMonth">
+
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+
+                    </select>
+
+                </div>
+
+                <button class="btn btn-primary"
+                        onclick="calculateSalary()">
+                    Calculate Salary
+                </button>
+
+            </div>
+
+            <div class="table-card">
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                        <tr>
+                            <th>Employee Code</th>
+                            <th>Name</th>
+                            <th>Monthly Salary</th>
+                            <th>Working Days</th>
+                            <th>Present Days</th>
+                            <th>Leave Days</th>
+                            <th>LOP</th>
+                            <th>Final Salary</th>
+                            <th>Action</th>
+                        </tr>
+
+                        </thead>
+
+                        <tbody id="salaryTableBody">
+
+                        <tr>
+                            <td colspan="9" class="empty-row">
+                                Select year/month and calculate salary
+                            </td>
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- MONTHLY -->
+
+        <section id="monthly" class="section">
+
+            <h2 class="section-title">
+                Monthly Report
+            </h2>
+
+            <p class="section-subtitle">
+                Employee attendance monthly report
+            </p>
+
+            <div id="monthlyMessage" class="message"></div>
+
+            <div class="top-bar">
+
+                <div class="filter-box">
+
+                    <select id="reportYear"></select>
+
+                    <select id="reportMonth">
+
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+
+                    </select>
+
+                </div>
+
+                <button class="btn btn-primary"
+                        onclick="generateMonthlyReport()">
+                    Generate Report
+                </button>
+
+            </div>
+
+            <div class="table-card">
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                        <tr>
+                            <th>Employee Code</th>
+                            <th>Name</th>
+                            <th>Present</th>
+                            <th>Absent</th>
+                            <th>Leave</th>
+                            <th>Permission</th>
+                            <th>Working Days</th>
+                        </tr>
+
+                        </thead>
+
+                        <tbody id="monthlyTableBody">
+
+                        <tr>
+                            <td colspan="7" class="empty-row">
+                                Generate monthly report
+                            </td>
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- HISTORY -->
+
+        <section id="history" class="section">
+
+            <h2 class="section-title">
+                Admin Action History
+            </h2>
+
+            <p class="section-subtitle">
+                Common audit history visible to all administrators
+            </p>
+
+            <div id="historyMessage" class="message"></div>
+
+            <div class="table-card">
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                        <tr>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Admin</th>
+                            <th>Action</th>
+                            <th>Employee</th>
+                            <th>Reason</th>
+                            <th>Field</th>
+                            <th>Old Value</th>
+                            <th>New Value</th>
+                        </tr>
+
+                        </thead>
+
+                        <tbody id="historyTableBody">
+
+                        <tr>
+                            <td colspan="9" class="empty-row">
+                                Loading history...
+                            </td>
+                        </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+```
 
 </div>
-
 
 <!-- EMPLOYEE MODAL -->
 
 <div id="employeeModal" class="modal">
 
-    <div class="modal-box">
+```
+<div class="modal-box">
 
-        <div class="modal-header">
+    <div class="modal-header">
 
-            <h2 id="employeeModalTitle">
-                Add Employee
-            </h2>
+        <h2 id="employeeModalTitle">
+            Add Employee
+        </h2>
 
-            <button class="close-btn"
-                    onclick="closeEmployeeModal()">
-                ×
-            </button>
+        <button class="close-btn"
+                onclick="closeEmployeeModal()">
+            ×
+        </button>
 
-        </div>
+    </div>
 
-        <div class="info-box">
+    <div class="info-box">
 
-            <strong>Employee ID and Employee Code are generated automatically.</strong>
+        <strong>Employee Code is generated automatically.</strong>
 
-            <br>
+        <br>
 
-            Do not enter Employee ID or Employee Code manually.
+        Do not enter Employee Code manually.
 
-            <br>
+        <br>
 
-            Salary is managed separately.
+        Salary is managed separately.
 
-        </div>
+    </div>
 
-        <div class="form-grid">
+    <div class="form-grid">
 
-            <div class="form-group">
+        <div class="form-group">
 
-                <label>Employee Code</label>
+            <label>Employee Code</label>
 
-                <input type="text"
-                       id="employeeCode"
-                       class="readonly"
-                       placeholder="Auto-generated"
-                       readonly>
-
-            </div>
-
-            <div class="form-group">
-
-                <label>Employee Name</label>
-
-                <input type="text"
-                       id="employeeName"
-                       placeholder="Employee name">
-
-            </div>
-
-            <div class="form-group">
-
-                <label>Email</label>
-
-                <input type="email"
-                       id="employeeEmail"
-                       placeholder="employee@example.com">
-
-            </div>
-
-            <div class="form-group">
-
-                <label>Contact Number</label>
-
-                <input type="text"
-                       id="employeeContact"
-                       placeholder="Contact number">
-
-            </div>
-
-            <div class="form-group">
-
-                <label>Role</label>
-
-                <select id="employeeRole">
-
-                    <option value="">
-                        Select Role
-                    </option>
-
-                    <option value="EMPLOYEE">
-                        EMPLOYEE
-                    </option>
-
-                    <option value="DEVELOPER">
-                        DEVELOPER
-                    </option>
-
-                    <option value="HR">
-                        HR
-                    </option>
-
-                    <option value="TEAM_LEAD">
-                        TEAM_LEAD
-                    </option>
-
-                    <option value="MANAGER">
-                        MANAGER
-                    </option>
-
-                    <option value="ADMIN">
-                        ADMIN
-                    </option>
-
-                </select>
-
-            </div>
-
-            <div class="form-group">
-
-                <label>Joining Date</label>
-
-                <input type="date"
-                       id="employeeJoiningDate">
-
-            </div>
+            <input type="text"
+                   id="employeeCode"
+                   class="readonly"
+                   placeholder="Auto-generated"
+                   readonly>
 
         </div>
 
-        <div class="modal-footer">
+        <div class="form-group">
 
-            <button class="btn btn-secondary"
-                    onclick="closeEmployeeModal()">
-                Cancel
-            </button>
+            <label>Employee Name</label>
 
-            <button class="btn btn-primary"
-                    onclick="saveEmployee()">
-                Save Employee
-            </button>
+            <input type="text"
+                   id="employeeName"
+                   placeholder="Employee name">
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Email</label>
+
+            <input type="email"
+                   id="employeeEmail"
+                   placeholder="employee@example.com">
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Contact Number</label>
+
+            <input type="text"
+                   id="employeeContact"
+                   placeholder="Contact number">
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Role</label>
+
+            <select id="employeeRole">
+
+                <option value="">
+                    Select Role
+                </option>
+
+                <option value="EMPLOYEE">
+                    EMPLOYEE
+                </option>
+
+                <option value="DEVELOPER">
+                    DEVELOPER
+                </option>
+
+                <option value="HR">
+                    HR
+                </option>
+
+                <option value="TEAM_LEAD">
+                    TEAM_LEAD
+                </option>
+
+                <option value="MANAGER">
+                    MANAGER
+                </option>
+
+                <option value="ADMIN">
+                    ADMIN
+                </option>
+
+            </select>
+
+        </div>
+
+        <div class="form-group">
+
+            <label>Joining Date</label>
+
+            <input type="date"
+                   id="employeeJoiningDate">
 
         </div>
 
     </div>
 
-</div>
+    <div class="modal-footer">
 
+        <button class="btn btn-secondary"
+                onclick="closeEmployeeModal()">
+            Cancel
+        </button>
+
+        <button class="btn btn-primary"
+                onclick="saveEmployee()">
+            Save Employee
+        </button>
+
+    </div>
+
+</div>
+```
+
+</div>
 
 <!-- EMPLOYEE REASON MODAL -->
 
 <div id="employeeReasonModal" class="modal">
 
-    <div class="modal-box small">
+```
+<div class="modal-box small">
 
-        <div class="modal-header">
+    <div class="modal-header">
 
-            <h2 id="employeeReasonTitle">
-                Confirm Employee Action
-            </h2>
+        <h2 id="employeeReasonTitle">
+            Confirm Employee Action
+        </h2>
 
-            <button class="close-btn"
-                    onclick="closeEmployeeReasonModal()">
-                ×
-            </button>
+        <button class="close-btn"
+                onclick="closeEmployeeReasonModal()">
+            ×
+        </button>
 
-        </div>
+    </div>
 
-        <div class="info-box">
+    <div class="info-box">
 
-            <strong>Admin password is not required.</strong>
+        <strong>Admin password is not required.</strong>
 
-            <br>
+        <br>
 
-            You are already logged in as an administrator.
+        You are already logged in as an administrator.
 
-            <br>
+        <br>
 
-            Enter the reason for this action.
+        Enter the reason for this action.
 
-        </div>
+    </div>
 
-        <div class="form-group">
+    <div class="form-group">
 
-            <label>
-                Reason <span style="color:#dc2626;">*</span>
-            </label>
+        <label>
+            Reason <span style="color:#dc2626;">*</span>
+        </label>
 
-            <textarea id="employeeReason"
-                      rows="4"
-                      placeholder="Enter reason for this action..."></textarea>
+        <textarea id="employeeReason"
+                  rows="4"
+                  placeholder="Enter reason for this action..."></textarea>
 
-        </div>
+    </div>
 
-        <div class="modal-footer">
+    <div class="modal-footer">
 
-            <button class="btn btn-secondary"
-                    onclick="closeEmployeeReasonModal()">
-                Cancel
-            </button>
+        <button class="btn btn-secondary"
+                onclick="closeEmployeeReasonModal()">
+            Cancel
+        </button>
 
-            <button class="btn btn-primary"
-                    onclick="confirmEmployeeAction()">
-                Confirm
-            </button>
-
-        </div>
+        <button class="btn btn-primary"
+                onclick="confirmEmployeeAction()">
+            Confirm
+        </button>
 
     </div>
 
 </div>
+```
 
+</div>
 
 <!-- ACTION REASON MODAL -->
 
 <div id="actionReasonModal" class="modal">
 
-    <div class="modal-box small">
+```
+<div class="modal-box small">
 
-        <div class="modal-header">
+    <div class="modal-header">
 
-            <h2 id="actionReasonTitle">
-                Confirm Action
-            </h2>
+        <h2 id="actionReasonTitle">
+            Confirm Action
+        </h2>
 
-            <button class="close-btn"
-                    onclick="closeActionReasonModal()">
-                ×
-            </button>
+        <button class="close-btn"
+                onclick="closeActionReasonModal()">
+            ×
+        </button>
 
-        </div>
+    </div>
 
-        <div class="info-box">
+    <div class="info-box">
 
-            <strong>No admin password required.</strong>
+        <strong>No admin password required.</strong>
 
-            <br>
+        <br>
 
-            You are already logged in as an administrator.
+        You are already logged in as an administrator.
 
-            <br>
+        <br>
 
-            Enter the reason for this action.
+        Enter the reason for this action.
 
-        </div>
+    </div>
 
-        <div class="form-group">
+    <div class="form-group">
 
-            <label>
-                Reason
-                <span id="actionReasonRequired"
-                      style="color:#dc2626;">
-                    *
-                </span>
-            </label>
+        <label>
+            Reason
+            <span id="actionReasonRequired"
+                  style="color:#dc2626;">
+                *
+            </span>
+        </label>
 
-            <textarea id="actionReason"
-                      rows="4"
-                      placeholder="Enter reason for this action..."></textarea>
+        <textarea id="actionReason"
+                  rows="4"
+                  placeholder="Enter reason for this action..."></textarea>
 
-        </div>
+    </div>
 
-        <div class="modal-footer">
+    <div class="modal-footer">
 
-            <button class="btn btn-secondary"
-                    onclick="closeActionReasonModal()">
-                Cancel
-            </button>
+        <button class="btn btn-secondary"
+                onclick="closeActionReasonModal()">
+            Cancel
+        </button>
 
-            <button class="btn btn-primary"
-                    onclick="confirmActionReason()">
-                Confirm
-            </button>
-
-        </div>
+        <button class="btn btn-primary"
+                onclick="confirmActionReason()">
+            Confirm
+        </button>
 
     </div>
 
 </div>
+```
 
+</div>
 
 <!-- SALARY MODAL -->
 
 <div id="salaryModal" class="modal">
 
-    <div class="modal-box small">
+```
+<div class="modal-box small">
 
-        <div class="modal-header">
+    <div class="modal-header">
 
-            <h2>
-                Edit Employee Salary
-            </h2>
+        <h2>
+            Edit Employee Salary
+        </h2>
 
-            <button class="close-btn"
-                    onclick="closeSalaryModal()">
-                ×
-            </button>
+        <button class="close-btn"
+                onclick="closeSalaryModal()">
+            ×
+        </button>
 
-        </div>
+    </div>
 
-        <div class="info-box">
+    <div class="info-box">
 
-            Salary changes are recorded in History.
-
-            <br>
-
-            Admin password is not required.
-
-        </div>
-
-        <div class="form-group">
-
-            <label>Employee</label>
-
-            <input type="text"
-                   id="salaryEmployeeName"
-                   class="readonly"
-                   readonly>
-
-        </div>
+        Salary changes are recorded in History.
 
         <br>
 
-        <div class="form-group">
+        Admin password is not required.
 
-            <label>Current Salary</label>
+    </div>
 
-            <input type="text"
-                   id="currentSalary"
-                   class="readonly"
-                   readonly>
+    <div class="form-group">
 
-        </div>
+        <label>Employee</label>
 
-        <br>
+        <input type="text"
+               id="salaryEmployeeName"
+               class="readonly"
+               readonly>
 
-        <div class="form-group">
+    </div>
 
-            <label>New Salary</label>
+    <br>
 
-            <input type="number"
-                   id="newSalary"
-                   min="0"
-                   step="0.01"
-                   placeholder="Enter new salary">
+    <div class="form-group">
 
-        </div>
+        <label>Current Salary</label>
 
-        <div class="modal-footer">
+        <input type="text"
+               id="currentSalary"
+               class="readonly"
+               readonly>
 
-            <button class="btn btn-secondary"
-                    onclick="closeSalaryModal()">
-                Cancel
-            </button>
+    </div>
 
-            <button class="btn btn-primary"
-                    onclick="saveSalaryEdit()">
-                Update Salary
-            </button>
+    <br>
 
-        </div>
+    <div class="form-group">
+
+        <label>New Salary</label>
+
+        <input type="number"
+               id="newSalary"
+               min="0"
+               step="0.01"
+               placeholder="Enter new salary">
+
+    </div>
+
+    <div class="modal-footer">
+
+        <button class="btn btn-secondary"
+                onclick="closeSalaryModal()">
+            Cancel
+        </button>
+
+        <button class="btn btn-primary"
+                onclick="saveSalaryEdit()">
+            Update Salary
+        </button>
 
     </div>
 
 </div>
+```
 
+</div>
 
 <!-- EXCEL MODAL -->
 
 <div id="excelImportModal" class="modal">
 
-    <div class="modal-box">
+```
+<div class="modal-box">
 
-        <div class="modal-header">
+    <div class="modal-header">
 
-            <h2>
-                Import Employees from Excel
-            </h2>
+        <h2>
+            Import Employees from Excel
+        </h2>
 
-            <button class="close-btn"
-                    onclick="closeExcelImportModal()">
-                ×
-            </button>
+        <button class="close-btn"
+                onclick="closeExcelImportModal()">
+            ×
+        </button>
 
-        </div>
+    </div>
 
-        <div class="info-box">
+    <div class="info-box">
 
-            <strong>Required Excel columns:</strong>
+        <strong>Required Excel columns:</strong>
 
-            <br>
+        <br>
 
-            Employee Code, Name, Email, Contact Number,
-            Role, Joining Date
+        Employee Code, Name, Email, Contact Number,
+        Role, Joining Date
 
-            <br><br>
+        <br><br>
 
-            Extra columns will be ignored automatically.
+        Extra columns will be ignored automatically.
 
-            <br>
+        <br>
 
-            Salary is not imported from Excel.
+        Salary is not imported from Excel.
 
-        </div>
+    </div>
 
-        <div class="file-box">
+    <div class="file-box">
 
-            <strong>
-                Select Excel file
-            </strong>
+        <strong>
+            Select Excel file
+        </strong>
 
-            <p style="margin-top:7px;color:#64748b;font-size:12px;">
-                Supported: .xlsx / .xls
-            </p>
+        <p style="margin-top:7px;color:#64748b;font-size:12px;">
+            Supported: .xlsx / .xls
+        </p>
 
-            <input type="file"
-                   id="excelFileInput"
-                   accept=".xlsx,.xls"
-                   onchange="handleExcelFileSelected()">
+        <input type="file"
+               id="excelFileInput"
+               accept=".xlsx,.xls"
+               onchange="handleExcelFileSelected()">
 
-            <div id="selectedFileName"
-                 class="file-name">
-                No file selected
-            </div>
-
-        </div>
-
-        <div class="modal-footer">
-
-            <button class="btn btn-secondary"
-                    onclick="closeExcelImportModal()">
-                Cancel
-            </button>
-
-            <button class="btn btn-success"
-                    onclick="startExcelImport()">
-                Import Excel
-            </button>
-
+        <div id="selectedFileName"
+             class="file-name">
+            No file selected
         </div>
 
     </div>
 
-</div>
+    <div class="modal-footer">
 
+        <button class="btn btn-secondary"
+                onclick="closeExcelImportModal()">
+            Cancel
+        </button>
+
+        <button class="btn btn-success"
+                onclick="startExcelImport()">
+            Import Excel
+        </button>
+
+    </div>
+
+</div>
+```
+
+</div>
 
 <script>
 
@@ -1942,7 +1948,7 @@
 
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="9" class="empty-row">
+                    <td colspan="8" class="empty-row">
                         No employees found
                     </td>
                 </tr>
@@ -1959,10 +1965,6 @@
 
                     return `
                     <tr>
-
-                        <td>
-                            ${escapeHtml(employee.id)}
-                        </td>
 
                         <td>
                             <span class="badge badge-blue">
@@ -2054,12 +2056,6 @@
                 function (employee) {
 
                     return (
-
-                        String(employee.id || "")
-                            .toLowerCase()
-                            .includes(search)
-
-                        ||
 
                         String(employee.employeeCode || "")
                             .toLowerCase()
@@ -3437,6 +3433,7 @@
          * because it clears pendingSalaryData.
          */
 
+
         document.getElementById(
             "salaryModal"
         ).classList.remove("show");
@@ -3529,7 +3526,7 @@
 
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="10" class="empty-row">
+                    <td colspan="9" class="empty-row">
                         No salary data found.
                     </td>
                 </tr>
@@ -3546,10 +3543,6 @@
 
                     return `
                     <tr>
-
-                        <td>
-                            ${escapeHtml(item.employeeId)}
-                        </td>
 
                         <td>
                             ${escapeHtml(item.employeeCode)}
@@ -3796,7 +3789,7 @@
 
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="8" class="empty-row">
+                    <td colspan="7" class="empty-row">
                         No leave requests found.
                     </td>
                 </tr>
@@ -3834,10 +3827,6 @@
 
                     return `
                     <tr>
-
-                        <td>
-                            ${escapeHtml(leave.id)}
-                        </td>
 
                         <td>
                             ${escapeHtml(
@@ -4194,7 +4183,7 @@
 
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="8" class="empty-row">
+                    <td colspan="7" class="empty-row">
                         No monthly report data found.
                     </td>
                 </tr>
@@ -4217,12 +4206,6 @@
 
                     return `
                     <tr>
-
-                        <td>
-                            ${escapeHtml(
-                                item.employeeId ?? "-"
-                            )}
-                        </td>
 
                         <td>
                             ${escapeHtml(
