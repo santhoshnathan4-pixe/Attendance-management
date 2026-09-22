@@ -1,5 +1,4 @@
-
-   <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -7,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>GROWBYTEE - Admin Dashboard</title>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
 
@@ -29,7 +30,7 @@
 
         .sidebar {
             width: 250px;
-            background: linear-gradient(180deg, #111827, #1e3a8a);
+            background: #263b5e;
             color: white;
             position: fixed;
             left: 0;
@@ -69,6 +70,16 @@
             cursor: pointer;
             font-size: 15px;
             transition: 0.2s;
+
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .menu button svg {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
         }
 
         .menu button:hover,
@@ -207,12 +218,7 @@
             box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
         }
 
-        .top-bar-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
+        .top-bar-left,
         .top-bar-right {
             display: flex;
             align-items: center;
@@ -553,38 +559,9 @@
             outline: none;
         }
 
-        .salary-summary {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .salary-box {
-            background: white;
-            border: 1px solid #e5e7eb;
-            padding: 18px;
-            border-radius: 12px;
-        }
-
-        .salary-box span {
-            display: block;
-            color: #64748b;
-            font-size: 12px;
-            margin-bottom: 7px;
-        }
-
-        .salary-box strong {
-            font-size: 20px;
-        }
-
         @media (max-width: 1100px) {
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
-            }
-
-            .salary-summary {
-                grid-template-columns: 1fr;
             }
         }
 
@@ -634,6 +611,11 @@
             .header {
                 position: relative;
             }
+
+            .top-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
         }
 
     </style>
@@ -655,37 +637,44 @@
 
             <button class="menu-btn active"
                     onclick="showSection('dashboard', this)">
-                📊 Dashboard
+                <i data-lucide="layout-dashboard"></i>
+                Dashboard
             </button>
 
             <button class="menu-btn"
                     onclick="showSection('employees', this)">
-                👨‍💼 Employees
+                <i data-lucide="users"></i>
+                Employees
             </button>
 
             <button class="menu-btn"
                     onclick="showSection('leave', this)">
-                📝 Leave
+                <i data-lucide="clipboard-list"></i>
+                Leave
             </button>
 
             <button class="menu-btn"
                     onclick="showSection('salary', this)">
-                💰 Salary
+                <i data-lucide="wallet"></i>
+                Salary
             </button>
 
             <button class="menu-btn"
                     onclick="showSection('monthly', this)">
-                📅 Monthly Report
+                <i data-lucide="calendar-days"></i>
+                Monthly Report
             </button>
 
             <button class="menu-btn"
                     onclick="showSection('history', this)">
-                🕘 History
+                <i data-lucide="history"></i>
+                History
             </button>
 
             <button class="menu-btn logout-btn"
                     onclick="logout()">
-                🚪 Logout
+                <i data-lucide="log-out"></i>
+                Logout
             </button>
 
         </div>
@@ -701,7 +690,7 @@
             <div class="admin-info">
 
                 <span id="loggedAdminName">
-                    ADMIN
+                    Welcome, Admin
                 </span>
 
                 <span class="admin-badge">
@@ -713,6 +702,8 @@
         </header>
 
         <div class="content">
+
+            <!-- DASHBOARD -->
 
             <section id="dashboard" class="section active">
 
@@ -751,6 +742,9 @@
                 </div>
 
             </section>
+
+
+            <!-- EMPLOYEES -->
 
             <section id="employees" class="section">
 
@@ -799,7 +793,6 @@
                         <table>
 
                             <thead>
-
                             <tr>
                                 <th>ID</th>
                                 <th>Employee Code</th>
@@ -811,7 +804,6 @@
                                 <th>Joining Date</th>
                                 <th>Action</th>
                             </tr>
-
                             </thead>
 
                             <tbody id="employeeTableBody">
@@ -831,6 +823,9 @@
                 </div>
 
             </section>
+
+
+            <!-- LEAVE -->
 
             <section id="leave" class="section">
 
@@ -882,6 +877,9 @@
                 </div>
 
             </section>
+
+
+            <!-- SALARY -->
 
             <section id="salary" class="section">
 
@@ -968,6 +966,9 @@
 
             </section>
 
+
+            <!-- MONTHLY -->
+
             <section id="monthly" class="section">
 
                 <h2 class="section-title">
@@ -1007,7 +1008,7 @@
 
                     <button class="btn btn-primary"
                             onclick="generateMonthlyReport()">
-                            Generate Report
+                        Generate Report
                     </button>
 
                 </div>
@@ -1050,6 +1051,9 @@
                 </div>
 
             </section>
+
+
+            <!-- HISTORY -->
 
             <section id="history" class="section">
 
@@ -1135,11 +1139,11 @@
 
             <br>
 
-            You do not need to enter Employee ID or Employee Code manually.
+            Employee ID and Employee Code do not need to be entered manually.
 
             <br>
 
-            Salary is managed separately from this form.
+            Salary is managed separately.
 
         </div>
 
@@ -1255,68 +1259,38 @@
 </div>
 
 
-<!-- PASSWORD MODAL -->
+<!-- EMPLOYEE REASON MODAL -->
 
-<div id="passwordModal" class="modal">
+<div id="employeeReasonModal" class="modal">
 
     <div class="modal-box small">
 
         <div class="modal-header">
 
-            <h2>
-                Admin Verification
+            <h2 id="employeeReasonTitle">
+                Confirm Employee Action
             </h2>
 
             <button class="close-btn"
-                    onclick="closePasswordModal()">
+                    onclick="closeEmployeeReasonModal()">
                 ×
             </button>
 
         </div>
 
-        <div class="warning-box">
+        <div class="info-box">
 
-            <strong>Admin verification required.</strong>
+            <strong>Admin password is not required.</strong>
 
             <br>
 
-            Your logged-in admin email is shown automatically.
-            Enter only your password and the reason for this action.
+            You are already logged in as an administrator.
 
-            <p id="passwordActionDescription"
-               style="margin-top:8px;">
-            </p>
+            <br>
 
-        </div>
-
-        <div class="form-group">
-
-            <label>
-                Logged-in Admin Email
-            </label>
-
-            <input type="email"
-                   id="verifyAdminEmail"
-                   class="readonly"
-                   readonly>
+            Enter the reason for this action.
 
         </div>
-
-        <br>
-
-        <div class="form-group">
-
-            <label>
-                Admin Password
-            </label>
-
-            <input type="password"
-                   id="verifyAdminPassword"
-                   placeholder="Enter your admin password">
-
-        </div>
-
-        <br>
 
         <div class="form-group">
 
@@ -1324,20 +1298,89 @@
                 Reason <span style="color:#dc2626;">*</span>
             </label>
 
-            <textarea id="adminActionReason"
-                      placeholder="Enter why you are performing this action..."></textarea>
+            <textarea id="employeeReason"
+                      rows="4"
+                      placeholder="Enter reason for this action..."></textarea>
 
         </div>
 
         <div class="modal-footer">
 
             <button class="btn btn-secondary"
-                    onclick="closePasswordModal()">
+                    onclick="closeEmployeeReasonModal()">
                 Cancel
             </button>
 
             <button class="btn btn-primary"
-                    onclick="confirmAdminAction()">
+                    onclick="confirmEmployeeAction()">
+                Confirm
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ACTION REASON MODAL -->
+
+<div id="actionReasonModal" class="modal">
+
+    <div class="modal-box small">
+
+        <div class="modal-header">
+
+            <h2 id="actionReasonTitle">
+                Confirm Action
+            </h2>
+
+            <button class="close-btn"
+                    onclick="closeActionReasonModal()">
+                ×
+            </button>
+
+        </div>
+
+        <div class="info-box">
+
+            <strong>No admin password required.</strong>
+
+            <br>
+
+            You are already logged in as an administrator.
+
+            <br>
+
+            Enter the reason for this action.
+
+        </div>
+
+        <div class="form-group">
+
+            <label>
+                Reason
+                <span id="actionReasonRequired"
+                      style="color:#dc2626;">
+                    *
+                </span>
+            </label>
+
+            <textarea id="actionReason"
+                      rows="4"
+                      placeholder="Enter reason for this action..."></textarea>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button class="btn btn-secondary"
+                    onclick="closeActionReasonModal()">
+                Cancel
+            </button>
+
+            <button class="btn btn-primary"
+                    onclick="confirmActionReason()">
                 Confirm
             </button>
 
@@ -1369,8 +1412,11 @@
 
         <div class="info-box">
 
-            Salary changes require your own admin password.
-            The old and new salary values will be recorded in History.
+            Salary changes are recorded in History.
+
+            <br>
+
+            Admin password is not required.
 
         </div>
 
@@ -1512,10 +1558,6 @@
 
 <script>
 
-    /* =====================================================
-       API
-    ===================================================== */
-
     const API_BASE_URL =
         "https://attendance-management-d5h6.onrender.com";
 
@@ -1529,10 +1571,6 @@
 
     }
 
-
-    /* =====================================================
-       GLOBAL VARIABLES
-    ===================================================== */
 
     let employees = [];
 
@@ -1550,14 +1588,14 @@
 
     let pendingLeaveData = null;
 
+    let pendingActionReasonRequired = true;
 
-    /* =====================================================
-       PAGE LOAD
-    ===================================================== */
 
     document.addEventListener(
         "DOMContentLoaded",
         function () {
+
+            lucide.createIcons();
 
             setupYears();
 
@@ -1595,17 +1633,21 @@
             document.getElementById(
                 "loggedAdminName"
             ).textContent =
-                adminName;
+                "Welcome, " + adminName;
 
         }
 
 
         if (adminEmail) {
 
-            document.getElementById(
-                "verifyAdminEmail"
-            ).value =
-                adminEmail;
+            const emailField =
+                document.getElementById(
+                    "verifyAdminEmail"
+                );
+
+            if (emailField) {
+                emailField.value = adminEmail;
+            }
 
         }
 
@@ -1622,26 +1664,20 @@
             new Date().getFullYear();
 
 
-        const yearSelectors = [
+        [
             "salaryYear",
             "reportYear"
-        ];
-
-
-        yearSelectors.forEach(
+        ].forEach(
             function (id) {
 
                 const select =
                     document.getElementById(id);
 
-
                 if (!select) {
                     return;
                 }
 
-
                 select.innerHTML = "";
-
 
                 for (
                     let year = currentYear - 2;
@@ -1654,29 +1690,14 @@
                             "option"
                         );
 
+                    option.value = year;
+                    option.textContent = year;
 
-                    option.value =
-                        year;
-
-
-                    option.textContent =
-                        year;
-
-
-                    if (
-                        year ===
-                        currentYear
-                    ) {
-
-                        option.selected =
-                            true;
-
+                    if (year === currentYear) {
+                        option.selected = true;
                     }
 
-
-                    select.appendChild(
-                        option
-                    );
+                    select.appendChild(option);
 
                 }
 
@@ -1703,7 +1724,7 @@
 
 
     /* =====================================================
-       SECTION NAVIGATION
+       NAVIGATION
     ===================================================== */
 
     function showSection(
@@ -1731,11 +1752,7 @@
 
 
         if (section) {
-
-            section.classList.add(
-                "active"
-            );
-
+            section.classList.add("active");
         }
 
 
@@ -1744,91 +1761,48 @@
         ).forEach(
             function (btn) {
 
-                btn.classList.remove(
-                    "active"
-                );
+                btn.classList.remove("active");
 
             }
         );
 
 
         if (button) {
-
-            button.classList.add(
-                "active"
-            );
-
+            button.classList.add("active");
         }
 
 
-        if (
-            sectionId ===
-            "dashboard"
-        ) {
-
+        if (sectionId === "dashboard") {
             loadEmployees();
-
             loadLeaves();
-
         }
 
-
-        if (
-            sectionId ===
-            "employees"
-        ) {
-
+        if (sectionId === "employees") {
             loadEmployees();
-
         }
 
-
-        if (
-            sectionId ===
-            "leave"
-        ) {
-
+        if (sectionId === "leave") {
             loadLeaves();
-
         }
 
-
-        if (
-            sectionId ===
-            "salary"
-        ) {
-
+        if (sectionId === "salary") {
             loadEmployees();
-
             calculateSalary();
-
         }
 
-
-        if (
-            sectionId ===
-            "monthly"
-        ) {
-
+        if (sectionId === "monthly") {
             loadMonthlyReport();
-
         }
 
-
-        if (
-            sectionId ===
-            "history"
-        ) {
-
+        if (sectionId === "history") {
             loadHistory();
-
         }
 
     }
 
 
     /* =====================================================
-       LOAD EMPLOYEES
+       EMPLOYEES
     ===================================================== */
 
     async function loadEmployees() {
@@ -1844,9 +1818,7 @@
             if (!response.ok) {
 
                 throw new Error(
-                    await getErrorMessage(
-                        response
-                    )
+                    await getErrorMessage(response)
                 );
 
             }
@@ -1868,7 +1840,6 @@
                 error
             );
 
-
             showMessage(
                 "employeeMessage",
                 error.message,
@@ -1879,10 +1850,6 @@
 
     }
 
-
-    /* =====================================================
-       RENDER EMPLOYEES
-    ===================================================== */
 
     function renderEmployees(
         list = employees
@@ -1899,15 +1866,11 @@
         }
 
 
-        if (
-            !list ||
-            list.length === 0
-        ) {
+        if (!list || list.length === 0) {
 
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="9"
-                        class="empty-row">
+                    <td colspan="9" class="empty-row">
                         No employees found
                     </td>
                 </tr>
@@ -1923,61 +1886,46 @@
                 function (employee) {
 
                     return `
-
                     <tr>
 
                         <td>
-                            ${escapeHtml(
-                                employee.id
-                            )}
+                            ${escapeHtml(employee.id)}
                         </td>
 
                         <td>
                             <span class="badge badge-blue">
-                                ${escapeHtml(
-                                    employee.employeeCode
-                                )}
+                                ${escapeHtml(employee.employeeCode)}
                             </span>
                         </td>
 
                         <td>
                             <strong>
-                                ${escapeHtml(
-                                    employee.name
-                                )}
+                                ${escapeHtml(employee.name)}
                             </strong>
                         </td>
 
                         <td>
-                            ${escapeHtml(
-                                employee.email
-                            )}
+                            ${escapeHtml(employee.email)}
                         </td>
 
                         <td>
                             ${escapeHtml(
-                                employee.contactNumber ||
-                                "-"
+                                employee.contactNumber || "-"
                             )}
                         </td>
 
                         <td>
                             ${escapeHtml(
-                                employee.role ||
-                                "-"
+                                employee.role || "-"
                             )}
                         </td>
 
                         <td>
-                            ₹${formatNumber(
-                                employee.salary
-                            )}
+                            ₹${formatNumber(employee.salary)}
                         </td>
 
                         <td>
-                            ${formatDate(
-                                employee.joiningDate
-                            )}
+                            ${formatDate(employee.joiningDate)}
                         </td>
 
                         <td>
@@ -2002,7 +1950,6 @@
                         </td>
 
                     </tr>
-
                     `;
 
                 }
@@ -2010,10 +1957,6 @@
 
     }
 
-
-    /* =====================================================
-       SEARCH
-    ===================================================== */
 
     function filterEmployees() {
 
@@ -2027,9 +1970,7 @@
 
         if (!search) {
 
-            renderEmployees(
-                employees
-            );
+            renderEmployees(employees);
 
             return;
 
@@ -2042,46 +1983,31 @@
 
                     return (
 
-                        String(
-                            employee.id ||
-                            ""
-                        )
+                        String(employee.id || "")
                             .toLowerCase()
                             .includes(search)
 
                         ||
 
-                        String(
-                            employee.employeeCode ||
-                            ""
-                        )
+                        String(employee.employeeCode || "")
                             .toLowerCase()
                             .includes(search)
 
                         ||
 
-                        String(
-                            employee.name ||
-                            ""
-                        )
+                        String(employee.name || "")
                             .toLowerCase()
                             .includes(search)
 
                         ||
 
-                        String(
-                            employee.email ||
-                            ""
-                        )
+                        String(employee.email || "")
                             .toLowerCase()
                             .includes(search)
 
                         ||
 
-                        String(
-                            employee.role ||
-                            ""
-                        )
+                        String(employee.role || "")
                             .toLowerCase()
                             .includes(search)
 
@@ -2091,27 +2017,19 @@
             );
 
 
-        renderEmployees(
-            filtered
-        );
+        renderEmployees(filtered);
 
     }
 
-
-    /* =====================================================
-       OPEN EMPLOYEE MODAL
-    ===================================================== */
 
     function openEmployeeModal(
         action,
         employeeId = null
     ) {
 
-        currentEmployeeAction =
-            action;
+        currentEmployeeAction = action;
 
-        editingEmployeeId =
-            employeeId;
+        editingEmployeeId = employeeId;
 
 
         const modal =
@@ -2119,21 +2037,16 @@
                 "employeeModal"
             );
 
-
         const title =
             document.getElementById(
                 "employeeModalTitle"
             );
 
 
-        if (
-            action ===
-            "ADD"
-        ) {
+        if (action === "ADD") {
 
             title.textContent =
                 "Add Employee";
-
 
             clearEmployeeForm();
 
@@ -2148,11 +2061,8 @@
                 employees.find(
                     function (item) {
 
-                        return Number(
-                            item.id
-                        ) === Number(
-                            employeeId
-                        );
+                        return Number(item.id) ===
+                            Number(employeeId);
 
                     }
                 );
@@ -2172,57 +2082,45 @@
             document.getElementById(
                 "employeeCode"
             ).value =
-                employee.employeeCode ||
-                "";
+                employee.employeeCode || "";
 
 
             document.getElementById(
                 "employeeName"
             ).value =
-                employee.name ||
-                "";
+                employee.name || "";
 
 
             document.getElementById(
                 "employeeEmail"
             ).value =
-                employee.email ||
-                "";
+                employee.email || "";
 
 
             document.getElementById(
                 "employeeContact"
             ).value =
-                employee.contactNumber ||
-                "";
+                employee.contactNumber || "";
 
 
             document.getElementById(
                 "employeeRole"
             ).value =
-                employee.role ||
-                "";
+                employee.role || "";
 
 
             document.getElementById(
                 "employeeJoiningDate"
             ).value =
-                employee.joiningDate ||
-                "";
+                employee.joiningDate || "";
 
         }
 
 
-        modal.classList.add(
-            "show"
-        );
+        modal.classList.add("show");
 
     }
 
-
-    /* =====================================================
-       CLEAR EMPLOYEE FORM
-    ===================================================== */
 
     function clearEmployeeForm() {
 
@@ -2230,26 +2128,21 @@
             "employeeCode"
         ).value = "";
 
-
         document.getElementById(
             "employeeName"
         ).value = "";
-
 
         document.getElementById(
             "employeeEmail"
         ).value = "";
 
-
         document.getElementById(
             "employeeContact"
         ).value = "";
 
-
         document.getElementById(
             "employeeRole"
         ).value = "";
-
 
         document.getElementById(
             "employeeJoiningDate"
@@ -2257,175 +2150,444 @@
 
     }
 
-
-    /* =====================================================
-       CLOSE EMPLOYEE MODAL
-    ===================================================== */
 
     function closeEmployeeModal() {
 
         document.getElementById(
             "employeeModal"
-        ).classList.remove(
-            "show"
-        );
+        ).classList.remove("show");
 
+        currentEmployeeAction = null;
 
-        currentEmployeeAction =
-            null;
-
-        editingEmployeeId =
-            null;
+        editingEmployeeId = null;
 
     }
 
 
     /* =====================================================
-       SAVE EMPLOYEE
+       EMPLOYEE SAVE
     ===================================================== */
 
-  async function saveEmployee() {
+    async function saveEmployee() {
 
-    const name =
-        document.getElementById(
-            "employeeName"
-        ).value.trim();
-
-    const email =
-        document.getElementById(
-            "employeeEmail"
-        ).value.trim();
-
-    const contactNumber =
-        document.getElementById(
-            "employeeContact"
-        ).value.trim();
-
-    const role =
-        document.getElementById(
-            "employeeRole"
-        ).value.trim();
-
-    const joiningDate =
-        document.getElementById(
-            "employeeJoiningDate"
-        ).value;
+        const name =
+            document.getElementById(
+                "employeeName"
+            ).value.trim();
 
 
-    if (!name) {
-
-        alert(
-            "Please enter Employee Name."
-        );
-
-        document.getElementById(
-            "employeeName"
-        ).focus();
-
-        return;
-    }
+        const email =
+            document.getElementById(
+                "employeeEmail"
+            ).value.trim();
 
 
-    if (!email) {
-
-        alert(
-            "Please enter Employee Email."
-        );
-
-        document.getElementById(
-            "employeeEmail"
-        ).focus();
-
-        return;
-    }
+        const contactNumber =
+            document.getElementById(
+                "employeeContact"
+            ).value.trim();
 
 
-    if (!contactNumber) {
-
-        alert(
-            "Please enter Contact Number."
-        );
-
-        document.getElementById(
-            "employeeContact"
-        ).focus();
-
-        return;
-    }
+        const role =
+            document.getElementById(
+                "employeeRole"
+            ).value.trim();
 
 
-    if (!role) {
-
-        alert(
-            "Please select Employee Role."
-        );
-
-        document.getElementById(
-            "employeeRole"
-        ).focus();
-
-        return;
-    }
+        const joiningDate =
+            document.getElementById(
+                "employeeJoiningDate"
+            ).value;
 
 
-    if (!joiningDate) {
+        if (!name) {
 
-        alert(
-            "Please select Joining Date."
-        );
+            alert("Please enter Employee Name.");
 
-        document.getElementById(
-            "employeeJoiningDate"
-        ).focus();
+            document.getElementById(
+                "employeeName"
+            ).focus();
 
-        return;
-    }
+            return;
 
-
-    const employeeData = {
-
-        name:
-            name,
-
-        email:
-            email,
-
-        contactNumber:
-            contactNumber,
-
-        role:
-            role,
-
-        joiningDate:
-            joiningDate
-
-    };
+        }
 
 
-    pendingAction =
-        currentEmployeeAction;
+        if (!email) {
+
+            alert("Please enter Employee Email.");
+
+            document.getElementById(
+                "employeeEmail"
+            ).focus();
+
+            return;
+
+        }
 
 
-    pendingEmployeeData =
-        employeeData;
+        if (!contactNumber) {
+
+            alert("Please enter Contact Number.");
+
+            document.getElementById(
+                "employeeContact"
+            ).focus();
+
+            return;
+
+        }
 
 
-    if (
-        currentEmployeeAction ===
-        "EDIT"
-    ) {
+        if (!role) {
 
-        pendingEmployeeData.employeeId =
-            editingEmployeeId;
+            alert("Please select Employee Role.");
+
+            document.getElementById(
+                "employeeRole"
+            ).focus();
+
+            return;
+
+        }
+
+
+        if (!joiningDate) {
+
+            alert("Please select Joining Date.");
+
+            document.getElementById(
+                "employeeJoiningDate"
+            ).focus();
+
+            return;
+
+        }
+
+
+        pendingAction =
+            currentEmployeeAction;
+
+
+        pendingEmployeeData = {
+
+            name: name,
+
+            email: email,
+
+            contactNumber: contactNumber,
+
+            role: role,
+
+            joiningDate: joiningDate
+
+        };
+
+
+        if (
+            currentEmployeeAction ===
+            "EDIT"
+        ) {
+
+            pendingEmployeeData.employeeId =
+                editingEmployeeId;
+
+        }
+
+
+        closeEmployeeModal();
+
+        openEmployeeReasonModal();
 
     }
 
 
-    closeEmployeeModal();
+    /* =====================================================
+       EMPLOYEE REASON
+    ===================================================== */
 
-    openPasswordModal();
+    function openEmployeeReasonModal() {
 
-}
+        const reason =
+            document.getElementById(
+                "employeeReason"
+            );
+
+
+        if (reason) {
+            reason.value = "";
+        }
+
+
+        const title =
+            document.getElementById(
+                "employeeReasonTitle"
+            );
+
+
+        if (pendingAction === "ADD") {
+
+            title.textContent =
+                "Confirm Add Employee";
+
+        }
+        else if (pendingAction === "EDIT") {
+
+            title.textContent =
+                "Confirm Edit Employee";
+
+        }
+        else if (pendingAction === "DELETE") {
+
+            title.textContent =
+                "Confirm Delete Employee";
+
+        }
+        else {
+
+            title.textContent =
+                "Confirm Employee Action";
+
+        }
+
+
+        document.getElementById(
+            "employeeReasonModal"
+        ).classList.add("show");
+
+    }
+
+
+    function closeEmployeeReasonModal() {
+
+        document.getElementById(
+            "employeeReasonModal"
+        ).classList.remove("show");
+
+        document.getElementById(
+            "employeeReason"
+        ).value = "";
+
+    }
+
+
+    async function confirmEmployeeAction() {
+
+        const reason =
+            document.getElementById(
+                "employeeReason"
+            ).value.trim();
+
+
+        if (!reason) {
+
+            alert(
+                "Please enter a reason."
+            );
+
+            return;
+
+        }
+
+
+        if (reason.length < 3) {
+
+            alert(
+                "Reason must contain at least 3 characters."
+            );
+
+            return;
+
+        }
+
+
+        const adminEmail =
+            localStorage.getItem(
+                "adminEmail"
+            );
+
+
+        if (!adminEmail) {
+
+            alert(
+                "Admin login information not found. Please login again."
+            );
+
+            logout();
+
+            return;
+
+        }
+
+
+        if (!pendingEmployeeData) {
+
+            alert(
+                "Employee data not found."
+            );
+
+            return;
+
+        }
+
+
+        try {
+
+            const requestData = {
+
+                ...pendingEmployeeData,
+
+                adminEmail: adminEmail,
+
+                reason: reason
+
+            };
+
+
+            let response;
+
+
+            if (pendingAction === "ADD") {
+
+                response =
+                    await apiFetch(
+                        "/admin/employees",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    requestData
+                                )
+                        }
+                    );
+
+            }
+            else if (pendingAction === "EDIT") {
+
+                response =
+                    await apiFetch(
+                        "/admin/employees/" +
+                        pendingEmployeeData.employeeId,
+                        {
+                            method: "PUT",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    requestData
+                                )
+                        }
+                    );
+
+            }
+            else if (pendingAction === "DELETE") {
+
+                response =
+                    await apiFetch(
+                        "/admin/employees/" +
+                        pendingEmployeeData.employeeId,
+                        {
+                            method: "DELETE",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify({
+                                    adminEmail:
+                                        adminEmail,
+
+                                    reason:
+                                        reason
+                                })
+                        }
+                    );
+
+            }
+            else {
+
+                alert(
+                    "Invalid employee action."
+                );
+
+                return;
+
+            }
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    await getErrorMessage(response)
+                );
+
+            }
+
+
+            const action =
+                pendingAction;
+
+
+            closeEmployeeReasonModal();
+
+
+            pendingAction = null;
+
+            pendingEmployeeData = null;
+
+
+            await loadEmployees();
+
+            await loadHistory();
+
+
+            showMessage(
+                "employeeMessage",
+
+                action === "ADD"
+                    ? "Employee added successfully."
+                    : action === "EDIT"
+                        ? "Employee updated successfully."
+                        : "Employee deleted successfully.",
+
+                "success"
+            );
+
+        }
+        catch (error) {
+
+            console.error(
+                "Employee action error:",
+                error
+            );
+
+
+            showMessage(
+                "employeeMessage",
+
+                error.message ||
+                "Unable to complete employee action.",
+
+                "error"
+            );
+
+        }
+
+    }
+
+
     /* =====================================================
        DELETE EMPLOYEE
     ===================================================== */
@@ -2438,11 +2600,8 @@
             employees.find(
                 function (item) {
 
-                    return Number(
-                        item.id
-                    ) === Number(
-                        employeeId
-                    );
+                    return Number(item.id) ===
+                        Number(employeeId);
 
                 }
             );
@@ -2482,16 +2641,192 @@
         };
 
 
-        openPasswordModal();
+        openEmployeeReasonModal();
 
     }
 
 
     /* =====================================================
-       PASSWORD MODAL
+       GENERAL ACTION REASON MODAL
+       SALARY / EXCEL / LEAVE
     ===================================================== */
 
-    function openPasswordModal() {
+    function openActionReasonModal(
+        action,
+        required = true
+    ) {
+
+        pendingAction =
+            action;
+
+        pendingActionReasonRequired =
+            required;
+
+
+        const title =
+            document.getElementById(
+                "actionReasonTitle"
+            );
+
+
+        const requiredMark =
+            document.getElementById(
+                "actionReasonRequired"
+            );
+
+
+        const textarea =
+            document.getElementById(
+                "actionReason"
+            );
+
+
+        textarea.value = "";
+
+
+        if (action === "SALARY_UPDATE") {
+
+            title.textContent =
+                "Confirm Salary Update";
+
+            textarea.placeholder =
+                "Enter reason for changing salary...";
+
+        }
+        else if (action === "EXCEL_IMPORT") {
+
+            title.textContent =
+                "Confirm Excel Import";
+
+            textarea.placeholder =
+                "Enter reason for importing employees...";
+
+        }
+        else if (action === "LEAVE_APPROVE") {
+
+            title.textContent =
+                "Approve Leave";
+
+            textarea.placeholder =
+                "Reason is optional for approval.";
+
+        }
+        else if (action === "LEAVE_REJECT") {
+
+            title.textContent =
+                "Reject Leave";
+
+            textarea.placeholder =
+                "Enter the reason for rejecting this leave...";
+
+        }
+        else {
+
+            title.textContent =
+                "Confirm Action";
+
+        }
+
+
+        requiredMark.style.display =
+            required ? "inline" : "none";
+
+
+        document.getElementById(
+            "actionReasonModal"
+        ).classList.add("show");
+
+
+        setTimeout(
+            function () {
+                textarea.focus();
+            },
+            100
+        );
+
+    }
+
+
+    function closeActionReasonModal() {
+
+        document.getElementById(
+            "actionReasonModal"
+        ).classList.remove("show");
+
+
+        document.getElementById(
+            "actionReason"
+        ).value = "";
+
+
+        if (
+            pendingAction === "SALARY_UPDATE"
+        ) {
+
+            pendingSalaryData = null;
+
+        }
+
+
+        if (
+            pendingAction === "EXCEL_IMPORT"
+        ) {
+
+            pendingImportFile = null;
+
+        }
+
+
+        if (
+            pendingAction === "LEAVE_APPROVE" ||
+            pendingAction === "LEAVE_REJECT"
+        ) {
+
+            pendingLeaveData = null;
+
+        }
+
+
+        pendingAction = null;
+
+    }
+
+
+    async function confirmActionReason() {
+
+        const reason =
+            document.getElementById(
+                "actionReason"
+            ).value.trim();
+
+
+        if (
+            pendingActionReasonRequired &&
+            !reason
+        ) {
+
+            alert(
+                "Please enter a reason."
+            );
+
+            return;
+
+        }
+
+
+        if (
+            reason &&
+            reason.length < 3
+        ) {
+
+            alert(
+                "Reason must contain at least 3 characters."
+            );
+
+            return;
+
+        }
+
 
         const adminEmail =
             localStorage.getItem(
@@ -2499,271 +2834,15 @@
             );
 
 
-        document.getElementById(
-            "verifyAdminEmail"
-        ).value =
-            adminEmail || "";
-
-
-        document.getElementById(
-            "verifyAdminPassword"
-        ).value =
-            "";
-
-
-        document.getElementById(
-            "adminActionReason"
-        ).value =
-            "";
-
-
-        let message =
-            "Verify your password to continue.";
-
-
-        if (
-            pendingAction ===
-            "ADD"
-        ) {
-
-            message =
-                "You are adding a new employee. Please enter the reason for adding this employee.";
-
-        }
-        else if (
-            pendingAction ===
-            "EDIT"
-        ) {
-
-            message =
-                "You are editing employee details. Please enter why the employee details are being changed.";
-
-        }
-        else if (
-            pendingAction ===
-            "DELETE"
-        ) {
-
-            message =
-                "You are deactivating an employee. Please enter the reason for deletion/deactivation.";
-
-        }
-        else if (
-            pendingAction ===
-            "SALARY_UPDATE"
-        ) {
-
-            message =
-                "You are changing an employee salary. Old and new salary values will be recorded.";
-
-        }
-        else if (
-            pendingAction ===
-            "EXCEL_IMPORT"
-        ) {
-
-            message =
-                "You are importing employees from Excel. The import will be recorded in History.";
-
-        }
-        else if (
-            pendingAction ===
-            "LEAVE_APPROVE"
-        ) {
-
-            message =
-                "You are approving a leave request.";
-
-        }
-        else if (
-            pendingAction ===
-            "LEAVE_REJECT"
-        ) {
-
-            message =
-                "You are rejecting a leave request.";
-
-        }
-
-
-        document.getElementById(
-            "passwordActionDescription"
-        ).textContent =
-            message;
-
-
-        document.getElementById(
-            "passwordModal"
-        ).classList.add(
-            "show"
-        );
-
-    }
-
-
-    /* =====================================================
-       CLOSE PASSWORD MODAL
-    ===================================================== */
-
-    function closePasswordModal() {
-
-        document.getElementById(
-            "passwordModal"
-        ).classList.remove(
-            "show"
-        );
-
-
-        document.getElementById(
-            "verifyAdminPassword"
-        ).value =
-            "";
-
-
-        document.getElementById(
-            "adminActionReason"
-        ).value =
-            "";
-
-
-        pendingAction =
-            null;
-
-
-        pendingEmployeeData =
-            null;
-
-
-        pendingSalaryData =
-            null;
-
-
-        pendingImportFile =
-            null;
-
-
-        pendingLeaveData =
-            null;
-
-    }
-
-
-    /* =====================================================
-       CONFIRM ADMIN ACTION
-       SINGLE CLEAN FUNCTION
-    ===================================================== */
-
-    async function confirmAdminAction() {
-
-        const adminEmailField =
-            document.getElementById(
-                "verifyAdminEmail"
-            );
-
-
-        const adminPasswordField =
-            document.getElementById(
-                "verifyAdminPassword"
-            );
-
-
-        const reasonField =
-            document.getElementById(
-                "adminActionReason"
-            );
-
-
-        const storedAdminEmail =
-    localStorage.getItem("adminEmail");
-
-const adminEmail =
-    adminEmailField &&
-    adminEmailField.value.trim()
-        ? adminEmailField.value.trim()
-        : (
-            storedAdminEmail
-                ? storedAdminEmail.trim()
-                : ""
-        );
-
-if (
-    adminEmailField &&
-    adminEmail
-) {
-    adminEmailField.value =
-        adminEmail;
-}
-
-
-        const adminPassword =
-            adminPasswordField
-                ? adminPasswordField.value
-                : "";
-
-
-        const reason =
-            reasonField
-                ? reasonField.value.trim()
-                : "";
-
-
         if (!adminEmail) {
 
             alert(
-                "Logged-in admin email not found. Please login again."
+                "Admin login information not found. Please login again."
             );
 
-            return;
-
-        }
-
-
-        if (!adminPassword) {
-
-            alert(
-                "Please enter your admin password."
-            );
+            logout();
 
             return;
-
-        }
-
-
-        /*
-         * Employee ADD / EDIT / DELETE
-         * Reason is compulsory.
-         */
-
-        if (
-            pendingAction === "ADD" ||
-            pendingAction === "EDIT" ||
-            pendingAction === "DELETE"
-        ) {
-
-            if (!reason) {
-
-                alert(
-                    "Please enter the reason for this action."
-                );
-
-                reasonField.focus();
-
-                return;
-
-            }
-
-
-            if (reason.length < 3) {
-
-                alert(
-                    "Please enter a valid reason."
-                );
-
-                reasonField.focus();
-
-                return;
-
-            }
 
         }
 
@@ -2771,221 +2850,7 @@ if (
         try {
 
             /* =================================================
-               ADD / EDIT
-            ================================================= */
-
-            if (
-                pendingAction === "ADD" ||
-                pendingAction === "EDIT"
-            ) {
-
-                if (!pendingEmployeeData) {
-
-                    throw new Error(
-                        "Employee data not found."
-                    );
-
-                }
-
-
-                const requestBody = {
-
-                    name:
-                        pendingEmployeeData.name,
-
-                    email:
-                        pendingEmployeeData.email,
-
-                    contactNumber:
-                        pendingEmployeeData.contactNumber,
-
-                    role:
-                        pendingEmployeeData.role,
-
-                    joiningDate:
-                        pendingEmployeeData.joiningDate,
-
-                    adminEmail:
-                        adminEmail,
-
-                    adminPassword:
-                        adminPassword,
-
-                    reason:
-                        reason
-
-                };
-
-
-                let url =
-                    "/admin/employees";
-
-
-                let method =
-                    "POST";
-
-
-                if (
-                    pendingAction ===
-                    "EDIT"
-                ) {
-
-                    url =
-                        "/admin/employees/" +
-                        pendingEmployeeData.employeeId;
-
-
-                    method =
-                        "PUT";
-
-                }
-
-
-                const response =
-                    await apiFetch(
-                        url,
-                        {
-                            method:
-                                method,
-
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
-
-                            body:
-                                JSON.stringify(
-                                    requestBody
-                                )
-
-                        }
-                    );
-
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        await getErrorMessage(
-                            response
-                        )
-                    );
-
-                }
-
-
-                const action =
-                    pendingAction;
-
-
-                closePasswordModal();
-
-
-                await loadEmployees();
-
-                await loadHistory();
-
-
-                showMessage(
-                    "employeeMessage",
-
-                    action === "ADD"
-                        ? "Employee added successfully."
-                        : "Employee updated successfully.",
-
-                    "success"
-                );
-
-
-                return;
-
-            }
-
-
-            /* =================================================
-               DELETE
-            ================================================= */
-
-            if (
-                pendingAction ===
-                "DELETE"
-            ) {
-
-                if (
-                    !pendingEmployeeData ||
-                    !pendingEmployeeData.employeeId
-                ) {
-
-                    throw new Error(
-                        "Employee data not found."
-                    );
-
-                }
-
-
-                const response =
-                    await apiFetch(
-                        "/admin/employees/" +
-                        pendingEmployeeData.employeeId,
-                        {
-                            method:
-                                "DELETE",
-
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
-
-                            body:
-                                JSON.stringify({
-
-                                    adminEmail:
-                                        adminEmail,
-
-                                    adminPassword:
-                                        adminPassword,
-
-                                    reason:
-                                        reason
-
-                                })
-
-                        }
-                    );
-
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        await getErrorMessage(
-                            response
-                        )
-                    );
-
-                }
-
-
-                closePasswordModal();
-
-
-                await loadEmployees();
-
-                await loadHistory();
-
-
-                showMessage(
-                    "employeeMessage",
-                    "Employee deleted successfully.",
-                    "success"
-                );
-
-
-                return;
-
-            }
-
-
-            /* =================================================
-               SALARY UPDATE
+               SALARY
             ================================================= */
 
             if (
@@ -3001,38 +2866,13 @@ if (
 
                 }
 
-                if (!reason) {
-
-    alert(
-        "Please enter the reason for changing the salary."
-    );
-
-    reasonField.focus();
-
-    return;
-
-}
-
-if (reason.length < 3) {
-
-    alert(
-        "Please enter a valid reason."
-    );
-
-    reasonField.focus();
-
-    return;
-
-}
-
 
                 const response =
                     await apiFetch(
                         "/admin/salary/" +
                         pendingSalaryData.employeeId,
                         {
-                            method:
-                                "PUT",
+                            method: "PUT",
 
                             headers: {
                                 "Content-Type":
@@ -3050,11 +2890,10 @@ if (reason.length < 3) {
                                     adminEmail:
                                         adminEmail,
 
-                                    adminPassword:
-                                        adminPassword
+                                    reason:
+                                        reason
 
                                 })
-
                         }
                     );
 
@@ -3062,17 +2901,15 @@ if (reason.length < 3) {
                 if (!response.ok) {
 
                     throw new Error(
-                        await getErrorMessage(
-                            response
-                        )
+                        await getErrorMessage(response)
                     );
 
                 }
 
 
-                closePasswordModal();
+                closeActionReasonModal();
 
-                closeSalaryModal();
+                pendingSalaryData = null;
 
 
                 await loadEmployees();
@@ -3095,7 +2932,7 @@ if (reason.length < 3) {
 
 
             /* =================================================
-               EXCEL IMPORT
+               EXCEL
             ================================================= */
 
             if (
@@ -3105,11 +2942,9 @@ if (reason.length < 3) {
 
                 if (!pendingImportFile) {
 
-                    alert(
+                    throw new Error(
                         "Please select an Excel file."
                     );
-
-                    return;
 
                 }
 
@@ -3131,8 +2966,8 @@ if (reason.length < 3) {
 
 
                 formData.append(
-                    "adminPassword",
-                    adminPassword
+                    "reason",
+                    reason
                 );
 
 
@@ -3140,12 +2975,9 @@ if (reason.length < 3) {
                     await apiFetch(
                         "/admin/employees/import",
                         {
-                            method:
-                                "POST",
+                            method: "POST",
 
-                            body:
-                                formData
-
+                            body: formData
                         }
                     );
 
@@ -3153,9 +2985,7 @@ if (reason.length < 3) {
                 if (!response.ok) {
 
                     throw new Error(
-                        await getErrorMessage(
-                            response
-                        )
+                        await getErrorMessage(response)
                     );
 
                 }
@@ -3165,7 +2995,7 @@ if (reason.length < 3) {
                     await response.json();
 
 
-                closePasswordModal();
+                closeActionReasonModal();
 
                 closeExcelImportModal();
 
@@ -3205,6 +3035,9 @@ if (reason.length < 3) {
                 }
 
 
+                pendingImportFile = null;
+
+
                 showMessage(
                     "employeeMessage",
                     message,
@@ -3216,7 +3049,8 @@ if (reason.length < 3) {
 
             }
 
-         /* =================================================
+
+            /* =================================================
                LEAVE APPROVE / REJECT
             ================================================= */
 
@@ -3227,7 +3061,10 @@ if (reason.length < 3) {
                     "LEAVE_REJECT"
             ) {
 
-                await processLeaveAction();
+                await processLeaveAction(
+                    adminEmail,
+                    reason
+                );
 
                 return;
 
@@ -3244,7 +3081,7 @@ if (reason.length < 3) {
 
             if (
                 pendingAction ===
-                    "SALARY_UPDATE"
+                "SALARY_UPDATE"
             ) {
 
                 showMessage(
@@ -3275,7 +3112,7 @@ if (reason.length < 3) {
                 showMessage(
                     "employeeMessage",
                     error.message ||
-                    "Unable to complete employee action.",
+                    "Unable to complete action.",
                     "error"
                 );
 
@@ -3320,59 +3157,38 @@ if (reason.length < 3) {
             "currentSalary"
         ).value =
             "₹" +
-            formatNumber(
-                currentSalary
-            );
+            formatNumber(currentSalary);
 
 
         document.getElementById(
             "newSalary"
         ).value =
-            currentSalary ??
-            "";
+            currentSalary ?? "";
 
 
         document.getElementById(
             "salaryModal"
-        ).classList.add(
-            "show"
-        );
+        ).classList.add("show");
 
     }
 
 
-function closeSalaryModal() {
+    function closeSalaryModal() {
 
-    document.getElementById(
-        "salaryModal"
-    ).classList.remove(
-        "show"
-    );
+        document.getElementById(
+            "salaryModal"
+        ).classList.remove("show");
 
 
-    document.getElementById(
-        "newSalary"
-    ).value =
-        "";
+        document.getElementById(
+            "newSalary"
+        ).value = "";
 
 
-    if (
-        !document.getElementById(
-            "passwordModal"
-        ).classList.contains(
-            "show"
-        )
-        &&
-        pendingAction !==
-            "SALARY_UPDATE"
-    ) {
-
-        pendingSalaryData =
-            null;
+        pendingSalaryData = null;
 
     }
 
-}
 
     function saveSalaryEdit() {
 
@@ -3427,19 +3243,19 @@ function closeSalaryModal() {
             Number(newSalary);
 
 
-        pendingAction =
-            "SALARY_UPDATE";
-
-
         closeSalaryModal();
 
-        openPasswordModal();
+
+        openActionReasonModal(
+            "SALARY_UPDATE",
+            true
+        );
 
     }
 
 
     /* =====================================================
-       CALCULATE SALARY
+       SALARY
     ===================================================== */
 
     async function calculateSalary() {
@@ -3472,9 +3288,7 @@ function closeSalaryModal() {
             if (!response.ok) {
 
                 throw new Error(
-                    await getErrorMessage(
-                        response
-                    )
+                    await getErrorMessage(response)
                 );
 
             }
@@ -3484,15 +3298,12 @@ function closeSalaryModal() {
                 await response.json();
 
 
-            renderSalary(
-                data
-            );
+            renderSalary(data);
 
         }
         catch (error) {
 
             console.error(error);
-
 
             showMessage(
                 "salaryMessage",
@@ -3505,10 +3316,6 @@ function closeSalaryModal() {
     }
 
 
-    /* =====================================================
-       RENDER SALARY
-    ===================================================== */
-
     function renderSalary(data) {
 
         const tbody =
@@ -3517,24 +3324,14 @@ function closeSalaryModal() {
             );
 
 
-        if (
-            !data ||
-            data.length === 0
-        ) {
+        if (!data || data.length === 0) {
 
             tbody.innerHTML = `
-
                 <tr>
-
-                    <td colspan="10"
-                        class="empty-row">
-
+                    <td colspan="10" class="empty-row">
                         No salary data found.
-
                     </td>
-
                 </tr>
-
             `;
 
             return;
@@ -3547,64 +3344,45 @@ function closeSalaryModal() {
                 function (item) {
 
                     return `
-
                     <tr>
 
                         <td>
-                            ${escapeHtml(
-                                item.employeeId
-                            )}
+                            ${escapeHtml(item.employeeId)}
                         </td>
 
                         <td>
-                            ${escapeHtml(
-                                item.employeeCode
-                            )}
+                            ${escapeHtml(item.employeeCode)}
                         </td>
 
                         <td>
                             <strong>
-                                ${escapeHtml(
-                                    item.employeeName
-                                )}
+                                ${escapeHtml(item.employeeName)}
                             </strong>
                         </td>
 
                         <td>
-                            ₹${formatNumber(
-                                item.monthlySalary
-                            )}
+                            ₹${formatNumber(item.monthlySalary)}
                         </td>
 
                         <td>
-                            ${escapeHtml(
-                                item.workingDays
-                            )}
+                            ${escapeHtml(item.workingDays)}
                         </td>
 
                         <td>
-                            ${escapeHtml(
-                                item.presentDays
-                            )}
+                            ${escapeHtml(item.presentDays)}
                         </td>
 
                         <td>
-                            ${formatNumber(
-                                item.leaveDays
-                            )}
+                            ${formatNumber(item.leaveDays)}
                         </td>
 
                         <td>
-                            ₹${formatNumber(
-                                item.lossOfPay
-                            )}
+                            ₹${formatNumber(item.lossOfPay)}
                         </td>
 
                         <td>
                             <strong>
-                                ₹${formatNumber(
-                                    item.finalSalary
-                                )}
+                                ₹${formatNumber(item.finalSalary)}
                             </strong>
                         </td>
 
@@ -3614,22 +3392,15 @@ function closeSalaryModal() {
                                 class="btn btn-warning btn-small"
                                 onclick="openSalaryModal(
                                     ${item.employeeId},
-                                    '${escapeJs(
-                                        item.employeeName
-                                    )}',
-                                    ${Number(
-                                        item.monthlySalary || 0
-                                    )}
+                                    '${escapeJs(item.employeeName)}',
+                                    ${Number(item.monthlySalary || 0)}
                                 )">
-
                                 Edit Salary
-
                             </button>
 
                         </td>
 
                     </tr>
-
                     `;
 
                 }
@@ -3644,14 +3415,12 @@ function closeSalaryModal() {
 
     function openExcelImportModal() {
 
-        pendingImportFile =
-            null;
+        pendingImportFile = null;
 
 
         document.getElementById(
             "excelFileInput"
-        ).value =
-            "";
+        ).value = "";
 
 
         document.getElementById(
@@ -3662,9 +3431,7 @@ function closeSalaryModal() {
 
         document.getElementById(
             "excelImportModal"
-        ).classList.add(
-            "show"
-        );
+        ).classList.add("show");
 
     }
 
@@ -3682,15 +3449,12 @@ function closeSalaryModal() {
             input.files.length === 0
         ) {
 
-            pendingImportFile =
-                null;
-
+            pendingImportFile = null;
 
             document.getElementById(
                 "selectedFileName"
             ).textContent =
                 "No file selected";
-
 
             return;
 
@@ -3715,28 +3479,22 @@ function closeSalaryModal() {
             );
 
 
-            input.value =
-                "";
+            input.value = "";
 
-
-            pendingImportFile =
-                null;
-
+            pendingImportFile = null;
 
             return;
 
         }
 
 
-        pendingImportFile =
-            file;
+        pendingImportFile = file;
 
 
         document.getElementById(
             "selectedFileName"
         ).textContent =
-            "Selected: " +
-            file.name;
+            "Selected: " + file.name;
 
     }
 
@@ -3754,11 +3512,13 @@ function closeSalaryModal() {
         }
 
 
-        pendingAction =
-            "EXCEL_IMPORT";
+        closeExcelImportModal();
 
 
-        openPasswordModal();
+        openActionReasonModal(
+            "EXCEL_IMPORT",
+            true
+        );
 
     }
 
@@ -3767,23 +3527,7 @@ function closeSalaryModal() {
 
         document.getElementById(
             "excelImportModal"
-        ).classList.remove(
-            "show"
-        );
-
-
-        if (
-            !document.getElementById(
-                "passwordModal"
-            ).classList.contains(
-                "show"
-            )
-        ) {
-
-            pendingImportFile =
-                null;
-
-        }
+        ).classList.remove("show");
 
     }
 
@@ -3805,9 +3549,7 @@ function closeSalaryModal() {
             if (!response.ok) {
 
                 throw new Error(
-                    await getErrorMessage(
-                        response
-                    )
+                    await getErrorMessage(response)
                 );
 
             }
@@ -3817,14 +3559,9 @@ function closeSalaryModal() {
                 await response.json();
 
 
-            renderLeaves(
-                leaves
-            );
+            renderLeaves(leaves);
 
-
-            updatePendingLeaveCount(
-                leaves
-            );
+            updatePendingLeaveCount(leaves);
 
         }
         catch (error) {
@@ -3846,9 +3583,7 @@ function closeSalaryModal() {
     }
 
 
-    function renderLeaves(
-        leaves
-    ) {
+    function renderLeaves(leaves) {
 
         const tbody =
             document.getElementById(
@@ -3856,24 +3591,14 @@ function closeSalaryModal() {
             );
 
 
-        if (
-            !leaves ||
-            leaves.length === 0
-        ) {
+        if (!leaves || leaves.length === 0) {
 
             tbody.innerHTML = `
-
                 <tr>
-
-                    <td colspan="8"
-                        class="empty-row">
-
+                    <td colspan="8" class="empty-row">
                         No leave requests found.
-
                     </td>
-
                 </tr>
-
             `;
 
             return;
@@ -3887,8 +3612,7 @@ function closeSalaryModal() {
 
                     const status =
                         String(
-                            leave.status ||
-                            ""
+                            leave.status || ""
                         ).toUpperCase();
 
 
@@ -3896,43 +3620,22 @@ function closeSalaryModal() {
                         "badge-gray";
 
 
-                    if (
-                        status ===
-                        "APPROVED"
-                    ) {
-
-                        badgeClass =
-                            "badge-green";
-
+                    if (status === "APPROVED") {
+                        badgeClass = "badge-green";
                     }
-                    else if (
-                        status ===
-                        "PENDING"
-                    ) {
-
-                        badgeClass =
-                            "badge-orange";
-
+                    else if (status === "PENDING") {
+                        badgeClass = "badge-orange";
                     }
-                    else if (
-                        status ===
-                        "REJECTED"
-                    ) {
-
-                        badgeClass =
-                            "badge-red";
-
+                    else if (status === "REJECTED") {
+                        badgeClass = "badge-red";
                     }
 
 
                     return `
-
                     <tr>
 
                         <td>
-                            ${escapeHtml(
-                                leave.id
-                            )}
+                            ${escapeHtml(leave.id)}
                         </td>
 
                         <td>
@@ -3945,15 +3648,12 @@ function closeSalaryModal() {
 
                         <td>
                             ${escapeHtml(
-                                leave.leaveType ||
-                                "-"
+                                leave.leaveType || "-"
                             )}
                         </td>
 
                         <td>
-                            ${formatDate(
-                                leave.leaveDate
-                            )}
+                            ${formatDate(leave.leaveDate)}
                         </td>
 
                         <td>
@@ -3964,20 +3664,14 @@ function closeSalaryModal() {
 
                         <td>
                             ${escapeHtml(
-                                leave.reason ||
-                                "-"
+                                leave.reason || "-"
                             )}
                         </td>
 
                         <td>
 
-                            <span
-                                class="badge ${badgeClass}">
-
-                                ${escapeHtml(
-                                    status || "-"
-                                )}
-
+                            <span class="badge ${badgeClass}">
+                                ${escapeHtml(status || "-")}
                             </span>
 
                         </td>
@@ -3985,29 +3679,22 @@ function closeSalaryModal() {
                         <td>
 
                             ${
-                                status ===
-                                "PENDING"
+                                status === "PENDING"
 
                                 ?
 
                                 `
-
                                 <button
                                     class="btn btn-success btn-small"
-                                    onclick="approveLeave(
-                                        ${leave.id}
-                                    )">
+                                    onclick="approveLeave(${leave.id})">
                                     Approve
                                 </button>
 
                                 <button
                                     class="btn btn-danger btn-small"
-                                    onclick="rejectLeave(
-                                        ${leave.id}
-                                    )">
+                                    onclick="rejectLeave(${leave.id})">
                                     Reject
                                 </button>
-
                                 `
 
                                 :
@@ -4019,7 +3706,6 @@ function closeSalaryModal() {
                         </td>
 
                     </tr>
-
                     `;
 
                 }
@@ -4032,10 +3718,6 @@ function closeSalaryModal() {
         leaveId
     ) {
 
-        pendingAction =
-            "LEAVE_APPROVE";
-
-
         pendingLeaveData = {
 
             leaveId:
@@ -4044,7 +3726,10 @@ function closeSalaryModal() {
         };
 
 
-        openPasswordModal();
+        openActionReasonModal(
+            "LEAVE_APPROVE",
+            false
+        );
 
     }
 
@@ -4053,10 +3738,6 @@ function closeSalaryModal() {
         leaveId
     ) {
 
-        pendingAction =
-            "LEAVE_REJECT";
-
-
         pendingLeaveData = {
 
             leaveId:
@@ -4065,7 +3746,10 @@ function closeSalaryModal() {
         };
 
 
-        openPasswordModal();
+        openActionReasonModal(
+            "LEAVE_REJECT",
+            true
+        );
 
     }
 
@@ -4075,14 +3759,11 @@ function closeSalaryModal() {
     ) {
 
         const count =
-            (
-                leaves || []
-            ).filter(
+            (leaves || []).filter(
                 function (leave) {
 
                     return String(
-                        leave.status ||
-                        ""
+                        leave.status || ""
                     ).toUpperCase() ===
                         "PENDING";
 
@@ -4098,194 +3779,300 @@ function closeSalaryModal() {
     }
 
 
-    /* =====================================================
-       MONTHLY REPORT
-    ===================================================== */
+    async function processLeaveAction(
+        adminEmail,
+        reason
+    ) {
 
-  async function loadMonthlyReport() {
+        if (!pendingLeaveData) {
 
-    const year =
-        document.getElementById(
-            "reportYear"
-        ).value;
+            throw new Error(
+                "Leave data not found."
+            );
 
-    const month =
-        document.getElementById(
-            "reportMonth"
-        ).value;
+        }
 
-    if (!year || !month) {
-        return;
-    }
 
-    try {
+        const approve =
+            pendingAction ===
+            "LEAVE_APPROVE";
+
+
+        if (
+            !approve &&
+            (!reason || reason.length < 3)
+        ) {
+
+            throw new Error(
+                "Reject reason is required."
+            );
+
+        }
+
+
+        const body = {
+
+            adminEmail:
+                adminEmail,
+
+            reason:
+                reason || ""
+
+        };
+
 
         const response =
             await apiFetch(
-                `/admin/monthly-report?year=${year}&month=${month}`
+                "/admin/leaves/" +
+                pendingLeaveData.leaveId +
+                "/" +
+                (
+                    approve
+                        ? "approve"
+                        : "reject"
+                ),
+                {
+                    method: "PUT",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify(body)
+                }
             );
+
 
         if (!response.ok) {
 
             throw new Error(
-                await getErrorMessage(
-                    response
-                )
+                await getErrorMessage(response)
             );
+
         }
 
-        const data =
-            await response.json();
 
-        renderMonthlyReport(
-            data
-        );
+        closeActionReasonModal();
 
-    }
-    catch (error) {
 
-        console.error(error);
+        pendingLeaveData = null;
+
+        pendingAction = null;
+
+
+        await loadLeaves();
+
+        await loadHistory();
+
 
         showMessage(
-            "monthlyMessage",
-            error.message,
-            "error"
-        );
-    }
-}
+            "leaveMessage",
 
-function generateMonthlyReport() {
+            approve
+                ? "Leave approved successfully."
+                : "Leave rejected successfully.",
 
-    console.log("GENERATE REPORT CLICKED");
-
-    loadMonthlyReport();
-
-    const year =
-        document.getElementById("reportYear").value;
-
-    const month =
-        document.getElementById("reportMonth").value;
-
-    if (!year || !month) {
-        return;
-    }
-
-    const url =
-        `${API_BASE_URL}/admin/monthly-report/excel?year=${year}&month=${month}`;
-
-    window.open(url, "_blank");
-}
-
-function renderMonthlyReport(
-    data
-) {
-
-    const tbody =
-        document.getElementById(
-            "monthlyTableBody"
+            "success"
         );
 
-    if (
-        !data ||
-        data.length === 0
-    ) {
-
-        tbody.innerHTML = `
-
-            <tr>
-
-                <td colspan="8"
-                    class="empty-row">
-
-                    No monthly report data found.
-
-                </td>
-
-            </tr>
-
-        `;
-
-        return;
     }
 
-    tbody.innerHTML =
-        data.map(
-            function (item) {
 
-                const leaveDays =
-                    Number(item.sickLeave || 0) +
-                    Number(item.casualLeave || 0) +
-                    Number(item.halfDay || 0);
+    /* =====================================================
+       MONTHLY REPORT
+    ===================================================== */
 
-                return `
+    async function loadMonthlyReport() {
 
-                <tr>
+        const year =
+            document.getElementById(
+                "reportYear"
+            ).value;
 
-                    <td>
-                        ${escapeHtml(
-                            item.employeeId ??
-                            "-"
-                        )}
-                    </td>
 
-                    <td>
-                        ${escapeHtml(
-                            item.employeeCode ??
-                            "-"
-                        )}
-                    </td>
+        const month =
+            document.getElementById(
+                "reportMonth"
+            ).value;
 
-                    <td>
-                        <strong>
-                            ${escapeHtml(
-                                item.employeeName ??
-                                "-"
-                            )}
-                        </strong>
-                    </td>
 
-                    <td>
-                        ${escapeHtml(
-                            item.presentDays ??
-                            0
-                        )}
-                    </td>
+        if (!year || !month) {
+            return;
+        }
 
-                    <td>
-                        ${escapeHtml(
-                            item.absent ??
-                            0
-                        )}
-                    </td>
 
-                    <td>
-                        ${escapeHtml(
-                            leaveDays
-                        )}
-                    </td>
+        try {
 
-                    <td>
-                        ${escapeHtml(
-                            item.permission ??
-                            0
-                        )}
-                    </td>
+            const response =
+                await apiFetch(
+                    `/admin/monthly-report?year=${year}&month=${month}`
+                );
 
-                    <td>
-                        ${escapeHtml(
-                            item.workingDays ??
-                            0
-                        )}
-                    </td>
 
-                </tr>
+            if (!response.ok) {
 
-                `;
+                throw new Error(
+                    await getErrorMessage(response)
+                );
 
             }
-        ).join("");
 
-}
+
+            const data =
+                await response.json();
+
+
+            renderMonthlyReport(data);
+
+        }
+        catch (error) {
+
+            console.error(error);
+
+
+            showMessage(
+                "monthlyMessage",
+                error.message,
+                "error"
+            );
+
+        }
+
+    }
+
+
+    function generateMonthlyReport() {
+
+        loadMonthlyReport();
+
+
+        const year =
+            document.getElementById(
+                "reportYear"
+            ).value;
+
+
+        const month =
+            document.getElementById(
+                "reportMonth"
+            ).value;
+
+
+        if (!year || !month) {
+            return;
+        }
+
+
+        const url =
+            `${API_BASE_URL}/admin/monthly-report/excel?year=${year}&month=${month}`;
+
+
+        window.open(
+            url,
+            "_blank"
+        );
+
+    }
+
+
+    function renderMonthlyReport(
+        data
+    ) {
+
+        const tbody =
+            document.getElementById(
+                "monthlyTableBody"
+            );
+
+
+        if (!data || data.length === 0) {
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="8" class="empty-row">
+                        No monthly report data found.
+                    </td>
+                </tr>
+            `;
+
+            return;
+
+        }
+
+
+        tbody.innerHTML =
+            data.map(
+                function (item) {
+
+                    const leaveDays =
+                        Number(item.sickLeave || 0) +
+                        Number(item.casualLeave || 0) +
+                        Number(item.halfDay || 0);
+
+
+                    return `
+                    <tr>
+
+                        <td>
+                            ${escapeHtml(
+                                item.employeeId ?? "-"
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                item.employeeCode ?? "-"
+                            )}
+                        </td>
+
+                        <td>
+                            <strong>
+                                ${escapeHtml(
+                                    item.employeeName ?? "-"
+                                )}
+                            </strong>
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                item.presentDays ?? 0
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                item.absent ?? 0
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                leaveDays
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                item.permission ?? 0
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                item.workingDays ?? 0
+                            )}
+                        </td>
+
+                    </tr>
+                    `;
+
+                }
+            ).join("");
+
+    }
+
 
     /* =====================================================
        HISTORY
@@ -4304,9 +4091,7 @@ function renderMonthlyReport(
             if (!response.ok) {
 
                 throw new Error(
-                    await getErrorMessage(
-                        response
-                    )
+                    await getErrorMessage(response)
                 );
 
             }
@@ -4316,9 +4101,7 @@ function renderMonthlyReport(
                 await response.json();
 
 
-            renderHistory(
-                data
-            );
+            renderHistory(data);
 
         }
         catch (error) {
@@ -4350,24 +4133,14 @@ function renderMonthlyReport(
             );
 
 
-        if (
-            !data ||
-            data.length === 0
-        ) {
+        if (!data || data.length === 0) {
 
             tbody.innerHTML = `
-
                 <tr>
-
-                    <td colspan="9"
-                        class="empty-row">
-
+                    <td colspan="9" class="empty-row">
                         No admin history found.
-
                     </td>
-
                 </tr>
-
             `;
 
             return;
@@ -4381,8 +4154,7 @@ function renderMonthlyReport(
 
                     const action =
                         String(
-                            item.action ||
-                            ""
+                            item.action || ""
                         ).toUpperCase();
 
 
@@ -4391,9 +4163,7 @@ function renderMonthlyReport(
 
 
                     if (
-                        action.includes(
-                            "DELETE"
-                        )
+                        action.includes("DELETE")
                     ) {
 
                         badgeClass =
@@ -4401,9 +4171,7 @@ function renderMonthlyReport(
 
                     }
                     else if (
-                        action.includes(
-                            "SALARY"
-                        )
+                        action.includes("SALARY")
                     ) {
 
                         badgeClass =
@@ -4411,9 +4179,7 @@ function renderMonthlyReport(
 
                     }
                     else if (
-                        action.includes(
-                            "ADD"
-                        )
+                        action.includes("ADD")
                     ) {
 
                         badgeClass =
@@ -4440,19 +4206,14 @@ function renderMonthlyReport(
 
 
                     return `
-
                     <tr>
 
                         <td>
-                            ${formatDate(
-                                item.actionDate
-                            )}
+                            ${formatDate(item.actionDate)}
                         </td>
 
                         <td>
-                            ${formatTime(
-                                item.actionTime
-                            )}
+                            ${formatTime(item.actionTime)}
                         </td>
 
                         <td>
@@ -4466,13 +4227,8 @@ function renderMonthlyReport(
 
                         <td>
 
-                            <span
-                                class="badge ${badgeClass}">
-
-                                ${escapeHtml(
-                                    action || "-"
-                                )}
-
+                            <span class="badge ${badgeClass}">
+                                ${escapeHtml(action || "-")}
                             </span>
 
                         </td>
@@ -4483,34 +4239,29 @@ function renderMonthlyReport(
 
                         <td>
                             ${escapeHtml(
-                                item.reason ||
-                                "-"
+                                item.reason || "-"
                             )}
                         </td>
 
                         <td>
                             ${escapeHtml(
-                                item.fieldName ||
-                                "-"
+                                item.fieldName || "-"
                             )}
                         </td>
 
                         <td>
                             ${escapeHtml(
-                                item.oldValue ||
-                                "-"
+                                item.oldValue || "-"
                             )}
                         </td>
 
                         <td>
                             ${escapeHtml(
-                                item.newValue ||
-                                "-"
+                                item.newValue || "-"
                             )}
                         </td>
 
                     </tr>
-
                     `;
 
                 }
@@ -4553,9 +4304,7 @@ function renderMonthlyReport(
             if (!response.ok) {
 
                 throw new Error(
-                    await getErrorMessage(
-                        response
-                    )
+                    await getErrorMessage(response)
                 );
 
             }
@@ -4565,21 +4314,17 @@ function renderMonthlyReport(
                 await response.json();
 
 
-            let present =
-                0;
+            let present = 0;
 
 
-            if (
-                Array.isArray(data)
-            ) {
+            if (Array.isArray(data)) {
 
                 data.forEach(
                     function (item) {
 
                         const status =
                             String(
-                                item.status ||
-                                ""
+                                item.status || ""
                             ).toUpperCase();
 
 
@@ -4644,126 +4389,6 @@ function renderMonthlyReport(
 
 
     /* =====================================================
-       LEAVE ACTION
-    ===================================================== */
-
-    async function processLeaveAction() {
-
-        if (!pendingLeaveData) {
-
-            throw new Error(
-                "Leave data not found."
-            );
-
-        }
-
-
-        const adminEmail =
-            document.getElementById(
-                "verifyAdminEmail"
-            ).value.trim();
-
-
-        const adminPassword =
-            document.getElementById(
-                "verifyAdminPassword"
-            ).value;
-
-
-        if (!adminEmail) {
-
-            throw new Error(
-                "Logged-in admin email not found. Please login again."
-            );
-
-        }
-
-
-        if (!adminPassword) {
-
-            throw new Error(
-                "Please enter your admin password."
-            );
-
-        }
-
-
-        const approve =
-            pendingAction ===
-            "LEAVE_APPROVE";
-
-
-        const response =
-            await apiFetch(
-                "/admin/leaves/" +
-                pendingLeaveData.leaveId +
-                "/" +
-                (
-                    approve
-                        ? "approve"
-                        : "reject"
-                ),
-                {
-                    method:
-                        "PUT",
-
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body:
-                        JSON.stringify({
-
-                            adminEmail:
-                                adminEmail,
-
-                            adminPassword:
-                                adminPassword
-
-                        })
-
-                }
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                await getErrorMessage(
-                    response
-                )
-            );
-
-        }
-
-
-        closePasswordModal();
-
-
-        pendingLeaveData =
-            null;
-
-
-        await loadLeaves();
-
-        await loadHistory();
-
-
-        showMessage(
-            "leaveMessage",
-
-            approve
-                ? "Leave approved successfully."
-                : "Leave rejected successfully.",
-
-            "success"
-        );
-
-    }
-
-
-    /* =====================================================
        ERROR
     ===================================================== */
 
@@ -4790,9 +4415,7 @@ function renderMonthlyReport(
             try {
 
                 const json =
-                    JSON.parse(
-                        text
-                    );
+                    JSON.parse(text);
 
 
                 return (
@@ -4892,9 +4515,7 @@ function renderMonthlyReport(
             Number(value);
 
 
-        if (
-            Number.isNaN(number)
-        ) {
+        if (Number.isNaN(number)) {
 
             return "0.00";
 
@@ -4904,11 +4525,8 @@ function renderMonthlyReport(
         return number.toLocaleString(
             "en-IN",
             {
-                minimumFractionDigits:
-                    2,
-
-                maximumFractionDigits:
-                    2
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
             }
         );
 
@@ -4948,19 +4566,13 @@ function renderMonthlyReport(
         const day =
             String(
                 date.getDate()
-            ).padStart(
-                2,
-                "0"
-            );
+            ).padStart(2, "0");
 
 
         const month =
             String(
                 date.getMonth() + 1
-            ).padStart(
-                2,
-                "0"
-            );
+            ).padStart(2, "0");
 
 
         const year =
@@ -4995,22 +4607,16 @@ function renderMonthlyReport(
             String(value);
 
 
-        if (
-            text.includes(":")
-        ) {
+        if (text.includes(":")) {
 
             const parts =
                 text.split(":");
 
 
-            if (
-                parts.length >= 2
-            ) {
+            if (parts.length >= 2) {
 
                 let hour =
-                    Number(
-                        parts[0]
-                    );
+                    Number(parts[0]);
 
 
                 const minute =
@@ -5019,8 +4625,7 @@ function renderMonthlyReport(
 
                 const second =
                     parts[2]
-                        ? parts[2]
-                            .split(".")[0]
+                        ? parts[2].split(".")[0]
                         : "00";
 
 
@@ -5031,17 +4636,11 @@ function renderMonthlyReport(
 
 
                 hour =
-                    hour % 12 ||
-                    12;
+                    hour % 12 || 12;
 
 
                 return (
-                    String(
-                        hour
-                    ).padStart(
-                        2,
-                        "0"
-                    ) +
+                    String(hour).padStart(2, "0") +
                     ":" +
                     minute +
                     ":" +
@@ -5055,9 +4654,7 @@ function renderMonthlyReport(
         }
 
 
-        return escapeHtml(
-            text
-        );
+        return escapeHtml(text);
 
     }
 
@@ -5081,26 +4678,11 @@ function renderMonthlyReport(
 
 
         return String(value)
-            .replaceAll(
-                "&",
-                "&amp;"
-            )
-            .replaceAll(
-                "<",
-                "&lt;"
-            )
-            .replaceAll(
-                ">",
-                "&gt;"
-            )
-            .replaceAll(
-                '"',
-                "&quot;"
-            )
-            .replaceAll(
-                "'",
-                "&#039;"
-            );
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
 
     }
 
@@ -5124,22 +4706,10 @@ function renderMonthlyReport(
 
 
         return String(value)
-            .replaceAll(
-                "\\",
-                "\\\\"
-            )
-            .replaceAll(
-                "'",
-                "\\'"
-            )
-            .replaceAll(
-                "\n",
-                "\\n"
-            )
-            .replaceAll(
-                "\r",
-                "\\r"
-            );
+            .replaceAll("\\", "\\\\")
+            .replaceAll("'", "\\'")
+            .replaceAll("\n", "\\n")
+            .replaceAll("\r", "\\r");
 
     }
 
@@ -5178,7 +4748,7 @@ function renderMonthlyReport(
 
 
     /* =====================================================
-       CLOSE MODAL OUTSIDE CLICK
+       OUTSIDE CLICK
     ===================================================== */
 
     document.querySelectorAll(
@@ -5191,8 +4761,7 @@ function renderMonthlyReport(
                 function (event) {
 
                     if (
-                        event.target ===
-                        modal
+                        event.target === modal
                     ) {
 
                         modal.classList.remove(
