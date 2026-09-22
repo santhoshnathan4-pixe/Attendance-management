@@ -835,30 +835,34 @@
 
                     <table>
 
-                        <thead>
-                        <tr>
-                            <th>Employee Code</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Role</th>
-                            <th>Salary</th>
-                            <th>Joining Date</th>
-                            <th>Action</th>
-                        </tr>
-                        </thead>
+    <thead>
 
-                        <tbody id="employeeTableBody">
+    <tr>
+        <th>Employee Code</th>
+        <th>Name</th>
+        <th>Monthly Salary</th>
+        <th>Present Salary</th>
+        <th>Working Days</th>
+        <th>Present Days</th>
+        <th>Leave Days</th>
+        <th>LOP</th>
+        <th>Final Salary</th>
+        <th>Action</th>
+    </tr>
 
-                        <tr>
-                            <td colspan="8" class="empty-row">
-                                Loading employees...
-                            </td>
-                        </tr>
+    </thead>
 
-                        </tbody>
+    <tbody id="salaryTableBody">
 
-                    </table>
+    <tr>
+        <td colspan="10" class="empty-row">
+            Select year/month and calculate salary
+        </td>
+    </tr>
+
+    </tbody>
+
+</table>
 
                 </div>
 
@@ -3514,94 +3518,110 @@
     }
 
 
-    function renderSalary(data) {
+   function renderSalary(data) {
 
-        const tbody =
-            document.getElementById(
-                "salaryTableBody"
-            );
-
-
-        if (!data || data.length === 0) {
-
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="9" class="empty-row">
-                        No salary data found.
-                    </td>
-                </tr>
-            `;
-
-            return;
-
-        }
+    const tbody =
+        document.getElementById(
+            "salaryTableBody"
+        );
 
 
-        tbody.innerHTML =
-            data.map(
-                function (item) {
+    if (!data || data.length === 0) {
 
-                    return `
-                    <tr>
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="10" class="empty-row">
+                    No salary data found.
+                </td>
+            </tr>
+        `;
 
-                        <td>
-                            ${escapeHtml(item.employeeCode)}
-                        </td>
-
-                        <td>
-                            <strong>
-                                ${escapeHtml(item.employeeName)}
-                            </strong>
-                        </td>
-
-                        <td>
-                            ₹${formatNumber(item.monthlySalary)}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(item.workingDays)}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(item.presentDays)}
-                        </td>
-
-                        <td>
-                            ${formatNumber(item.leaveDays)}
-                        </td>
-
-                        <td>
-                            ₹${formatNumber(item.lossOfPay)}
-                        </td>
-
-                        <td>
-                            <strong>
-                                ₹${formatNumber(item.finalSalary)}
-                            </strong>
-                        </td>
-
-                        <td>
-
-                            <button
-                                class="btn btn-warning btn-small"
-                                onclick="openSalaryModal(
-                                    ${item.employeeId},
-                                    '${escapeJs(item.employeeName)}',
-                                    ${Number(item.monthlySalary || 0)}
-                                )">
-                                Edit Salary
-                            </button>
-
-                        </td>
-
-                    </tr>
-                    `;
-
-                }
-            ).join("");
-
+        return;
     }
 
+
+    tbody.innerHTML =
+        data.map(
+            function (item) {
+
+                const monthlySalary =
+                    Number(item.monthlySalary || 0);
+
+                const presentDays =
+                    Number(item.presentDays || 0);
+
+                const workingDays =
+                    Number(item.workingDays || 26);
+
+                const presentSalary =
+                    (monthlySalary / workingDays) *
+                    presentDays;
+
+
+                return `
+                <tr>
+
+                    <td>
+                        ${escapeHtml(item.employeeCode)}
+                    </td>
+
+                    <td>
+                        <strong>
+                            ${escapeHtml(item.employeeName)}
+                        </strong>
+                    </td>
+
+                    <td>
+                        ₹${formatNumber(monthlySalary)}
+                    </td>
+
+                    <td>
+                        ₹${formatNumber(presentSalary)}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(item.workingDays)}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(item.presentDays)}
+                    </td>
+
+                    <td>
+                        ${formatNumber(item.leaveDays)}
+                    </td>
+
+                    <td>
+                        ₹${formatNumber(item.lossOfPay)}
+                    </td>
+
+                    <td>
+                        <strong>
+                            ₹${formatNumber(item.finalSalary)}
+                        </strong>
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="btn btn-warning btn-small"
+                            onclick="openSalaryModal(
+                                ${item.employeeId},
+                                '${escapeJs(item.employeeName)}',
+                                ${Number(item.monthlySalary || 0)}
+                            )">
+                            Edit Salary
+                        </button>
+
+                    </td>
+
+                </tr>
+                `;
+
+            }
+        ).join("");
+
+}
 
     /* =====================================================
        EXCEL
