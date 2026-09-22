@@ -7,6 +7,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.YearMonth;
+import java.time.ZoneId;
 import java.util.List;
 
 @RestController
@@ -473,15 +474,18 @@ public class AdminSalaryController {
         );
 
         // -----------------------------------------
-        // DATE & TIME
+        // DATE & TIME - INDIA (IST)
         // -----------------------------------------
 
+        ZoneId indiaZone =
+                ZoneId.of("Asia/Kolkata");
+
         history.setActionDate(
-                LocalDate.now()
+                LocalDate.now(indiaZone)
         );
 
         history.setActionTime(
-                LocalTime.now()
+                LocalTime.now(indiaZone)
         );
 
         // -----------------------------------------
