@@ -75,7 +75,15 @@ public class MonthlyAttendanceController {
 
                     // =========================================
                     // PRESENT DAYS
-                    // PRESENT + LATE = ATTENDED
+                    //
+                    // Any attendance record with CHECK-IN
+                    // is considered an attended day.
+                    //
+                    // This includes:
+                    // PRESENT
+                    // LATE
+                    // EARLY CHECK-OUT
+                    // LATE / EARLY CHECK-OUT
                     // =========================================
 
                     int presentDays =
@@ -88,13 +96,7 @@ public class MonthlyAttendanceController {
                                     )
 
                                     .filter(attendance ->
-                                            "PRESENT".equalsIgnoreCase(
-                                                    attendance.getStatus()
-                                            )
-                                            ||
-                                            "LATE".equalsIgnoreCase(
-                                                    attendance.getStatus()
-                                            )
+                                            attendance.getCheckIn() != null
                                     )
 
                                     .count();
