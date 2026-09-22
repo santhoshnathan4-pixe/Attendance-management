@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.YearMonth;
 import java.util.List;
 
@@ -67,12 +68,15 @@ public class AdminSalaryController {
             @RequestBody AdminSalaryUpdateRequest request) {
 
         // -----------------------------------------
-        // VERIFY ADMIN
+        // IDENTIFY LOGGED-IN ADMIN
+        //
+        // IMPORTANT:
+        // No admin password verification.
+        // Admin is already logged in.
         // -----------------------------------------
 
-        Admin admin = verifyAdmin(
-                request.getAdminEmail(),
-                request.getAdminPassword()
+        Admin admin = findLoggedInAdmin(
+                request.getAdminEmail()
         );
 
         // -----------------------------------------
@@ -94,6 +98,14 @@ public class AdminSalaryController {
                     "Salary cannot be negative"
             );
         }
+
+        // -----------------------------------------
+        // VALIDATE REASON
+        // -----------------------------------------
+
+        validateReason(
+                request.getReason()
+        );
 
         // -----------------------------------------
         // FIND EMPLOYEE
@@ -174,7 +186,8 @@ public class AdminSalaryController {
                 employee,
                 "Salary",
                 String.valueOf(oldSalary),
-                String.valueOf(newSalary)
+                String.valueOf(newSalary),
+                request.getReason()
         );
 
         return "Salary updated successfully";
@@ -351,42 +364,56 @@ public class AdminSalaryController {
     }
 
     // =========================================
-    // VERIFY ADMIN
+    // FIND LOGGED-IN ADMIN
     // =========================================
 
-    private Admin verifyAdmin(
-            String email,
-            String password) {
+    private Admin findLoggedInAdmin(
+            String email) {
 
         if (email == null ||
                 email.trim().isEmpty()) {
 
             throw new ResponseStatusException(
                     HttpStatus.UNAUTHORIZED,
-                    "Admin email required"
-            );
-        }
-
-        if (password == null ||
-                password.trim().isEmpty()) {
-
-            throw new ResponseStatusException(
-                    HttpStatus.UNAUTHORIZED,
-                    "Admin password required"
+                    "Admin login required"
             );
         }
 
         return adminRepository
-                .findByEmailAndPassword(
-                        email,
-                        password
+                .findByEmail(
+                        email.trim()
                 )
                 .orElseThrow(() ->
                         new ResponseStatusException(
                                 HttpStatus.UNAUTHORIZED,
-                                "Invalid admin email or password"
+                                "Logged-in admin not found"
                         )
                 );
+    }
+
+    // =========================================
+    // REASON VALIDATION
+    // =========================================
+
+    private void validateReason(
+            String reason) {
+
+        if (reason == null ||
+                reason.trim().isEmpty()) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Reason is required for this operation"
+            );
+        }
+
+        if (reason.trim().length() < 3) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Please enter a valid reason"
+            );
+        }
     }
 
     // =========================================
@@ -399,16 +426,31 @@ public class AdminSalaryController {
             Employee employee,
             String fieldName,
             String oldValue,
-            String newValue) {
+            String newValue,
+            String reason) {
 
         AdminActionHistory history =
                 new AdminActionHistory();
+
+        // -----------------------------------------
+        // ADMIN
+        // -----------------------------------------
 
         history.setAdminName(
                 admin.getAdminName()
         );
 
-        history.setAction(action);
+        // -----------------------------------------
+        // ACTION
+        // -----------------------------------------
+
+        history.setAction(
+                action
+        );
+
+        // -----------------------------------------
+        // EMPLOYEE DETAILS
+        // -----------------------------------------
 
         history.setEmployeeId(
                 employee.getId()
@@ -422,19 +464,45 @@ public class AdminSalaryController {
                 employee.getName()
         );
 
+        // -----------------------------------------
+        // REASON
+        // -----------------------------------------
+
+        history.setReason(
+                reason.trim()
+        );
+
+        // -----------------------------------------
+        // DATE & TIME
+        // -----------------------------------------
+
         history.setActionDate(
                 LocalDate.now()
         );
 
         history.setActionTime(
-                java.time.LocalTime.now()
+                LocalTime.now()
         );
 
-        history.setFieldName(fieldName);
+        // -----------------------------------------
+        // FIELD
+        // -----------------------------------------
 
-        history.setOldValue(oldValue);
+        history.setFieldName(
+                fieldName
+        );
 
-        history.setNewValue(newValue);
+        history.setOldValue(
+                oldValue
+        );
+
+        history.setNewValue(
+                newValue
+        );
+
+        // -----------------------------------------
+        // SAVE
+        // -----------------------------------------
 
         historyRepository.save(history);
     }
