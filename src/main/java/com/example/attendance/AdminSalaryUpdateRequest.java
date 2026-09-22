@@ -1,3 +1,4 @@
+
 package com.example.attendance;
 
 public class AdminSalaryUpdateRequest {
@@ -6,7 +7,7 @@ public class AdminSalaryUpdateRequest {
 
     private String adminEmail;
 
-    private String adminPassword;
+    private String reason;
 
 
     public Double getNewSalary() {
@@ -27,11 +28,12 @@ public class AdminSalaryUpdateRequest {
     }
 
 
-    public String getAdminPassword() {
-        return adminPassword;
+    public String getReason() {
+        return reason;
     }
 
-    public void setAdminPassword(String adminPassword) {
-        this.adminPassword = adminPassword;
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 }
+
