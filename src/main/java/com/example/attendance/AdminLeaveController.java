@@ -2,6 +2,9 @@ package com.example.attendance;
 
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
 
 @RestController
@@ -185,12 +188,19 @@ public class AdminLeaveController {
                     employee.getName()
             );
 
+            // =========================================
+            // INDIA STANDARD TIME (IST)
+            // =========================================
+
+            ZoneId indiaZone =
+                    ZoneId.of("Asia/Kolkata");
+
             history.setActionDate(
-                    java.time.LocalDate.now()
+                    LocalDate.now(indiaZone)
             );
 
             history.setActionTime(
-                    java.time.LocalTime.now()
+                    LocalTime.now(indiaZone)
             );
 
             historyRepository.save(history);

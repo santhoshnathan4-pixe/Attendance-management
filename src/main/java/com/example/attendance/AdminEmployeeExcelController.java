@@ -9,6 +9,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
@@ -761,12 +762,19 @@ public class AdminEmployeeExcelController {
                 employee.getName()
         );
 
+        // =========================================
+        // INDIA STANDARD TIME (IST)
+        // =========================================
+
+        ZoneId indiaZone =
+                ZoneId.of("Asia/Kolkata");
+
         history.setActionDate(
-                LocalDate.now()
+                LocalDate.now(indiaZone)
         );
 
         history.setActionTime(
-                LocalTime.now()
+                LocalTime.now(indiaZone)
         );
 
         history.setFieldName(

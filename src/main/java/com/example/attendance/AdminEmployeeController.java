@@ -7,6 +7,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Set;
 
@@ -62,10 +63,6 @@ public class AdminEmployeeController {
     public AdminEmployeeResponse addEmployee(
             @RequestBody AdminEmployeeActionRequest request) {
 
-        // =================================================
-        // BASIC VALIDATION
-        // =================================================
-
         if (request.getName() == null
                 || request.getName().trim().isEmpty()) {
 
@@ -101,25 +98,13 @@ public class AdminEmployeeController {
             );
         }
 
-        // =================================================
-        // REASON VALIDATION
-        // =================================================
-
         validateReason(request.getReason());
-
-        // =================================================
-        // CLEAN INPUT
-        // =================================================
 
         String email = request.getEmail().trim();
 
         String role = request.getRole()
                 .trim()
                 .toUpperCase();
-
-        // =================================================
-        // ROLE VALIDATION
-        // =================================================
 
         if (!ALLOWED_ROLES.contains(role)) {
 
@@ -128,13 +113,6 @@ public class AdminEmployeeController {
                     "Invalid employee role. Allowed roles: EMPLOYEE, DEVELOPER, HR, TEAM_LEAD, MANAGER, ADMIN"
             );
         }
-
-        // =================================================
-        // DUPLICATE EMAIL CHECK
-        //
-        // IMPORTANT:
-        // This happens BEFORE admin identification.
-        // =================================================
 
         boolean emailExists =
                 employeeRepository
@@ -156,10 +134,6 @@ public class AdminEmployeeController {
             );
         }
 
-        // =================================================
-        // GENERATE EMPLOYEE CODE
-        // =================================================
-
         String generatedEmployeeCode =
                 generateEmployeeCode();
 
@@ -172,21 +146,10 @@ public class AdminEmployeeController {
                     );
         }
 
-        // =================================================
-        // IDENTIFY LOGGED-IN ADMIN
-        //
-        // No password verification.
-        // Admin has already logged in.
-        // =================================================
-
         Admin admin =
                 findLoggedInAdmin(
                         request.getAdminEmail()
                 );
-
-        // =================================================
-        // CREATE EMPLOYEE
-        // =================================================
 
         Employee employee =
                 new Employee();
@@ -211,10 +174,6 @@ public class AdminEmployeeController {
                 role
         );
 
-        // =================================================
-        // SALARY
-        // =================================================
-
         if (request.getSalary() != null) {
 
             employee.setSalary(
@@ -226,15 +185,7 @@ public class AdminEmployeeController {
                 request.getJoiningDate()
         );
 
-        // =================================================
-        // ACTIVE
-        // =================================================
-
         employee.setActive(true);
-
-        // =================================================
-        // SAVE EMPLOYEE
-        // =================================================
 
         Employee savedEmployee;
 
@@ -250,10 +201,6 @@ public class AdminEmployeeController {
                     "Employee ID / Employee Code / Email already exists"
             );
         }
-
-        // =================================================
-        // SAVE ADMIN HISTORY
-        // =================================================
 
         saveHistory(
                 admin,
@@ -276,10 +223,6 @@ public class AdminEmployeeController {
             @PathVariable Integer id,
             @RequestBody AdminEmployeeActionRequest request) {
 
-        // =================================================
-        // FIND EMPLOYEE
-        // =================================================
-
         Employee employee =
                 employeeRepository.findById(id)
                         .orElseThrow(() ->
@@ -288,10 +231,6 @@ public class AdminEmployeeController {
                                         "Employee not found"
                                 )
                         );
-
-        // =================================================
-        // BASIC VALIDATION
-        // =================================================
 
         if (request.getName() == null
                 || request.getName().trim().isEmpty()) {
@@ -328,15 +267,7 @@ public class AdminEmployeeController {
             );
         }
 
-        // =================================================
-        // REASON VALIDATION
-        // =================================================
-
         validateReason(request.getReason());
-
-        // =================================================
-        // CLEAN INPUT
-        // =================================================
 
         String email =
                 request.getEmail().trim();
@@ -346,10 +277,6 @@ public class AdminEmployeeController {
                         .trim()
                         .toUpperCase();
 
-        // =================================================
-        // ROLE VALIDATION
-        // =================================================
-
         if (!ALLOWED_ROLES.contains(role)) {
 
             throw new ResponseStatusException(
@@ -357,12 +284,6 @@ public class AdminEmployeeController {
                     "Invalid employee role. Allowed roles: EMPLOYEE, DEVELOPER, HR, TEAM_LEAD, MANAGER, ADMIN"
             );
         }
-
-        // =================================================
-        // DUPLICATE EMAIL CHECK
-        //
-        // Current employee's own email is allowed.
-        // =================================================
 
         boolean emailExists =
                 employeeRepository
@@ -390,16 +311,8 @@ public class AdminEmployeeController {
             );
         }
 
-        // =================================================
-        // EMPLOYEE CODE MUST NOT CHANGE
-        // =================================================
-
         String existingEmployeeCode =
                 employee.getEmployeeCode();
-
-        // =================================================
-        // OLD RECORD WITHOUT EMPLOYEE CODE
-        // =================================================
 
         if (existingEmployeeCode == null
                 || existingEmployeeCode.trim().isEmpty()) {
@@ -418,20 +331,10 @@ public class AdminEmployeeController {
             }
         }
 
-        // =================================================
-        // IDENTIFY LOGGED-IN ADMIN
-        //
-        // No password verification.
-        // =================================================
-
         Admin admin =
                 findLoggedInAdmin(
                         request.getAdminEmail()
                 );
-
-        // =================================================
-        // UPDATE EMPLOYEE
-        // =================================================
 
         employee.setEmployeeCode(
                 existingEmployeeCode
@@ -453,12 +356,6 @@ public class AdminEmployeeController {
                 role
         );
 
-        /*
-         * Salary is managed separately.
-         *
-         * Therefore salary is NOT changed here.
-         */
-
         employee.setJoiningDate(
                 request.getJoiningDate()
         );
@@ -477,10 +374,6 @@ public class AdminEmployeeController {
                     "Employee ID / Employee Code / Email already exists"
             );
         }
-
-        // =================================================
-        // SAVE ADMIN HISTORY
-        // =================================================
 
         saveHistory(
                 admin,
@@ -503,10 +396,6 @@ public class AdminEmployeeController {
             @PathVariable Integer id,
             @RequestBody AdminEmployeeActionRequest request) {
 
-        // =================================================
-        // FIND EMPLOYEE
-        // =================================================
-
         Employee employee =
                 employeeRepository.findById(id)
                         .orElseThrow(() ->
@@ -516,34 +405,16 @@ public class AdminEmployeeController {
                                 )
                         );
 
-        // =================================================
-        // REASON VALIDATION
-        // =================================================
-
         validateReason(request.getReason());
-
-        // =================================================
-        // IDENTIFY LOGGED-IN ADMIN
-        //
-        // No password verification.
-        // =================================================
 
         Admin admin =
                 findLoggedInAdmin(
                         request.getAdminEmail()
                 );
 
-        // =================================================
-        // SOFT DELETE
-        // =================================================
-
         employee.setActive(false);
 
         employeeRepository.save(employee);
-
-        // =================================================
-        // SAVE DELETE HISTORY
-        // =================================================
 
         saveHistory(
                 admin,
@@ -615,13 +486,6 @@ public class AdminEmployeeController {
     private String generateEmployeeCode() {
 
         int highestNumber = 0;
-
-        /*
-         * Use ALL employees.
-         *
-         * This prevents deleted employee codes
-         * from being reused.
-         */
 
         List<Employee> allEmployees =
                 employeeRepository.findAll();
@@ -790,25 +654,13 @@ public class AdminEmployeeController {
         AdminActionHistory history =
                 new AdminActionHistory();
 
-        // =================================================
-        // ADMIN
-        // =================================================
-
         history.setAdminName(
                 admin.getAdminName()
         );
 
-        // =================================================
-        // ACTION
-        // =================================================
-
         history.setAction(
                 action
         );
-
-        // =================================================
-        // EMPLOYEE DETAILS
-        // =================================================
 
         history.setEmployeeId(
                 employee.getId()
@@ -822,29 +674,24 @@ public class AdminEmployeeController {
                 employee.getName()
         );
 
-        // =================================================
-        // REASON
-        // =================================================
-
         history.setReason(
                 reason.trim()
         );
 
         // =================================================
-        // DATE & TIME
+        // DATE & TIME - INDIA (IST)
         // =================================================
 
+        ZoneId indiaZone =
+                ZoneId.of("Asia/Kolkata");
+
         history.setActionDate(
-                LocalDate.now()
+                LocalDate.now(indiaZone)
         );
 
         history.setActionTime(
-                LocalTime.now()
+                LocalTime.now(indiaZone)
         );
-
-        // =================================================
-        // SAVE
-        // =================================================
 
         historyRepository.save(
                 history
