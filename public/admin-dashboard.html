@@ -146,10 +146,40 @@
 
         .section {
             display: none;
+            padding: 24px;
+            border-radius: 16px;
+            min-height: calc(100vh - 135px);
+            border: 1px solid #e5e7eb;
         }
 
         .section.active {
             display: block;
+        }
+
+        /* Mild section backgrounds */
+
+        #dashboard {
+            background: #f8fafc;
+        }
+
+        #employees {
+            background: #f8fbff;
+        }
+
+        #leave {
+            background: #fbfaf8;
+        }
+
+        #salary {
+            background: #f8fbfa;
+        }
+
+        #monthly {
+            background: #faf9fc;
+        }
+
+        #history {
+            background: #f8fafb;
         }
 
         .section-title {
@@ -586,6 +616,10 @@
             .content {
                 padding: 20px 15px;
             }
+
+            .section {
+                padding: 18px;
+            }
         }
 
         @media (max-width: 600px) {
@@ -615,6 +649,10 @@
             .top-bar {
                 flex-direction: column;
                 align-items: stretch;
+            }
+
+            .admin-info {
+                display: none;
             }
         }
 
@@ -687,7 +725,7 @@
 
             <h1>GROWBYTEE - Admin Dashboard</h1>
 
-            <div class="admin-info">
+            <div class="admin-info" id="adminInfo">
 
                 <span id="loggedAdminName">
                     Welcome, Admin
@@ -1135,11 +1173,11 @@
 
         <div class="info-box">
 
-            <strong>Employee Code is generated automatically.</strong>
+            <strong>Employee ID and Employee Code are generated automatically.</strong>
 
             <br>
 
-            Employee ID and Employee Code do not need to be entered manually.
+            Do not enter Employee ID or Employee Code manually.
 
             <br>
 
@@ -1607,6 +1645,8 @@
 
             loadHistory();
 
+            updateHeaderForSection("dashboard");
+
         }
     );
 
@@ -1648,6 +1688,35 @@
             if (emailField) {
                 emailField.value = adminEmail;
             }
+
+        }
+
+    }
+
+
+    /* =====================================================
+       HEADER
+    ===================================================== */
+
+    function updateHeaderForSection(sectionId) {
+
+        const adminInfo =
+            document.getElementById(
+                "adminInfo"
+            );
+
+        if (!adminInfo) {
+            return;
+        }
+
+        if (sectionId === "dashboard") {
+
+            adminInfo.style.display = "flex";
+
+        }
+        else {
+
+            adminInfo.style.display = "none";
 
         }
 
@@ -1770,6 +1839,9 @@
         if (button) {
             button.classList.add("active");
         }
+
+
+        updateHeaderForSection(sectionId);
 
 
         if (sectionId === "dashboard") {
@@ -2265,6 +2337,60 @@
         }
 
 
+        /* =================================================
+           DUPLICATE EMAIL CHECK
+           Happens BEFORE reason confirmation / backend action
+        ================================================= */
+
+        const normalizedEmail =
+            email.toLowerCase();
+
+
+        const duplicateEmployee =
+            employees.find(
+                function (employee) {
+
+                    const existingEmail =
+                        String(
+                            employee.email || ""
+                        )
+                            .trim()
+                            .toLowerCase();
+
+                    const sameEmail =
+                        existingEmail ===
+                        normalizedEmail;
+
+                    const sameEmployee =
+                        currentEmployeeAction === "EDIT" &&
+                        Number(employee.id) ===
+                        Number(editingEmployeeId);
+
+                    return sameEmail && !sameEmployee;
+
+                }
+            );
+
+
+        if (duplicateEmployee) {
+
+            alert(
+                "Duplicate Employee Email.\n\n" +
+                "This email is already registered for " +
+                (duplicateEmployee.name || "another employee") +
+                ".\n\n" +
+                "Please use a different email."
+            );
+
+            document.getElementById(
+                "employeeEmail"
+            ).focus();
+
+            return;
+
+        }
+
+
         pendingAction =
             currentEmployeeAction;
 
@@ -2358,7 +2484,9 @@
     }
 
 
-    function closeEmployeeReasonModal() {
+    function closeEmployeeReasonModal(
+        clearPending = true
+    ) {
 
         document.getElementById(
             "employeeReasonModal"
@@ -2367,6 +2495,15 @@
         document.getElementById(
             "employeeReason"
         ).value = "";
+
+
+        if (clearPending) {
+
+            pendingAction = null;
+
+            pendingEmployeeData = null;
+
+        }
 
     }
 
@@ -2433,6 +2570,10 @@
 
         try {
 
+            const action =
+                pendingAction;
+
+
             const requestData = {
 
                 ...pendingEmployeeData,
@@ -2447,7 +2588,7 @@
             let response;
 
 
-            if (pendingAction === "ADD") {
+            if (action === "ADD") {
 
                 response =
                     await apiFetch(
@@ -2468,7 +2609,7 @@
                     );
 
             }
-            else if (pendingAction === "EDIT") {
+            else if (action === "EDIT") {
 
                 response =
                     await apiFetch(
@@ -2490,7 +2631,7 @@
                     );
 
             }
-            else if (pendingAction === "DELETE") {
+            else if (action === "DELETE") {
 
                 response =
                     await apiFetch(
@@ -2536,11 +2677,9 @@
             }
 
 
-            const action =
-                pendingAction;
-
-
-            closeEmployeeReasonModal();
+            closeEmployeeReasonModal(
+                false
+            );
 
 
             pendingAction = null;
@@ -2747,7 +2886,9 @@
     }
 
 
-    function closeActionReasonModal() {
+    function closeActionReasonModal(
+        clearPending = true
+    ) {
 
         document.getElementById(
             "actionReasonModal"
@@ -2759,35 +2900,39 @@
         ).value = "";
 
 
-        if (
-            pendingAction === "SALARY_UPDATE"
-        ) {
+        if (clearPending) {
 
-            pendingSalaryData = null;
+            if (
+                pendingAction === "SALARY_UPDATE"
+            ) {
+
+                pendingSalaryData = null;
+
+            }
+
+
+            if (
+                pendingAction === "EXCEL_IMPORT"
+            ) {
+
+                pendingImportFile = null;
+
+            }
+
+
+            if (
+                pendingAction === "LEAVE_APPROVE" ||
+                pendingAction === "LEAVE_REJECT"
+            ) {
+
+                pendingLeaveData = null;
+
+            }
+
+
+            pendingAction = null;
 
         }
-
-
-        if (
-            pendingAction === "EXCEL_IMPORT"
-        ) {
-
-            pendingImportFile = null;
-
-        }
-
-
-        if (
-            pendingAction === "LEAVE_APPROVE" ||
-            pendingAction === "LEAVE_REJECT"
-        ) {
-
-            pendingLeaveData = null;
-
-        }
-
-
-        pendingAction = null;
 
     }
 
@@ -2867,10 +3012,27 @@
                 }
 
 
+                const salaryData = {
+                    employeeId:
+                        pendingSalaryData.employeeId,
+
+                    employeeName:
+                        pendingSalaryData.employeeName,
+
+                    currentSalary:
+                        pendingSalaryData.currentSalary,
+
+                    newSalary:
+                        Number(
+                            pendingSalaryData.newSalary
+                        )
+                };
+
+
                 const response =
                     await apiFetch(
                         "/admin/salary/" +
-                        pendingSalaryData.employeeId,
+                        salaryData.employeeId,
                         {
                             method: "PUT",
 
@@ -2883,9 +3045,7 @@
                                 JSON.stringify({
 
                                     newSalary:
-                                        Number(
-                                            pendingSalaryData.newSalary
-                                        ),
+                                        salaryData.newSalary,
 
                                     adminEmail:
                                         adminEmail,
@@ -2907,9 +3067,13 @@
                 }
 
 
-                closeActionReasonModal();
+                closeActionReasonModal(
+                    false
+                );
 
                 pendingSalaryData = null;
+
+                pendingAction = null;
 
 
                 await loadEmployees();
@@ -2949,13 +3113,17 @@
                 }
 
 
+                const file =
+                    pendingImportFile;
+
+
                 const formData =
                     new FormData();
 
 
                 formData.append(
                     "file",
-                    pendingImportFile
+                    file
                 );
 
 
@@ -2995,7 +3163,9 @@
                     await response.json();
 
 
-                closeActionReasonModal();
+                closeActionReasonModal(
+                    false
+                );
 
                 closeExcelImportModal();
 
@@ -3036,6 +3206,8 @@
 
 
                 pendingImportFile = null;
+
+                pendingAction = null;
 
 
                 showMessage(
@@ -3142,7 +3314,10 @@
                 employeeName,
 
             currentSalary:
-                currentSalary
+                currentSalary,
+
+            newSalary:
+                Number(currentSalary || 0)
 
         };
 
@@ -3239,11 +3414,37 @@
         }
 
 
-        pendingSalaryData.newSalary =
-            Number(newSalary);
+        pendingSalaryData = {
+
+            employeeId:
+                pendingSalaryData.employeeId,
+
+            employeeName:
+                pendingSalaryData.employeeName,
+
+            currentSalary:
+                pendingSalaryData.currentSalary,
+
+            newSalary:
+                Number(newSalary)
+
+        };
 
 
-        closeSalaryModal();
+        /*
+         * IMPORTANT:
+         * Do NOT call closeSalaryModal()
+         * because it clears pendingSalaryData.
+         */
+
+        document.getElementById(
+            "salaryModal"
+        ).classList.remove("show");
+
+
+        document.getElementById(
+            "newSalary"
+        ).value = "";
 
 
         openActionReasonModal(
@@ -3854,7 +4055,9 @@
         }
 
 
-        closeActionReasonModal();
+        closeActionReasonModal(
+            false
+        );
 
 
         pendingLeaveData = null;
