@@ -1,3 +1,4 @@
+
 package com.example.attendance;
 
 import org.springframework.http.HttpStatus;
@@ -232,10 +233,22 @@ public class AdminSalaryController {
                                     .findByEmployeeIdOrderByAttendanceDateDesc(
                                             employee.getId());
 
+                    /*
+                     * Count attendance by CHECK-IN instead of
+                     * checking only PRESENT status.
+                     *
+                     * After checkout the status can become:
+                     * PRESENT
+                     * LATE
+                     * EARLY CHECK-OUT
+                     * LATE / EARLY CHECK-OUT
+                     *
+                     * All of these are valid attendance days
+                     * when the employee has checked in.
+                     */
                     long presentDays =
                             attendanceList.stream()
                                     .filter(attendance ->
-
                                             !attendance.getAttendanceDate()
                                                     .isBefore(startDate)
 
@@ -246,8 +259,7 @@ public class AdminSalaryController {
 
                                             &&
 
-                                            "PRESENT".equalsIgnoreCase(
-                                                    attendance.getStatus())
+                                            attendance.getCheckIn() != null
                                     )
                                     .count();
 
@@ -511,3 +523,4 @@ public class AdminSalaryController {
         historyRepository.save(history);
     }
 }
+
