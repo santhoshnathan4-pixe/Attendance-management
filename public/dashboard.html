@@ -1,2124 +1,2053 @@
+
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
-    <title>Growbytee - Employee Dashboard</title>
+<title>Growbytee - Employee Dashboard</title>
 
-    <style>
+<style>
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
 
-        body {
-            background: #f4f7fb;
-            color: #333;
-        }
+    body {
+        background: #f4f7fb;
+        color: #333;
+    }
 
-        /* =========================
-           HEADER
-        ========================= */
+    .header {
+        background: #2563eb;
+        color: white;
+        padding: 20px 30px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .header h1 {
+        font-size: 25px;
+    }
+
+    .logout-btn {
+        background: white;
+        color: #2563eb;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 8px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .logout-btn:hover {
+        background: #e5e7eb;
+    }
+
+    .container {
+        max-width: 1100px;
+        margin: 30px auto;
+        padding: 0 20px;
+    }
+
+    .welcome {
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        margin-bottom: 25px;
+    }
+
+    .welcome h2 {
+        color: #2563eb;
+        margin-bottom: 8px;
+    }
+
+    .welcome p {
+        color: #666;
+    }
+
+    .attendance-card {
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        margin-bottom: 25px;
+        text-align: center;
+    }
+
+    .attendance-card h3 {
+        margin-bottom: 20px;
+        color: #333;
+    }
+
+    .today-info {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+
+    .today-box {
+        background: #f8fafc;
+        padding: 18px;
+        border-radius: 12px;
+        border: 1px solid #e5e7eb;
+    }
+
+    .today-box strong {
+        display: block;
+        color: #555;
+        margin-bottom: 8px;
+        font-size: 14px;
+    }
+
+    .today-box p {
+        font-size: 18px;
+        font-weight: bold;
+        color: #2563eb;
+    }
+
+    .attendance-btn {
+        padding: 13px 25px;
+        border: none;
+        border-radius: 8px;
+        color: white;
+        font-size: 15px;
+        font-weight: bold;
+        cursor: pointer;
+        margin: 5px;
+    }
+
+    .check-in {
+        background: #16a34a;
+    }
+
+    .check-out {
+        background: #dc2626;
+    }
+
+    .attendance-btn:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+
+    #attendanceMessage {
+        margin-top: 15px;
+        font-weight: bold;
+    }
+
+    .balance-title {
+        margin: 25px 0 15px;
+    }
+
+    .balance-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+
+    .balance-card {
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        text-align: center;
+    }
+
+    .balance-card h3 {
+        margin-bottom: 15px;
+        color: #444;
+    }
+
+    .balance-number {
+        font-size: 30px;
+        font-weight: bold;
+        color: #2563eb;
+    }
+
+    .balance-label {
+        margin-top: 8px;
+        color: #777;
+    }
+
+    .apply-section {
+        text-align: center;
+        margin: 30px 0;
+    }
+
+    .apply-btn {
+        background: #2563eb;
+        color: white;
+        border: none;
+        padding: 14px 30px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .leave-form-container {
+        display: none;
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        margin-bottom: 30px;
+    }
+
+    .leave-form-container h2 {
+        color: #2563eb;
+        margin-bottom: 20px;
+    }
+
+    .form-note {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        color: #1e40af;
+        padding: 12px 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 7px;
+        font-weight: bold;
+        color: #444;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        outline: none;
+        font-size: 15px;
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 90px;
+    }
+
+    .form-buttons {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .submit-btn {
+        background: #16a34a;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .cancel-btn {
+        background: #6b7280;
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    #leaveMessage {
+        margin-top: 15px;
+        font-weight: bold;
+    }
+
+    .table-card {
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        margin-bottom: 30px;
+        overflow-x: auto;
+    }
+
+    .table-card h2 {
+        color: #2563eb;
+        margin-bottom: 20px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 650px;
+    }
+
+    th,
+    td {
+        padding: 12px;
+        border-bottom: 1px solid #eee;
+        text-align: center;
+    }
+
+    th {
+        background: #f1f5f9;
+        color: #333;
+    }
+
+    tr:hover {
+        background: #f8fafc;
+    }
+
+    .lop-badge {
+        display: inline-block;
+        background: #fee2e2;
+        color: #b91c1c;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-weight: bold;
+    }
+
+    .normal-badge {
+        display: inline-block;
+        background: #dcfce7;
+        color: #166534;
+        padding: 4px 8px;
+        border-radius: 6px;
+        font-weight: bold;
+    }
+
+    @media (max-width: 768px) {
 
         .header {
-            background: #2563eb;
-            color: white;
-            padding: 20px 30px;
-
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            padding: 15px;
+            flex-direction: column;
+            gap: 12px;
+            text-align: center;
         }
-
-        .header h1 {
-            font-size: 25px;
-        }
-
-        .logout-btn {
-            background: white;
-            color: #2563eb;
-
-            border: none;
-            padding: 10px 18px;
-
-            border-radius: 8px;
-
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .logout-btn:hover {
-            background: #e5e7eb;
-        }
-
-        /* =========================
-           MAIN CONTAINER
-        ========================= */
 
         .container {
-            max-width: 1100px;
-            margin: 30px auto;
-            padding: 0 20px;
+            margin: 20px auto;
+            padding: 0 12px;
         }
 
-        /* =========================
-           WELCOME
-        ========================= */
-
-        .welcome {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-
-            box-shadow:
-                0 5px 20px rgba(0, 0, 0, 0.08);
-
-            margin-bottom: 25px;
-        }
-
-        .welcome h2 {
-            color: #2563eb;
-            margin-bottom: 8px;
-        }
-
-        .welcome p {
-            color: #666;
-        }
-
-        /* =========================
-           ATTENDANCE CARD
-        ========================= */
-
-        .attendance-card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-
-            box-shadow:
-                0 5px 20px rgba(0, 0, 0, 0.08);
-
-            margin-bottom: 25px;
-            text-align: center;
-        }
-
-        .attendance-card h3 {
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        /* =========================
-           TODAY ATTENDANCE INFO
-        ========================= */
-
+        .balance-container,
         .today-info {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin-bottom: 20px;
+            grid-template-columns: 1fr;
         }
-
-        .today-box {
-            background: #f8fafc;
-            padding: 18px;
-            border-radius: 12px;
-            border: 1px solid #e5e7eb;
-        }
-
-        .today-box strong {
-            display: block;
-            color: #555;
-            margin-bottom: 8px;
-            font-size: 14px;
-        }
-
-        .today-box p {
-            font-size: 18px;
-            font-weight: bold;
-            color: #2563eb;
-        }
-
-        /* =========================
-           ATTENDANCE BUTTONS
-        ========================= */
 
         .attendance-btn {
-            padding: 13px 25px;
-            border: none;
-            border-radius: 8px;
-            color: white;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            margin: 5px;
-        }
-
-        .check-in {
-            background: #16a34a;
-        }
-
-        .check-in:hover {
-            background: #15803d;
-        }
-
-        .check-out {
-            background: #dc2626;
-        }
-
-        .check-out:hover {
-            background: #b91c1c;
-        }
-
-        .attendance-btn:disabled {
-            cursor: not-allowed;
-            opacity: 0.5;
-        }
-
-        #attendanceMessage {
-            margin-top: 15px;
-            font-weight: bold;
-        }
-
-        /* =========================
-           LEAVE BALANCE
-        ========================= */
-
-        .balance-title {
-            margin: 25px 0 15px;
-        }
-
-        .balance-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin-bottom: 25px;
-        }
-
-        .balance-card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-
-            box-shadow:
-                0 5px 20px rgba(0, 0, 0, 0.08);
-
-            text-align: center;
-        }
-
-        .balance-card h3 {
-            margin-bottom: 15px;
-            color: #444;
-        }
-
-        .balance-number {
-            font-size: 30px;
-            font-weight: bold;
-            color: #2563eb;
-        }
-
-        .balance-label {
-            margin-top: 8px;
-            color: #777;
-        }
-
-        /* =========================
-           APPLY LEAVE BUTTON
-        ========================= */
-
-        .apply-section {
-            text-align: center;
-            margin: 30px 0;
-        }
-
-        .apply-btn {
-            background: #2563eb;
-            color: white;
-            border: none;
-            padding: 14px 30px;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .apply-btn:hover {
-            background: #1d4ed8;
-        }
-
-        /* =========================
-           LEAVE FORM
-        ========================= */
-
-        .leave-form-container {
-            display: none;
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-
-            box-shadow:
-                0 5px 20px rgba(0, 0, 0, 0.08);
-
-            margin-bottom: 30px;
-        }
-
-        .leave-form-container h2 {
-            color: #2563eb;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 18px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 7px;
-            font-weight: bold;
-            color: #444;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-
             width: 100%;
-            padding: 12px;
-
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            outline: none;
-
-            font-size: 15px;
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            border-color: #2563eb;
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 90px;
+            margin: 5px 0;
         }
 
         .form-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
+            flex-direction: column;
         }
 
-        .submit-btn {
-            background: #16a34a;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
+        .submit-btn,
         .cancel-btn {
-            background: #6b7280;
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        #leaveMessage {
-            margin-top: 15px;
-            font-weight: bold;
-        }
-
-        /* =========================
-           TABLE
-        ========================= */
-
-        .table-card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-
-            box-shadow:
-                0 5px 20px rgba(0, 0, 0, 0.08);
-
-            margin-bottom: 30px;
-            overflow-x: auto;
-        }
-
-        .table-card h2 {
-            color: #2563eb;
-            margin-bottom: 20px;
-        }
-
-        table {
             width: 100%;
-            border-collapse: collapse;
-            min-width: 650px;
         }
+    }
 
-        th,
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #eee;
-            text-align: center;
-        }
-
-        th {
-            background: #f1f5f9;
-            color: #333;
-        }
-
-        tr:hover {
-            background: #f8fafc;
-        }
-
-        /* =========================
-           MOBILE
-        ========================= */
-
-        @media (max-width: 768px) {
-
-            .header {
-                padding: 15px;
-                flex-direction: column;
-                gap: 12px;
-                text-align: center;
-            }
-
-            .container {
-                margin: 20px auto;
-                padding: 0 12px;
-            }
-
-            .balance-container {
-                grid-template-columns: 1fr;
-            }
-
-            .today-info {
-                grid-template-columns: 1fr;
-            }
-
-            .attendance-btn {
-                width: 100%;
-                margin: 5px 0;
-            }
-
-            .form-buttons {
-                flex-direction: column;
-            }
-
-            .submit-btn,
-            .cancel-btn {
-                width: 100%;
-            }
-
-        }
-
-    </style>
+</style>
 
 </head>
 
-
 <body>
 
-    <!-- =========================
-         HEADER
-    ========================= -->
+<div class="header">
 
-    <div class="header">
+    <h1>GROWBYTEE</h1>
 
-        <h1>
-            GROWBYTEE
-        </h1>
+    <button
+        class="logout-btn"
+        onclick="logout()">
+
+        Logout
+
+    </button>
+
+</div>
+
+<div class="container">
+
+    <div class="welcome">
+
+        <h2 id="welcomeText">
+            Welcome 👋
+        </h2>
+
+        <p>
+            Employee Attendance Management System
+        </p>
+
+    </div>
+
+    <div class="attendance-card">
+
+        <h3>
+            Today's Attendance
+        </h3>
+
+        <div class="today-info">
+
+            <div class="today-box">
+
+                <strong>
+                    Check In
+                </strong>
+
+                <p id="todayCheckIn">
+                    --:--
+                </p>
+
+            </div>
+
+            <div class="today-box">
+
+                <strong>
+                    Check Out
+                </strong>
+
+                <p id="todayCheckOut">
+                    --:--
+                </p>
+
+            </div>
+
+            <div class="today-box">
+
+                <strong>
+                    Status
+                </strong>
+
+                <p id="todayStatus">
+                    Not Checked In
+                </p>
+
+            </div>
+
+        </div>
 
         <button
-            class="logout-btn"
-            onclick="logout()">
+            id="checkInBtn"
+            class="attendance-btn check-in"
+            onclick="checkIn()">
 
-            Logout
+            Check In
+
+        </button>
+
+        <button
+            id="checkOutBtn"
+            class="attendance-btn check-out"
+            onclick="checkOut()"
+            disabled>
+
+            Check Out
+
+        </button>
+
+        <p id="attendanceMessage"></p>
+
+    </div>
+
+    <h2 class="balance-title">
+        This Month Leave Balance
+    </h2>
+
+    <div class="balance-container">
+
+        <div class="balance-card">
+
+            <h3>
+                Sick Leave
+            </h3>
+
+            <div
+                class="balance-number"
+                id="sickBalance">
+
+                0 / 1
+
+            </div>
+
+            <div class="balance-label">
+                Remaining / Total
+            </div>
+
+        </div>
+
+        <div class="balance-card">
+
+            <h3>
+                Casual Leave
+            </h3>
+
+            <div
+                class="balance-number"
+                id="casualBalance">
+
+                0 / 1
+
+            </div>
+
+            <div class="balance-label">
+                Remaining / Total
+            </div>
+
+        </div>
+
+        <div class="balance-card">
+
+            <h3>
+                Permission
+            </h3>
+
+            <div
+                class="balance-number"
+                id="permissionBalance">
+
+                2 / 2
+
+            </div>
+
+            <div class="balance-label">
+                Remaining / Total
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="apply-section">
+
+        <button
+            class="apply-btn"
+            onclick="showLeaveForm()">
+
+            + Apply Leave
 
         </button>
 
     </div>
 
+    <div
+        class="leave-form-container"
+        id="leaveForm">
 
-    <!-- =========================
-         MAIN
-    ========================= -->
-
-    <div class="container">
-
-
-        <!-- =========================
-             WELCOME
-        ========================= -->
-
-        <div class="welcome">
-
-            <h2 id="welcomeText">
-                Welcome 👋
-            </h2>
-
-            <p>
-                Employee Attendance Management System
-            </p>
-
-        </div>
-
-
-        <!-- =========================
-             TODAY'S ATTENDANCE
-        ========================= -->
-
-        <div class="attendance-card">
-
-            <h3>
-                Today's Attendance
-            </h3>
-
-
-            <div class="today-info">
-
-                <div class="today-box">
-
-                    <strong>
-                        Check In
-                    </strong>
-
-                    <p id="todayCheckIn">
-                        --:--
-                    </p>
-
-                </div>
-
-
-                <div class="today-box">
-
-                    <strong>
-                        Check Out
-                    </strong>
-
-                    <p id="todayCheckOut">
-                        --:--
-                    </p>
-
-                </div>
-
-
-                <div class="today-box">
-
-                    <strong>
-                        Status
-                    </strong>
-
-                    <p id="todayStatus">
-                        Not Checked In
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <button
-                id="checkInBtn"
-                class="attendance-btn check-in"
-                onclick="checkIn()">
-
-                Check In
-
-            </button>
-
-
-            <button
-                id="checkOutBtn"
-                class="attendance-btn check-out"
-                onclick="checkOut()"
-                disabled>
-
-                Check Out
-
-            </button>
-
-
-            <p id="attendanceMessage"></p>
-
-        </div>
-
-
-        <!-- =========================
-             LEAVE BALANCE
-        ========================= -->
-
-        <h2 class="balance-title">
-            This Month Leave Balance
+        <h2>
+            Apply Leave
         </h2>
 
+        <div class="form-note">
 
-        <div class="balance-container">
+            For full-day leave, select the
+            <strong>Start Date</strong> and
+            <strong>End Date</strong>.
 
-            <div class="balance-card">
-
-                <h3>
-                    Sick Leave
-                </h3>
-
-                <div
-                    class="balance-number"
-                    id="sickBalance">
-
-                    0 / 1
-
-                </div>
-
-                <div class="balance-label">
-                    Remaining / Total
-                </div>
-
-            </div>
-
-
-            <div class="balance-card">
-
-                <h3>
-                    Casual Leave
-                </h3>
-
-                <div
-                    class="balance-number"
-                    id="casualBalance">
-
-                    0 / 1
-
-                </div>
-
-                <div class="balance-label">
-                    Remaining / Total
-                </div>
-
-            </div>
-
-
-            <div class="balance-card">
-
-                <h3>
-                    Permission
-                </h3>
-
-                <div
-                    class="balance-number"
-                    id="permissionBalance">
-
-                    2 / 2
-
-                </div>
-
-                <div class="balance-label">
-                    Remaining / Total
-                </div>
-
-            </div>
+            The system will automatically use available
+            Sick Leave first, then Casual Leave,
+            and any remaining days will be treated as LOP.
 
         </div>
 
+        <div class="form-group">
 
-        <!-- =========================
-             APPLY LEAVE BUTTON
-        ========================= -->
+            <label>
+                Leave Type
+            </label>
 
-        <div class="apply-section">
+            <select
+                id="leaveType"
+                onchange="changeLeaveType()">
+
+                <option value="">
+                    Select Leave Type
+                </option>
+
+                <option value="SICK">
+                    Sick Leave
+                </option>
+
+                <option value="SICK_HALF">
+                    Sick Half Day
+                </option>
+
+                <option value="CASUAL">
+                    Casual Leave
+                </option>
+
+                <option value="CASUAL_HALF">
+                    Casual Half Day
+                </option>
+
+                <option value="PERMISSION">
+                    Permission
+                </option>
+
+            </select>
+
+        </div>
+
+        <!-- START DATE -->
+
+        <div class="form-group">
+
+            <label>
+                Leave Start Date
+            </label>
+
+            <input
+                type="date"
+                id="leaveDate"
+                onchange="updateEndDateMinimum()">
+
+        </div>
+
+        <!-- END DATE -->
+
+        <div
+            class="form-group"
+            id="endDateGroup">
+
+            <label>
+                Leave End Date
+            </label>
+
+            <input
+                type="date"
+                id="endDate">
+
+        </div>
+
+        <div
+            class="form-group"
+            id="halfDayGroup"
+            style="display: none;">
+
+            <label>
+                Half Day Session
+            </label>
+
+            <select id="halfDaySession">
+
+                <option value="">
+                    Select Session
+                </option>
+
+                <option value="MORNING">
+                    Morning
+                </option>
+
+                <option value="AFTERNOON">
+                    Afternoon
+                </option>
+
+            </select>
+
+        </div>
+
+        <div
+            class="form-group"
+            id="permissionStartGroup"
+            style="display: none;">
+
+            <label>
+                Permission Start Time
+            </label>
+
+            <input
+                type="time"
+                id="permissionStart">
+
+        </div>
+
+        <div
+            class="form-group"
+            id="permissionEndGroup"
+            style="display: none;">
+
+            <label>
+                Permission End Time
+            </label>
+
+            <input
+                type="time"
+                id="permissionEnd">
+
+        </div>
+
+        <div class="form-group">
+
+            <label>
+                Reason
+            </label>
+
+            <textarea
+                id="reason"
+                placeholder="Enter reason"></textarea>
+
+        </div>
+
+        <div class="form-buttons">
 
             <button
-                class="apply-btn"
-                onclick="showLeaveForm()">
+                class="submit-btn"
+                onclick="applyLeave()">
 
-                + Apply Leave
+                Submit Leave
+
+            </button>
+
+            <button
+                class="cancel-btn"
+                onclick="hideLeaveForm()">
+
+                Cancel
 
             </button>
 
         </div>
 
-
-        <!-- =========================
-             LEAVE FORM
-        ========================= -->
-
-        <div
-            class="leave-form-container"
-            id="leaveForm">
-
-            <h2>
-                Apply Leave
-            </h2>
-
-
-            <div class="form-group">
-
-                <label>
-                    Leave Type
-                </label>
-
-                <select
-                    id="leaveType"
-                    onchange="changeLeaveType()">
-
-                    <option value="">
-                        Select Leave Type
-                    </option>
-
-                    <option value="SICK">
-                        Sick Leave
-                    </option>
-
-                    <option value="SICK_HALF">
-                        Sick Half Day
-                    </option>
-
-                    <option value="CASUAL">
-                        Casual Leave
-                    </option>
-
-                    <option value="CASUAL_HALF">
-                        Casual Half Day
-                    </option>
-
-                    <option value="PERMISSION">
-                        Permission
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Leave Date
-                </label>
-
-                <input
-                    type="date"
-                    id="leaveDate">
-
-            </div>
-
-
-            <div
-                class="form-group"
-                id="halfDayGroup"
-                style="display: none;">
-
-                <label>
-                    Half Day Session
-                </label>
-
-                <select id="halfDaySession">
-
-                    <option value="">
-                        Select Session
-                    </option>
-
-                    <option value="MORNING">
-                        Morning
-                    </option>
-
-                    <option value="AFTERNOON">
-                        Afternoon
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <div
-                class="form-group"
-                id="permissionStartGroup"
-                style="display: none;">
-
-                <label>
-                    Permission Start Time
-                </label>
-
-                <input
-                    type="time"
-                    id="permissionStart">
-
-            </div>
-
-
-            <div
-                class="form-group"
-                id="permissionEndGroup"
-                style="display: none;">
-
-                <label>
-                    Permission End Time
-                </label>
-
-                <input
-                    type="time"
-                    id="permissionEnd">
-
-            </div>
-
-
-            <div class="form-group">
-
-                <label>
-                    Reason
-                </label>
-
-                <textarea
-                    id="reason"
-                    placeholder="Enter reason"></textarea>
-
-            </div>
-
-
-            <div class="form-buttons">
-
-                <button
-                    class="submit-btn"
-                    onclick="applyLeave()">
-
-                    Submit Leave
-
-                </button>
-
-
-                <button
-                    class="cancel-btn"
-                    onclick="hideLeaveForm()">
-
-                    Cancel
-
-                </button>
-
-            </div>
-
-
-            <p id="leaveMessage"></p>
-
-        </div>
-
-
-        <!-- =========================
-             ATTENDANCE HISTORY
-        ========================= -->
-
-        <div class="table-card">
-
-            <h2>
-                Attendance History
-            </h2>
-
-            <table>
-
-                <thead>
-
-                    <tr>
-
-                        <th>Date</th>
-                        <th>Check In</th>
-                        <th>Check Out</th>
-                        <th>Status</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody id="attendanceTable">
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-
-        <!-- =========================
-             LEAVE HISTORY
-        ========================= -->
-
-        <div class="table-card">
-
-            <h2>
-                Leave History
-            </h2>
-
-            <table>
-
-                <thead>
-
-                    <tr>
-
-                        <th>Date</th>
-                        <th>Type</th>
-                        <th>Duration</th>
-                        <th>Session</th>
-                        <th>Permission</th>
-                        <th>Reason</th>
-                        <th>Status</th>
-
-                    </tr>
-
-                </thead>
-
-                <tbody id="leaveTable">
-
-                </tbody>
-
-            </table>
-
-        </div>
+        <p id="leaveMessage"></p>
 
     </div>
 
+    <div class="table-card">
 
-    <!-- =========================
-         JAVASCRIPT
-    ========================= -->
+        <h2>
+            Attendance History
+        </h2>
 
-    <script>
+        <table>
 
-        // =========================================
-        // RENDER BACKEND API URL
-        // =========================================
+            <thead>
 
-        const API_BASE_URL =
-            "https://attendance-management-d5h6.onrender.com";
+                <tr>
 
+                    <th>Date</th>
+                    <th>Check In</th>
+                    <th>Check Out</th>
+                    <th>Status</th>
 
-        // =========================================
-        // GET LOGGED-IN EMPLOYEE EMAIL
-        // =========================================
+                </tr>
 
-        const employeeEmail =
-            localStorage.getItem("employeeEmail");
+            </thead>
 
+            <tbody id="attendanceTable"></tbody>
 
-        // =========================================
-        // LOGIN CHECK
-        // =========================================
+        </table>
 
-        if (!employeeEmail) {
+    </div>
 
-            window.location.href =
-                "login.html";
+    <div class="table-card">
 
-        }
+        <h2>
+            Leave History
+        </h2>
 
+        <table>
 
-        // =========================================
-        // LOAD EMPLOYEE DETAILS
-        // =========================================
+            <thead>
 
-        function loadEmployeeDetails() {
+                <tr>
 
-            fetch(
-                `${API_BASE_URL}/employee/details?email=${encodeURIComponent(employeeEmail)}`
-            )
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Duration</th>
+                    <th>Session</th>
+                    <th>Permission</th>
+                    <th>Reason</th>
+                    <th>LOP Days</th>
+                    <th>Status</th>
 
-            .then(async response => {
+                </tr>
 
-                const text =
-                    await response.text();
+            </thead>
 
-                console.log(
-                    "EMPLOYEE DETAILS STATUS:",
-                    response.status
-                );
+            <tbody id="leaveTable"></tbody>
 
-                console.log(
-                    "EMPLOYEE DETAILS RESPONSE:",
-                    text
-                );
+        </table>
 
-                if (!response.ok) {
+    </div>
 
-                    throw new Error(
-                        text ||
-                        "Employee details request failed"
-                    );
+</div>
 
-                }
+<script>
 
-                return text
-                    ? JSON.parse(text)
-                    : null;
+const API_BASE_URL =
+    "https://attendance-management-d5h6.onrender.com";
 
-            })
+const employeeEmail =
+    localStorage.getItem("employeeEmail");
 
-            .then(data => {
+if (!employeeEmail) {
 
-                if (data) {
+    window.location.href =
+        "login.html";
 
-                    document.getElementById(
-                        "welcomeText"
-                    ).innerText =
-                        "Welcome, " +
-                        data.name +
-                        " 👋";
+}
 
-                }
+/* =========================================
+   EMPLOYEE DETAILS
+========================================= */
 
-            })
+function loadEmployeeDetails() {
 
-            .catch(error => {
+    fetch(
+        `${API_BASE_URL}/employee/details?email=${encodeURIComponent(employeeEmail)}`
+    )
+    .then(async response => {
 
-                console.error(
-                    "EMPLOYEE DETAILS ERROR:",
-                    error
-                );
+        const text =
+            await response.text();
 
-            });
+        if (!response.ok) {
+
+            throw new Error(
+                text ||
+                "Employee details request failed"
+            );
 
         }
 
+        return text
+            ? JSON.parse(text)
+            : null;
 
-        // =========================================
-        // CHECK IN
-        // =========================================
+    })
+    .then(data => {
 
-        function checkIn() {
-
-            const message =
-                document.getElementById(
-                    "attendanceMessage"
-                );
-
-            const button =
-                document.getElementById(
-                    "checkInBtn"
-                );
-
-            button.disabled = true;
-
-            message.innerText =
-                "Checking in...";
-
-            message.style.color =
-                "#2563eb";
-
-
-            fetch(
-                `${API_BASE_URL}/attendance/check-in?email=${encodeURIComponent(employeeEmail)}`,
-                {
-                    method: "POST"
-                }
-            )
-
-            .then(async response => {
-
-                const data =
-                    await response.text();
-
-                console.log(
-                    "CHECK-IN STATUS:",
-                    response.status
-                );
-
-                console.log(
-                    "CHECK-IN RESPONSE:",
-                    data
-                );
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        data ||
-                        "Check-in request failed"
-                    );
-
-                }
-
-                return data;
-
-            })
-
-            .then(data => {
-
-                message.innerText =
-                    data ||
-                    "Check-in successful";
-
-                message.style.color =
-                    "green";
-
-                button.disabled =
-                    true;
-
-                loadAttendanceHistory();
-
-            })
-
-            .catch(error => {
-
-                console.error(
-                    "CHECK-IN ERROR:",
-                    error
-                );
-
-                message.innerText =
-                    error.message ||
-                    "Server connection failed.";
-
-                message.style.color =
-                    "red";
-
-                button.disabled =
-                    false;
-
-            });
-
-        }
-
-
-        // =========================================
-        // CHECK OUT
-        // =========================================
-
-        function checkOut() {
-
-            const message =
-                document.getElementById(
-                    "attendanceMessage"
-                );
-
-            const button =
-                document.getElementById(
-                    "checkOutBtn"
-                );
-
-            button.disabled = true;
-
-            message.innerText =
-                "Checking out...";
-
-            message.style.color =
-                "#2563eb";
-
-
-            fetch(
-                `${API_BASE_URL}/attendance/check-out?email=${encodeURIComponent(employeeEmail)}`,
-                {
-                    method: "POST"
-                }
-            )
-
-            .then(async response => {
-
-                const data =
-                    await response.text();
-
-                console.log(
-                    "CHECK-OUT STATUS:",
-                    response.status
-                );
-
-                console.log(
-                    "CHECK-OUT RESPONSE:",
-                    data
-                );
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        data ||
-                        "Check-out request failed"
-                    );
-
-                }
-
-                return data;
-
-            })
-
-            .then(data => {
-
-                message.innerText =
-                    data ||
-                    "Check-out successful";
-
-                message.style.color =
-                    "green";
-
-                button.disabled =
-                    true;
-
-                loadAttendanceHistory();
-
-            })
-
-            .catch(error => {
-
-                console.error(
-                    "CHECK-OUT ERROR:",
-                    error
-                );
-
-                message.innerText =
-                    error.message ||
-                    "Server connection failed.";
-
-                message.style.color =
-                    "red";
-
-                button.disabled =
-                    false;
-
-            });
-
-        }
-
-
-        // =========================================
-        // SHOW LEAVE FORM
-        // =========================================
-
-        function showLeaveForm() {
+        if (data) {
 
             document.getElementById(
-                "leaveForm"
-            ).style.display =
-                "block";
-
-            document.getElementById(
-                "leaveForm"
-            ).scrollIntoView({
-                behavior: "smooth"
-            });
-
-        }
-
-
-        // =========================================
-        // HIDE LEAVE FORM
-        // =========================================
-
-        function hideLeaveForm() {
-
-            document.getElementById(
-                "leaveForm"
-            ).style.display =
-                "none";
-
-            document.getElementById(
-                "leaveMessage"
+                "welcomeText"
             ).innerText =
-                "";
+                "Welcome, " +
+                data.name +
+                " 👋";
 
         }
 
+    })
+    .catch(error => {
 
-        // =========================================
-        // CHANGE LEAVE TYPE
-        // =========================================
+        console.error(
+            "EMPLOYEE DETAILS ERROR:",
+            error
+        );
 
-        function changeLeaveType() {
+    });
 
-            const type =
-                document.getElementById(
-                    "leaveType"
-                ).value;
+}
 
-            const halfDayGroup =
-                document.getElementById(
-                    "halfDayGroup"
-                );
+/* =========================================
+   CHECK IN
+========================================= */
 
-            const permissionStartGroup =
-                document.getElementById(
-                    "permissionStartGroup"
-                );
+function checkIn() {
 
-            const permissionEndGroup =
-                document.getElementById(
-                    "permissionEndGroup"
-                );
+    const message =
+        document.getElementById(
+            "attendanceMessage"
+        );
 
+    const button =
+        document.getElementById(
+            "checkInBtn"
+        );
 
-            halfDayGroup.style.display =
-                "none";
+    button.disabled = true;
 
-            permissionStartGroup.style.display =
-                "none";
+    message.innerText =
+        "Checking in...";
 
-            permissionEndGroup.style.display =
-                "none";
+    fetch(
+        `${API_BASE_URL}/attendance/check-in?email=${encodeURIComponent(employeeEmail)}`,
+        {
+            method: "POST"
+        }
+    )
+    .then(async response => {
 
+        const data =
+            await response.text();
 
-            if (
-                type === "SICK_HALF" ||
-                type === "CASUAL_HALF"
-            ) {
+        if (!response.ok) {
 
-                halfDayGroup.style.display =
-                    "block";
-
-            }
-
-
-            if (
-                type === "PERMISSION"
-            ) {
-
-                permissionStartGroup.style.display =
-                    "block";
-
-                permissionEndGroup.style.display =
-                    "block";
-
-            }
+            throw new Error(
+                data ||
+                "Check-in request failed"
+            );
 
         }
 
+        return data;
 
-        // =========================================
-        // APPLY LEAVE
-        // =========================================
+    })
+    .then(data => {
 
-        function applyLeave() {
+        message.innerText =
+            data ||
+            "Check-in successful";
 
-            const type =
-                document.getElementById(
-                    "leaveType"
-                ).value;
+        message.style.color =
+            "green";
 
-            const date =
-                document.getElementById(
-                    "leaveDate"
-                ).value;
+        button.disabled =
+            true;
 
-            const halfDaySession =
-                document.getElementById(
-                    "halfDaySession"
-                ).value;
+        loadAttendanceHistory();
 
-            const permissionStart =
-                document.getElementById(
-                    "permissionStart"
-                ).value;
+    })
+    .catch(error => {
 
-            const permissionEnd =
-                document.getElementById(
-                    "permissionEnd"
-                ).value;
+        message.innerText =
+            error.message ||
+            "Server connection failed.";
 
-            const reason =
-                document.getElementById(
-                    "reason"
-                ).value.trim();
+        message.style.color =
+            "red";
 
-            const message =
-                document.getElementById(
-                    "leaveMessage"
-                );
+        button.disabled =
+            false;
 
+    });
 
-            // =====================================
-            // BASIC VALIDATION
-            // =====================================
+}
 
-            if (
-                type === "" ||
-                date === ""
-            ) {
+/* =========================================
+   CHECK OUT
+========================================= */
 
-                message.innerText =
-                    "Please select leave type and date.";
+function checkOut() {
 
-                message.style.color =
-                    "red";
+    const message =
+        document.getElementById(
+            "attendanceMessage"
+        );
 
-                return;
+    const button =
+        document.getElementById(
+            "checkOutBtn"
+        );
 
-            }
+    button.disabled = true;
 
+    message.innerText =
+        "Checking out...";
 
-            // =====================================
-            // HALF DAY VALIDATION
-            // =====================================
+    fetch(
+        `${API_BASE_URL}/attendance/check-out?email=${encodeURIComponent(employeeEmail)}`,
+        {
+            method: "POST"
+        }
+    )
+    .then(async response => {
 
-            if (
-                type === "SICK_HALF" ||
-                type === "CASUAL_HALF"
-            ) {
+        const data =
+            await response.text();
 
-                if (
-                    halfDaySession === ""
-                ) {
+        if (!response.ok) {
 
-                    message.innerText =
-                        "Please select Morning or Afternoon.";
-
-                    message.style.color =
-                        "red";
-
-                    return;
-
-                }
-
-            }
-
-
-            // =====================================
-            // PERMISSION VALIDATION
-            // =====================================
-
-            if (
-                type === "PERMISSION"
-            ) {
-
-                if (
-                    permissionStart === "" ||
-                    permissionEnd === ""
-                ) {
-
-                    message.innerText =
-                        "Please select permission start and end time.";
-
-                    message.style.color =
-                        "red";
-
-                    return;
-
-                }
-
-            }
-
-
-            // =====================================
-            // CREATE FORM DATA
-            // =====================================
-
-            const params =
-                new URLSearchParams();
-
-            params.append(
-                "email",
-                employeeEmail
+            throw new Error(
+                data ||
+                "Check-out request failed"
             );
 
-            params.append(
-                "leaveType",
-                type
-            );
+        }
 
-            params.append(
-                "leaveDate",
-                date
-            );
+        return data;
 
-            params.append(
-                "reason",
-                reason
-            );
+    })
+    .then(data => {
 
+        message.innerText =
+            data ||
+            "Check-out successful";
 
-            // =====================================
-            // HALF DAY
-            // =====================================
+        message.style.color =
+            "green";
 
-            if (
-                type === "SICK_HALF" ||
-                type === "CASUAL_HALF"
-            ) {
+        button.disabled =
+            true;
 
-                params.append(
-                    "halfDaySession",
-                    halfDaySession
-                );
+        loadAttendanceHistory();
 
-            }
+    })
+    .catch(error => {
 
+        message.innerText =
+            error.message ||
+            "Server connection failed.";
 
-            // =====================================
-            // PERMISSION
-            // =====================================
+        message.style.color =
+            "red";
 
-            if (
-                type === "PERMISSION"
-            ) {
+        button.disabled =
+            false;
 
-                params.append(
-                    "permissionStart",
-                    permissionStart
-                );
+    });
 
-                params.append(
-                    "permissionEnd",
-                    permissionEnd
-                );
+}
 
-            }
+/* =========================================
+   SHOW LEAVE FORM
+========================================= */
 
+function showLeaveForm() {
 
-            // =====================================
-            // SEND REQUEST
-            // =====================================
+    document.getElementById(
+        "leaveForm"
+    ).style.display =
+        "block";
+
+    document.getElementById(
+        "leaveForm"
+    ).scrollIntoView({
+        behavior: "smooth"
+    });
+
+    loadLeaveBalance();
+
+}
+
+/* =========================================
+   HIDE LEAVE FORM
+========================================= */
+
+function hideLeaveForm() {
+
+    document.getElementById(
+        "leaveForm"
+    ).style.display =
+        "none";
+
+    document.getElementById(
+        "leaveMessage"
+    ).innerText =
+        "";
+
+}
+
+/* =========================================
+   LEAVE TYPE CHANGE
+========================================= */
+
+function changeLeaveType() {
+
+    const type =
+        document.getElementById(
+            "leaveType"
+        ).value;
+
+    const halfDayGroup =
+        document.getElementById(
+            "halfDayGroup"
+        );
+
+    const permissionStartGroup =
+        document.getElementById(
+            "permissionStartGroup"
+        );
+
+    const permissionEndGroup =
+        document.getElementById(
+            "permissionEndGroup"
+        );
+
+    const endDateGroup =
+        document.getElementById(
+            "endDateGroup"
+        );
+
+    halfDayGroup.style.display =
+        "none";
+
+    permissionStartGroup.style.display =
+        "none";
+
+    permissionEndGroup.style.display =
+        "none";
+
+    /*
+     * Full day Sick/Casual:
+     * Start Date + End Date
+     */
+
+    endDateGroup.style.display =
+        "block";
+
+    if (
+        type === "SICK_HALF" ||
+        type === "CASUAL_HALF"
+    ) {
+
+        halfDayGroup.style.display =
+            "block";
+
+        endDateGroup.style.display =
+            "none";
+
+    }
+
+    if (
+        type === "PERMISSION"
+    ) {
+
+        permissionStartGroup.style.display =
+            "block";
+
+        permissionEndGroup.style.display =
+            "block";
+
+        endDateGroup.style.display =
+            "none";
+
+    }
+
+}
+
+/* =========================================
+   START DATE -> END DATE
+========================================= */
+
+function updateEndDateMinimum() {
+
+    const startDate =
+        document.getElementById(
+            "leaveDate"
+        ).value;
+
+    const endDateInput =
+        document.getElementById(
+            "endDate"
+        );
+
+    if (!startDate) {
+
+        endDateInput.removeAttribute(
+            "min"
+        );
+
+        return;
+
+    }
+
+    /*
+     * End date cannot be before start date.
+     */
+
+    endDateInput.min =
+        startDate;
+
+    /*
+     * If end date is empty or earlier
+     * than start date, automatically set
+     * it to start date.
+     */
+
+    if (
+        endDateInput.value === "" ||
+        endDateInput.value < startDate
+    ) {
+
+        endDateInput.value =
+            startDate;
+
+    }
+
+}
+
+/* =========================================
+   APPLY LEAVE
+========================================= */
+
+function applyLeave() {
+
+    const type =
+        document.getElementById(
+            "leaveType"
+        ).value;
+
+    const date =
+        document.getElementById(
+            "leaveDate"
+        ).value;
+
+    const endDate =
+        document.getElementById(
+            "endDate"
+        ).value;
+
+    const halfDaySession =
+        document.getElementById(
+            "halfDaySession"
+        ).value;
+
+    const permissionStart =
+        document.getElementById(
+            "permissionStart"
+        ).value;
+
+    const permissionEnd =
+        document.getElementById(
+            "permissionEnd"
+        ).value;
+
+    const reason =
+        document.getElementById(
+            "reason"
+        ).value.trim();
+
+    const message =
+        document.getElementById(
+            "leaveMessage"
+        );
+
+    if (
+        type === "" ||
+        date === ""
+    ) {
+
+        message.innerText =
+            "Please select leave type and start date.";
+
+        message.style.color =
+            "red";
+
+        return;
+
+    }
+
+    const fullDayLeave =
+        type === "SICK" ||
+        type === "CASUAL";
+
+    /*
+     * FULL DAY:
+     * Start Date + End Date required
+     */
+
+    if (fullDayLeave) {
+
+        if (endDate === "") {
 
             message.innerText =
-                "Submitting leave...";
+                "Please select leave end date.";
 
             message.style.color =
-                "#2563eb";
+                "red";
 
-
-            fetch(
-                `${API_BASE_URL}/leave/apply?${params.toString()}`,
-                {
-                    method: "POST"
-                }
-            )
-
-            .then(async response => {
-
-                const data =
-                    await response.text();
-
-                console.log(
-                    "LEAVE APPLY STATUS:",
-                    response.status
-                );
-
-                console.log(
-                    "LEAVE APPLY RESPONSE:",
-                    data
-                );
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        data ||
-                        "Leave request failed"
-                    );
-
-                }
-
-                return data;
-
-            })
-
-            .then(data => {
-
-                message.innerText =
-                    data ||
-                    "Leave applied successfully";
-
-                if (
-                    data.includes(
-                        "Successfully"
-                    ) ||
-                    data.toLowerCase().includes(
-                        "success"
-                    )
-                ) {
-
-                    message.style.color =
-                        "green";
-
-
-                    document.getElementById(
-                        "leaveType"
-                    ).value = "";
-
-                    document.getElementById(
-                        "leaveDate"
-                    ).value = "";
-
-                    document.getElementById(
-                        "halfDaySession"
-                    ).value = "";
-
-                    document.getElementById(
-                        "permissionStart"
-                    ).value = "";
-
-                    document.getElementById(
-                        "permissionEnd"
-                    ).value = "";
-
-                    document.getElementById(
-                        "reason"
-                    ).value = "";
-
-
-                    changeLeaveType();
-
-
-                    loadLeaveBalance();
-
-                    loadLeaveHistory();
-
-                }
-
-                else {
-
-                    message.style.color =
-                        "red";
-
-                }
-
-            })
-
-            .catch(error => {
-
-                console.error(
-                    "LEAVE APPLY ERROR:",
-                    error
-                );
-
-                message.innerText =
-                    error.message ||
-                    "Server connection failed.";
-
-                message.style.color =
-                    "red";
-
-            });
+            return;
 
         }
 
+        if (
+            new Date(endDate) <
+            new Date(date)
+        ) {
 
-        // =========================================
-        // LOAD LEAVE BALANCE
-        // =========================================
+            message.innerText =
+                "Leave end date cannot be before start date.";
 
-        function loadLeaveBalance() {
+            message.style.color =
+                "red";
 
-            fetch(
-                `${API_BASE_URL}/leave/balance?email=${encodeURIComponent(employeeEmail)}`
-            )
-
-            .then(async response => {
-
-                const text =
-                    await response.text();
-
-                console.log(
-                    "LEAVE BALANCE STATUS:",
-                    response.status
-                );
-
-                console.log(
-                    "LEAVE BALANCE RESPONSE:",
-                    text
-                );
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        text ||
-                        "Leave balance request failed"
-                    );
-
-                }
-
-                return text
-                    ? JSON.parse(text)
-                    : {};
-
-            })
-
-            .then(data => {
-
-                const sickRemaining =
-                    Number(
-                        data.sickRemaining ?? 0
-                    );
-
-                document.getElementById(
-                    "sickBalance"
-                ).innerText =
-                    sickRemaining +
-                    " / 1";
-
-
-                const casualRemaining =
-                    Number(
-                        data.casualRemaining ?? 0
-                    );
-
-                document.getElementById(
-                    "casualBalance"
-                ).innerText =
-                    casualRemaining +
-                    " / 1";
-
-
-                const permissionRemaining =
-                    Number(
-                        data.permissionRemaining ?? 0
-                    );
-
-                document.getElementById(
-                    "permissionBalance"
-                ).innerText =
-                    permissionRemaining +
-                    " / 2";
-
-            })
-
-            .catch(error => {
-
-                console.error(
-                    "LEAVE BALANCE ERROR:",
-                    error
-                );
-
-            });
+            return;
 
         }
 
+    }
 
-        // =========================================
-        // LOAD ATTENDANCE HISTORY
-        // =========================================
+    /* =====================================
+       HALF DAY VALIDATION
+    ===================================== */
 
-        function loadAttendanceHistory() {
+    if (
+        type === "SICK_HALF" ||
+        type === "CASUAL_HALF"
+    ) {
 
-            fetch(
-                `${API_BASE_URL}/attendance/history?email=${encodeURIComponent(employeeEmail)}`
+        if (
+            halfDaySession === ""
+        ) {
+
+            message.innerText =
+                "Please select Morning or Afternoon.";
+
+            message.style.color =
+                "red";
+
+            return;
+
+        }
+
+    }
+
+    /* =====================================
+       PERMISSION VALIDATION
+    ===================================== */
+
+    if (
+        type === "PERMISSION"
+    ) {
+
+        if (
+            permissionStart === "" ||
+            permissionEnd === ""
+        ) {
+
+            message.innerText =
+                "Please select permission start and end time.";
+
+            message.style.color =
+                "red";
+
+            return;
+
+        }
+
+        if (
+            permissionEnd <=
+            permissionStart
+        ) {
+
+            message.innerText =
+                "Permission end time must be after start time.";
+
+            message.style.color =
+                "red";
+
+            return;
+
+        }
+
+    }
+
+    /* =====================================
+       REQUEST PARAMETERS
+    ===================================== */
+
+    const params =
+        new URLSearchParams();
+
+    params.append(
+        "email",
+        employeeEmail
+    );
+
+    params.append(
+        "leaveType",
+        type
+    );
+
+    params.append(
+        "leaveDate",
+        date
+    );
+
+    params.append(
+        "reason",
+        reason
+    );
+
+    /*
+     * Full-day leave sends End Date.
+     */
+
+    if (fullDayLeave) {
+
+        params.append(
+            "endDate",
+            endDate
+        );
+
+    }
+
+    if (
+        type === "SICK_HALF" ||
+        type === "CASUAL_HALF"
+    ) {
+
+        params.append(
+            "halfDaySession",
+            halfDaySession
+        );
+
+    }
+
+    if (
+        type === "PERMISSION"
+    ) {
+
+        params.append(
+            "permissionStart",
+            permissionStart
+        );
+
+        params.append(
+            "permissionEnd",
+            permissionEnd
+        );
+
+    }
+
+    message.innerText =
+        "Submitting leave...";
+
+    message.style.color =
+        "#2563eb";
+
+    fetch(
+        `${API_BASE_URL}/leave/apply?${params.toString()}`,
+        {
+            method: "POST"
+        }
+    )
+    .then(async response => {
+
+        const data =
+            await response.text();
+
+        if (!response.ok) {
+
+            throw new Error(
+                data ||
+                "Leave request failed"
+            );
+
+        }
+
+        return data;
+
+    })
+    .then(data => {
+
+        message.innerText =
+            data ||
+            "Leave applied successfully";
+
+        if (
+            data.toLowerCase().includes(
+                "success"
             )
+        ) {
 
-            .then(async response => {
+            message.style.color =
+                "green";
 
-                const text =
-                    await response.text();
+            document.getElementById(
+                "leaveType"
+            ).value = "";
 
-                console.log(
-                    "ATTENDANCE HISTORY STATUS:",
-                    response.status
-                );
+            document.getElementById(
+                "leaveDate"
+            ).value = "";
 
-                console.log(
-                    "ATTENDANCE HISTORY RESPONSE:",
-                    text
-                );
+            document.getElementById(
+                "endDate"
+            ).value = "";
 
-                if (!response.ok) {
+            document.getElementById(
+                "halfDaySession"
+            ).value = "";
 
-                    throw new Error(
-                        text ||
-                        "Attendance history request failed"
-                    );
+            document.getElementById(
+                "permissionStart"
+            ).value = "";
 
-                }
+            document.getElementById(
+                "permissionEnd"
+            ).value = "";
 
-                return text
-                    ? JSON.parse(text)
-                    : [];
+            document.getElementById(
+                "reason"
+            ).value = "";
 
-            })
+            document.getElementById(
+                "endDate"
+            ).removeAttribute(
+                "min"
+            );
 
-            .then(data => {
+            changeLeaveType();
 
-                const table =
-                    document.getElementById(
-                        "attendanceTable"
-                    );
+            loadLeaveBalance();
 
-                const checkInBtn =
-                    document.getElementById(
-                        "checkInBtn"
-                    );
+            loadLeaveHistory();
 
-                const checkOutBtn =
-                    document.getElementById(
-                        "checkOutBtn"
-                    );
+        } else {
 
-                const todayCheckIn =
-                    document.getElementById(
-                        "todayCheckIn"
-                    );
+            message.style.color =
+                "red";
 
-                const todayCheckOut =
-                    document.getElementById(
-                        "todayCheckOut"
-                    );
+        }
 
-                const todayStatus =
-                    document.getElementById(
-                        "todayStatus"
-                    );
+    })
+    .catch(error => {
 
+        message.innerText =
+            error.message ||
+            "Server connection failed.";
 
-                table.innerHTML = "";
+        message.style.color =
+            "red";
 
+    });
 
-                // =================================
-                // RESET TODAY STATE
-                // =================================
+}
 
-                checkInBtn.disabled =
-                    false;
+/* =========================================
+   FORMAT BALANCE NUMBER
+========================================= */
+
+function formatBalanceNumber(value) {
+
+    const number =
+        Number(value ?? 0);
+
+    if (
+        Number.isInteger(number)
+    ) {
+
+        return String(number);
+
+    }
+
+    return number
+        .toFixed(2)
+        .replace(/\.?0+$/, "");
+
+}
+
+/* =========================================
+   LOAD LEAVE BALANCE
+========================================= */
+
+function loadLeaveBalance() {
+
+    fetch(
+        `${API_BASE_URL}/leave/balance?email=${encodeURIComponent(employeeEmail)}`
+    )
+    .then(async response => {
+
+        const text =
+            await response.text();
+
+        if (!response.ok) {
+
+            throw new Error(
+                text ||
+                "Leave balance request failed"
+            );
+
+        }
+
+        return text
+            ? JSON.parse(text)
+            : {};
+
+    })
+    .then(data => {
+
+        const sickRemaining =
+            Number(
+                data.sickRemaining ?? 0
+            );
+
+        const sickUsed =
+            Number(
+                data.sickUsed ?? 0
+            );
+
+        const sickTotal =
+            sickRemaining +
+            sickUsed;
+
+        document.getElementById(
+            "sickBalance"
+        ).innerText =
+            formatBalanceNumber(
+                sickRemaining
+            ) +
+            " / " +
+            formatBalanceNumber(
+                sickTotal
+            );
+
+        const casualRemaining =
+            Number(
+                data.casualRemaining ?? 0
+            );
+
+        const casualUsed =
+            Number(
+                data.casualUsed ?? 0
+            );
+
+        const casualTotal =
+            casualRemaining +
+            casualUsed;
+
+        document.getElementById(
+            "casualBalance"
+        ).innerText =
+            formatBalanceNumber(
+                casualRemaining
+            ) +
+            " / " +
+            formatBalanceNumber(
+                casualTotal
+            );
+
+        const permissionRemaining =
+            Number(
+                data.permissionRemaining ?? 0
+            );
+
+        const permissionUsed =
+            Number(
+                data.permissionUsed ?? 0
+            );
+
+        const permissionTotal =
+            permissionRemaining +
+            permissionUsed;
+
+        document.getElementById(
+            "permissionBalance"
+        ).innerText =
+            formatBalanceNumber(
+                permissionRemaining
+            ) +
+            " / " +
+            formatBalanceNumber(
+                permissionTotal
+            );
+
+    })
+    .catch(error => {
+
+        console.error(
+            "LEAVE BALANCE ERROR:",
+            error
+        );
+
+    });
+
+}
+
+/* =========================================
+   ATTENDANCE HISTORY
+========================================= */
+
+function loadAttendanceHistory() {
+
+    fetch(
+        `${API_BASE_URL}/attendance/history?email=${encodeURIComponent(employeeEmail)}`
+    )
+    .then(async response => {
+
+        const text =
+            await response.text();
+
+        if (!response.ok) {
+
+            throw new Error(
+                text ||
+                "Attendance history request failed"
+            );
+
+        }
+
+        return text
+            ? JSON.parse(text)
+            : [];
+
+    })
+    .then(data => {
+
+        const table =
+            document.getElementById(
+                "attendanceTable"
+            );
+
+        const checkInBtn =
+            document.getElementById(
+                "checkInBtn"
+            );
+
+        const checkOutBtn =
+            document.getElementById(
+                "checkOutBtn"
+            );
+
+        const todayCheckIn =
+            document.getElementById(
+                "todayCheckIn"
+            );
+
+        const todayCheckOut =
+            document.getElementById(
+                "todayCheckOut"
+            );
+
+        const todayStatus =
+            document.getElementById(
+                "todayStatus"
+            );
+
+        table.innerHTML = "";
+
+        checkInBtn.disabled =
+            false;
+
+        checkOutBtn.disabled =
+            true;
+
+        todayCheckIn.innerText =
+            "--:--";
+
+        todayCheckOut.innerText =
+            "--:--";
+
+        todayStatus.innerText =
+            "Not Checked In";
+
+        const now =
+            new Date();
+
+        const today =
+            now.getFullYear() +
+            "-" +
+            String(
+                now.getMonth() + 1
+            ).padStart(2, "0") +
+            "-" +
+            String(
+                now.getDate()
+            ).padStart(2, "0");
+
+        const todayRecord =
+            data.find(item =>
+                item.attendanceDate === today
+            );
+
+        if (todayRecord) {
+
+            checkInBtn.disabled =
+                true;
+
+            todayCheckIn.innerText =
+                todayRecord.checkIn ||
+                "--:--";
+
+            todayStatus.innerText =
+                todayRecord.status ||
+                "PRESENT";
+
+            if (
+                todayRecord.checkOut
+            ) {
 
                 checkOutBtn.disabled =
                     true;
 
-                todayCheckIn.innerText =
-                    "--:--";
+                todayCheckOut.innerText =
+                    todayRecord.checkOut;
+
+            } else {
+
+                checkOutBtn.disabled =
+                    false;
 
                 todayCheckOut.innerText =
-                    "--:--";
+                    "Not Checked Out";
 
-                todayStatus.innerText =
-                    "Not Checked In";
-
-
-                // =================================
-                // GET TODAY DATE
-                // =================================
-
-                const now =
-                    new Date();
-
-                const today =
-                    now.getFullYear() +
-                    "-" +
-                    String(
-                        now.getMonth() + 1
-                    ).padStart(2, "0") +
-                    "-" +
-                    String(
-                        now.getDate()
-                    ).padStart(2, "0");
-
-
-                // =================================
-                // FIND TODAY RECORD
-                // =================================
-
-                const todayRecord =
-                    data.find(item =>
-                        item.attendanceDate === today
-                    );
-
-
-                if (todayRecord) {
-
-                    checkInBtn.disabled =
-                        true;
-
-                    todayCheckIn.innerText =
-                        todayRecord.checkIn ||
-                        "--:--";
-
-                    todayStatus.innerText =
-                        todayRecord.status ||
-                        "PRESENT";
-
-
-                    if (
-                        todayRecord.checkOut
-                    ) {
-
-                        checkOutBtn.disabled =
-                            true;
-
-                        todayCheckOut.innerText =
-                            todayRecord.checkOut;
-
-                    }
-
-                    else {
-
-                        checkOutBtn.disabled =
-                            false;
-
-                        todayCheckOut.innerText =
-                            "Not Checked Out";
-
-                    }
-
-                }
-
-
-                // =================================
-                // NO ATTENDANCE RECORD
-                // =================================
-
-                if (
-                    data.length === 0
-                ) {
-
-                    table.innerHTML =
-                        `
-                        <tr>
-                            <td colspan="4">
-                                No Attendance Records
-                            </td>
-                        </tr>
-                        `;
-
-                    return;
-
-                }
-
-
-                // =================================
-                // ATTENDANCE TABLE
-                // =================================
-
-                data.forEach(item => {
-
-                    const row =
-                        document.createElement(
-                            "tr"
-                        );
-
-
-                    row.innerHTML =
-                        `
-                        <td>
-                            ${item.attendanceDate || "-"}
-                        </td>
-
-                        <td>
-                            ${item.checkIn || "-"}
-                        </td>
-
-                        <td>
-                            ${item.checkOut || "-"}
-                        </td>
-
-                        <td>
-                            ${item.status || "-"}
-                        </td>
-                        `;
-
-
-                    table.appendChild(row);
-
-                });
-
-            })
-
-            .catch(error => {
-
-                console.error(
-                    "ATTENDANCE HISTORY ERROR:",
-                    error
-                );
-
-            });
+            }
 
         }
 
+        if (
+            data.length === 0
+        ) {
 
-        // =========================================
-        // LOAD LEAVE HISTORY
-        // =========================================
+            table.innerHTML =
+                `
+                <tr>
+                    <td colspan="4">
+                        No Attendance Records
+                    </td>
+                </tr>
+                `;
 
-        function loadLeaveHistory() {
-
-            fetch(
-                `${API_BASE_URL}/leave/history?email=${encodeURIComponent(employeeEmail)}`
-            )
-
-            .then(async response => {
-
-                const text =
-                    await response.text();
-
-                console.log(
-                    "LEAVE HISTORY STATUS:",
-                    response.status
-                );
-
-                console.log(
-                    "LEAVE HISTORY RESPONSE:",
-                    text
-                );
-
-                if (!response.ok) {
-
-                    throw new Error(
-                        text ||
-                        "Leave history request failed"
-                    );
-
-                }
-
-                return text
-                    ? JSON.parse(text)
-                    : [];
-
-            })
-
-            .then(data => {
-
-                const table =
-                    document.getElementById(
-                        "leaveTable"
-                    );
-
-
-                table.innerHTML = "";
-
-
-                if (
-                    data.length === 0
-                ) {
-
-                    table.innerHTML =
-                        `
-                        <tr>
-                            <td colspan="7">
-                                No Leave Records
-                            </td>
-                        </tr>
-                        `;
-
-                    return;
-
-                }
-
-
-                data.forEach(item => {
-
-                    const row =
-                        document.createElement(
-                            "tr"
-                        );
-
-
-                    // =================================
-                    // PERMISSION TIME
-                    // =================================
-
-                    let permission = "-";
-
-
-                    if (
-                        item.permissionStart &&
-                        item.permissionEnd
-                    ) {
-
-                        permission =
-                            item.permissionStart +
-                            " - " +
-                            item.permissionEnd;
-
-                    }
-
-
-                    // =================================
-                    // DURATION
-                    // =================================
-
-                    let duration = "-";
-
-
-                    if (
-                        item.leaveDuration !== null &&
-                        item.leaveDuration !== undefined
-                    ) {
-
-                        duration =
-                            Number(
-                                item.leaveDuration
-                            ) === 0.5
-                                ? "0.5 Day"
-                                : "1 Day";
-
-                    }
-
-
-                    row.innerHTML =
-                        `
-                        <td>
-                            ${item.leaveDate || "-"}
-                        </td>
-
-                        <td>
-                            ${item.leaveType || "-"}
-                        </td>
-
-                        <td>
-                            ${duration}
-                        </td>
-
-                        <td>
-                            ${item.halfDaySession || "-"}
-                        </td>
-
-                        <td>
-                            ${permission}
-                        </td>
-
-                        <td>
-                            ${item.reason || "-"}
-                        </td>
-
-                        <td>
-                            ${item.status || "-"}
-                        </td>
-                        `;
-
-
-                    table.appendChild(row);
-
-                });
-
-            })
-
-            .catch(error => {
-
-                console.error(
-                    "LEAVE HISTORY ERROR:",
-                    error
-                );
-
-            });
+            return;
 
         }
 
+        data.forEach(item => {
 
-        // =========================================
-        // LOGOUT
-        // =========================================
+            const row =
+                document.createElement(
+                    "tr"
+                );
 
-        function logout() {
+            row.innerHTML =
+                `
+                <td>
+                    ${item.attendanceDate || "-"}
+                </td>
 
-            localStorage.removeItem(
-                "employeeEmail"
+                <td>
+                    ${item.checkIn || "-"}
+                </td>
+
+                <td>
+                    ${item.checkOut || "-"}
+                </td>
+
+                <td>
+                    ${item.status || "-"}
+                </td>
+                `;
+
+            table.appendChild(row);
+
+        });
+
+    })
+    .catch(error => {
+
+        console.error(
+            "ATTENDANCE HISTORY ERROR:",
+            error
+        );
+
+    });
+
+}
+
+/* =========================================
+   LEAVE HISTORY
+========================================= */
+
+function loadLeaveHistory() {
+
+    fetch(
+        `${API_BASE_URL}/leave/history?email=${encodeURIComponent(employeeEmail)}`
+    )
+    .then(async response => {
+
+        const text =
+            await response.text();
+
+        if (!response.ok) {
+
+            throw new Error(
+                text ||
+                "Leave history request failed"
             );
 
-            window.location.href =
-                "login.html";
+        }
+
+        return text
+            ? JSON.parse(text)
+            : [];
+
+    })
+    .then(data => {
+
+        const table =
+            document.getElementById(
+                "leaveTable"
+            );
+
+        table.innerHTML = "";
+
+        if (
+            data.length === 0
+        ) {
+
+            table.innerHTML =
+                `
+                <tr>
+                    <td colspan="8">
+                        No Leave Records
+                    </td>
+                </tr>
+                `;
+
+            return;
 
         }
 
+        data.forEach(item => {
 
-        // =========================================
-        // PAGE LOAD
-        // =========================================
+            const row =
+                document.createElement(
+                    "tr"
+                );
 
-        loadEmployeeDetails();
+            let permission = "-";
 
-        loadLeaveBalance();
+            if (
+                item.permissionStart &&
+                item.permissionEnd
+            ) {
 
-        loadAttendanceHistory();
+                permission =
+                    item.permissionStart +
+                    " - " +
+                    item.permissionEnd;
 
-        loadLeaveHistory();
+            }
 
-    </script>
+            let duration = "-";
+
+            if (
+                item.leaveDuration !== null &&
+                item.leaveDuration !== undefined
+            ) {
+
+                const durationNumber =
+                    Number(
+                        item.leaveDuration
+                    );
+
+                if (
+                    durationNumber === 0.5
+                ) {
+
+                    duration =
+                        "0.5 Day";
+
+                } else {
+
+                    duration =
+                        durationNumber +
+                        " Day" +
+                        (
+                            durationNumber === 1
+                                ? ""
+                                : "s"
+                        );
+
+                }
+
+            }
+
+            const lopDays =
+                Number(
+                    item.lopDays ?? 0
+                );
+
+            const lopDisplay =
+                lopDays > 0
+                    ? `<span class="lop-badge">${formatBalanceNumber(lopDays)}</span>`
+                    : `<span class="normal-badge">0</span>`;
+
+            row.innerHTML =
+                `
+                <td>
+                    ${item.leaveDate || "-"}
+                </td>
+
+                <td>
+                    ${item.leaveType || "-"}
+                </td>
+
+                <td>
+                    ${duration}
+                </td>
+
+                <td>
+                    ${item.halfDaySession || "-"}
+                </td>
+
+                <td>
+                    ${permission}
+                </td>
+
+                <td>
+                    ${item.reason || "-"}
+                </td>
+
+                <td>
+                    ${lopDisplay}
+                </td>
+
+                <td>
+                    ${item.status || "-"}
+                </td>
+                `;
+
+            table.appendChild(row);
+
+        });
+
+    })
+    .catch(error => {
+
+        console.error(
+            "LEAVE HISTORY ERROR:",
+            error
+        );
+
+    });
+
+}
+
+/* =========================================
+   LOGOUT
+========================================= */
+
+function logout() {
+
+    localStorage.removeItem(
+        "employeeEmail"
+    );
+
+    window.location.href =
+        "login.html";
+
+}
+
+/* =========================================
+   INITIAL LOAD
+========================================= */
+
+loadEmployeeDetails();
+
+loadLeaveBalance();
+
+loadAttendanceHistory();
+
+loadLeaveHistory();
+
+changeLeaveType();
+
+</script>
 
 </body>
 
