@@ -6,7 +6,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
-@CrossOrigin(origins = "https://attendance-management-3d-webinar.vercel.app")
+@CrossOrigin(
+        origins = {
+                "https://attendance-management-73dqjuakh-3d-webinar.vercel.app",
+                "https://attendance-management-3d-webinar.vercel.app"
+        }
+)
 @RequestMapping("/employee")
 public class EmployeeController {
 
