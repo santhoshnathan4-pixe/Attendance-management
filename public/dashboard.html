@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -73,6 +72,48 @@
 
         .welcome p {
             color: #666;
+        }
+
+        /* =========================================
+           WORKING DAY ALERT
+        ========================================= */
+
+        #workingDayAlert {
+            display: none;
+            padding: 18px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            font-weight: bold;
+        }
+
+        #workingDayAlert .alert-title {
+            font-size: 18px;
+            margin-bottom: 7px;
+        }
+
+        #workingDayAlert .alert-reason {
+            font-size: 14px;
+            font-weight: normal;
+            line-height: 1.5;
+        }
+
+        .holiday-alert {
+            background: #fff7ed;
+            border: 1px solid #fed7aa;
+            color: #9a3412;
+        }
+
+        .government-holiday-alert {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+
+        .working-saturday-alert {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            color: #1e40af;
         }
 
         .attendance-card {
@@ -379,6 +420,7 @@
             .cancel-btn {
                 width: 100%;
             }
+
         }
 
     </style>
@@ -412,6 +454,25 @@
         <p>
             Employee Attendance Management System
         </p>
+
+    </div>
+
+    <!-- =========================================
+         WORKING DAY ALERT
+    ========================================= -->
+
+    <div
+        id="workingDayAlert">
+
+        <div
+            id="workingDayAlertTitle"
+            class="alert-title">
+        </div>
+
+        <div
+            id="workingDayAlertReason"
+            class="alert-reason">
+        </div>
 
     </div>
 
@@ -804,18 +865,18 @@
 
             <thead>
 
-                <tr>
+            <tr>
 
-                    <th>Date</th>
-                    <th>Type</th>
-                    <th>Duration</th>
-                    <th>Session</th>
-                    <th>Permission</th>
-                    <th>Reason</th>
-                    <th>LOP Days</th>
-                    <th>Status</th>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Duration</th>
+                <th>Session</th>
+                <th>Permission</th>
+                <th>Reason</th>
+                <th>LOP Days</th>
+                <th>Status</th>
 
-                </tr>
+            </tr>
 
             </thead>
 
@@ -897,6 +958,220 @@ function loadEmployeeDetails() {
             "EMPLOYEE DETAILS ERROR:",
             error
         );
+
+    });
+
+}
+
+
+/* =========================================
+   WORKING DAY ALERT
+========================================= */
+
+function loadWorkingDayAlert() {
+
+    const alertBox =
+        document.getElementById(
+            "workingDayAlert"
+        );
+
+    const alertTitle =
+        document.getElementById(
+            "workingDayAlertTitle"
+        );
+
+    const alertReason =
+        document.getElementById(
+            "workingDayAlertReason"
+        );
+
+
+    /*
+     * Always hide first.
+     *
+     * This guarantees that an old alert
+     * does not remain visible when the date
+     * changes or when no setting exists.
+     */
+
+    alertBox.style.display =
+        "none";
+
+    alertBox.className = "";
+
+
+    const now =
+        new Date();
+
+
+    const today =
+        now.getFullYear() +
+        "-" +
+        String(
+            now.getMonth() + 1
+        ).padStart(2, "0") +
+        "-" +
+        String(
+            now.getDate()
+        ).padStart(2, "0");
+
+
+    fetch(
+        `${API_BASE_URL}/employee/working-days/today?date=${today}`
+    )
+    .then(async response => {
+
+        const text =
+            await response.text();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                text ||
+                "Working day setting request failed"
+            );
+
+        }
+
+
+        return text
+            ? JSON.parse(text)
+            : null;
+
+    })
+    .then(data => {
+
+        /*
+         * No setting for today.
+         * Keep alert hidden.
+         */
+
+        if (!data) {
+
+            alertBox.style.display =
+                "none";
+
+            return;
+
+        }
+
+
+        const type =
+            String(
+                data.settingType || ""
+            ).toUpperCase();
+
+
+        const reason =
+            data.reason &&
+            data.reason.trim()
+                ? data.reason.trim()
+                : "No reason provided";
+
+
+        /* =====================================
+           COMPANY HOLIDAY
+        ===================================== */
+
+        if (
+            type === "COMPANY_HOLIDAY"
+        ) {
+
+            alertBox.className =
+                "holiday-alert";
+
+            alertTitle.innerText =
+                "🏢 Today is a Company Holiday";
+
+            alertReason.innerText =
+                "Reason: " +
+                reason;
+
+            alertBox.style.display =
+                "block";
+
+            return;
+
+        }
+
+
+        /* =====================================
+           GOVERNMENT HOLIDAY
+        ===================================== */
+
+        if (
+            type === "GOVERNMENT_HOLIDAY"
+        ) {
+
+            alertBox.className =
+                "government-holiday-alert";
+
+            alertTitle.innerText =
+                "🏛️ Today is a Government Holiday";
+
+            alertReason.innerText =
+                "Reason: " +
+                reason;
+
+            alertBox.style.display =
+                "block";
+
+            return;
+
+        }
+
+
+        /* =====================================
+           WORKING SATURDAY
+        ===================================== */
+
+        if (
+            type === "WORKING_SATURDAY"
+        ) {
+
+            alertBox.className =
+                "working-saturday-alert";
+
+            alertTitle.innerText =
+                "📅 Today is a Working Saturday";
+
+            alertReason.innerText =
+                "Reason: " +
+                reason;
+
+            alertBox.style.display =
+                "block";
+
+            return;
+
+        }
+
+
+        /*
+         * Unknown setting type.
+         * Do not display anything.
+         */
+
+        alertBox.style.display =
+            "none";
+
+    })
+    .catch(error => {
+
+        console.error(
+            "WORKING DAY ALERT ERROR:",
+            error
+        );
+
+        /*
+         * If the working-day endpoint fails,
+         * existing Employee Dashboard features
+         * continue normally.
+         */
+
+        alertBox.style.display =
+            "none";
 
     });
 
@@ -2321,6 +2596,8 @@ function logout() {
 
 loadEmployeeDetails();
 
+loadWorkingDayAlert();
+
 loadLeaveBalance();
 
 loadAttendanceHistory();
@@ -2334,4 +2611,3 @@ changeLeaveType();
 </body>
 
 </html>
-
