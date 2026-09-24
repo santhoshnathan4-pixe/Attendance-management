@@ -1,4 +1,3 @@
-
 package com.example.attendance;
 
 import java.time.LocalDate;
@@ -16,6 +15,8 @@ public class AdminLeaveResponse {
     private LocalDate leaveDate;
 
     private Double leaveDuration;
+    private Double lopDays;
+
     private String halfDaySession;
 
     private LocalTime permissionStart;
@@ -33,6 +34,7 @@ public class AdminLeaveResponse {
             String leaveType,
             LocalDate leaveDate,
             Double leaveDuration,
+            Double lopDays,
             String halfDaySession,
             LocalTime permissionStart,
             LocalTime permissionEnd,
@@ -47,6 +49,7 @@ public class AdminLeaveResponse {
         this.leaveType = leaveType;
         this.leaveDate = leaveDate;
         this.leaveDuration = leaveDuration;
+        this.lopDays = lopDays;
         this.halfDaySession = halfDaySession;
         this.permissionStart = permissionStart;
         this.permissionEnd = permissionEnd;
@@ -81,6 +84,10 @@ public class AdminLeaveResponse {
 
     public Double getLeaveDuration() {
         return leaveDuration;
+    }
+
+    public Double getLopDays() {
+        return lopDays;
     }
 
     public String getHalfDaySession() {

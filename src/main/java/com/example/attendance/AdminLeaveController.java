@@ -1,8 +1,10 @@
+
 package com.example.attendance;
 
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
@@ -15,17 +17,20 @@ public class AdminLeaveController {
     private final EmployeeRepository employeeRepository;
     private final AdminRepository adminRepository;
     private final AdminActionHistoryRepository historyRepository;
+    private final EmployeeLeaveBalanceRepository balanceRepository;
 
     public AdminLeaveController(
             LeaveRequestRepository leaveRequestRepository,
             EmployeeRepository employeeRepository,
             AdminRepository adminRepository,
-            AdminActionHistoryRepository historyRepository) {
+            AdminActionHistoryRepository historyRepository,
+            EmployeeLeaveBalanceRepository balanceRepository) {
 
         this.leaveRequestRepository = leaveRequestRepository;
         this.employeeRepository = employeeRepository;
         this.adminRepository = adminRepository;
         this.historyRepository = historyRepository;
+        this.balanceRepository = balanceRepository;
     }
 
     // =========================================
@@ -56,6 +61,7 @@ public class AdminLeaveController {
                             leave.getLeaveType(),
                             leave.getLeaveDate(),
                             leave.getLeaveDuration(),
+                            leave.getLopDays(),
                             leave.getHalfDaySession(),
                             leave.getPermissionStart(),
                             leave.getPermissionEnd(),
@@ -77,10 +83,6 @@ public class AdminLeaveController {
             @PathVariable Integer id,
             @RequestBody AdminLeaveStatusRequest request) {
 
-        // -----------------------------------------
-        // FIND LEAVE
-        // -----------------------------------------
-
         LeaveRequest leave =
                 leaveRequestRepository.findById(id)
                         .orElse(null);
@@ -88,10 +90,6 @@ public class AdminLeaveController {
         if (leave == null) {
             return "Leave Request Not Found";
         }
-
-        // -----------------------------------------
-        // CHECK CURRENT STATUS
-        // -----------------------------------------
 
         if (!"PENDING".equalsIgnoreCase(
                 leave.getStatus())) {
@@ -103,7 +101,8 @@ public class AdminLeaveController {
         // ADMIN EMAIL / PASSWORD VALIDATION
         // -----------------------------------------
 
-        if (request.getAdminEmail() == null ||
+        if (request == null ||
+                request.getAdminEmail() == null ||
                 request.getAdminPassword() == null ||
                 request.getAdminEmail().isBlank() ||
                 request.getAdminPassword().isBlank()) {
@@ -139,6 +138,14 @@ public class AdminLeaveController {
         }
 
         status = status.toUpperCase();
+
+        // -----------------------------------------
+        // RESTORE BALANCE WHEN REJECTED
+        // -----------------------------------------
+
+        if (status.equals("REJECTED")) {
+            restoreLeaveBalance(leave);
+        }
 
         // -----------------------------------------
         // UPDATE STATUS
@@ -211,13 +218,100 @@ public class AdminLeaveController {
         // -----------------------------------------
 
         if (status.equals("APPROVED")) {
-
             return "Leave Approved Successfully";
-
-        } else {
-
-            return "Leave Rejected Successfully";
         }
+
+        return "Leave Rejected Successfully";
+    }
+
+    // =========================================
+    // RESTORE SICK / CASUAL BALANCE
+    // =========================================
+
+    private void restoreLeaveBalance(
+            LeaveRequest leave) {
+
+        String leaveType =
+                leave.getLeaveType();
+
+        // -----------------------------------------
+        // ONLY SICK / CASUAL USE BALANCE
+        // -----------------------------------------
+
+        if (leaveType == null ||
+                (!leaveType.equalsIgnoreCase("SICK")
+                        &&
+                 !leaveType.equalsIgnoreCase("CASUAL"))) {
+
+            return;
+        }
+
+        if (leave.getEmployeeId() == null ||
+                leave.getLeaveDate() == null) {
+
+            return;
+        }
+
+        LocalDate month =
+                leave.getLeaveDate()
+                        .withDayOfMonth(1);
+
+        var balanceOptional =
+                balanceRepository
+                        .findByEmployeeIdAndBalanceMonth(
+                                leave.getEmployeeId(),
+                                month
+                        );
+
+        if (balanceOptional.isEmpty()) {
+            return;
+        }
+
+        EmployeeLeaveBalance balance =
+                balanceOptional.get();
+
+        double duration =
+                leave.getLeaveDuration() != null
+                        ? leave.getLeaveDuration()
+                        : 1.0;
+
+        // -----------------------------------------
+        // RESTORE SICK BALANCE
+        // -----------------------------------------
+
+        if (leaveType.equalsIgnoreCase("SICK")) {
+
+            double currentBalance =
+                    balance.getSickBalance() != null
+                            ? balance.getSickBalance()
+                            : 0.0;
+
+            balance.setSickBalance(
+                    currentBalance + duration
+            );
+        }
+
+        // -----------------------------------------
+        // RESTORE CASUAL BALANCE
+        // -----------------------------------------
+
+        if (leaveType.equalsIgnoreCase("CASUAL")) {
+
+            double currentBalance =
+                    balance.getCasualBalance() != null
+                            ? balance.getCasualBalance()
+                            : 0.0;
+
+            balance.setCasualBalance(
+                    currentBalance + duration
+            );
+        }
+
+        balance.setUpdatedAt(
+                LocalDateTime.now()
+        );
+
+        balanceRepository.save(balance);
     }
 
     // =========================================
@@ -269,6 +363,12 @@ public class AdminLeaveController {
             return "Leave Request Already Processed";
         }
 
+        // -----------------------------------------
+        // RESTORE BALANCE BEFORE REJECT
+        // -----------------------------------------
+
+        restoreLeaveBalance(leave);
+
         leave.setStatus("REJECTED");
 
         leaveRequestRepository.save(leave);
@@ -276,3 +376,4 @@ public class AdminLeaveController {
         return "Leave Rejected Successfully";
     }
 }
+

@@ -1,9 +1,11 @@
+
 package com.example.attendance;
 
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -13,13 +15,19 @@ public class LeaveRequestController {
 
     private final LeaveRequestRepository leaveRequestRepository;
     private final EmployeeRepository employeeRepository;
+    private final LeavePermissionSettingRepository settingRepository;
+    private final EmployeeLeaveBalanceRepository balanceRepository;
 
     public LeaveRequestController(
             LeaveRequestRepository leaveRequestRepository,
-            EmployeeRepository employeeRepository) {
+            EmployeeRepository employeeRepository,
+            LeavePermissionSettingRepository settingRepository,
+            EmployeeLeaveBalanceRepository balanceRepository) {
 
         this.leaveRequestRepository = leaveRequestRepository;
         this.employeeRepository = employeeRepository;
+        this.settingRepository = settingRepository;
+        this.balanceRepository = balanceRepository;
     }
 
     // =====================================================
@@ -31,14 +39,11 @@ public class LeaveRequestController {
             @RequestParam String email,
             @RequestParam String leaveType,
             @RequestParam String leaveDate,
+            @RequestParam(required = false) String endDate,
             @RequestParam(required = false) String permissionStart,
             @RequestParam(required = false) String permissionEnd,
             @RequestParam(required = false) String halfDaySession,
             @RequestParam(required = false) String reason) {
-
-        // =================================================
-        // FIND EMPLOYEE
-        // =================================================
 
         Employee employee =
                 employeeRepository
@@ -49,31 +54,383 @@ public class LeaveRequestController {
             return "Employee Not Found";
         }
 
-        // =================================================
-        // PARSE DATE
-        // =================================================
-
-        LocalDate date;
+        LocalDate startDate;
 
         try {
-            date = LocalDate.parse(leaveDate);
+            startDate = LocalDate.parse(leaveDate);
         } catch (Exception e) {
             return "Invalid Leave Date";
         }
 
-        // =================================================
-        // LEAVE TYPE
-        // =================================================
+        LocalDate finalDate = startDate;
+
+        if (endDate != null && !endDate.isBlank()) {
+
+            try {
+                finalDate = LocalDate.parse(endDate);
+            } catch (Exception e) {
+                return "Invalid End Date";
+            }
+
+            if (finalDate.isBefore(startDate)) {
+                return "End Date Cannot Be Before Start Date";
+            }
+        }
 
         if (leaveType == null || leaveType.isBlank()) {
             return "Invalid Leave Type";
         }
 
-        String type = leaveType.toUpperCase();
+        String type =
+                leaveType.trim().toUpperCase();
 
         // =================================================
-        // SAME DATE VALIDATION
+        // PERMISSION
         // =================================================
+
+        if (type.equals("PERMISSION")) {
+
+            if (!startDate.equals(finalDate)) {
+                return "Permission Can Be Applied For One Date Only";
+            }
+
+            return applyPermission(
+                    employee,
+                    startDate,
+                    permissionStart,
+                    permissionEnd,
+                    reason
+            );
+        }
+
+        // =================================================
+        // HALF DAY
+        // =================================================
+
+        if (type.equals("SICK_HALF") ||
+                type.equals("CASUAL_HALF")) {
+
+            if (!startDate.equals(finalDate)) {
+                return "Half Day Leave Can Be Applied For One Date Only";
+            }
+
+            return applyHalfDayLeave(
+                    employee,
+                    startDate,
+                    type,
+                    halfDaySession,
+                    reason
+            );
+        }
+
+        // =================================================
+        // FULL DAY / MULTI-DAY
+        // =================================================
+
+        if (!type.equals("SICK") &&
+                !type.equals("CASUAL")) {
+
+            return "Invalid Leave Type";
+        }
+
+        return applyCombinedLeave(
+                employee,
+                startDate,
+                finalDate,
+                reason
+        );
+    }
+
+    // =====================================================
+    // COMBINED LEAVE
+    //
+    // AVAILABLE BALANCE:
+    // SICK -> CASUAL -> LOP
+    //
+    // Example:
+    // Sick = 1
+    // Casual = 1
+    // 3 days requested
+    //
+    // Day 1 = SICK
+    // Day 2 = CASUAL
+    // Day 3 = LOP
+    //
+    // Carry-forward balances are automatically included.
+    // =====================================================
+
+    private String applyCombinedLeave(
+            Employee employee,
+            LocalDate startDate,
+            LocalDate finalDate,
+            String reason) {
+
+        // =================================================
+        // FIRST CHECK ALL DATES
+        // =================================================
+
+        LocalDate checkDate = startDate;
+
+        while (!checkDate.isAfter(finalDate)) {
+
+            List<LeaveRequest> sameDateRequests =
+                    leaveRequestRepository
+                            .findByEmployeeIdAndLeaveDate(
+                                    employee.getId(),
+                                    checkDate
+                            );
+
+            for (LeaveRequest existing : sameDateRequests) {
+
+                String existingType =
+                        existing.getLeaveType();
+
+                if (existingType == null) {
+                    continue;
+                }
+
+                // Permission is independent from leave.
+                if (existingType.equalsIgnoreCase("PERMISSION")) {
+                    continue;
+                }
+
+                if (existing.getStatus() != null &&
+                        existing.getStatus()
+                                .equalsIgnoreCase("REJECTED")) {
+                    continue;
+                }
+
+                return "Leave Already Applied For Date: "
+                        + checkDate;
+            }
+
+            checkDate = checkDate.plusDays(1);
+        }
+
+        // =================================================
+        // PROCESS EACH DATE
+        // =================================================
+
+        LocalDate currentDate = startDate;
+
+        while (!currentDate.isAfter(finalDate)) {
+
+            LocalDate month =
+                    currentDate.withDayOfMonth(1);
+
+            EmployeeLeaveBalance balance =
+                    getOrCreateBalance(
+                            employee,
+                            month
+                    );
+
+            double sickAvailable =
+                    balance.getSickBalance() != null
+                            ? Math.max(
+                                    0,
+                                    balance.getSickBalance()
+                            )
+                            : 0;
+
+            double casualAvailable =
+                    balance.getCasualBalance() != null
+                            ? Math.max(
+                                    0,
+                                    balance.getCasualBalance()
+                            )
+                            : 0;
+
+            // =================================================
+            // ONE FULL DAY REQUEST
+            //
+            // SICK FIRST
+            // THEN CASUAL
+            // THEN LOP
+            // =================================================
+
+            double sickUsed = 0;
+            double casualUsed = 0;
+            double lop = 0;
+
+            if (sickAvailable >= 1.0) {
+
+                sickUsed = 1.0;
+
+            } else if (sickAvailable > 0) {
+
+                // Remaining sick balance can be used.
+                sickUsed = sickAvailable;
+            }
+
+            double remainingDay =
+                    1.0 - sickUsed;
+
+            if (remainingDay > 0 &&
+                    casualAvailable > 0) {
+
+                casualUsed =
+                        Math.min(
+                                remainingDay,
+                                casualAvailable
+                        );
+            }
+
+            remainingDay =
+                    1.0
+                            - sickUsed
+                            - casualUsed;
+
+            if (remainingDay > 0) {
+                lop = remainingDay;
+            }
+
+            // =================================================
+            // SAVE SICK
+            // =================================================
+
+            if (sickUsed > 0) {
+
+                LeaveRequest sickRequest =
+                        createLeaveRequest(
+                                employee.getId(),
+                                "SICK",
+                                currentDate,
+                                sickUsed,
+                                0.0,
+                                reason
+                        );
+
+                leaveRequestRepository.save(
+                        sickRequest
+                );
+
+                balance.setSickBalance(
+                        Math.max(
+                                0,
+                                sickAvailable - sickUsed
+                        )
+                );
+            }
+
+            // =================================================
+            // SAVE CASUAL
+            // =================================================
+
+            if (casualUsed > 0) {
+
+                LeaveRequest casualRequest =
+                        createLeaveRequest(
+                                employee.getId(),
+                                "CASUAL",
+                                currentDate,
+                                casualUsed,
+                                0.0,
+                                reason
+                        );
+
+                leaveRequestRepository.save(
+                        casualRequest
+                );
+
+                balance.setCasualBalance(
+                        Math.max(
+                                0,
+                                casualAvailable - casualUsed
+                        )
+                );
+            }
+
+            // =================================================
+            // SAVE LOP
+            // =================================================
+
+            if (lop > 0) {
+
+                LeaveRequest lopRequest =
+                        createLeaveRequest(
+                                employee.getId(),
+                                "LOP",
+                                currentDate,
+                                lop,
+                                lop,
+                                reason
+                        );
+
+                leaveRequestRepository.save(
+                        lopRequest
+                );
+            }
+
+            balance.setUpdatedAt(
+                    LocalDateTime.now()
+            );
+
+            balanceRepository.save(balance);
+
+            currentDate =
+                    currentDate.plusDays(1);
+        }
+
+        return "Leave Request Submitted Successfully";
+    }
+
+    // =====================================================
+    // CREATE LEAVE REQUEST
+    // =====================================================
+
+    private LeaveRequest createLeaveRequest(
+            Integer employeeId,
+            String leaveType,
+            LocalDate date,
+            double duration,
+            double lopDays,
+            String reason) {
+
+        LeaveRequest request =
+                new LeaveRequest();
+
+        request.setEmployeeId(employeeId);
+        request.setLeaveType(leaveType);
+        request.setLeaveDate(date);
+        request.setLeaveDuration(duration);
+        request.setLopDays(lopDays);
+
+        request.setHalfDaySession(null);
+        request.setPermissionStart(null);
+        request.setPermissionEnd(null);
+
+        request.setReason(reason);
+        request.setStatus("PENDING");
+
+        request.setCreatedAt(
+                LocalDateTime.now()
+        );
+
+        return request;
+    }
+
+    // =====================================================
+    // HALF DAY LEAVE
+    // =====================================================
+
+    private String applyHalfDayLeave(
+            Employee employee,
+            LocalDate date,
+            String type,
+            String halfDaySession,
+            String reason) {
+
+        if (halfDaySession == null ||
+                halfDaySession.isBlank()) {
+
+            return "Please Select Morning or Afternoon";
+        }
+
+        if (!halfDaySession.equalsIgnoreCase("MORNING") &&
+                !halfDaySession.equalsIgnoreCase("AFTERNOON")) {
+
+            return "Invalid Half Day Session";
+        }
 
         List<LeaveRequest> sameDateRequests =
                 leaveRequestRepository
@@ -82,400 +439,423 @@ public class LeaveRequestController {
                                 date
                         );
 
-        // Permission is separate from leave.
-        // SICK / CASUAL / HALF DAY only.
-        if (!type.equals("PERMISSION")) {
+        for (LeaveRequest existing : sameDateRequests) {
 
-            for (LeaveRequest existing : sameDateRequests) {
+            String existingType =
+                    existing.getLeaveType();
 
-                String existingType =
-                        existing.getLeaveType();
+            if (existingType == null ||
+                    existingType.equalsIgnoreCase("PERMISSION")) {
+                continue;
+            }
 
-                // Ignore permission
-                if (existingType == null ||
-                        existingType.equalsIgnoreCase("PERMISSION")) {
-                    continue;
-                }
+            if (existing.getStatus() != null &&
+                    existing.getStatus()
+                            .equalsIgnoreCase("REJECTED")) {
+                continue;
+            }
 
-                double existingDuration =
-                        existing.getLeaveDuration() != null
-                                ? existing.getLeaveDuration()
-                                : 1.0;
+            double existingDuration =
+                    existing.getLeaveDuration() != null
+                            ? existing.getLeaveDuration()
+                            : 1.0;
 
-                // -----------------------------------------
-                // NEW FULL DAY
-                // -----------------------------------------
+            if (existingDuration >= 1.0) {
+                return "Full Day Leave Already Applied For This Date";
+            }
 
-                if (type.equals("SICK") ||
-                        type.equals("CASUAL")) {
+            if (existingDuration == 0.5) {
 
-                    return "Leave Already Applied For This Date";
-                }
+                String existingSession =
+                        existing.getHalfDaySession();
 
-                // -----------------------------------------
-                // NEW HALF DAY
-                // -----------------------------------------
+                if (existingSession != null &&
+                        existingSession.equalsIgnoreCase(
+                                halfDaySession
+                        )) {
 
-                if (type.equals("SICK_HALF") ||
-                        type.equals("CASUAL_HALF")) {
-
-                    // Existing full day
-                    if (existingDuration >= 1.0) {
-                        return "Full Day Leave Already Applied For This Date";
-                    }
-
-                    // Existing half day
-                    if (existingDuration == 0.5) {
-
-                        String existingSession =
-                                existing.getHalfDaySession();
-
-                        // Same session
-                        if (existingSession != null &&
-                                halfDaySession != null &&
-                                existingSession.equalsIgnoreCase(
-                                        halfDaySession
-                                )) {
-
-                            return "This Half Day Session Is Already Applied";
-                        }
-
-                        // Different session allowed
-                    }
+                    return "This Half Day Session Is Already Applied";
                 }
             }
         }
 
-        // =================================================
-        // MONTH RANGE
-        // =================================================
+        String actualType =
+                type.equals("SICK_HALF")
+                        ? "SICK"
+                        : "CASUAL";
 
-        LocalDate monthStart =
-                date.withDayOfMonth(1);
-
-        LocalDate monthEnd =
-                date.withDayOfMonth(
-                        date.lengthOfMonth()
+        EmployeeLeaveBalance balance =
+                getOrCreateBalance(
+                        employee,
+                        date.withDayOfMonth(1)
                 );
 
-        // =================================================
-        // SICK LEAVE
-        // =================================================
+        if (actualType.equals("SICK")) {
 
-        if (type.equals("SICK")) {
+            double sickBalance =
+                    balance.getSickBalance() != null
+                            ? balance.getSickBalance()
+                            : 0;
 
-            double used =
-                    getTotalLeaveDaysIncludingPending(
-                            employee.getId(),
-                            "SICK",
-                            monthStart,
-                            monthEnd
-                    );
-
-            if (used >= 1.0) {
-                return "Sick Leave Limit Reached";
+            if (sickBalance < 0.5) {
+                return "Sick Leave Balance Not Available";
             }
+
+            balance.setSickBalance(
+                    Math.max(
+                            0,
+                            sickBalance - 0.5
+                    )
+            );
+
+        } else {
+
+            double casualBalance =
+                    balance.getCasualBalance() != null
+                            ? balance.getCasualBalance()
+                            : 0;
+
+            if (casualBalance < 0.5) {
+                return "Casual Leave Balance Not Available";
+            }
+
+            balance.setCasualBalance(
+                    Math.max(
+                            0,
+                            casualBalance - 0.5
+                    )
+            );
         }
-
-        // =================================================
-        // CASUAL LEAVE
-        // =================================================
-
-        else if (type.equals("CASUAL")) {
-
-            double used =
-                    getTotalLeaveDaysIncludingPending(
-                            employee.getId(),
-                            "CASUAL",
-                            monthStart,
-                            monthEnd
-                    );
-
-            if (used >= 1.0) {
-                return "Casual Leave Limit Reached";
-            }
-        }
-
-        // =================================================
-        // SICK HALF DAY
-        // =================================================
-
-        else if (type.equals("SICK_HALF")) {
-
-            double used =
-                    getTotalLeaveDaysIncludingPending(
-                            employee.getId(),
-                            "SICK",
-                            monthStart,
-                            monthEnd
-                    );
-
-            if (used >= 1.0) {
-                return "Sick Leave Limit Reached";
-            }
-
-            if (halfDaySession == null ||
-                    halfDaySession.isBlank()) {
-
-                return "Please Select Morning or Afternoon";
-            }
-
-            if (!halfDaySession.equalsIgnoreCase("MORNING")
-                    &&
-                    !halfDaySession.equalsIgnoreCase("AFTERNOON")) {
-
-                return "Invalid Half Day Session";
-            }
-        }
-
-        // =================================================
-        // CASUAL HALF DAY
-        // =================================================
-
-        else if (type.equals("CASUAL_HALF")) {
-
-            double used =
-                    getTotalLeaveDaysIncludingPending(
-                            employee.getId(),
-                            "CASUAL",
-                            monthStart,
-                            monthEnd
-                    );
-
-            if (used >= 1.0) {
-                return "Casual Leave Limit Reached";
-            }
-
-            if (halfDaySession == null ||
-                    halfDaySession.isBlank()) {
-
-                return "Please Select Morning or Afternoon";
-            }
-
-            if (!halfDaySession.equalsIgnoreCase("MORNING")
-                    &&
-                    !halfDaySession.equalsIgnoreCase("AFTERNOON")) {
-
-                return "Invalid Half Day Session";
-            }
-        }
-
-        // =================================================
-        // PERMISSION
-        // =================================================
-
-        else if (type.equals("PERMISSION")) {
-
-            long count =
-                    countPermissionIncludingPending(
-                            employee.getId(),
-                            monthStart,
-                            monthEnd
-                    );
-
-            if (count >= 2) {
-                return "Monthly Permission Limit Reached";
-            }
-
-            if (permissionStart == null ||
-                    permissionEnd == null) {
-
-                return "Permission Start and End Time Required";
-            }
-
-            LocalTime start;
-            LocalTime end;
-
-            try {
-
-                start =
-                        LocalTime.parse(permissionStart);
-
-                end =
-                        LocalTime.parse(permissionEnd);
-
-            } catch (Exception e) {
-
-                return "Invalid Permission Time";
-            }
-
-            if (!end.isAfter(start)) {
-                return "Permission End Time Must Be After Start Time";
-            }
-
-            long minutes =
-                    Duration
-                            .between(start, end)
-                            .toMinutes();
-
-            if (minutes > 90) {
-                return "Permission Maximum Is 1 Hour 30 Minutes";
-            }
-        }
-
-        // =================================================
-        // INVALID TYPE
-        // =================================================
-
-        else {
-
-            return "Invalid Leave Type";
-        }
-
-        // =================================================
-        // CREATE REQUEST
-        // =================================================
 
         LeaveRequest request =
-                new LeaveRequest();
+                createLeaveRequest(
+                        employee.getId(),
+                        actualType,
+                        date,
+                        0.5,
+                        0.0,
+                        reason
+                );
 
-        request.setEmployeeId(
-                employee.getId()
+        request.setHalfDaySession(
+                halfDaySession.toUpperCase()
         );
-
-        // =================================================
-        // SET LEAVE TYPE & DURATION
-        // =================================================
-
-        if (type.equals("SICK_HALF")) {
-
-            request.setLeaveType("SICK");
-            request.setLeaveDuration(0.5);
-
-        } else if (type.equals("CASUAL_HALF")) {
-
-            request.setLeaveType("CASUAL");
-            request.setLeaveDuration(0.5);
-
-        } else {
-
-            request.setLeaveType(type);
-            request.setLeaveDuration(1.0);
-        }
-
-        // =================================================
-        // DATE
-        // =================================================
-
-        request.setLeaveDate(date);
-
-        // =================================================
-        // HALF DAY SESSION
-        // =================================================
-
-        if (type.equals("SICK_HALF")
-                ||
-                type.equals("CASUAL_HALF")) {
-
-            request.setHalfDaySession(
-                    halfDaySession.toUpperCase()
-            );
-
-        } else {
-
-            request.setHalfDaySession(null);
-        }
-
-        // =================================================
-        // PERMISSION TIME
-        // =================================================
-
-        if (type.equals("PERMISSION")) {
-
-            request.setPermissionStart(
-                    LocalTime.parse(permissionStart)
-            );
-
-            request.setPermissionEnd(
-                    LocalTime.parse(permissionEnd)
-            );
-
-        } else {
-
-            request.setPermissionStart(null);
-            request.setPermissionEnd(null);
-        }
-
-        // =================================================
-        // REASON
-        // =================================================
-
-        request.setReason(reason);
-
-        // =================================================
-        // STATUS
-        // =================================================
-
-        request.setStatus("PENDING");
-
-        // =================================================
-        // CREATED TIME
-        // =================================================
-
-        request.setCreatedAt(
-                java.time.LocalDateTime.now()
-        );
-
-        // =================================================
-        // SAVE
-        // =================================================
 
         leaveRequestRepository.save(request);
+
+        balance.setUpdatedAt(
+                LocalDateTime.now()
+        );
+
+        balanceRepository.save(balance);
 
         return "Leave Request Submitted Successfully";
     }
 
-
     // =====================================================
-    // TOTAL LEAVE DAYS
-    // APPROVED + PENDING
-    // Used only for preventing limit bypass during apply.
+    // PERMISSION
     // =====================================================
 
-    private double getTotalLeaveDaysIncludingPending(
-            Integer employeeId,
-            String leaveType,
-            LocalDate startDate,
-            LocalDate endDate) {
+    private String applyPermission(
+            Employee employee,
+            LocalDate date,
+            String permissionStart,
+            String permissionEnd,
+            String reason) {
 
-        List<LeaveRequest> requests =
+        if (permissionStart == null ||
+                permissionEnd == null) {
+
+            return "Permission Start and End Time Required";
+        }
+
+        LocalTime start;
+        LocalTime end;
+
+        try {
+
+            start =
+                    LocalTime.parse(permissionStart);
+
+            end =
+                    LocalTime.parse(permissionEnd);
+
+        } catch (Exception e) {
+
+            return "Invalid Permission Time";
+        }
+
+        if (!end.isAfter(start)) {
+            return "Permission End Time Must Be After Start Time";
+        }
+
+        long minutes =
+                Duration
+                        .between(start, end)
+                        .toMinutes();
+
+        if (minutes > 90) {
+            return "Permission Maximum Is 1 Hour 30 Minutes";
+        }
+
+        LocalDate month =
+                date.withDayOfMonth(1);
+
+        EmployeeLeaveBalance balance =
+                getOrCreateBalance(
+                        employee,
+                        month
+                );
+
+        long permissionUsed =
+                countPermissionIncludingPending(
+                        employee.getId(),
+                        month,
+                        month.withDayOfMonth(
+                                month.lengthOfMonth()
+                        )
+                );
+
+        int permissionLimit =
+                balance.getPermissionBalance() != null
+                        ? balance.getPermissionBalance()
+                        : 2;
+
+        if (permissionUsed >= permissionLimit) {
+            return "Monthly Permission Limit Reached";
+        }
+
+        List<LeaveRequest> sameDateRequests =
                 leaveRequestRepository
-                        .findByEmployeeIdAndLeaveTypeAndLeaveDateBetween(
-                                employeeId,
-                                leaveType,
-                                startDate,
-                                endDate
+                        .findByEmployeeIdAndLeaveDate(
+                                employee.getId(),
+                                date
                         );
 
-        double total = 0;
+        for (LeaveRequest existing : sameDateRequests) {
 
-        for (LeaveRequest request : requests) {
+            if (existing.getLeaveType() != null &&
+                    existing.getLeaveType()
+                            .equalsIgnoreCase("PERMISSION") &&
+                    existing.getStatus() != null &&
+                    !existing.getStatus()
+                            .equalsIgnoreCase("REJECTED")) {
 
-            String status =
-                    request.getStatus();
-
-            // Count APPROVED and PENDING.
-            // REJECTED should not block new applications.
-            if (status != null &&
-                    (status.equalsIgnoreCase("APPROVED")
-                            ||
-                     status.equalsIgnoreCase("PENDING"))) {
-
-                if (request.getLeaveDuration() != null) {
-
-                    total +=
-                            request.getLeaveDuration();
-
-                } else {
-
-                    total += 1.0;
-                }
+                return "Permission Already Applied For This Date";
             }
         }
 
-        return total;
+        LeaveRequest request =
+                createLeaveRequest(
+                        employee.getId(),
+                        "PERMISSION",
+                        date,
+                        1.0,
+                        0.0,
+                        reason
+                );
+
+        request.setPermissionStart(start);
+        request.setPermissionEnd(end);
+
+        leaveRequestRepository.save(request);
+
+        return "Permission Request Submitted Successfully";
     }
 
+    // =====================================================
+    // GET OR CREATE MONTHLY BALANCE
+    // =====================================================
+
+    private EmployeeLeaveBalance getOrCreateBalance(
+            Employee employee,
+            LocalDate month) {
+
+        LocalDate firstDay =
+                month.withDayOfMonth(1);
+
+        var existing =
+                balanceRepository
+                        .findByEmployeeIdAndBalanceMonth(
+                                employee.getId(),
+                                firstDay
+                        );
+
+        if (existing.isPresent()) {
+            return existing.get();
+        }
+
+        LeavePermissionSetting setting =
+                getEffectiveSetting(employee);
+
+        double sickAllowance =
+                setting.getSickLeave() != null
+                        ? Math.max(
+                                0,
+                                setting.getSickLeave()
+                        )
+                        : 1.0;
+
+        double casualAllowance =
+                setting.getCasualLeave() != null
+                        ? Math.max(
+                                0,
+                                setting.getCasualLeave()
+                        )
+                        : 1.0;
+
+        int permissionAllowance =
+                setting.getPermissionCount() != null
+                        ? Math.max(
+                                0,
+                                setting.getPermissionCount()
+                        )
+                        : 2;
+
+        double sickBalance =
+                sickAllowance;
+
+        double casualBalance =
+                casualAllowance;
+
+        // =================================================
+        // CARRY FORWARD
+        //
+        // Previous unused Sick/Casual balance is added
+        // to the new month's allowance.
+        //
+        // No carry-forward cap is applied.
+        // =================================================
+
+        LocalDate previousMonth =
+                firstDay.minusMonths(1);
+
+        var previous =
+                balanceRepository
+                        .findByEmployeeIdAndBalanceMonth(
+                                employee.getId(),
+                                previousMonth
+                        );
+
+        if (previous.isPresent()) {
+
+            EmployeeLeaveBalance previousBalance =
+                    previous.get();
+
+            if (previousBalance.getSickBalance() != null) {
+
+                sickBalance +=
+                        Math.max(
+                                0,
+                                previousBalance.getSickBalance()
+                        );
+            }
+
+            if (previousBalance.getCasualBalance() != null) {
+
+                casualBalance +=
+                        Math.max(
+                                0,
+                                previousBalance.getCasualBalance()
+                        );
+            }
+        }
+
+        EmployeeLeaveBalance balance =
+                new EmployeeLeaveBalance();
+
+        balance.setEmployeeId(
+                employee.getId()
+        );
+
+        balance.setBalanceMonth(
+                firstDay
+        );
+
+        balance.setSickBalance(
+                sickBalance
+        );
+
+        balance.setCasualBalance(
+                casualBalance
+        );
+
+        balance.setPermissionBalance(
+                permissionAllowance
+        );
+
+        LocalDateTime now =
+                LocalDateTime.now();
+
+        balance.setCreatedAt(now);
+        balance.setUpdatedAt(now);
+
+        return balanceRepository.save(balance);
+    }
+
+    // =====================================================
+    // EFFECTIVE SETTING
+    //
+    // EMPLOYEE > ROLE > DEFAULT
+    // =====================================================
+
+    private LeavePermissionSetting getEffectiveSetting(
+            Employee employee) {
+
+        var employeeSetting =
+                settingRepository
+                        .findBySettingTypeAndEmployeeId(
+                                "EMPLOYEE",
+                                employee.getId()
+                        );
+
+        if (employeeSetting.isPresent()) {
+            return employeeSetting.get();
+        }
+
+        if (employee.getRole() != null &&
+                !employee.getRole().isBlank()) {
+
+            var roleSetting =
+                    settingRepository
+                            .findBySettingTypeAndRole(
+                                    "ROLE",
+                                    employee.getRole()
+                                            .trim()
+                                            .toUpperCase()
+                            );
+
+            if (roleSetting.isPresent()) {
+                return roleSetting.get();
+            }
+        }
+
+        return settingRepository
+                .findBySettingType("DEFAULT")
+                .orElseGet(() -> {
+
+                    LeavePermissionSetting defaultSetting =
+                            new LeavePermissionSetting();
+
+                    defaultSetting.setSettingType(
+                            "DEFAULT"
+                    );
+
+                    defaultSetting.setSickLeave(1.0);
+                    defaultSetting.setCasualLeave(1.0);
+                    defaultSetting.setPermissionCount(2);
+
+                    LocalDateTime now =
+                            LocalDateTime.now();
+
+                    defaultSetting.setCreatedAt(now);
+                    defaultSetting.setUpdatedAt(now);
+
+                    return settingRepository.save(
+                            defaultSetting
+                    );
+                });
+    }
 
     // =====================================================
     // PERMISSION COUNT
@@ -515,7 +895,6 @@ public class LeaveRequestController {
         return count;
     }
 
-
     // =====================================================
     // LEAVE HISTORY
     // =====================================================
@@ -539,14 +918,13 @@ public class LeaveRequestController {
                 );
     }
 
-
     // =====================================================
     // LEAVE BALANCE
-    // APPROVED ONLY
+    // ACTUAL MONTHLY BALANCE
     // =====================================================
 
     @GetMapping("/balance")
-    public LeaveBalanceResponse getLeaveBalance(
+    public EmployeeLeaveBalanceResponse getLeaveBalance(
             @RequestParam String email) {
 
         Employee employee =
@@ -556,7 +934,10 @@ public class LeaveRequestController {
 
         if (employee == null) {
 
-            return new LeaveBalanceResponse(
+            return new EmployeeLeaveBalanceResponse(
+                    0,
+                    0,
+                    0,
                     0,
                     0,
                     0
@@ -569,129 +950,164 @@ public class LeaveRequestController {
         LocalDate monthStart =
                 today.withDayOfMonth(1);
 
-        LocalDate monthEnd =
-                today.withDayOfMonth(
-                        today.lengthOfMonth()
+        EmployeeLeaveBalance balance =
+                getOrCreateBalance(
+                        employee,
+                        monthStart
                 );
 
-        // =================================================
-        // APPROVED SICK LEAVE ONLY
-        // =================================================
+        double sickRemaining =
+                balance.getSickBalance() != null
+                        ? Math.max(
+                                0,
+                                balance.getSickBalance()
+                        )
+                        : 0;
+
+        double casualRemaining =
+                balance.getCasualBalance() != null
+                        ? Math.max(
+                                0,
+                                balance.getCasualBalance()
+                        )
+                        : 0;
+
+        long permissionRemaining =
+                balance.getPermissionBalance() != null
+                        ? Math.max(
+                                0,
+                                balance.getPermissionBalance()
+                        )
+                        : 0;
+
+        LeavePermissionSetting setting =
+                getEffectiveSetting(employee);
+
+        double sickAllowance =
+                setting.getSickLeave() != null
+                        ? Math.max(
+                                0,
+                                setting.getSickLeave()
+                        )
+                        : 1.0;
+
+        double casualAllowance =
+                setting.getCasualLeave() != null
+                        ? Math.max(
+                                0,
+                                setting.getCasualLeave()
+                        )
+                        : 1.0;
+
+        int permissionAllowance =
+                setting.getPermissionCount() != null
+                        ? Math.max(
+                                0,
+                                setting.getPermissionCount()
+                        )
+                        : 2;
+
+        double previousSickCarry =
+                getPreviousSickCarry(
+                        employee,
+                        monthStart
+                );
+
+        double previousCasualCarry =
+                getPreviousCasualCarry(
+                        employee,
+                        monthStart
+                );
+
+        double totalSickAvailable =
+                sickAllowance
+                        + previousSickCarry;
+
+        double totalCasualAvailable =
+                casualAllowance
+                        + previousCasualCarry;
 
         double sickUsed =
-                getApprovedLeaveDays(
-                        employee.getId(),
-                        "SICK",
-                        monthStart,
-                        monthEnd
+                Math.max(
+                        0,
+                        totalSickAvailable - sickRemaining
                 );
-
-        // =================================================
-        // APPROVED CASUAL LEAVE ONLY
-        // =================================================
 
         double casualUsed =
-                getApprovedLeaveDays(
-                        employee.getId(),
-                        "CASUAL",
-                        monthStart,
-                        monthEnd
+                Math.max(
+                        0,
+                        totalCasualAvailable - casualRemaining
                 );
-
-        // =================================================
-        // APPROVED PERMISSION ONLY
-        // =================================================
 
         long permissionUsed =
-                countApprovedPermissions(
-                        employee.getId(),
-                        monthStart,
-                        monthEnd
+                Math.max(
+                        0,
+                        permissionAllowance
+                                - permissionRemaining
                 );
 
-        return new LeaveBalanceResponse(
+        return new EmployeeLeaveBalanceResponse(
                 sickUsed,
+                sickRemaining,
                 casualUsed,
-                permissionUsed
+                casualRemaining,
+                permissionUsed,
+                permissionRemaining
         );
     }
 
-
     // =====================================================
-    // APPROVED LEAVE DAYS
+    // PREVIOUS SICK CARRY
     // =====================================================
 
-    private double getApprovedLeaveDays(
-            Integer employeeId,
-            String leaveType,
-            LocalDate startDate,
-            LocalDate endDate) {
+    private double getPreviousSickCarry(
+            Employee employee,
+            LocalDate currentMonth) {
 
-        List<LeaveRequest> requests =
-                leaveRequestRepository
-                        .findByEmployeeIdAndLeaveTypeAndLeaveDateBetween(
-                                employeeId,
-                                leaveType,
-                                startDate,
-                                endDate
-                        );
+        LocalDate previousMonth =
+                currentMonth.minusMonths(1);
 
-        double total = 0;
-
-        for (LeaveRequest request : requests) {
-
-            // ONLY APPROVED
-            if (request.getStatus() != null &&
-                    request.getStatus()
-                            .equalsIgnoreCase("APPROVED")) {
-
-                if (request.getLeaveDuration() != null) {
-
-                    total +=
-                            request.getLeaveDuration();
-
-                } else {
-
-                    total += 1.0;
-                }
-            }
-        }
-
-        return total;
+        return balanceRepository
+                .findByEmployeeIdAndBalanceMonth(
+                        employee.getId(),
+                        previousMonth
+                )
+                .map(balance ->
+                        balance.getSickBalance() != null
+                                ? Math.max(
+                                        0,
+                                        balance.getSickBalance()
+                                )
+                                : 0
+                )
+                .orElse(0.0);
     }
 
-
     // =====================================================
-    // APPROVED PERMISSION COUNT
+    // PREVIOUS CASUAL CARRY
     // =====================================================
 
-    private long countApprovedPermissions(
-            Integer employeeId,
-            LocalDate startDate,
-            LocalDate endDate) {
+    private double getPreviousCasualCarry(
+            Employee employee,
+            LocalDate currentMonth) {
 
-        List<LeaveRequest> requests =
-                leaveRequestRepository
-                        .findByEmployeeIdAndLeaveTypeAndLeaveDateBetween(
-                                employeeId,
-                                "PERMISSION",
-                                startDate,
-                                endDate
-                        );
+        LocalDate previousMonth =
+                currentMonth.minusMonths(1);
 
-        long count = 0;
-
-        for (LeaveRequest request : requests) {
-
-            // ONLY APPROVED
-            if (request.getStatus() != null &&
-                    request.getStatus()
-                            .equalsIgnoreCase("APPROVED")) {
-
-                count++;
-            }
-        }
-
-        return count;
+        return balanceRepository
+                .findByEmployeeIdAndBalanceMonth(
+                        employee.getId(),
+                        previousMonth
+                )
+                .map(balance ->
+                        balance.getCasualBalance() != null
+                                ? Math.max(
+                                        0,
+                                        balance.getCasualBalance()
+                                )
+                                : 0
+                )
+                .orElse(0.0);
     }
 }
+

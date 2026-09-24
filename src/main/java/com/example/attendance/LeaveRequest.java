@@ -26,6 +26,9 @@ public class LeaveRequest {
     @Column(name = "leave_duration")
     private Double leaveDuration;
 
+    @Column(name = "lop_days")
+    private Double lopDays = 0.00;
+
     @Column(name = "half_day_session")
     private String halfDaySession;
 
@@ -65,6 +68,10 @@ public class LeaveRequest {
 
     public Double getLeaveDuration() {
         return leaveDuration;
+    }
+
+    public Double getLopDays() {
+        return lopDays;
     }
 
     public String getHalfDaySession() {
@@ -116,6 +123,10 @@ public class LeaveRequest {
         this.leaveDuration = leaveDuration;
     }
 
+    public void setLopDays(Double lopDays) {
+        this.lopDays = lopDays;
+    }
+
     public void setHalfDaySession(String halfDaySession) {
         this.halfDaySession = halfDaySession;
     }
@@ -140,3 +151,4 @@ public class LeaveRequest {
         this.createdAt = createdAt;
     }
 }
+
