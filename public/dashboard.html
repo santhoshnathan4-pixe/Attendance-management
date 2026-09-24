@@ -513,7 +513,7 @@
                 class="balance-number"
                 id="sickBalance">
 
-                0 / 1
+                0 / 0
 
             </div>
 
@@ -533,7 +533,7 @@
                 class="balance-number"
                 id="casualBalance">
 
-                0 / 1
+                0 / 0
 
             </div>
 
@@ -553,7 +553,7 @@
                 class="balance-number"
                 id="permissionBalance">
 
-                2 / 2
+                0 / 0
 
             </div>
 
@@ -587,9 +587,8 @@
 
         <div class="form-note">
 
-            For full-day leave, select the
-            <strong>Start Date</strong> and
-            <strong>End Date</strong>.
+            For full-day leave, select
+            <strong>Leave</strong>.
 
             The system will automatically use available
             Sick Leave first, then Casual Leave,
@@ -598,13 +597,15 @@
             <br><br>
 
             Example:
-            <strong>4 days leave = 1 Sick + 1 Casual + 2 LOP</strong>
-            when both paid balances are available.
+            <strong>4 days = 1 Sick + 1 Casual + 2 LOP</strong>
+            when Sick = 1 and Casual = 1.
 
-            If Sick or Casual is already used,
-            only that option is disabled.
-            Leave application itself remains available
-            so remaining days can become LOP.
+            <br><br>
+
+            If Sick and Casual balances are exhausted,
+            you can still apply <strong>Leave</strong>.
+            Those days will be recorded as
+            <strong>LOP</strong>.
 
         </div>
 
@@ -627,16 +628,21 @@
                     Select Leave Type
                 </option>
 
-                <option value="SICK" id="sickOption">
-                    Sick Leave
+                <!--
+                    Generic full-day Leave.
+                    Always available.
+
+                    Backend receives SICK so that the
+                    existing automatic allocation logic
+                    can use Sick -> Casual -> LOP.
+                -->
+
+                <option value="SICK" id="fullDayLeaveOption">
+                    Leave
                 </option>
 
                 <option value="SICK_HALF" id="sickHalfOption">
                     Sick Half Day
-                </option>
-
-                <option value="CASUAL" id="casualOption">
-                    Casual Leave
                 </option>
 
                 <option value="CASUAL_HALF" id="casualHalfOption">
@@ -851,12 +857,15 @@ if (!employeeEmail) {
 
 }
 
+
 /* =========================================
    CURRENT LEAVE BALANCES
 ========================================= */
 
 let currentSickRemaining = 0;
+
 let currentCasualRemaining = 0;
+
 let currentPermissionRemaining = 0;
 
 
@@ -1118,19 +1127,14 @@ function hideLeaveForm() {
 
 function updateLeaveOptions() {
 
-    const sickOption =
+    const fullDayLeaveOption =
         document.getElementById(
-            "sickOption"
+            "fullDayLeaveOption"
         );
 
     const sickHalfOption =
         document.getElementById(
             "sickHalfOption"
-        );
-
-    const casualOption =
-        document.getElementById(
-            "casualOption"
         );
 
     const casualHalfOption =
@@ -1144,30 +1148,50 @@ function updateLeaveOptions() {
         );
 
     /*
-     * IMPORTANT:
-     * Only the exhausted option is disabled.
+     * IMPORTANT
      *
-     * The complete leave application is NOT disabled.
+     * Full-day Leave is ALWAYS available.
+     *
+     * It is the generic leave option.
+     * Backend will automatically allocate:
+     *
+     * Sick -> Casual -> LOP
+     *
+     * Therefore the employee is never blocked
+     * from applying full-day leave.
      */
 
-    sickOption.disabled =
-        currentSickRemaining <= 0;
+    fullDayLeaveOption.disabled = false;
+
+
+    /*
+     * Half-day Sick requires 0.5 Sick balance.
+     */
 
     sickHalfOption.disabled =
         currentSickRemaining < 0.5;
 
-    casualOption.disabled =
-        currentCasualRemaining <= 0;
+
+    /*
+     * Half-day Casual requires 0.5 Casual balance.
+     */
 
     casualHalfOption.disabled =
         currentCasualRemaining < 0.5;
 
+
+    /*
+     * Permission requires at least one
+     * permission balance.
+     */
+
     permissionOption.disabled =
         currentPermissionRemaining <= 0;
 
+
     /*
-     * If the currently selected option became
-     * unavailable, reset only the selection.
+     * If currently selected half-day or permission
+     * becomes unavailable, reset only that selection.
      */
 
     const leaveType =
@@ -1175,14 +1199,6 @@ function updateLeaveOptions() {
             "leaveType"
         );
 
-    if (
-        leaveType.value === "SICK" &&
-        sickOption.disabled
-    ) {
-
-        leaveType.value = "";
-
-    }
 
     if (
         leaveType.value === "SICK_HALF" &&
@@ -1193,14 +1209,6 @@ function updateLeaveOptions() {
 
     }
 
-    if (
-        leaveType.value === "CASUAL" &&
-        casualOption.disabled
-    ) {
-
-        leaveType.value = "";
-
-    }
 
     if (
         leaveType.value === "CASUAL_HALF" &&
@@ -1211,6 +1219,7 @@ function updateLeaveOptions() {
 
     }
 
+
     if (
         leaveType.value === "PERMISSION" &&
         permissionOption.disabled
@@ -1220,13 +1229,13 @@ function updateLeaveOptions() {
 
     }
 
+
     changeLeaveType();
 
+
     /*
-     * Show a message when both paid balances
+     * Inform employee when paid leave balances
      * are exhausted.
-     *
-     * Leave application is still allowed.
      */
 
     const warning =
@@ -1234,18 +1243,45 @@ function updateLeaveOptions() {
             "balanceWarning"
         );
 
+
     if (
         currentSickRemaining <= 0 &&
         currentCasualRemaining <= 0
     ) {
 
         warning.innerText =
-            "Sick Leave and Casual Leave balances are exhausted. Full-day leave can still be applied, and the leave days will be recorded as LOP.";
+            "Sick Leave and Casual Leave are exhausted. You can still apply full-day Leave. All applicable days will be recorded as LOP.";
 
         warning.style.display =
             "block";
 
-    } else {
+    }
+
+    else if (
+        currentSickRemaining <= 0
+    ) {
+
+        warning.innerText =
+            "Sick Leave is exhausted. Full-day Leave can still be applied; available Casual Leave will be used first according to the system allocation.";
+
+        warning.style.display =
+            "block";
+
+    }
+
+    else if (
+        currentCasualRemaining <= 0
+    ) {
+
+        warning.innerText =
+            "Casual Leave is exhausted. Full-day Leave can still be applied; available Sick Leave will be used first according to the system allocation.";
+
+        warning.style.display =
+            "block";
+
+    }
+
+    else {
 
         warning.style.display =
             "none";
@@ -1286,6 +1322,7 @@ function changeLeaveType() {
             "endDateGroup"
         );
 
+
     halfDayGroup.style.display =
         "none";
 
@@ -1295,13 +1332,18 @@ function changeLeaveType() {
     permissionEndGroup.style.display =
         "none";
 
+
     /*
-     * Full day Sick/Casual:
+     * Generic full-day Leave:
      * Start Date + End Date
+     *
+     * Backend receives SICK and performs
+     * Sick -> Casual -> LOP allocation.
      */
 
     endDateGroup.style.display =
         "block";
+
 
     if (
         type === "SICK_HALF" ||
@@ -1315,6 +1357,7 @@ function changeLeaveType() {
             "none";
 
     }
+
 
     if (
         type === "PERMISSION"
@@ -1350,6 +1393,7 @@ function updateEndDateMinimum() {
             "endDate"
         );
 
+
     if (!startDate) {
 
         endDateInput.removeAttribute(
@@ -1360,8 +1404,10 @@ function updateEndDateMinimum() {
 
     }
 
+
     endDateInput.min =
         startDate;
+
 
     if (
         endDateInput.value === "" ||
@@ -1427,6 +1473,7 @@ function applyLeave() {
             "submitLeaveBtn"
         );
 
+
     if (
         type === "" ||
         date === ""
@@ -1442,19 +1489,23 @@ function applyLeave() {
 
     }
 
-    const fullDayLeave =
-        type === "SICK" ||
-        type === "CASUAL";
 
     /*
-     * IMPORTANT:
+     * SICK is used as the backend value for
+     * the generic full-day Leave option.
      *
-     * Do NOT block full-day leave just because
-     * Sick or Casual balance is zero.
+     * Backend automatically performs:
      *
-     * Backend will automatically convert
-     * unavailable days into LOP.
+     * Sick -> Casual -> LOP
      */
+
+    const fullDayLeave =
+        type === "SICK";
+
+
+    /* =====================================
+       FULL DAY VALIDATION
+    ===================================== */
 
     if (fullDayLeave) {
 
@@ -1469,6 +1520,7 @@ function applyLeave() {
             return;
 
         }
+
 
         if (
             new Date(endDate) <
@@ -1537,6 +1589,7 @@ function applyLeave() {
 
         }
 
+
         if (
             permissionEnd <=
             permissionStart
@@ -1562,28 +1615,33 @@ function applyLeave() {
     const params =
         new URLSearchParams();
 
+
     params.append(
         "email",
         employeeEmail
     );
+
 
     params.append(
         "leaveType",
         type
     );
 
+
     params.append(
         "leaveDate",
         date
     );
+
 
     params.append(
         "reason",
         reason
     );
 
+
     /*
-     * Full-day leave sends End Date.
+     * Full-day Leave always sends End Date.
      */
 
     if (fullDayLeave) {
@@ -1594,6 +1652,7 @@ function applyLeave() {
         );
 
     }
+
 
     if (
         type === "SICK_HALF" ||
@@ -1606,6 +1665,7 @@ function applyLeave() {
         );
 
     }
+
 
     if (
         type === "PERMISSION"
@@ -1622,6 +1682,7 @@ function applyLeave() {
         );
 
     }
+
 
     message.innerText =
         "Submitting leave...";
@@ -1644,6 +1705,7 @@ function applyLeave() {
         const data =
             await response.text();
 
+
         if (!response.ok) {
 
             throw new Error(
@@ -1652,6 +1714,7 @@ function applyLeave() {
             );
 
         }
+
 
         return data;
 
@@ -1662,6 +1725,7 @@ function applyLeave() {
             data ||
             "Leave applied successfully";
 
+
         if (
             data.toLowerCase().includes(
                 "success"
@@ -1671,39 +1735,48 @@ function applyLeave() {
             message.style.color =
                 "green";
 
+
             document.getElementById(
                 "leaveType"
             ).value = "";
+
 
             document.getElementById(
                 "leaveDate"
             ).value = "";
 
+
             document.getElementById(
                 "endDate"
             ).value = "";
+
 
             document.getElementById(
                 "halfDaySession"
             ).value = "";
 
+
             document.getElementById(
                 "permissionStart"
             ).value = "";
+
 
             document.getElementById(
                 "permissionEnd"
             ).value = "";
 
+
             document.getElementById(
                 "reason"
             ).value = "";
+
 
             document.getElementById(
                 "endDate"
             ).removeAttribute(
                 "min"
             );
+
 
             changeLeaveType();
 
@@ -1719,6 +1792,7 @@ function applyLeave() {
                 "red";
 
         }
+
 
         submitButton.disabled =
             false;
@@ -1750,6 +1824,7 @@ function formatBalanceNumber(value) {
     const number =
         Number(value ?? 0);
 
+
     if (
         Number.isInteger(number)
     ) {
@@ -1757,6 +1832,7 @@ function formatBalanceNumber(value) {
         return String(number);
 
     }
+
 
     return number
         .toFixed(2)
@@ -1779,6 +1855,7 @@ function loadLeaveBalance() {
         const text =
             await response.text();
 
+
         if (!response.ok) {
 
             throw new Error(
@@ -1788,6 +1865,7 @@ function loadLeaveBalance() {
 
         }
 
+
         return text
             ? JSON.parse(text)
             : {};
@@ -1795,15 +1873,22 @@ function loadLeaveBalance() {
     })
     .then(data => {
 
+
+        /* =====================================
+           SICK
+        ===================================== */
+
         const sickRemaining =
             Number(
                 data.sickRemaining ?? 0
             );
 
+
         const sickUsed =
             Number(
                 data.sickUsed ?? 0
             );
+
 
         currentSickRemaining =
             sickRemaining;
@@ -1812,6 +1897,7 @@ function loadLeaveBalance() {
         const sickTotal =
             sickRemaining +
             sickUsed;
+
 
         document.getElementById(
             "sickBalance"
@@ -1825,15 +1911,21 @@ function loadLeaveBalance() {
             );
 
 
+        /* =====================================
+           CASUAL
+        ===================================== */
+
         const casualRemaining =
             Number(
                 data.casualRemaining ?? 0
             );
 
+
         const casualUsed =
             Number(
                 data.casualUsed ?? 0
             );
+
 
         currentCasualRemaining =
             casualRemaining;
@@ -1842,6 +1934,7 @@ function loadLeaveBalance() {
         const casualTotal =
             casualRemaining +
             casualUsed;
+
 
         document.getElementById(
             "casualBalance"
@@ -1855,15 +1948,21 @@ function loadLeaveBalance() {
             );
 
 
+        /* =====================================
+           PERMISSION
+        ===================================== */
+
         const permissionRemaining =
             Number(
                 data.permissionRemaining ?? 0
             );
 
+
         const permissionUsed =
             Number(
                 data.permissionUsed ?? 0
             );
+
 
         currentPermissionRemaining =
             permissionRemaining;
@@ -1872,6 +1971,7 @@ function loadLeaveBalance() {
         const permissionTotal =
             permissionRemaining +
             permissionUsed;
+
 
         document.getElementById(
             "permissionBalance"
@@ -1886,7 +1986,7 @@ function loadLeaveBalance() {
 
 
         /*
-         * Update only individual options.
+         * Update UI using dynamic balances.
          */
 
         updateLeaveOptions();
@@ -1918,6 +2018,7 @@ function loadAttendanceHistory() {
         const text =
             await response.text();
 
+
         if (!response.ok) {
 
             throw new Error(
@@ -1926,6 +2027,7 @@ function loadAttendanceHistory() {
             );
 
         }
+
 
         return text
             ? JSON.parse(text)
@@ -1939,50 +2041,63 @@ function loadAttendanceHistory() {
                 "attendanceTable"
             );
 
+
         const checkInBtn =
             document.getElementById(
                 "checkInBtn"
             );
+
 
         const checkOutBtn =
             document.getElementById(
                 "checkOutBtn"
             );
 
+
         const todayCheckIn =
             document.getElementById(
                 "todayCheckIn"
             );
+
 
         const todayCheckOut =
             document.getElementById(
                 "todayCheckOut"
             );
 
+
         const todayStatus =
             document.getElementById(
                 "todayStatus"
             );
 
+
         table.innerHTML = "";
+
 
         checkInBtn.disabled =
             false;
 
+
         checkOutBtn.disabled =
             true;
+
 
         todayCheckIn.innerText =
             "--:--";
 
+
         todayCheckOut.innerText =
             "--:--";
+
 
         todayStatus.innerText =
             "Not Checked In";
 
+
         const now =
             new Date();
+
 
         const today =
             now.getFullYear() +
@@ -1995,23 +2110,28 @@ function loadAttendanceHistory() {
                 now.getDate()
             ).padStart(2, "0");
 
+
         const todayRecord =
             data.find(item =>
                 item.attendanceDate === today
             );
+
 
         if (todayRecord) {
 
             checkInBtn.disabled =
                 true;
 
+
             todayCheckIn.innerText =
                 todayRecord.checkIn ||
                 "--:--";
 
+
             todayStatus.innerText =
                 todayRecord.status ||
                 "PRESENT";
+
 
             if (
                 todayRecord.checkOut
@@ -2020,13 +2140,17 @@ function loadAttendanceHistory() {
                 checkOutBtn.disabled =
                     true;
 
+
                 todayCheckOut.innerText =
                     todayRecord.checkOut;
 
-            } else {
+            }
+
+            else {
 
                 checkOutBtn.disabled =
                     false;
+
 
                 todayCheckOut.innerText =
                     "Not Checked Out";
@@ -2034,6 +2158,7 @@ function loadAttendanceHistory() {
             }
 
         }
+
 
         if (
             data.length === 0
@@ -2052,12 +2177,14 @@ function loadAttendanceHistory() {
 
         }
 
+
         data.forEach(item => {
 
             const row =
                 document.createElement(
                     "tr"
                 );
+
 
             row.innerHTML =
                 `
@@ -2077,6 +2204,7 @@ function loadAttendanceHistory() {
                     ${item.status || "-"}
                 </td>
                 `;
+
 
             table.appendChild(row);
 
@@ -2109,6 +2237,7 @@ function loadLeaveHistory() {
         const text =
             await response.text();
 
+
         if (!response.ok) {
 
             throw new Error(
@@ -2117,6 +2246,7 @@ function loadLeaveHistory() {
             );
 
         }
+
 
         return text
             ? JSON.parse(text)
@@ -2130,7 +2260,9 @@ function loadLeaveHistory() {
                 "leaveTable"
             );
 
+
         table.innerHTML = "";
+
 
         if (
             data.length === 0
@@ -2149,6 +2281,7 @@ function loadLeaveHistory() {
 
         }
 
+
         data.forEach(item => {
 
             const row =
@@ -2156,7 +2289,9 @@ function loadLeaveHistory() {
                     "tr"
                 );
 
+
             let permission = "-";
+
 
             if (
                 item.permissionStart &&
@@ -2170,7 +2305,9 @@ function loadLeaveHistory() {
 
             }
 
+
             let duration = "-";
+
 
             if (
                 item.leaveDuration !== null &&
@@ -2182,6 +2319,7 @@ function loadLeaveHistory() {
                         item.leaveDuration
                     );
 
+
                 if (
                     durationNumber === 0.5
                 ) {
@@ -2189,7 +2327,9 @@ function loadLeaveHistory() {
                     duration =
                         "0.5 Day";
 
-                } else {
+                }
+
+                else {
 
                     duration =
                         durationNumber +
@@ -2204,15 +2344,18 @@ function loadLeaveHistory() {
 
             }
 
+
             const lopDays =
                 Number(
                     item.lopDays ?? 0
                 );
 
+
             const lopDisplay =
                 lopDays > 0
                     ? `<span class="lop-badge">${formatBalanceNumber(lopDays)}</span>`
                     : `<span class="normal-badge">0</span>`;
+
 
             row.innerHTML =
                 `
@@ -2249,6 +2392,7 @@ function loadLeaveHistory() {
                 </td>
                 `;
 
+
             table.appendChild(row);
 
         });
@@ -2275,6 +2419,7 @@ function logout() {
     localStorage.removeItem(
         "employeeEmail"
     );
+
 
     window.location.href =
         "login.html";
