@@ -197,6 +197,11 @@
         cursor: pointer;
     }
 
+    .apply-btn:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+
     .leave-form-container {
         display: none;
         background: white;
@@ -215,6 +220,18 @@
         background: #eff6ff;
         border: 1px solid #bfdbfe;
         color: #1e40af;
+        padding: 12px 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .balance-warning {
+        display: none;
+        background: #fff7ed;
+        border: 1px solid #fed7aa;
+        color: #c2410c;
         padding: 12px 15px;
         border-radius: 8px;
         margin-bottom: 20px;
@@ -244,6 +261,10 @@
         font-size: 15px;
     }
 
+    .form-group select option:disabled {
+        color: #999;
+    }
+
     .form-group textarea {
         resize: vertical;
         min-height: 90px;
@@ -263,6 +284,11 @@
         border-radius: 8px;
         cursor: pointer;
         font-weight: bold;
+    }
+
+    .submit-btn:disabled {
+        cursor: not-allowed;
+        opacity: 0.5;
     }
 
     .cancel-btn {
@@ -569,6 +595,22 @@
             Sick Leave first, then Casual Leave,
             and any remaining days will be treated as LOP.
 
+            <br><br>
+
+            Example:
+            <strong>4 days leave = 1 Sick + 1 Casual + 2 LOP</strong>
+            when both paid balances are available.
+
+            If Sick or Casual is already used,
+            only that option is disabled.
+            Leave application itself remains available
+            so remaining days can become LOP.
+
+        </div>
+
+        <div
+            class="balance-warning"
+            id="balanceWarning">
         </div>
 
         <div class="form-group">
@@ -585,23 +627,23 @@
                     Select Leave Type
                 </option>
 
-                <option value="SICK">
+                <option value="SICK" id="sickOption">
                     Sick Leave
                 </option>
 
-                <option value="SICK_HALF">
+                <option value="SICK_HALF" id="sickHalfOption">
                     Sick Half Day
                 </option>
 
-                <option value="CASUAL">
+                <option value="CASUAL" id="casualOption">
                     Casual Leave
                 </option>
 
-                <option value="CASUAL_HALF">
+                <option value="CASUAL_HALF" id="casualHalfOption">
                     Casual Half Day
                 </option>
 
-                <option value="PERMISSION">
+                <option value="PERMISSION" id="permissionOption">
                     Permission
                 </option>
 
@@ -713,6 +755,7 @@
 
             <button
                 class="submit-btn"
+                id="submitLeaveBtn"
                 onclick="applyLeave()">
 
                 Submit Leave
@@ -809,6 +852,15 @@ if (!employeeEmail) {
 }
 
 /* =========================================
+   CURRENT LEAVE BALANCES
+========================================= */
+
+let currentSickRemaining = 0;
+let currentCasualRemaining = 0;
+let currentPermissionRemaining = 0;
+
+
+/* =========================================
    EMPLOYEE DETAILS
 ========================================= */
 
@@ -860,6 +912,7 @@ function loadEmployeeDetails() {
     });
 
 }
+
 
 /* =========================================
    CHECK IN
@@ -936,6 +989,7 @@ function checkIn() {
 
 }
 
+
 /* =========================================
    CHECK OUT
 ========================================= */
@@ -1011,6 +1065,7 @@ function checkOut() {
 
 }
 
+
 /* =========================================
    SHOW LEAVE FORM
 ========================================= */
@@ -1032,6 +1087,7 @@ function showLeaveForm() {
 
 }
 
+
 /* =========================================
    HIDE LEAVE FORM
 ========================================= */
@@ -1048,7 +1104,156 @@ function hideLeaveForm() {
     ).innerText =
         "";
 
+    document.getElementById(
+        "balanceWarning"
+    ).style.display =
+        "none";
+
 }
+
+
+/* =========================================
+   UPDATE LEAVE OPTIONS
+========================================= */
+
+function updateLeaveOptions() {
+
+    const sickOption =
+        document.getElementById(
+            "sickOption"
+        );
+
+    const sickHalfOption =
+        document.getElementById(
+            "sickHalfOption"
+        );
+
+    const casualOption =
+        document.getElementById(
+            "casualOption"
+        );
+
+    const casualHalfOption =
+        document.getElementById(
+            "casualHalfOption"
+        );
+
+    const permissionOption =
+        document.getElementById(
+            "permissionOption"
+        );
+
+    /*
+     * IMPORTANT:
+     * Only the exhausted option is disabled.
+     *
+     * The complete leave application is NOT disabled.
+     */
+
+    sickOption.disabled =
+        currentSickRemaining <= 0;
+
+    sickHalfOption.disabled =
+        currentSickRemaining < 0.5;
+
+    casualOption.disabled =
+        currentCasualRemaining <= 0;
+
+    casualHalfOption.disabled =
+        currentCasualRemaining < 0.5;
+
+    permissionOption.disabled =
+        currentPermissionRemaining <= 0;
+
+    /*
+     * If the currently selected option became
+     * unavailable, reset only the selection.
+     */
+
+    const leaveType =
+        document.getElementById(
+            "leaveType"
+        );
+
+    if (
+        leaveType.value === "SICK" &&
+        sickOption.disabled
+    ) {
+
+        leaveType.value = "";
+
+    }
+
+    if (
+        leaveType.value === "SICK_HALF" &&
+        sickHalfOption.disabled
+    ) {
+
+        leaveType.value = "";
+
+    }
+
+    if (
+        leaveType.value === "CASUAL" &&
+        casualOption.disabled
+    ) {
+
+        leaveType.value = "";
+
+    }
+
+    if (
+        leaveType.value === "CASUAL_HALF" &&
+        casualHalfOption.disabled
+    ) {
+
+        leaveType.value = "";
+
+    }
+
+    if (
+        leaveType.value === "PERMISSION" &&
+        permissionOption.disabled
+    ) {
+
+        leaveType.value = "";
+
+    }
+
+    changeLeaveType();
+
+    /*
+     * Show a message when both paid balances
+     * are exhausted.
+     *
+     * Leave application is still allowed.
+     */
+
+    const warning =
+        document.getElementById(
+            "balanceWarning"
+        );
+
+    if (
+        currentSickRemaining <= 0 &&
+        currentCasualRemaining <= 0
+    ) {
+
+        warning.innerText =
+            "Sick Leave and Casual Leave balances are exhausted. Full-day leave can still be applied, and the leave days will be recorded as LOP.";
+
+        warning.style.display =
+            "block";
+
+    } else {
+
+        warning.style.display =
+            "none";
+
+    }
+
+}
+
 
 /* =========================================
    LEAVE TYPE CHANGE
@@ -1128,6 +1333,7 @@ function changeLeaveType() {
 
 }
 
+
 /* =========================================
    START DATE -> END DATE
 ========================================= */
@@ -1154,18 +1360,8 @@ function updateEndDateMinimum() {
 
     }
 
-    /*
-     * End date cannot be before start date.
-     */
-
     endDateInput.min =
         startDate;
-
-    /*
-     * If end date is empty or earlier
-     * than start date, automatically set
-     * it to start date.
-     */
 
     if (
         endDateInput.value === "" ||
@@ -1178,6 +1374,7 @@ function updateEndDateMinimum() {
     }
 
 }
+
 
 /* =========================================
    APPLY LEAVE
@@ -1225,6 +1422,11 @@ function applyLeave() {
             "leaveMessage"
         );
 
+    const submitButton =
+        document.getElementById(
+            "submitLeaveBtn"
+        );
+
     if (
         type === "" ||
         date === ""
@@ -1245,8 +1447,13 @@ function applyLeave() {
         type === "CASUAL";
 
     /*
-     * FULL DAY:
-     * Start Date + End Date required
+     * IMPORTANT:
+     *
+     * Do NOT block full-day leave just because
+     * Sick or Casual balance is zero.
+     *
+     * Backend will automatically convert
+     * unavailable days into LOP.
      */
 
     if (fullDayLeave) {
@@ -1280,6 +1487,7 @@ function applyLeave() {
 
     }
 
+
     /* =====================================
        HALF DAY VALIDATION
     ===================================== */
@@ -1304,6 +1512,7 @@ function applyLeave() {
         }
 
     }
+
 
     /* =====================================
        PERMISSION VALIDATION
@@ -1344,6 +1553,7 @@ function applyLeave() {
         }
 
     }
+
 
     /* =====================================
        REQUEST PARAMETERS
@@ -1418,6 +1628,10 @@ function applyLeave() {
 
     message.style.color =
         "#2563eb";
+
+    submitButton.disabled =
+        true;
+
 
     fetch(
         `${API_BASE_URL}/leave/apply?${params.toString()}`,
@@ -1497,12 +1711,17 @@ function applyLeave() {
 
             loadLeaveHistory();
 
-        } else {
+        }
+
+        else {
 
             message.style.color =
                 "red";
 
         }
+
+        submitButton.disabled =
+            false;
 
     })
     .catch(error => {
@@ -1514,9 +1733,13 @@ function applyLeave() {
         message.style.color =
             "red";
 
+        submitButton.disabled =
+            false;
+
     });
 
 }
+
 
 /* =========================================
    FORMAT BALANCE NUMBER
@@ -1540,6 +1763,7 @@ function formatBalanceNumber(value) {
         .replace(/\.?0+$/, "");
 
 }
+
 
 /* =========================================
    LOAD LEAVE BALANCE
@@ -1581,6 +1805,10 @@ function loadLeaveBalance() {
                 data.sickUsed ?? 0
             );
 
+        currentSickRemaining =
+            sickRemaining;
+
+
         const sickTotal =
             sickRemaining +
             sickUsed;
@@ -1596,6 +1824,7 @@ function loadLeaveBalance() {
                 sickTotal
             );
 
+
         const casualRemaining =
             Number(
                 data.casualRemaining ?? 0
@@ -1605,6 +1834,10 @@ function loadLeaveBalance() {
             Number(
                 data.casualUsed ?? 0
             );
+
+        currentCasualRemaining =
+            casualRemaining;
+
 
         const casualTotal =
             casualRemaining +
@@ -1621,6 +1854,7 @@ function loadLeaveBalance() {
                 casualTotal
             );
 
+
         const permissionRemaining =
             Number(
                 data.permissionRemaining ?? 0
@@ -1630,6 +1864,10 @@ function loadLeaveBalance() {
             Number(
                 data.permissionUsed ?? 0
             );
+
+        currentPermissionRemaining =
+            permissionRemaining;
+
 
         const permissionTotal =
             permissionRemaining +
@@ -1646,6 +1884,13 @@ function loadLeaveBalance() {
                 permissionTotal
             );
 
+
+        /*
+         * Update only individual options.
+         */
+
+        updateLeaveOptions();
+
     })
     .catch(error => {
 
@@ -1657,6 +1902,7 @@ function loadLeaveBalance() {
     });
 
 }
+
 
 /* =========================================
    ATTENDANCE HISTORY
@@ -1848,6 +2094,7 @@ function loadAttendanceHistory() {
 
 }
 
+
 /* =========================================
    LEAVE HISTORY
 ========================================= */
@@ -2018,6 +2265,7 @@ function loadLeaveHistory() {
 
 }
 
+
 /* =========================================
    LOGOUT
 ========================================= */
@@ -2032,6 +2280,7 @@ function logout() {
         "login.html";
 
 }
+
 
 /* =========================================
    INITIAL LOAD
@@ -2052,3 +2301,4 @@ changeLeaveType();
 </body>
 
 </html>
+
