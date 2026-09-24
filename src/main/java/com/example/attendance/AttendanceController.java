@@ -1,8 +1,11 @@
+
 package com.example.attendance;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
@@ -19,6 +22,8 @@ public class AttendanceController {
 
     private final AttendanceRepository attendanceRepository;
     private final EmployeeRepository employeeRepository;
+    private final LeaveRequestRepository leaveRequestRepository;
+    private final EmployeeLeaveBalanceRepository balanceRepository;
 
     // India Time Zone
     private static final ZoneId INDIA_ZONE = ZoneId.of("Asia/Kolkata");
@@ -30,10 +35,14 @@ public class AttendanceController {
 
     public AttendanceController(
             AttendanceRepository attendanceRepository,
-            EmployeeRepository employeeRepository) {
+            EmployeeRepository employeeRepository,
+            LeaveRequestRepository leaveRequestRepository,
+            EmployeeLeaveBalanceRepository balanceRepository) {
 
         this.attendanceRepository = attendanceRepository;
         this.employeeRepository = employeeRepository;
+        this.leaveRequestRepository = leaveRequestRepository;
+        this.balanceRepository = balanceRepository;
     }
 
     // =========================
@@ -48,6 +57,7 @@ public class AttendanceController {
     // CHECK IN
     // =========================
     @PostMapping("/check-in")
+    @Transactional
     public String checkIn(@RequestParam String email) {
 
         // Active employee only
@@ -73,6 +83,16 @@ public class AttendanceController {
             return "Already Checked In";
         }
 
+        // =========================
+        // CANCEL APPROVED LEAVE
+        // WHEN EMPLOYEE CHECKS IN
+        // =========================
+
+        cancelApprovedLeaveForCheckIn(
+                employee.getId(),
+                today
+        );
+
         Attendance attendance = new Attendance();
 
         attendance.setEmployeeId(employee.getId());
@@ -97,6 +117,144 @@ public class AttendanceController {
         }
 
         return "Check In Successful - " + employee.getName();
+    }
+
+    // =========================
+    // CANCEL APPROVED LEAVE
+    // WHEN EMPLOYEE COMES TO OFFICE
+    // =========================
+    private void cancelApprovedLeaveForCheckIn(
+            Integer employeeId,
+            LocalDate today) {
+
+        List<LeaveRequest> leaveRequests =
+                leaveRequestRepository
+                        .findByEmployeeIdAndLeaveDate(
+                                employeeId,
+                                today
+                        );
+
+        if (leaveRequests == null ||
+                leaveRequests.isEmpty()) {
+
+            return;
+        }
+
+        for (LeaveRequest leave : leaveRequests) {
+
+            // Only APPROVED leave is cancelled.
+            if (!"APPROVED".equalsIgnoreCase(
+                    leave.getStatus())) {
+
+                continue;
+            }
+
+            String leaveType =
+                    leave.getLeaveType();
+
+            // Permission is separate from normal leave.
+            // Do not cancel permission just because
+            // employee checked in.
+            if (leaveType == null ||
+                    leaveType.equalsIgnoreCase("PERMISSION")) {
+
+                continue;
+            }
+
+            // =========================
+            // RESTORE PAID LEAVE BALANCE
+            // =========================
+
+            if (leaveType.equalsIgnoreCase("SICK") ||
+                    leaveType.equalsIgnoreCase("CASUAL")) {
+
+                restorePaidLeaveBalance(leave);
+            }
+
+            // =========================
+            // REMOVE CANCELLED LEAVE
+            // =========================
+
+            leaveRequestRepository.delete(leave);
+        }
+    }
+
+    // =========================
+    // RESTORE SICK / CASUAL
+    // BALANCE AFTER CHECK-IN
+    // =========================
+    private void restorePaidLeaveBalance(
+            LeaveRequest leave) {
+
+        if (leave.getEmployeeId() == null ||
+                leave.getLeaveDate() == null) {
+
+            return;
+        }
+
+        LocalDate month =
+                leave.getLeaveDate()
+                        .withDayOfMonth(1);
+
+        var balanceOptional =
+                balanceRepository
+                        .findByEmployeeIdAndBalanceMonth(
+                                leave.getEmployeeId(),
+                                month
+                        );
+
+        if (balanceOptional.isEmpty()) {
+            return;
+        }
+
+        EmployeeLeaveBalance balance =
+                balanceOptional.get();
+
+        double duration =
+                leave.getLeaveDuration() != null
+                        ? leave.getLeaveDuration()
+                        : 1.0;
+
+        String leaveType =
+                leave.getLeaveType();
+
+        // =========================
+        // RESTORE SICK
+        // =========================
+
+        if (leaveType.equalsIgnoreCase("SICK")) {
+
+            double currentBalance =
+                    balance.getSickBalance() != null
+                            ? balance.getSickBalance()
+                            : 0.0;
+
+            balance.setSickBalance(
+                    currentBalance + duration
+            );
+        }
+
+        // =========================
+        // RESTORE CASUAL
+        // =========================
+
+        if (leaveType.equalsIgnoreCase("CASUAL")) {
+
+            double currentBalance =
+                    balance.getCasualBalance() != null
+                            ? balance.getCasualBalance()
+                            : 0.0;
+
+            balance.setCasualBalance(
+                    currentBalance + duration
+            );
+        }
+
+        balance.setUpdatedAt(
+                LocalDateTime.now(INDIA_ZONE)
+        );
+
+        balanceRepository.save(balance);
     }
 
     // =========================
