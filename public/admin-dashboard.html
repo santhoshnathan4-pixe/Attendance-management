@@ -772,6 +772,12 @@
                 Leave
             </button>
 
+            <button class="menu-btn" 
+        onclick="showSection('workingDaySection', this)"> 
+    <i data-lucide="calendar-days"></i> 
+    Working Day Settings 
+</button>
+
             <button class="menu-btn"
                     onclick="showSection('leaveSettings', this)">
                 <i data-lucide="settings"></i>
@@ -1013,6 +1019,213 @@
                 </div>
 
             </section>
+
+            <!-- ================= WORKING DAY SETTINGS ================= -->
+
+<section id="workingDaySection" class="section">
+
+    <div class="section-title">
+        <div>
+            <h2>Working Day Settings</h2>
+            <p class="section-subtitle">
+                Manage government holidays, company holidays and working Saturdays.
+            </p>
+        </div>
+
+        <button
+            class="btn btn-primary"
+            onclick="openWorkingDayModal()">
+            <i data-lucide="plus"></i>
+            Add Setting
+        </button>
+    </div>
+
+    <div
+        id="workingDayMessage"
+        class="message">
+    </div>
+
+    <div class="top-bar">
+
+        <div class="filter-box">
+
+            <label for="workingDayYear">
+                Year
+            </label>
+
+            <select
+                id="workingDayYear"
+                onchange="loadWorkingDaySettings()">
+            </select>
+
+        </div>
+
+        <div class="filter-box">
+
+            <label for="workingDayMonth">
+                Month
+            </label>
+
+            <select
+                id="workingDayMonth"
+                onchange="loadWorkingDaySettings()">
+
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
+
+            </select>
+
+        </div>
+
+    </div>
+
+    <div class="table-card">
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Setting Type</th>
+                        <th>Reason</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+
+                <tbody id="workingDayTableBody">
+
+                    <tr>
+                        <td
+                            colspan="4"
+                            class="empty-row">
+                            Loading...
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= WORKING DAY SETTINGS MODAL ================= -->
+
+<div
+    id="workingDayModal"
+    class="modal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h3>
+                Add Working Day Setting
+            </h3>
+
+            <button
+                type="button"
+                class="close-btn"
+                onclick="closeWorkingDayModal()">
+                <i data-lucide="x"></i>
+            </button>
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="workingDayDate">
+                Date
+            </label>
+
+            <input
+                type="date"
+                id="workingDayDate"
+                required>
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="workingDayType">
+                Setting Type
+            </label>
+
+            <select
+                id="workingDayType"
+                required>
+
+                <option value="">
+                    Select Type
+                </option>
+
+                <option value="GOVERNMENT_HOLIDAY">
+                    Government Holiday
+                </option>
+
+                <option value="COMPANY_HOLIDAY">
+                    Company Holiday
+                </option>
+
+                <option value="WORKING_SATURDAY">
+                    Working Saturday
+                </option>
+
+            </select>
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="workingDayReason">
+                Reason
+            </label>
+
+            <textarea
+                id="workingDayReason"
+                rows="3"
+                placeholder="Enter reason">
+            </textarea>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="closeWorkingDayModal()">
+                Cancel
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-primary"
+                onclick="saveWorkingDaySetting()">
+                Save Setting
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
 
 
             <!-- LEAVE & PERMISSION SETTINGS -->
@@ -2082,6 +2295,8 @@
 
             loadLeaveSettings();
 
+            initializeWorkingDayControls();
+
             updateHeaderForSection(
                 "dashboard"
             );
@@ -2346,6 +2561,15 @@
             loadLeaves();
 
         }
+
+        if (
+    sectionId ===
+    "workingDaySection"
+) {
+
+    loadWorkingDaySettings();
+
+}
 
 
         if (
@@ -3425,6 +3649,389 @@
         openEmployeeReasonModal();
 
     }
+
+    // ================= WORKING DAY SETTINGS =================
+
+let workingDaySettings = [];
+
+function initializeWorkingDayControls() {
+    const yearSelect = document.getElementById("workingDayYear");
+    const monthSelect = document.getElementById("workingDayMonth");
+
+    if (!yearSelect || !monthSelect) {
+        return;
+    }
+
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth() + 1;
+
+    yearSelect.innerHTML = "";
+
+    for (let year = currentYear - 2; year <= currentYear + 1; year++) {
+        const option = document.createElement("option");
+        option.value = year;
+        option.textContent = year;
+
+        if (year === currentYear) {
+            option.selected = true;
+        }
+
+        yearSelect.appendChild(option);
+    }
+
+    monthSelect.value = currentMonth;
+
+    loadWorkingDaySettings();
+}
+
+async function loadWorkingDaySettings() {
+    const yearElement =
+        document.getElementById("workingDayYear");
+
+    const monthElement =
+        document.getElementById("workingDayMonth");
+
+    if (!yearElement || !monthElement) {
+        return;
+    }
+
+    const year = yearElement.value;
+    const month = monthElement.value;
+
+    try {
+        const response = await apiFetch(
+            `/admin/working-days?year=${year}&month=${month}`
+        );
+
+        if (!response.ok) {
+            throw new Error(
+                await getErrorMessage(response)
+            );
+        }
+
+        workingDaySettings = await response.json();
+
+        renderWorkingDaySettings();
+
+    } catch (error) {
+
+        console.error(
+            "Working day settings load error:",
+            error
+        );
+
+        workingDaySettings = [];
+
+        renderWorkingDaySettings();
+
+        showMessage(
+            "workingDayMessage",
+            error.message ||
+                "Failed to load working day settings",
+            "error"
+        );
+    }
+}
+
+function renderWorkingDaySettings() {
+
+    const tbody =
+        document.getElementById("workingDayTableBody");
+
+    if (!tbody) {
+        return;
+    }
+
+    tbody.innerHTML = "";
+
+    if (
+        !workingDaySettings ||
+        workingDaySettings.length === 0
+    ) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="4"
+                    style="text-align:center;">
+                    No working day settings found
+                </td>
+            </tr>
+        `;
+
+        return;
+    }
+
+    workingDaySettings.forEach(setting => {
+
+        const row = document.createElement("tr");
+
+        let typeText =
+            setting.settingType || "";
+
+        if (typeText === "GOVERNMENT_HOLIDAY") {
+            typeText = "Government Holiday";
+        } else if (typeText === "COMPANY_HOLIDAY") {
+            typeText = "Company Holiday";
+        } else if (typeText === "WORKING_SATURDAY") {
+            typeText = "Working Saturday";
+        }
+
+        row.innerHTML = `
+            <td>
+                ${escapeHtml(
+                    formatDate(setting.settingDate)
+                )}
+            </td>
+
+            <td>
+                ${escapeHtml(typeText)}
+            </td>
+
+            <td>
+                ${escapeHtml(
+                    setting.reason || "-"
+                )}
+            </td>
+
+            <td>
+                <button
+                    class="action-btn delete"
+                    onclick="deleteWorkingDaySetting('${escapeJs(
+                        setting.settingDate
+                    )}')">
+                    <i data-lucide="trash-2"></i>
+                    Delete
+                </button>
+            </td>
+        `;
+
+        tbody.appendChild(row);
+    });
+
+    lucide.createIcons();
+}
+
+function openWorkingDayModal() {
+
+    const modal =
+        document.getElementById(
+            "workingDayModal"
+        );
+
+    const dateInput =
+        document.getElementById(
+            "workingDayDate"
+        );
+
+    const typeInput =
+        document.getElementById(
+            "workingDayType"
+        );
+
+    const reasonInput =
+        document.getElementById(
+            "workingDayReason"
+        );
+
+    if (!modal) {
+        return;
+    }
+
+    if (dateInput) {
+        dateInput.value = "";
+    }
+
+    if (typeInput) {
+        typeInput.value = "";
+    }
+
+    if (reasonInput) {
+        reasonInput.value = "";
+    }
+
+    modal.style.display = "flex";
+}
+
+function closeWorkingDayModal() {
+
+    const modal =
+        document.getElementById(
+            "workingDayModal"
+        );
+
+    if (modal) {
+        modal.style.display = "none";
+    }
+}
+
+async function saveWorkingDaySetting() {
+
+    const dateInput =
+        document.getElementById(
+            "workingDayDate"
+        );
+
+    const typeInput =
+        document.getElementById(
+            "workingDayType"
+        );
+
+    const reasonInput =
+        document.getElementById(
+            "workingDayReason"
+        );
+
+    if (!dateInput ||
+        !typeInput ||
+        !reasonInput) {
+        return;
+    }
+
+    const settingDate =
+        dateInput.value;
+
+    const settingType =
+        typeInput.value;
+
+    const reason =
+        reasonInput.value.trim();
+
+    if (!settingDate) {
+        alert("Please select a date.");
+        dateInput.focus();
+        return;
+    }
+
+    if (!settingType) {
+        alert("Please select setting type.");
+        typeInput.focus();
+        return;
+    }
+
+    try {
+
+        const body =
+            new URLSearchParams();
+
+        body.append(
+            "settingDate",
+            settingDate
+        );
+
+        body.append(
+            "settingType",
+            settingType
+        );
+
+        if (reason) {
+            body.append(
+                "reason",
+                reason
+            );
+        }
+
+        const response =
+            await apiFetch(
+                "/admin/working-days",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type":
+                            "application/x-www-form-urlencoded"
+                    },
+                    body: body.toString()
+                }
+            );
+
+        if (!response.ok) {
+            throw new Error(
+                await getErrorMessage(response)
+            );
+        }
+
+        closeWorkingDayModal();
+
+        await loadWorkingDaySettings();
+
+        showMessage(
+            "workingDayMessage",
+            "Working day setting saved successfully.",
+            "success"
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Save working day setting error:",
+            error
+        );
+
+        showMessage(
+            "workingDayMessage",
+            error.message ||
+                "Failed to save working day setting.",
+            "error"
+        );
+    }
+}
+
+async function deleteWorkingDaySetting(
+    settingDate
+) {
+
+    if (!settingDate) {
+        return;
+    }
+
+    const confirmed =
+        confirm(
+            "Are you sure you want to remove this working day setting?"
+        );
+
+    if (!confirmed) {
+        return;
+    }
+
+    try {
+
+        const response =
+            await apiFetch(
+                `/admin/working-days?settingDate=${encodeURIComponent(
+                    settingDate
+                )}`,
+                {
+                    method: "DELETE"
+                }
+            );
+
+        if (!response.ok) {
+            throw new Error(
+                await getErrorMessage(response)
+            );
+        }
+
+        await loadWorkingDaySettings();
+
+        showMessage(
+            "workingDayMessage",
+            "Working day setting removed successfully.",
+            "success"
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Delete working day setting error:",
+            error
+        );
+
+        showMessage(
+            "workingDayMessage",
+            error.message ||
+                "Failed to delete working day setting.",
+            "error"
+        );
+    }
+}
 
 
     /* =====================================================

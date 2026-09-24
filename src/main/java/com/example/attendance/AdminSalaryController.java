@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.YearMonth;
 import java.time.ZoneId;
+import java.util.Comparator;
 import java.util.List;
 
 @RestController
@@ -20,19 +21,22 @@ public class AdminSalaryController {
     private final LeaveRequestRepository leaveRequestRepository;
     private final AdminRepository adminRepository;
     private final AdminActionHistoryRepository historyRepository;
+    private final WorkingDaySettingRepository workingDaySettingRepository;
 
     public AdminSalaryController(
             EmployeeRepository employeeRepository,
             AttendanceRepository attendanceRepository,
             LeaveRequestRepository leaveRequestRepository,
             AdminRepository adminRepository,
-            AdminActionHistoryRepository historyRepository) {
+            AdminActionHistoryRepository historyRepository,
+            WorkingDaySettingRepository workingDaySettingRepository) {
 
         this.employeeRepository = employeeRepository;
         this.attendanceRepository = attendanceRepository;
         this.leaveRequestRepository = leaveRequestRepository;
         this.adminRepository = adminRepository;
         this.historyRepository = historyRepository;
+        this.workingDaySettingRepository = workingDaySettingRepository;
     }
 
     // =========================================
@@ -48,6 +52,14 @@ public class AdminSalaryController {
                         Boolean.TRUE.equals(employee.getActive()))
                 .filter(employee ->
                         !"ADMIN".equalsIgnoreCase(employee.getRole()))
+                .sorted(
+                        Comparator.comparing(
+                                Employee::getEmployeeCode,
+                                Comparator.nullsLast(
+                                        String.CASE_INSENSITIVE_ORDER
+                                )
+                        )
+                )
                 .map(employee ->
                         new AdminSalaryResponse(
                                 employee.getId(),
@@ -69,21 +81,9 @@ public class AdminSalaryController {
             @PathVariable Integer employeeId,
             @RequestBody AdminSalaryUpdateRequest request) {
 
-        // -----------------------------------------
-        // IDENTIFY LOGGED-IN ADMIN
-        //
-        // IMPORTANT:
-        // No admin password verification.
-        // Admin is already logged in.
-        // -----------------------------------------
-
         Admin admin = findLoggedInAdmin(
                 request.getAdminEmail()
         );
-
-        // -----------------------------------------
-        // VALIDATE SALARY
-        // -----------------------------------------
 
         if (request.getNewSalary() == null) {
 
@@ -101,17 +101,9 @@ public class AdminSalaryController {
             );
         }
 
-        // -----------------------------------------
-        // VALIDATE REASON
-        // -----------------------------------------
-
         validateReason(
                 request.getReason()
         );
-
-        // -----------------------------------------
-        // FIND EMPLOYEE
-        // -----------------------------------------
 
         Employee employee =
                 employeeRepository.findById(employeeId)
@@ -122,10 +114,6 @@ public class AdminSalaryController {
                                 )
                         );
 
-        // -----------------------------------------
-        // CHECK ACTIVE EMPLOYEE
-        // -----------------------------------------
-
         if (!Boolean.TRUE.equals(employee.getActive())) {
 
             throw new ResponseStatusException(
@@ -133,10 +121,6 @@ public class AdminSalaryController {
                     "Employee is inactive"
             );
         }
-
-        // -----------------------------------------
-        // ADMIN ROLE CANNOT HAVE SALARY
-        // -----------------------------------------
 
         if ("ADMIN".equalsIgnoreCase(employee.getRole())) {
 
@@ -146,10 +130,6 @@ public class AdminSalaryController {
             );
         }
 
-        // -----------------------------------------
-        // OLD SALARY
-        // -----------------------------------------
-
         Double oldSalary =
                 employee.getSalary() != null
                         ? employee.getSalary()
@@ -157,10 +137,6 @@ public class AdminSalaryController {
 
         Double newSalary =
                 request.getNewSalary();
-
-        // -----------------------------------------
-        // NO CHANGE
-        // -----------------------------------------
 
         if (Double.compare(oldSalary, newSalary) == 0) {
 
@@ -170,17 +146,9 @@ public class AdminSalaryController {
             );
         }
 
-        // -----------------------------------------
-        // UPDATE SALARY
-        // -----------------------------------------
-
         employee.setSalary(newSalary);
 
         employeeRepository.save(employee);
-
-        // -----------------------------------------
-        // SAVE HISTORY
-        // -----------------------------------------
 
         saveHistory(
                 admin,
@@ -213,8 +181,17 @@ public class AdminSalaryController {
         LocalDate endDate =
                 yearMonth.atEndOfMonth();
 
-        // Company working days
-        int workingDays = 26;
+        // =========================================
+        // COMPANY DEFAULT WORKING DAYS
+        //
+        // September 2026 default = 26
+        // =========================================
+
+        int workingDays =
+                calculateWorkingDays(
+                        startDate,
+                        endDate
+                );
 
         return employeeRepository.findAll()
                 .stream()
@@ -222,6 +199,14 @@ public class AdminSalaryController {
                         Boolean.TRUE.equals(employee.getActive()))
                 .filter(employee ->
                         !"ADMIN".equalsIgnoreCase(employee.getRole()))
+                .sorted(
+                        Comparator.comparing(
+                                Employee::getEmployeeCode,
+                                Comparator.nullsLast(
+                                        String.CASE_INSENSITIVE_ORDER
+                                )
+                        )
+                )
                 .map(employee -> {
 
                     // =========================================
@@ -233,19 +218,6 @@ public class AdminSalaryController {
                                     .findByEmployeeIdOrderByAttendanceDateDesc(
                                             employee.getId());
 
-                    /*
-                     * Count attendance by CHECK-IN instead of
-                     * checking only PRESENT status.
-                     *
-                     * After checkout the status can become:
-                     * PRESENT
-                     * LATE
-                     * EARLY CHECK-OUT
-                     * LATE / EARLY CHECK-OUT
-                     *
-                     * All of these are valid attendance days
-                     * when the employee has checked in.
-                     */
                     long presentDays =
                             attendanceList.stream()
                                     .filter(attendance ->
@@ -336,7 +308,9 @@ public class AdminSalaryController {
                     // =========================================
 
                     double perDaySalary =
-                            monthlySalary / workingDays;
+                            workingDays > 0
+                                    ? monthlySalary / workingDays
+                                    : 0.0;
 
                     // =========================================
                     // LOSS OF PAY
@@ -374,6 +348,65 @@ public class AdminSalaryController {
 
                 })
                 .toList();
+    }
+
+    // =========================================
+    // CALCULATE WORKING DAYS
+    // =========================================
+    //
+    // Default company working days = 26.
+    //
+    // GOVERNMENT_HOLIDAY  -> -1
+    // COMPANY_HOLIDAY     -> -1
+    // WORKING_SATURDAY    -> +1
+    //
+    // A date can have only one setting because
+    // setting_date is UNIQUE in the database.
+    // =========================================
+
+    private int calculateWorkingDays(
+            LocalDate startDate,
+            LocalDate endDate) {
+
+        int workingDays = 26;
+
+        List<WorkingDaySetting> settings =
+                workingDaySettingRepository
+                        .findBySettingDateBetweenOrderBySettingDateAsc(
+                                startDate,
+                                endDate
+                        );
+
+        for (WorkingDaySetting setting : settings) {
+
+            if (setting == null ||
+                    setting.getSettingDate() == null ||
+                    setting.getSettingType() == null) {
+
+                continue;
+            }
+
+            String type =
+                    setting.getSettingType()
+                            .trim()
+                            .toUpperCase();
+
+            if ("GOVERNMENT_HOLIDAY".equals(type) ||
+                    "COMPANY_HOLIDAY".equals(type)) {
+
+                workingDays--;
+
+            } else if ("WORKING_SATURDAY".equals(type)) {
+
+                workingDays++;
+
+            }
+        }
+
+        return Math.max(
+                workingDays,
+                0
+        );
     }
 
     // =========================================
