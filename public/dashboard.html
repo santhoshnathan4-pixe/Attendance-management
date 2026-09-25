@@ -1127,26 +1127,6 @@ async function loadWorkingDayAlert() {
 
     try {
 
-        /*
-         * Backend returns settings from today
-         * onwards.
-         *
-         * Example:
-         *
-         * Today:
-         * 25-09-2026
-         *
-         * Admin setting:
-         * 29-09-2026
-         *
-         * Employee will see the alert from
-         * 25-09-2026 until 29-09-2026 night.
-         *
-         * On 30-09-2026 the setting is no longer
-         * considered upcoming and the alert
-         * automatically disappears.
-         */
-
         const response =
             await fetch(
                 `${API_BASE_URL}/employee/working-days/upcoming`
@@ -1181,7 +1161,6 @@ async function loadWorkingDayAlert() {
 
         }
 
-
         /* =========================================
            TODAY'S DATE
         ========================================= */
@@ -1201,15 +1180,10 @@ async function loadWorkingDayAlert() {
             ).padStart(2, "0");
 
 
-        /*
-         * Only keep settings that are:
-         *
-         * today
-         * OR
-         * future dates
-         *
-         * Past dates are automatically removed.
-         */
+        /* =========================================
+           KEEP TODAY + FUTURE SETTINGS
+           REMOVE PAST SETTINGS
+        ========================================= */
 
         const validSettings =
             settings
@@ -1248,146 +1222,231 @@ async function loadWorkingDayAlert() {
         }
 
 
-        /*
-         * Show the nearest active/upcoming
-         * setting.
-         */
-
-        const setting =
-            validSettings[0];
-
-
-        const type =
-            String(
-                setting.settingType || ""
-            ).toUpperCase();
-
-        const reason =
-            setting.reason &&
-            setting.reason.trim()
-                ? setting.reason.trim()
-                : "No reason provided";
-
-        const settingDate =
-            setting.settingDate;
-
-
         /* =========================================
-           FORMAT DATE
+           SHOW ALL ACTIVE / UPCOMING SETTINGS
         ========================================= */
 
-        const dateParts =
-            settingDate.split("-");
+        alertBox.innerHTML = "";
 
-        const formattedDate =
-            dateParts.length === 3
-                ? dateParts[2] +
-                  "-" +
-                  dateParts[1] +
-                  "-" +
-                  dateParts[0]
-                : settingDate;
+        validSettings.forEach(setting => {
+
+            const type =
+                String(
+                    setting.settingType || ""
+                ).toUpperCase();
+
+            const reason =
+                setting.reason &&
+                setting.reason.trim()
+                    ? setting.reason.trim()
+                    : "No reason provided";
+
+            const settingDate =
+                setting.settingDate;
 
 
-        /* =========================================
-           COMPANY HOLIDAY
-        ========================================= */
+            /* =========================================
+               FORMAT DATE
+            ========================================= */
 
-        if (
-            type === "COMPANY_HOLIDAY"
-        ) {
+            const dateParts =
+                settingDate.split("-");
 
-            alertBox.className =
-                "holiday-alert";
+            const formattedDate =
+                dateParts.length === 3
+                    ? dateParts[2] +
+                      "-" +
+                      dateParts[1] +
+                      "-" +
+                      dateParts[0]
+                    : settingDate;
 
-            alertIcon.setAttribute(
+
+            /* =========================================
+               CREATE ALERT ITEM
+            ========================================= */
+
+            const alertItem =
+                document.createElement(
+                    "div"
+                );
+
+            alertItem.style.padding =
+                "18px 20px";
+
+            alertItem.style.borderRadius =
+                "12px";
+
+            alertItem.style.marginBottom =
+                "12px";
+
+            alertItem.style.fontWeight =
+                "bold";
+
+
+            const content =
+                document.createElement(
+                    "div"
+                );
+
+            content.className =
+                "working-day-alert-content";
+
+
+            const icon =
+                document.createElement(
+                    "i"
+                );
+
+            icon.className =
+                "working-day-alert-icon";
+
+            icon.setAttribute(
                 "data-lucide",
-                "building-2"
+                "calendar-days"
             );
 
-            alertTitle.innerText =
-                "Company Holiday";
 
-            alertReason.innerText =
+            const textContainer =
+                document.createElement(
+                    "div"
+                );
+
+
+            const title =
+                document.createElement(
+                    "div"
+                );
+
+            title.className =
+                "alert-title";
+
+
+            const reasonText =
+                document.createElement(
+                    "div"
+                );
+
+            reasonText.className =
+                "alert-reason";
+
+
+            /* =========================================
+               COMPANY HOLIDAY
+            ========================================= */
+
+            if (
+                type === "COMPANY_HOLIDAY"
+            ) {
+
+                alertItem.className =
+                    "holiday-alert";
+
+                icon.setAttribute(
+                    "data-lucide",
+                    "building-2"
+                );
+
+                title.innerText =
+                    "Company Holiday";
+
+            }
+
+
+            /* =========================================
+               GOVERNMENT HOLIDAY
+            ========================================= */
+
+            else if (
+                type === "GOVERNMENT_HOLIDAY"
+            ) {
+
+                alertItem.className =
+                    "government-holiday-alert";
+
+                icon.setAttribute(
+                    "data-lucide",
+                    "landmark"
+                );
+
+                title.innerText =
+                    "Government Holiday";
+
+            }
+
+
+            /* =========================================
+               WORKING SATURDAY
+            ========================================= */
+
+            else if (
+                type === "WORKING_SATURDAY"
+            ) {
+
+                alertItem.className =
+                    "working-saturday-alert";
+
+                icon.setAttribute(
+                    "data-lucide",
+                    "calendar-check"
+                );
+
+                title.innerText =
+                    "Working Saturday";
+
+            }
+
+
+            else {
+
+                return;
+
+            }
+
+
+            reasonText.innerText =
                 "Date: " +
                 formattedDate +
                 " | Reason: " +
                 reason;
 
-            alertBox.style.display =
-                "block";
 
-            lucide.createIcons();
-
-            return;
-
-        }
-
-
-        /* =========================================
-           GOVERNMENT HOLIDAY
-        ========================================= */
-
-        if (
-            type === "GOVERNMENT_HOLIDAY"
-        ) {
-
-            alertBox.className =
-                "government-holiday-alert";
-
-            alertIcon.setAttribute(
-                "data-lucide",
-                "landmark"
+            textContainer.appendChild(
+                title
             );
 
-            alertTitle.innerText =
-                "Government Holiday";
-
-            alertReason.innerText =
-                "Date: " +
-                formattedDate +
-                " | Reason: " +
-                reason;
-
-            alertBox.style.display =
-                "block";
-
-            lucide.createIcons();
-
-            return;
-
-        }
-
-
-        /* =========================================
-           WORKING SATURDAY
-        ========================================= */
-
-        if (
-            type === "WORKING_SATURDAY"
-        ) {
-
-            alertBox.className =
-                "working-saturday-alert";
-
-            alertIcon.setAttribute(
-                "data-lucide",
-                "calendar-check"
+            textContainer.appendChild(
+                reasonText
             );
 
-            alertTitle.innerText =
-                "Working Saturday";
 
-            alertReason.innerText =
-                "Date: " +
-                formattedDate +
-                " | Reason: " +
-                reason;
+            content.appendChild(
+                icon
+            );
+
+            content.appendChild(
+                textContainer
+            );
+
+
+            alertItem.appendChild(
+                content
+            );
+
+
+            alertBox.appendChild(
+                alertItem
+            );
+
+        });
+
+
+        if (
+            alertBox.children.length === 0
+        ) {
 
             alertBox.style.display =
-                "block";
-
-            lucide.createIcons();
+                "none";
 
             return;
 
@@ -1395,7 +1454,16 @@ async function loadWorkingDayAlert() {
 
 
         alertBox.style.display =
-            "none";
+            "block";
+
+
+        if (
+            typeof lucide !== "undefined"
+        ) {
+
+            lucide.createIcons();
+
+        }
 
     }
     catch (error) {
