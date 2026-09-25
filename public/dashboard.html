@@ -343,9 +343,49 @@
             overflow-x: auto;
         }
 
-        .table-card h2 {
+        /* =========================================
+           HISTORY HEADER + TOGGLE BUTTON
+        ========================================= */
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0;
+        }
+
+        .history-header h2 {
             color: #2563eb;
-            margin-bottom: 20px;
+            margin: 0;
+        }
+
+        .history-toggle-btn {
+            width: 38px;
+            height: 38px;
+            border: none;
+            border-radius: 8px;
+            background: #eff6ff;
+            color: #2563eb;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s ease;
+        }
+
+        .history-toggle-btn:hover {
+            background: #dbeafe;
+        }
+
+        .history-toggle-btn.open {
+            transform: rotate(90deg);
+        }
+
+        .history-content {
+            display: none;
+            margin-top: 20px;
         }
 
         table {
@@ -828,61 +868,111 @@
 
     </div>
 
+    <!-- =========================================
+         ATTENDANCE HISTORY
+    ========================================= -->
+
     <div class="table-card">
 
-        <h2>
-            Attendance History
-        </h2>
+        <div class="history-header">
 
-        <table>
+            <h2>
+                Attendance History
+            </h2>
 
-            <thead>
+            <button
+                type="button"
+                id="attendanceHistoryToggle"
+                class="history-toggle-btn"
+                onclick="toggleAttendanceHistory()"
+                aria-label="Show Attendance History">
+
+                ▶
+
+            </button>
+
+        </div>
+
+        <div
+            id="attendanceHistoryContent"
+            class="history-content">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Date</th>
+                        <th>Check In</th>
+                        <th>Check Out</th>
+                        <th>Status</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="attendanceTable"></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- =========================================
+         LEAVE HISTORY
+    ========================================= -->
+
+    <div class="table-card">
+
+        <div class="history-header">
+
+            <h2>
+                Leave History
+            </h2>
+
+            <button
+                type="button"
+                id="leaveHistoryToggle"
+                class="history-toggle-btn"
+                onclick="toggleLeaveHistory()"
+                aria-label="Show Leave History">
+
+                ▶
+
+            </button>
+
+        </div>
+
+        <div
+            id="leaveHistoryContent"
+            class="history-content">
+
+            <table>
+
+                <thead>
 
                 <tr>
 
                     <th>Date</th>
-                    <th>Check In</th>
-                    <th>Check Out</th>
+                    <th>Type</th>
+                    <th>Duration</th>
+                    <th>Session</th>
+                    <th>Permission</th>
+                    <th>Reason</th>
+                    <th>LOP Days</th>
                     <th>Status</th>
 
                 </tr>
 
-            </thead>
+                </thead>
 
-            <tbody id="attendanceTable"></tbody>
+                <tbody id="leaveTable"></tbody>
 
-        </table>
+            </table>
 
-    </div>
-
-    <div class="table-card">
-
-        <h2>
-            Leave History
-        </h2>
-
-        <table>
-
-            <thead>
-
-            <tr>
-
-                <th>Date</th>
-                <th>Type</th>
-                <th>Duration</th>
-                <th>Session</th>
-                <th>Permission</th>
-                <th>Reason</th>
-                <th>LOP Days</th>
-                <th>Status</th>
-
-            </tr>
-
-            </thead>
-
-            <tbody id="leaveTable"></tbody>
-
-        </table>
+        </div>
 
     </div>
 
@@ -985,24 +1075,13 @@ function loadWorkingDayAlert() {
             "workingDayAlertReason"
         );
 
-
-    /*
-     * Always hide first.
-     *
-     * This guarantees that an old alert
-     * does not remain visible when the date
-     * changes or when no setting exists.
-     */
-
     alertBox.style.display =
         "none";
 
     alertBox.className = "";
 
-
     const now =
         new Date();
-
 
     const today =
         now.getFullYear() +
@@ -1015,7 +1094,6 @@ function loadWorkingDayAlert() {
             now.getDate()
         ).padStart(2, "0");
 
-
     fetch(
         `${API_BASE_URL}/employee/working-days/today?date=${today}`
     )
@@ -1023,7 +1101,6 @@ function loadWorkingDayAlert() {
 
         const text =
             await response.text();
-
 
         if (!response.ok) {
 
@@ -1034,18 +1111,12 @@ function loadWorkingDayAlert() {
 
         }
 
-
         return text
             ? JSON.parse(text)
             : null;
 
     })
     .then(data => {
-
-        /*
-         * No setting for today.
-         * Keep alert hidden.
-         */
 
         if (!data) {
 
@@ -1056,23 +1127,16 @@ function loadWorkingDayAlert() {
 
         }
 
-
         const type =
             String(
                 data.settingType || ""
             ).toUpperCase();
-
 
         const reason =
             data.reason &&
             data.reason.trim()
                 ? data.reason.trim()
                 : "No reason provided";
-
-
-        /* =====================================
-           COMPANY HOLIDAY
-        ===================================== */
 
         if (
             type === "COMPANY_HOLIDAY"
@@ -1095,11 +1159,6 @@ function loadWorkingDayAlert() {
 
         }
 
-
-        /* =====================================
-           GOVERNMENT HOLIDAY
-        ===================================== */
-
         if (
             type === "GOVERNMENT_HOLIDAY"
         ) {
@@ -1120,11 +1179,6 @@ function loadWorkingDayAlert() {
             return;
 
         }
-
-
-        /* =====================================
-           WORKING SATURDAY
-        ===================================== */
 
         if (
             type === "WORKING_SATURDAY"
@@ -1147,12 +1201,6 @@ function loadWorkingDayAlert() {
 
         }
 
-
-        /*
-         * Unknown setting type.
-         * Do not display anything.
-         */
-
         alertBox.style.display =
             "none";
 
@@ -1164,16 +1212,104 @@ function loadWorkingDayAlert() {
             error
         );
 
-        /*
-         * If the working-day endpoint fails,
-         * existing Employee Dashboard features
-         * continue normally.
-         */
-
         alertBox.style.display =
             "none";
 
     });
+
+}
+
+
+/* =========================================
+   HISTORY TOGGLE
+========================================= */
+
+function toggleAttendanceHistory() {
+
+    const content =
+        document.getElementById(
+            "attendanceHistoryContent"
+        );
+
+    const button =
+        document.getElementById(
+            "attendanceHistoryToggle"
+        );
+
+    const isOpen =
+        content.style.display === "block";
+
+    if (isOpen) {
+
+        content.style.display =
+            "none";
+
+        button.classList.remove(
+            "open"
+        );
+
+        button.innerText =
+            "▶";
+
+    }
+    else {
+
+        content.style.display =
+            "block";
+
+        button.classList.add(
+            "open"
+        );
+
+        button.innerText =
+            "▶";
+
+    }
+
+}
+
+
+function toggleLeaveHistory() {
+
+    const content =
+        document.getElementById(
+            "leaveHistoryContent"
+        );
+
+    const button =
+        document.getElementById(
+            "leaveHistoryToggle"
+        );
+
+    const isOpen =
+        content.style.display === "block";
+
+    if (isOpen) {
+
+        content.style.display =
+            "none";
+
+        button.classList.remove(
+            "open"
+        );
+
+        button.innerText =
+            "▶";
+
+    }
+    else {
+
+        content.style.display =
+            "block";
+
+        button.classList.add(
+            "open"
+        );
+
+        button.innerText =
+            "▶";
+
+    }
 
 }
 
@@ -1397,51 +1533,22 @@ function updateLeaveOptions() {
             "permissionOption"
         );
 
-
-    /*
-     * Full-day Leave is ALWAYS available.
-     *
-     * It can become:
-     *
-     * Sick -> Casual -> LOP
-     *
-     * Therefore full-day Leave must never
-     * be disabled because of paid balance.
-     */
-
     fullDayLeaveOption.disabled =
         false;
-
-
-    /*
-     * Sick half day requires 0.5 Sick balance.
-     */
 
     sickHalfOption.disabled =
         currentSickRemaining < 0.5;
 
-
-    /*
-     * Casual half day requires 0.5 Casual balance.
-     */
-
     casualHalfOption.disabled =
         currentCasualRemaining < 0.5;
 
-
-    /*
-     * Permission requires available permission.
-     */
-
     permissionOption.disabled =
         currentPermissionRemaining <= 0;
-
 
     const leaveType =
         document.getElementById(
             "leaveType"
         );
-
 
     if (
         leaveType.value === "SICK_HALF" &&
@@ -1452,7 +1559,6 @@ function updateLeaveOptions() {
 
     }
 
-
     if (
         leaveType.value === "CASUAL_HALF" &&
         casualHalfOption.disabled
@@ -1462,7 +1568,6 @@ function updateLeaveOptions() {
 
     }
 
-
     if (
         leaveType.value === "PERMISSION" &&
         permissionOption.disabled
@@ -1471,7 +1576,6 @@ function updateLeaveOptions() {
         leaveType.value = "";
 
     }
-
 
     changeLeaveType();
 
@@ -1509,7 +1613,6 @@ function changeLeaveType() {
             "endDateGroup"
         );
 
-
     halfDayGroup.style.display =
         "none";
 
@@ -1519,16 +1622,8 @@ function changeLeaveType() {
     permissionEndGroup.style.display =
         "none";
 
-
-    /*
-     * Generic full-day Leave:
-     *
-     * Start Date + End Date
-     */
-
     endDateGroup.style.display =
         "block";
-
 
     if (
         type === "SICK_HALF" ||
@@ -1542,7 +1637,6 @@ function changeLeaveType() {
             "none";
 
     }
-
 
     if (
         type === "PERMISSION"
@@ -1578,7 +1672,6 @@ function updateEndDateMinimum() {
             "endDate"
         );
 
-
     if (!startDate) {
 
         endDateInput.removeAttribute(
@@ -1589,10 +1682,8 @@ function updateEndDateMinimum() {
 
     }
 
-
     endDateInput.min =
         startDate;
-
 
     if (
         endDateInput.value === "" ||
@@ -1658,7 +1749,6 @@ function applyLeave() {
             "submitLeaveBtn"
         );
 
-
     if (
         type === "" ||
         date === ""
@@ -1674,25 +1764,8 @@ function applyLeave() {
 
     }
 
-
-    /*
-     * SICK is the backend value for
-     * generic full-day Leave.
-     *
-     * Backend allocation:
-     *
-     * Sick -> Casual -> LOP
-     *
-     * No frontend balance check is performed.
-     */
-
     const fullDayLeave =
         type === "SICK";
-
-
-    /* =====================================
-       FULL DAY VALIDATION
-    ===================================== */
 
     if (fullDayLeave) {
 
@@ -1707,7 +1780,6 @@ function applyLeave() {
             return;
 
         }
-
 
         if (
             new Date(endDate) <
@@ -1725,11 +1797,6 @@ function applyLeave() {
         }
 
     }
-
-
-    /* =====================================
-       HALF DAY VALIDATION
-    ===================================== */
 
     if (
         type === "SICK_HALF" ||
@@ -1752,11 +1819,6 @@ function applyLeave() {
 
     }
 
-
-    /* =====================================
-       PERMISSION VALIDATION
-    ===================================== */
-
     if (
         type === "PERMISSION"
     ) {
@@ -1776,7 +1838,6 @@ function applyLeave() {
 
         }
 
-
         if (
             permissionEnd <=
             permissionStart
@@ -1794,38 +1855,28 @@ function applyLeave() {
 
     }
 
-
-    /* =====================================
-       REQUEST PARAMETERS
-    ===================================== */
-
     const params =
         new URLSearchParams();
-
 
     params.append(
         "email",
         employeeEmail
     );
 
-
     params.append(
         "leaveType",
         type
     );
-
 
     params.append(
         "leaveDate",
         date
     );
 
-
     params.append(
         "reason",
         reason
     );
-
 
     if (fullDayLeave) {
 
@@ -1835,7 +1886,6 @@ function applyLeave() {
         );
 
     }
-
 
     if (
         type === "SICK_HALF" ||
@@ -1848,7 +1898,6 @@ function applyLeave() {
         );
 
     }
-
 
     if (
         type === "PERMISSION"
@@ -1866,7 +1915,6 @@ function applyLeave() {
 
     }
 
-
     message.innerText =
         "Submitting leave...";
 
@@ -1875,7 +1923,6 @@ function applyLeave() {
 
     submitButton.disabled =
         true;
-
 
     fetch(
         `${API_BASE_URL}/leave/apply?${params.toString()}`,
@@ -1887,7 +1934,6 @@ function applyLeave() {
 
         const data =
             await response.text();
-
 
         if (!response.ok) {
 
@@ -1907,7 +1953,6 @@ function applyLeave() {
             data ||
             "Leave applied successfully";
 
-
         if (
             data.toLowerCase().includes(
                 "success"
@@ -1917,48 +1962,39 @@ function applyLeave() {
             message.style.color =
                 "green";
 
-
             document.getElementById(
                 "leaveType"
             ).value = "";
-
 
             document.getElementById(
                 "leaveDate"
             ).value = "";
 
-
             document.getElementById(
                 "endDate"
             ).value = "";
-
 
             document.getElementById(
                 "halfDaySession"
             ).value = "";
 
-
             document.getElementById(
                 "permissionStart"
             ).value = "";
-
 
             document.getElementById(
                 "permissionEnd"
             ).value = "";
 
-
             document.getElementById(
                 "reason"
             ).value = "";
-
 
             document.getElementById(
                 "endDate"
             ).removeAttribute(
                 "min"
             );
-
 
             changeLeaveType();
 
@@ -1973,7 +2009,6 @@ function applyLeave() {
                 "red";
 
         }
-
 
         submitButton.disabled =
             false;
@@ -2005,7 +2040,6 @@ function formatBalanceNumber(value) {
     const number =
         Number(value ?? 0);
 
-
     if (
         Number.isInteger(number)
     ) {
@@ -2013,7 +2047,6 @@ function formatBalanceNumber(value) {
         return String(number);
 
     }
-
 
     return number
         .toFixed(2)
@@ -2036,7 +2069,6 @@ function loadLeaveBalance() {
         const text =
             await response.text();
 
-
         if (!response.ok) {
 
             throw new Error(
@@ -2046,18 +2078,12 @@ function loadLeaveBalance() {
 
         }
 
-
         return text
             ? JSON.parse(text)
             : {};
 
     })
     .then(data => {
-
-
-        /* =====================================
-           SICK
-        ===================================== */
 
         const sickRemaining =
             Number(
@@ -2069,15 +2095,12 @@ function loadLeaveBalance() {
                 data.sickUsed ?? 0
             );
 
-
         currentSickRemaining =
             sickRemaining;
-
 
         const sickTotal =
             sickRemaining +
             sickUsed;
-
 
         document.getElementById(
             "sickBalance"
@@ -2090,11 +2113,6 @@ function loadLeaveBalance() {
                 sickTotal
             );
 
-
-        /* =====================================
-           CASUAL
-        ===================================== */
-
         const casualRemaining =
             Number(
                 data.casualRemaining ?? 0
@@ -2105,15 +2123,12 @@ function loadLeaveBalance() {
                 data.casualUsed ?? 0
             );
 
-
         currentCasualRemaining =
             casualRemaining;
-
 
         const casualTotal =
             casualRemaining +
             casualUsed;
-
 
         document.getElementById(
             "casualBalance"
@@ -2126,11 +2141,6 @@ function loadLeaveBalance() {
                 casualTotal
             );
 
-
-        /* =====================================
-           PERMISSION
-        ===================================== */
-
         const permissionRemaining =
             Number(
                 data.permissionRemaining ?? 0
@@ -2141,15 +2151,12 @@ function loadLeaveBalance() {
                 data.permissionUsed ?? 0
             );
 
-
         currentPermissionRemaining =
             permissionRemaining;
-
 
         const permissionTotal =
             permissionRemaining +
             permissionUsed;
-
 
         document.getElementById(
             "permissionBalance"
@@ -2161,7 +2168,6 @@ function loadLeaveBalance() {
             formatBalanceNumber(
                 permissionTotal
             );
-
 
         updateLeaveOptions();
 
@@ -2192,7 +2198,6 @@ function loadAttendanceHistory() {
         const text =
             await response.text();
 
-
         if (!response.ok) {
 
             throw new Error(
@@ -2201,7 +2206,6 @@ function loadAttendanceHistory() {
             );
 
         }
-
 
         return text
             ? JSON.parse(text)
@@ -2240,16 +2244,13 @@ function loadAttendanceHistory() {
                 "todayStatus"
             );
 
-
         table.innerHTML = "";
-
 
         checkInBtn.disabled =
             false;
 
         checkOutBtn.disabled =
             true;
-
 
         todayCheckIn.innerText =
             "--:--";
@@ -2260,10 +2261,8 @@ function loadAttendanceHistory() {
         todayStatus.innerText =
             "Not Checked In";
 
-
         const now =
             new Date();
-
 
         const today =
             now.getFullYear() +
@@ -2276,28 +2275,23 @@ function loadAttendanceHistory() {
                 now.getDate()
             ).padStart(2, "0");
 
-
         const todayRecord =
             data.find(item =>
                 item.attendanceDate === today
             );
-
 
         if (todayRecord) {
 
             checkInBtn.disabled =
                 true;
 
-
             todayCheckIn.innerText =
                 todayRecord.checkIn ||
                 "--:--";
 
-
             todayStatus.innerText =
                 todayRecord.status ||
                 "PRESENT";
-
 
             if (
                 todayRecord.checkOut
@@ -2322,7 +2316,6 @@ function loadAttendanceHistory() {
 
         }
 
-
         if (
             data.length === 0
         ) {
@@ -2340,14 +2333,12 @@ function loadAttendanceHistory() {
 
         }
 
-
         data.forEach(item => {
 
             const row =
                 document.createElement(
                     "tr"
                 );
-
 
             row.innerHTML =
                 `
@@ -2367,7 +2358,6 @@ function loadAttendanceHistory() {
                     ${item.status || "-"}
                 </td>
                 `;
-
 
             table.appendChild(row);
 
@@ -2400,7 +2390,6 @@ function loadLeaveHistory() {
         const text =
             await response.text();
 
-
         if (!response.ok) {
 
             throw new Error(
@@ -2409,7 +2398,6 @@ function loadLeaveHistory() {
             );
 
         }
-
 
         return text
             ? JSON.parse(text)
@@ -2423,9 +2411,7 @@ function loadLeaveHistory() {
                 "leaveTable"
             );
 
-
         table.innerHTML = "";
-
 
         if (
             data.length === 0
@@ -2444,7 +2430,6 @@ function loadLeaveHistory() {
 
         }
 
-
         data.forEach(item => {
 
             const row =
@@ -2452,10 +2437,8 @@ function loadLeaveHistory() {
                     "tr"
                 );
 
-
             let permission =
                 "-";
-
 
             if (
                 item.permissionStart &&
@@ -2469,10 +2452,8 @@ function loadLeaveHistory() {
 
             }
 
-
             let duration =
                 "-";
-
 
             if (
                 item.leaveDuration !== null &&
@@ -2483,7 +2464,6 @@ function loadLeaveHistory() {
                     Number(
                         item.leaveDuration
                     );
-
 
                 if (
                     durationNumber === 0.5
@@ -2508,18 +2488,15 @@ function loadLeaveHistory() {
 
             }
 
-
             const lopDays =
                 Number(
                     item.lopDays ?? 0
                 );
 
-
             const lopDisplay =
                 lopDays > 0
                     ? `<span class="lop-badge">${formatBalanceNumber(lopDays)}</span>`
                     : `<span class="normal-badge">0</span>`;
-
 
             row.innerHTML =
                 `
@@ -2555,7 +2532,6 @@ function loadLeaveHistory() {
                     ${item.status || "-"}
                 </td>
                 `;
-
 
             table.appendChild(row);
 
