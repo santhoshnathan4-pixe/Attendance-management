@@ -3907,6 +3907,7 @@ async function saveWorkingDaySetting() {
     const reason =
         reasonInput.value.trim();
 
+
     if (!settingDate) {
 
         alert(
@@ -3917,6 +3918,7 @@ async function saveWorkingDaySetting() {
 
         return;
     }
+
 
     if (!settingType) {
 
@@ -3929,10 +3931,21 @@ async function saveWorkingDaySetting() {
         return;
     }
 
+
+    /*
+     * Get logged-in admin name.
+     */
+
+    const adminName =
+        sessionStorage.getItem("adminName") ||
+        localStorage.getItem("adminName") ||
+        sessionStorage.getItem("adminEmail") ||
+        localStorage.getItem("adminEmail") ||
+        "Admin";
+
+
     /*
      * Prevent duplicate requests.
-     * Once Save is clicked, disable the button
-     * until the request is completed.
      */
 
     if (saveButton) {
@@ -3942,29 +3955,41 @@ async function saveWorkingDaySetting() {
         }
 
         saveButton.disabled = true;
+
         saveButton.dataset.originalText =
             saveButton.innerHTML;
 
         saveButton.innerHTML =
             '<i data-lucide="loader-circle"></i> Saving...';
 
-        lucide.createIcons();
+        if (
+            typeof lucide !==
+            "undefined"
+        ) {
+
+            lucide.createIcons();
+
+        }
     }
+
 
     try {
 
         const body =
             new URLSearchParams();
 
+
         body.append(
             "settingDate",
             settingDate
         );
 
+
         body.append(
             "settingType",
             settingType
         );
+
 
         if (reason) {
 
@@ -3974,6 +3999,13 @@ async function saveWorkingDaySetting() {
             );
 
         }
+
+
+        body.append(
+            "adminName",
+            adminName
+        );
+
 
         const response =
             await apiFetch(
@@ -3991,17 +4023,23 @@ async function saveWorkingDaySetting() {
                 }
             );
 
+
         if (!response.ok) {
 
             throw new Error(
-                await getErrorMessage(response)
+                await getErrorMessage(
+                    response
+                )
             );
 
         }
 
+
         closeWorkingDayModal();
 
+
         await loadWorkingDaySettings();
+
 
         showMessage(
             "workingDayMessage",
@@ -4017,6 +4055,7 @@ async function saveWorkingDaySetting() {
             error
         );
 
+
         showMessage(
             "workingDayMessage",
             error.message ||
@@ -4028,13 +4067,14 @@ async function saveWorkingDaySetting() {
     finally {
 
         /*
-         * Re-enable the Save button only after
-         * the request has completely finished.
+         * Re-enable Save button
+         * after request is completed.
          */
 
         if (saveButton) {
 
             saveButton.disabled = false;
+
 
             if (
                 saveButton.dataset.originalText
@@ -4045,7 +4085,15 @@ async function saveWorkingDaySetting() {
 
                 delete saveButton.dataset.originalText;
 
-                lucide.createIcons();
+
+                if (
+                    typeof lucide !==
+                    "undefined"
+                ) {
+
+                    lucide.createIcons();
+
+                }
 
             }
 
@@ -4062,14 +4110,29 @@ async function deleteWorkingDaySetting(
         return;
     }
 
+
     const confirmed =
         confirm(
             "Are you sure you want to remove this working day setting?"
         );
 
+
     if (!confirmed) {
         return;
     }
+
+
+    /*
+     * Get logged-in admin name.
+     */
+
+    const adminName =
+        sessionStorage.getItem("adminName") ||
+        localStorage.getItem("adminName") ||
+        sessionStorage.getItem("adminEmail") ||
+        localStorage.getItem("adminEmail") ||
+        "Admin";
+
 
     try {
 
@@ -4077,19 +4140,28 @@ async function deleteWorkingDaySetting(
             await apiFetch(
                 `/admin/working-days?settingDate=${encodeURIComponent(
                     settingDate
+                )}&adminName=${encodeURIComponent(
+                    adminName
                 )}`,
                 {
                     method: "DELETE"
                 }
             );
 
+
         if (!response.ok) {
+
             throw new Error(
-                await getErrorMessage(response)
+                await getErrorMessage(
+                    response
+                )
             );
+
         }
 
+
         await loadWorkingDaySettings();
+
 
         showMessage(
             "workingDayMessage",
@@ -4097,12 +4169,14 @@ async function deleteWorkingDaySetting(
             "success"
         );
 
-    } catch (error) {
+    }
+    catch (error) {
 
         console.error(
             "Delete working day setting error:",
             error
         );
+
 
         showMessage(
             "workingDayMessage",
@@ -4110,10 +4184,9 @@ async function deleteWorkingDaySetting(
                 "Failed to delete working day setting.",
             "error"
         );
+
     }
 }
-
-
     /* =====================================================
        GENERAL ACTION REASON MODAL
     ===================================================== */
