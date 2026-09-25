@@ -11,6 +11,9 @@
 
     <title>Growbytee - Employee Dashboard</title>
 
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
     <style>
 
         * {
@@ -88,6 +91,19 @@
             font-weight: bold;
         }
 
+        .working-day-alert-content {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .working-day-alert-icon {
+            width: 28px;
+            height: 28px;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
         #workingDayAlert .alert-title {
             font-size: 18px;
             margin-bottom: 7px;
@@ -96,7 +112,7 @@
         #workingDayAlert .alert-reason {
             font-size: 14px;
             font-weight: normal;
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
         .holiday-alert {
@@ -489,7 +505,7 @@
     <div class="welcome">
 
         <h2 id="welcomeText">
-            Welcome 👋
+            Welcome
         </h2>
 
         <p>
@@ -505,14 +521,28 @@
     <div
         id="workingDayAlert">
 
-        <div
-            id="workingDayAlertTitle"
-            class="alert-title">
-        </div>
+        <div class="working-day-alert-content">
 
-        <div
-            id="workingDayAlertReason"
-            class="alert-reason">
+            <i
+                id="workingDayAlertIcon"
+                class="working-day-alert-icon"
+                data-lucide="calendar-days">
+            </i>
+
+            <div>
+
+                <div
+                    id="workingDayAlertTitle"
+                    class="alert-title">
+                </div>
+
+                <div
+                    id="workingDayAlertReason"
+                    class="alert-reason">
+                </div>
+
+            </div>
+
         </div>
 
     </div>
@@ -757,7 +787,7 @@
             <input
                 type="date"
                 id="leaveDate"
-                onchange="updateEndDateMinimum">
+                onchange="updateEndDateMinimum()">
 
         </div>
 
@@ -1037,8 +1067,7 @@ function loadEmployeeDetails() {
                 "welcomeText"
             ).innerText =
                 "Welcome, " +
-                data.name +
-                " 👋";
+                data.name;
 
         }
 
@@ -1077,10 +1106,16 @@ async function loadWorkingDayAlert() {
             "workingDayAlertReason"
         );
 
+    const alertIcon =
+        document.getElementById(
+            "workingDayAlertIcon"
+        );
+
     if (
         !alertBox ||
         !alertTitle ||
-        !alertReason
+        !alertReason ||
+        !alertIcon
     ) {
         return;
     }
@@ -1092,112 +1127,52 @@ async function loadWorkingDayAlert() {
 
     try {
 
-        const now =
-            new Date();
-
         /*
-         * Check today and upcoming 30 days.
-         * This allows employees to see future
-         * working-day / holiday settings in advance.
+         * Backend returns settings from today
+         * onwards.
+         *
+         * Example:
+         *
+         * Today:
+         * 25-09-2026
+         *
+         * Admin setting:
+         * 29-09-2026
+         *
+         * Employee will see the alert from
+         * 25-09-2026 until 29-09-2026 night.
+         *
+         * On 30-09-2026 the setting is no longer
+         * considered upcoming and the alert
+         * automatically disappears.
          */
 
-        const dates = [];
-
-        for (
-            let i = 0;
-            i <= 30;
-            i++
-        ) {
-
-            const targetDate =
-                new Date(now);
-
-            targetDate.setDate(
-                now.getDate() + i
+        const response =
+            await fetch(
+                `${API_BASE_URL}/employee/working-days/upcoming`
             );
 
-            const dateString =
-                targetDate.getFullYear() +
-                "-" +
-                String(
-                    targetDate.getMonth() + 1
-                ).padStart(2, "0") +
-                "-" +
-                String(
-                    targetDate.getDate()
-                ).padStart(2, "0");
+        const text =
+            await response.text();
 
-            dates.push(
-                dateString
+        if (!response.ok) {
+
+            throw new Error(
+                text ||
+                "Working day settings request failed"
             );
 
         }
 
+        const settings =
+            text
+                ? JSON.parse(text)
+                : [];
 
-        /*
-         * Request all dates in parallel.
-         */
-
-        const responses =
-            await Promise.all(
-                dates.map(async date => {
-
-                    try {
-
-                        const response =
-                            await fetch(
-                                `${API_BASE_URL}/employee/working-days/today?date=${date}`
-                            );
-
-                        if (!response.ok) {
-                            return null;
-                        }
-
-                        const text =
-                            await response.text();
-
-                        if (!text) {
-                            return null;
-                        }
-
-                        const data =
-                            JSON.parse(text);
-
-                        if (!data) {
-                            return null;
-                        }
-
-                        return data;
-
-                    } catch (error) {
-
-                        console.error(
-                            "Working day date check error:",
-                            date,
-                            error
-                        );
-
-                        return null;
-
-                    }
-
-                })
-            );
-
-
-        /*
-         * Find the nearest upcoming setting.
-         */
-
-        const upcomingSetting =
-            responses.find(
-                setting =>
-                    setting &&
-                    setting.settingDate
-            );
-
-
-        if (!upcomingSetting) {
+        if (
+            !Array.isArray(settings) ||
+            settings.length === 0
+        ) {
 
             alertBox.style.display =
                 "none";
@@ -1207,33 +1182,111 @@ async function loadWorkingDayAlert() {
         }
 
 
-        const type =
+        /* =========================================
+           TODAY'S DATE
+        ========================================= */
+
+        const now =
+            new Date();
+
+        const today =
+            now.getFullYear() +
+            "-" +
             String(
-                upcomingSetting.settingType || ""
-            ).toUpperCase();
-
-        const reason =
-            upcomingSetting.reason &&
-            upcomingSetting.reason.trim()
-                ? upcomingSetting.reason.trim()
-                : "No reason provided";
-
-        const settingDate =
-            upcomingSetting.settingDate;
+                now.getMonth() + 1
+            ).padStart(2, "0") +
+            "-" +
+            String(
+                now.getDate()
+            ).padStart(2, "0");
 
 
         /*
-         * Convert:
-         * 2026-09-26
-         * to:
-         * 26-09-2026
+         * Only keep settings that are:
+         *
+         * today
+         * OR
+         * future dates
+         *
+         * Past dates are automatically removed.
          */
 
+        const validSettings =
+            settings
+                .filter(setting => {
+
+                    if (
+                        !setting ||
+                        !setting.settingDate
+                    ) {
+                        return false;
+                    }
+
+                    return (
+                        setting.settingDate >=
+                        today
+                    );
+
+                })
+                .sort(
+                    (a, b) =>
+                        a.settingDate.localeCompare(
+                            b.settingDate
+                        )
+                );
+
+
+        if (
+            validSettings.length === 0
+        ) {
+
+            alertBox.style.display =
+                "none";
+
+            return;
+
+        }
+
+
+        /*
+         * Show the nearest active/upcoming
+         * setting.
+         */
+
+        const setting =
+            validSettings[0];
+
+
+        const type =
+            String(
+                setting.settingType || ""
+            ).toUpperCase();
+
+        const reason =
+            setting.reason &&
+            setting.reason.trim()
+                ? setting.reason.trim()
+                : "No reason provided";
+
+        const settingDate =
+            setting.settingDate;
+
+
+        /* =========================================
+           FORMAT DATE
+        ========================================= */
+
+        const dateParts =
+            settingDate.split("-");
+
         const formattedDate =
-            settingDate
-                .split("-")
-                .reverse()
-                .join("-");
+            dateParts.length === 3
+                ? dateParts[2] +
+                  "-" +
+                  dateParts[1] +
+                  "-" +
+                  dateParts[0]
+                : settingDate;
 
 
         /* =========================================
@@ -1247,8 +1300,13 @@ async function loadWorkingDayAlert() {
             alertBox.className =
                 "holiday-alert";
 
+            alertIcon.setAttribute(
+                "data-lucide",
+                "building-2"
+            );
+
             alertTitle.innerText =
-                "🏢 Company Holiday";
+                "Company Holiday";
 
             alertReason.innerText =
                 "Date: " +
@@ -1258,6 +1316,8 @@ async function loadWorkingDayAlert() {
 
             alertBox.style.display =
                 "block";
+
+            lucide.createIcons();
 
             return;
 
@@ -1275,8 +1335,13 @@ async function loadWorkingDayAlert() {
             alertBox.className =
                 "government-holiday-alert";
 
+            alertIcon.setAttribute(
+                "data-lucide",
+                "landmark"
+            );
+
             alertTitle.innerText =
-                "🏛️ Government Holiday";
+                "Government Holiday";
 
             alertReason.innerText =
                 "Date: " +
@@ -1286,6 +1351,8 @@ async function loadWorkingDayAlert() {
 
             alertBox.style.display =
                 "block";
+
+            lucide.createIcons();
 
             return;
 
@@ -1303,8 +1370,13 @@ async function loadWorkingDayAlert() {
             alertBox.className =
                 "working-saturday-alert";
 
+            alertIcon.setAttribute(
+                "data-lucide",
+                "calendar-check"
+            );
+
             alertTitle.innerText =
-                "📅 Working Saturday";
+                "Working Saturday";
 
             alertReason.innerText =
                 "Date: " +
@@ -1315,6 +1387,8 @@ async function loadWorkingDayAlert() {
             alertBox.style.display =
                 "block";
 
+            lucide.createIcons();
+
             return;
 
         }
@@ -1323,7 +1397,8 @@ async function loadWorkingDayAlert() {
         alertBox.style.display =
             "none";
 
-    } catch (error) {
+    }
+    catch (error) {
 
         console.error(
             "WORKING DAY ALERT ERROR:",
@@ -2685,8 +2760,27 @@ function logout() {
 
 
 /* =========================================
+   INITIAL LUCIDE ICONS
+========================================= */
+
+function initializeLucideIcons() {
+
+    if (
+        typeof lucide !== "undefined"
+    ) {
+
+        lucide.createIcons();
+
+    }
+
+}
+
+
+/* =========================================
    INITIAL LOAD
 ========================================= */
+
+initializeLucideIcons();
 
 loadEmployeeDetails();
 
