@@ -3874,9 +3874,16 @@ async function saveWorkingDaySetting() {
             "workingDayReason"
         );
 
-    if (!dateInput ||
+    const saveButton =
+        document.querySelector(
+            '#workingDayModal button[onclick="saveWorkingDaySetting()"]'
+        );
+
+    if (
+        !dateInput ||
         !typeInput ||
-        !reasonInput) {
+        !reasonInput
+    ) {
         return;
     }
 
@@ -3890,15 +3897,47 @@ async function saveWorkingDaySetting() {
         reasonInput.value.trim();
 
     if (!settingDate) {
-        alert("Please select a date.");
+
+        alert(
+            "Please select a date."
+        );
+
         dateInput.focus();
+
         return;
     }
 
     if (!settingType) {
-        alert("Please select setting type.");
+
+        alert(
+            "Please select setting type."
+        );
+
         typeInput.focus();
+
         return;
+    }
+
+    /*
+     * Prevent duplicate requests.
+     * Once Save is clicked, disable the button
+     * until the request is completed.
+     */
+
+    if (saveButton) {
+
+        if (saveButton.disabled) {
+            return;
+        }
+
+        saveButton.disabled = true;
+        saveButton.dataset.originalText =
+            saveButton.innerHTML;
+
+        saveButton.innerHTML =
+            '<i data-lucide="loader-circle"></i> Saving...';
+
+        lucide.createIcons();
     }
 
     try {
@@ -3917,10 +3956,12 @@ async function saveWorkingDaySetting() {
         );
 
         if (reason) {
+
             body.append(
                 "reason",
                 reason
             );
+
         }
 
         const response =
@@ -3928,18 +3969,23 @@ async function saveWorkingDaySetting() {
                 "/admin/working-days",
                 {
                     method: "POST",
+
                     headers: {
                         "Content-Type":
                             "application/x-www-form-urlencoded"
                     },
-                    body: body.toString()
+
+                    body:
+                        body.toString()
                 }
             );
 
         if (!response.ok) {
+
             throw new Error(
                 await getErrorMessage(response)
             );
+
         }
 
         closeWorkingDayModal();
@@ -3952,7 +3998,8 @@ async function saveWorkingDaySetting() {
             "success"
         );
 
-    } catch (error) {
+    }
+    catch (error) {
 
         console.error(
             "Save working day setting error:",
@@ -3965,6 +4012,34 @@ async function saveWorkingDaySetting() {
                 "Failed to save working day setting.",
             "error"
         );
+
+    }
+    finally {
+
+        /*
+         * Re-enable the Save button only after
+         * the request has completely finished.
+         */
+
+        if (saveButton) {
+
+            saveButton.disabled = false;
+
+            if (
+                saveButton.dataset.originalText
+            ) {
+
+                saveButton.innerHTML =
+                    saveButton.dataset.originalText;
+
+                delete saveButton.dataset.originalText;
+
+                lucide.createIcons();
+
+            }
+
+        }
+
     }
 }
 
