@@ -657,6 +657,23 @@
             outline: none;
         }
 
+        .working-days-info {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background: #f8fafc;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.working-days-info svg {
+    width: 18px;
+    height: 18px;
+}
+
         @media (max-width: 1100px) {
 
             .stats-grid {
@@ -1228,220 +1245,214 @@
 </div>
 
 
-            <!-- LEAVE & PERMISSION SETTINGS -->
+           <!-- LEAVE & PERMISSION SETTINGS -->
 
-            <section id="leaveSettings" class="section">
+<section id="leaveSettings" class="section">
 
-                <h2 class="section-title">
-                    Leave & Permission Settings
-                </h2>
+    <h2 class="section-title">
+        Leave & Permission Settings
+    </h2>
 
-                <p class="section-subtitle">
-                    Admin can control leave and permission allowances for all employees.
-                </p>
+    <p class="section-subtitle">
+        Admin can control leave and permission allowances for all employees.
+    </p>
 
-                <div id="settingsMessage"
-                     class="message">
-                </div>
+    <div id="settingsMessage"
+         class="message">
+    </div>
 
-                <div class="priority-box">
+    <div class="priority-box">
 
-                    <strong>Setting priority:</strong>
+        <strong>Setting priority:</strong>
 
-                    Employee setting →
-                    Role setting →
-                    Default setting
+        Employee setting →
+        Role setting →
+        Default setting
 
-                    <br>
+        <br>
 
-                    Employee-specific settings override role settings.
-                    Role settings override the default settings.
+        Employee-specific settings override role settings.
+        Role settings override the default settings.
 
-                    <br>
+        <br>
 
-                    Sick Leave, Casual Leave and Permission are controlled separately.
+        Sick Leave, Casual Leave and Permission are controlled separately.
 
-                </div>
+    </div>
 
-                <div class="top-bar">
+    <div class="top-bar">
 
-                    <div class="top-bar-left">
+        <div class="top-bar-left">
 
-                        <button class="btn btn-primary"
-                                onclick="openLeaveSettingModal('DEFAULT')">
-                            + Default Settings
-                        </button>
+            <button class="btn btn-primary"
+                    onclick="openLeaveSettingModal('DEFAULT')">
+                + Default Settings
+            </button>
 
-                        <button class="btn btn-success"
-                                onclick="openLeaveSettingModal('ROLE')">
-                            + Role Settings
-                        </button>
+            <button class="btn btn-success"
+                    onclick="openLeaveSettingModal('ROLE')">
+                + Role Settings
+            </button>
 
-                        <button class="btn btn-warning"
-                                onclick="openLeaveSettingModal('EMPLOYEE')">
-                            + Employee Settings
-                        </button>
+            <button class="btn btn-warning"
+                    onclick="openLeaveSettingModal('EMPLOYEE')">
+                + Employee Settings
+            </button>
 
-                    </div>
+        </div>
 
-                    <div class="top-bar-right">
+        <div class="top-bar-right">
 
-                        <button class="btn btn-secondary"
-                                onclick="loadLeaveSettings()">
-                            Refresh
-                        </button>
+            <button class="btn btn-secondary"
+                    onclick="loadLeaveSettings()">
+                Refresh
+            </button>
 
-                    </div>
+        </div>
 
-                </div>
+    </div>
 
-                <div class="settings-grid"
-                     id="settingsCards">
+    <div class="table-card">
 
-                    <div class="settings-card">
+        <div class="table-wrapper">
 
-                        <h3>
-                            Loading settings...
-                        </h3>
+            <table>
 
-                        <p>
-                            Please wait.
-                        </p>
+                <thead>
 
-                    </div>
+                <tr>
+                    <th>Setting Type</th>
+                    <th>Role</th>
+                    <th>Employee</th>
+                    <th>Sick Leave</th>
+                    <th>Casual Leave</th>
+                    <th>Permission</th>
+                    <th>Updated</th>
+                </tr>
 
-                </div>
+                </thead>
 
-                <div class="table-card">
+                <tbody id="settingsTableBody">
 
-                    <div class="table-wrapper">
+                <tr>
+                    <td colspan="7"
+                        class="empty-row">
+                        Loading settings...
+                    </td>
+                </tr>
 
-                        <table>
+                </tbody>
 
-                            <thead>
+            </table>
 
-                            <tr>
-                                <th>Setting Type</th>
-                                <th>Role</th>
-                                <th>Employee</th>
-                                <th>Sick Leave</th>
-                                <th>Casual Leave</th>
-                                <th>Permission</th>
-                                <th>Updated</th>
-                            </tr>
+        </div>
 
-                            </thead>
+    </div>
 
-                            <tbody id="settingsTableBody">
-
-                            <tr>
-                                <td colspan="7"
-                                    class="empty-row">
-                                    Loading settings...
-                                </td>
-                            </tr>
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-                </div>
-
-            </section>
-
+</section>
 
             <!-- SALARY -->
 
-            <section id="salary" class="section">
+<section id="salary" class="section">
 
-                <h2 class="section-title">
-                    Salary Management
-                </h2>
+    <h2 class="section-title">
+        Salary Management
+    </h2>
 
-                <p class="section-subtitle">
-                    Manage employee salary separately from employee creation
-                </p>
+    <p class="section-subtitle">
+        Manage employee salary separately from employee creation
+    </p>
 
-                <div id="salaryMessage"
-                     class="message">
-                </div>
+    <div id="salaryMessage"
+         class="message">
+    </div>
 
-                <div class="top-bar">
+    <div class="top-bar">
 
-                    <div class="filter-box">
+        <div class="filter-box">
 
-                        <select id="salaryYear"></select>
+            <select id="salaryYear"></select>
 
-                        <select id="salaryMonth">
+            <select id="salaryMonth">
 
-                            <option value="1">January</option>
-                            <option value="2">February</option>
-                            <option value="3">March</option>
-                            <option value="4">April</option>
-                            <option value="5">May</option>
-                            <option value="6">June</option>
-                            <option value="7">July</option>
-                            <option value="8">August</option>
-                            <option value="9">September</option>
-                            <option value="10">October</option>
-                            <option value="11">November</option>
-                            <option value="12">December</option>
+                <option value="1">January</option>
+                <option value="2">February</option>
+                <option value="3">March</option>
+                <option value="4">April</option>
+                <option value="5">May</option>
+                <option value="6">June</option>
+                <option value="7">July</option>
+                <option value="8">August</option>
+                <option value="9">September</option>
+                <option value="10">October</option>
+                <option value="11">November</option>
+                <option value="12">December</option>
 
-                        </select>
+            </select>
 
-                    </div>
+            <div id="salaryWorkingDays"
+                 class="working-days-info">
 
-                    <button class="btn btn-primary"
-                            onclick="calculateSalary()">
-                        Calculate Salary
-                    </button>
+                <i data-lucide="calendar-days"></i>
 
-                </div>
+                <span id="salaryWorkingDaysValue">
+                    Working Days: -
+                </span>
 
-                <div class="table-card">
+            </div>
 
-                    <div class="table-wrapper">
+        </div>
 
-                        <table>
+        <button class="btn btn-primary"
+                onclick="calculateSalary()">
 
-                            <thead>
+            Calculate Salary
 
-                            <tr>
-                                <th>Employee Code</th>
-                                <th>Name</th>
-                                <th>Monthly Salary</th>
-                                <th>Present Salary</th>
-                                <th>Working Days</th>
-                                <th>Present Days</th>
-                                <th>Leave Days</th>
-                                <th>LOP</th>
-                                <th>Final Salary</th>
-                                <th>Action</th>
-                            </tr>
+        </button>
 
-                            </thead>
+    </div>
 
-                            <tbody id="salaryTableBody">
+    <div class="table-card">
 
-                            <tr>
-                                <td colspan="10"
-                                    class="empty-row">
-                                    Select year/month and calculate salary
-                                </td>
-                            </tr>
+        <div class="table-wrapper">
 
-                            </tbody>
+            <table>
 
-                        </table>
+                <thead>
 
-                    </div>
+                <tr>
+                    <th>Employee Code</th>
+                    <th>Name</th>
+                    <th>Monthly Salary</th>
+                    <th>Present Days</th>
+                    <th>Leave Days</th>
+                    <th>LOP</th>
+                    <th>Final Salary</th>
+                    <th>Action</th>
+                </tr>
 
-                </div>
+                </thead>
 
-            </section>
+                <tbody id="salaryTableBody">
 
+                <tr>
+                    <td colspan="8"
+                        class="empty-row">
+
+                        Select year/month and calculate salary
+
+                    </td>
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
 
             <!-- MONTHLY -->
 
@@ -4698,571 +4709,353 @@ async function deleteWorkingDaySetting(
 
 
     function renderLeaveSettings(
-        settings
-    ) {
+    settings
+) {
 
-        const cards =
-            document.getElementById(
-                "settingsCards"
-            );
-
-        const tbody =
-            document.getElementById(
-                "settingsTableBody"
-            );
+    const tbody =
+        document.getElementById(
+            "settingsTableBody"
+        );
 
 
-        if (!settings || settings.length === 0) {
+    if (!settings || settings.length === 0) {
 
-            cards.innerHTML = `
-                <div class="settings-card">
-                    <h3>No settings found</h3>
-                    <p>
-                        Default settings are required.
-                        Use the Default Settings button to create them.
-                    </p>
-                </div>
-            `;
-
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="7"
-                        class="empty-row">
-                        No leave settings found.
-                    </td>
-                </tr>
-            `;
-
-            return;
-
-        }
-
-
-        const defaultSetting =
-            settings.find(
-                function (item) {
-
-                    return String(
-                        item.settingType ||
-                        ""
-                    ).toUpperCase() ===
-                    "DEFAULT";
-
-                }
-            );
-
-
-        const roleSettings =
-            settings.filter(
-                function (item) {
-
-                    return String(
-                        item.settingType ||
-                        ""
-                    ).toUpperCase() ===
-                    "ROLE";
-
-                }
-            );
-
-
-        const employeeSettings =
-            settings.filter(
-                function (item) {
-
-                    return String(
-                        item.settingType ||
-                        ""
-                    ).toUpperCase() ===
-                    "EMPLOYEE";
-
-                }
-            );
-
-
-        let cardsHtml = "";
-
-
-        if (defaultSetting) {
-
-            cardsHtml += `
-                <div class="settings-card">
-
-                    <h3>
-                        Default Settings
-                    </h3>
-
-                    <p>
-                        Applied when no employee-specific
-                        or role-specific setting exists.
-                    </p>
-
-                    <div class="setting-values">
-
-                        <div class="setting-value">
-                            <span>Sick</span>
-                            <strong>
-                                ${formatNumber(
-                                    defaultSetting.sickLeave
-                                )}
-                            </strong>
-                        </div>
-
-                        <div class="setting-value">
-                            <span>Casual</span>
-                            <strong>
-                                ${formatNumber(
-                                    defaultSetting.casualLeave
-                                )}
-                            </strong>
-                        </div>
-
-                        <div class="setting-value">
-                            <span>Permission</span>
-                            <strong>
-                                ${Number(
-                                    defaultSetting.permissionCount ||
-                                    0
-                                )}
-                            </strong>
-                        </div>
-
-                    </div>
-
-                </div>
-            `;
-
-        }
-        else {
-
-            cardsHtml += `
-                <div class="settings-card">
-
-                    <h3>
-                        Default Settings
-                    </h3>
-
-                    <p>
-                        Default setting is not configured yet.
-                    </p>
-
-                    <button
-                        class="btn btn-primary"
-                        onclick="openLeaveSettingModal('DEFAULT')">
-                        Configure Default
-                    </button>
-
-                </div>
-            `;
-
-        }
-
-
-        cardsHtml += `
-            <div class="settings-card">
-
-                <h3>
-                    Role Settings
-                </h3>
-
-                <p>
-                    ${roleSettings.length}
-                    role-specific setting(s) configured.
-                    Any supported role can be configured.
-                </p>
-
-                <div class="setting-values">
-
-                    <div class="setting-value">
-                        <span>Roles</span>
-                        <strong>
-                            ${roleSettings.length}
-                        </strong>
-                    </div>
-
-                    <div class="setting-value">
-                        <span>Employees</span>
-                        <strong>
-                            ${employees.length}
-                        </strong>
-                    </div>
-
-                    <div class="setting-value">
-                        <span>Priority</span>
-                        <strong>2</strong>
-                    </div>
-
-                </div>
-
-            </div>
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7"
+                    class="empty-row">
+                    No leave settings found.
+                </td>
+            </tr>
         `;
 
+        return;
 
-        cardsHtml += `
-            <div class="settings-card">
-
-                <h3>
-                    Employee Settings
-                </h3>
-
-                <p>
-                    ${employeeSettings.length}
-                    employee-specific setting(s) configured.
-                    These have the highest priority.
-                </p>
-
-                <div class="setting-values">
-
-                    <div class="setting-value">
-                        <span>Configured</span>
-                        <strong>
-                            ${employeeSettings.length}
-                        </strong>
-                    </div>
-
-                    <div class="setting-value">
-                        <span>Total</span>
-                        <strong>
-                            ${employees.length}
-                        </strong>
-                    </div>
-
-                    <div class="setting-value">
-                        <span>Priority</span>
-                        <strong>1</strong>
-                    </div>
-
-                </div>
-
-            </div>
-        `;
+    }
 
 
-        cards.innerHTML =
-            cardsHtml;
+    tbody.innerHTML =
+        settings.map(
+            function (setting) {
+
+                const type =
+                    String(
+                        setting.settingType ||
+                        "-"
+                    ).toUpperCase();
 
 
-        tbody.innerHTML =
-            settings.map(
-                function (setting) {
-
-                    const type =
-                        String(
-                            setting.settingType ||
-                            "-"
-                        ).toUpperCase();
+                let employeeName =
+                    "-";
 
 
-                    let employeeName =
-                        "-";
+                if (
+                    setting.employeeId !== null &&
+                    setting.employeeId !== undefined
+                ) {
 
+                    const employee =
+                        employees.find(
+                            function (item) {
 
-                    if (
-                        setting.employeeId !== null &&
-                        setting.employeeId !== undefined
-                    ) {
-
-                        const employee =
-                            employees.find(
-                                function (item) {
-
-                                    return Number(
-                                        item.id
-                                    ) === Number(
-                                        setting.employeeId
-                                    );
-
-                                }
-                            );
-
-
-                        if (employee) {
-
-                            employeeName =
-                                employee.name +
-                                " (" +
-                                (
-                                    employee.employeeCode ||
+                                return Number(
+                                    item.id
+                                ) === Number(
                                     setting.employeeId
-                                ) +
-                                ")";
+                                );
 
-                        }
-                        else {
+                            }
+                        );
 
-                            employeeName =
-                                "Employee #" +
-                                setting.employeeId;
 
-                        }
+                    if (employee) {
+
+                        employeeName =
+                            employee.name +
+                            " (" +
+                            (
+                                employee.employeeCode ||
+                                setting.employeeId
+                            ) +
+                            ")";
+
+                    }
+                    else {
+
+                        employeeName =
+                            "Employee #" +
+                            setting.employeeId;
 
                     }
 
-
-                    return `
-                        <tr>
-
-                            <td>
-                                <span class="badge ${
-                                    type === "DEFAULT"
-                                        ? "badge-blue"
-                                        : type === "ROLE"
-                                            ? "badge-orange"
-                                            : "badge-green"
-                                }">
-                                    ${escapeHtml(type)}
-                                </span>
-                            </td>
-
-                            <td>
-                                ${escapeHtml(
-                                    setting.role ||
-                                    "-"
-                                )}
-                            </td>
-
-                            <td>
-                                ${escapeHtml(
-                                    employeeName
-                                )}
-                            </td>
-
-                            <td>
-                                ${formatNumber(
-                                    setting.sickLeave
-                                )}
-                            </td>
-
-                            <td>
-                                ${formatNumber(
-                                    setting.casualLeave
-                                )}
-                            </td>
-
-                            <td>
-                                ${Number(
-                                    setting.permissionCount ||
-                                    0
-                                )}
-                            </td>
-
-                            <td>
-                                ${formatDateTime(
-                                    setting.updatedAt
-                                )}
-                            </td>
-
-                        </tr>
-                    `;
-
                 }
-            ).join("");
-
-    }
 
 
-    function populateSettingEmployees() {
+                return `
+                    <tr>
 
-        const select =
-            document.getElementById(
-                "settingEmployee"
-            );
+                        <td>
+                            <span class="badge ${
+                                type === "DEFAULT"
+                                    ? "badge-blue"
+                                    : type === "ROLE"
+                                        ? "badge-orange"
+                                        : "badge-green"
+                            }">
+                                ${escapeHtml(type)}
+                            </span>
+                        </td>
 
+                        <td>
+                            ${escapeHtml(
+                                setting.role ||
+                                "-"
+                            )}
+                        </td>
 
-        if (!select) {
-            return;
-        }
+                        <td>
+                            ${escapeHtml(
+                                employeeName
+                            )}
+                        </td>
 
+                        <td>
+                            ${formatNumber(
+                                setting.sickLeave
+                            )}
+                        </td>
 
-        const currentValue =
-            select.value;
+                        <td>
+                            ${formatNumber(
+                                setting.casualLeave
+                            )}
+                        </td>
 
+                        <td>
+                            ${Number(
+                                setting.permissionCount ||
+                                0
+                            )}
+                        </td>
 
-        select.innerHTML = `
-            <option value="">
-                Select Employee
-            </option>
-        `;
+                        <td>
+                            ${formatDateTime(
+                                setting.updatedAt
+                            )}
+                        </td>
 
-
-        employees.forEach(
-            function (employee) {
-
-                const option =
-                    document.createElement(
-                        "option"
-                    );
-
-
-                option.value =
-                    employee.id;
-
-
-                option.textContent =
-                    (
-                        employee.employeeCode ||
-                        "EMP-" + employee.id
-                    ) +
-                    " - " +
-                    (
-                        employee.name ||
-                        "Unnamed"
-                    ) +
-                    (
-                        employee.role
-                            ? " (" +
-                              employee.role +
-                              ")"
-                            : ""
-                    );
-
-
-                select.appendChild(
-                    option
-                );
+                    </tr>
+                `;
 
             }
+        ).join("");
+
+}
+
+
+function populateSettingEmployees() {
+
+    const select =
+        document.getElementById(
+            "settingEmployee"
         );
 
 
-        if (currentValue) {
+    if (!select) {
+        return;
+    }
 
-            select.value =
-                currentValue;
+
+    const currentValue =
+        select.value;
+
+
+    select.innerHTML = `
+        <option value="">
+            Select Employee
+        </option>
+    `;
+
+
+    employees.forEach(
+        function (employee) {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                employee.id;
+
+
+            option.textContent =
+                (
+                    employee.employeeCode ||
+                    "EMP-" + employee.id
+                ) +
+                " - " +
+                (
+                    employee.name ||
+                    "Unnamed"
+                ) +
+                (
+                    employee.role
+                        ? " (" +
+                          employee.role +
+                          ")"
+                        : ""
+                );
+
+
+            select.appendChild(
+                option
+            );
 
         }
+    );
+
+
+    if (currentValue) {
+
+        select.value =
+            currentValue;
+
+    }
+
+}
+
+
+function openLeaveSettingModal(
+    settingType
+) {
+
+    currentLeaveSettingType =
+        String(
+            settingType ||
+            ""
+        ).toUpperCase();
+
+
+    if (
+        currentLeaveSettingType !==
+            "DEFAULT" &&
+        currentLeaveSettingType !==
+            "ROLE" &&
+        currentLeaveSettingType !==
+            "EMPLOYEE"
+    ) {
+
+        alert(
+            "Invalid setting type."
+        );
+
+        return;
 
     }
 
 
-    function openLeaveSettingModal(
-        settingType
+    const title =
+        document.getElementById(
+            "leaveSettingModalTitle"
+        );
+
+
+    const roleGroup =
+        document.getElementById(
+            "settingRoleGroup"
+        );
+
+
+    const employeeGroup =
+        document.getElementById(
+            "settingEmployeeGroup"
+        );
+
+
+    roleGroup.style.display =
+        "none";
+
+
+    employeeGroup.style.display =
+        "none";
+
+
+    document.getElementById(
+        "settingRole"
+    ).value =
+        "";
+
+
+    document.getElementById(
+        "settingEmployee"
+    ).value =
+        "";
+
+
+    document.getElementById(
+        "settingSickLeave"
+    ).value =
+        "1";
+
+
+    document.getElementById(
+        "settingCasualLeave"
+    ).value =
+        "1";
+
+
+    document.getElementById(
+        "settingPermissionCount"
+    ).value =
+        "2";
+
+
+    if (
+        currentLeaveSettingType ===
+        "DEFAULT"
     ) {
 
-        currentLeaveSettingType =
-            String(
-                settingType ||
-                ""
-            ).toUpperCase();
+        title.textContent =
+            "Default Leave & Permission Settings";
 
+    }
+    else if (
+        currentLeaveSettingType ===
+        "ROLE"
+    ) {
 
-        if (
-            currentLeaveSettingType !==
-                "DEFAULT" &&
-            currentLeaveSettingType !==
-                "ROLE" &&
-            currentLeaveSettingType !==
-                "EMPLOYEE"
-        ) {
-
-            alert(
-                "Invalid setting type."
-            );
-
-            return;
-
-        }
-
-
-        const title =
-            document.getElementById(
-                "leaveSettingModalTitle"
-            );
-
-
-        const roleGroup =
-            document.getElementById(
-                "settingRoleGroup"
-            );
-
-
-        const employeeGroup =
-            document.getElementById(
-                "settingEmployeeGroup"
-            );
+        title.textContent =
+            "Role-wise Leave & Permission Settings";
 
 
         roleGroup.style.display =
-            "none";
+            "flex";
+
+    }
+    else {
+
+        title.textContent =
+            "Employee-wise Leave & Permission Settings";
 
 
         employeeGroup.style.display =
-            "none";
-
-
-        document.getElementById(
-            "settingRole"
-        ).value =
-            "";
-
-
-        document.getElementById(
-            "settingEmployee"
-        ).value =
-            "";
-
-
-        document.getElementById(
-            "settingSickLeave"
-        ).value =
-            "1";
-
-
-        document.getElementById(
-            "settingCasualLeave"
-        ).value =
-            "1";
-
-
-        document.getElementById(
-            "settingPermissionCount"
-        ).value =
-            "2";
-
-
-        if (
-            currentLeaveSettingType ===
-            "DEFAULT"
-        ) {
-
-            title.textContent =
-                "Default Leave & Permission Settings";
-
-        }
-        else if (
-            currentLeaveSettingType ===
-            "ROLE"
-        ) {
-
-            title.textContent =
-                "Role-wise Leave & Permission Settings";
-
-            roleGroup.style.display =
-                "flex";
-
-        }
-        else {
-
-            title.textContent =
-                "Employee-wise Leave & Permission Settings";
-
-            employeeGroup.style.display =
-                "flex";
-
-        }
-
-
-        populateSettingEmployees();
-
-
-        document.getElementById(
-            "leaveSettingModal"
-        ).classList.add(
-            "show"
-        );
+            "flex";
 
     }
 
+
+    populateSettingEmployees();
+
+
+    document.getElementById(
+        "leaveSettingModal"
+    ).classList.add(
+        "show"
+    );
+
+}
 
     function closeLeaveSettingModal() {
 
@@ -5730,172 +5523,174 @@ async function deleteWorkingDaySetting(
 
     function renderSalary(data) {
 
-        const tbody =
-            document.getElementById(
-                "salaryTableBody"
-            );
+    const tbody =
+        document.getElementById(
+            "salaryTableBody"
+        );
+
+    const workingDaysValue =
+        document.getElementById(
+            "salaryWorkingDaysValue"
+        );
 
 
-        if (!tbody) return;
+    if (!tbody) return;
 
 
-        if (!data || data.length === 0) {
+    if (!data || data.length === 0) {
 
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="10"
-                        style="text-align:center;">
-                        No salary data found
-                    </td>
-                </tr>
-            `;
+        if (workingDaysValue) {
 
-            return;
+            workingDaysValue.textContent =
+                "Working Days: -";
 
         }
 
 
-        tbody.innerHTML =
-            data.map(
-                function (item) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8"
+                    style="text-align:center;">
+                    No salary data found
+                </td>
+            </tr>
+        `;
 
-                    const monthlySalary =
-                        Number(
-                            item.monthlySalary ||
-                            0
-                        );
-
-
-                    const presentDays =
-                        Number(
-                            item.presentDays ||
-                            0
-                        );
-
-
-                    const workingDays =
-                        Number(
-                            item.workingDays ||
-                            26
-                        );
-
-
-                    const leaveDays =
-                        Number(
-                            item.leaveDays ||
-                            0
-                        );
-
-
-                    const lossOfPay =
-                        Number(
-                            item.lossOfPay ||
-                            0
-                        );
-
-
-                    const finalSalary =
-                        Number(
-                            item.finalSalary ||
-                            0
-                        );
-
-
-                    const presentSalary =
-                        workingDays > 0
-                            ? (
-                                monthlySalary /
-                                workingDays
-                            ) *
-                            presentDays
-                            : 0;
-
-
-                    return `
-                        <tr>
-
-                            <td>
-                                ${escapeHtml(
-                                    item.employeeCode ||
-                                    "-"
-                                )}
-                            </td>
-
-                            <td>
-                                ${escapeHtml(
-                                    item.employeeName ||
-                                    "-"
-                                )}
-                            </td>
-
-                            <td>
-                                ₹${formatNumber(
-                                    monthlySalary
-                                )}
-                            </td>
-
-                            <td>
-                                ₹${formatNumber(
-                                    presentSalary
-                                )}
-                            </td>
-
-                            <td>
-                                ${escapeHtml(
-                                    workingDays
-                                )}
-                            </td>
-
-                            <td>
-                                ${escapeHtml(
-                                    presentDays
-                                )}
-                            </td>
-
-                            <td>
-                                ${escapeHtml(
-                                    leaveDays
-                                )}
-                            </td>
-
-                            <td>
-                                ${formatNumber(
-                                    lossOfPay
-                                )}
-                            </td>
-
-                            <td>
-                                ₹${formatNumber(
-                                    finalSalary
-                                )}
-                            </td>
-
-                            <td>
-
-                                <button
-                                    class="btn btn-primary"
-                                    onclick="openSalaryModal(
-                                        ${item.employeeId},
-                                        '${escapeJs(
-                                            item.employeeName ||
-                                            ""
-                                        )}',
-                                        ${monthlySalary}
-                                    )">
-                                    Edit Salary
-                                </button>
-
-                            </td>
-
-                        </tr>
-                    `;
-
-                }
-            ).join("");
+        return;
 
     }
 
 
+    const firstItem =
+        data[0];
+
+
+    const workingDays =
+        Number(
+            firstItem.workingDays ||
+            26
+        );
+
+
+    if (workingDaysValue) {
+
+        workingDaysValue.textContent =
+            "Working Days: " +
+            workingDays;
+
+    }
+
+
+    tbody.innerHTML =
+        data.map(
+            function (item) {
+
+                const monthlySalary =
+                    Number(
+                        item.monthlySalary ||
+                        0
+                    );
+
+
+                const presentDays =
+                    Number(
+                        item.presentDays ||
+                        0
+                    );
+
+
+                const leaveDays =
+                    Number(
+                        item.leaveDays ||
+                        0
+                    );
+
+
+                const lossOfPay =
+                    Number(
+                        item.lossOfPay ||
+                        0
+                    );
+
+
+                const finalSalary =
+                    Number(
+                        item.finalSalary ||
+                        0
+                    );
+
+
+                return `
+                    <tr>
+
+                        <td>
+                            ${escapeHtml(
+                                item.employeeCode ||
+                                "-"
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                item.employeeName ||
+                                "-"
+                            )}
+                        </td>
+
+                        <td>
+                            ₹${formatNumber(
+                                monthlySalary
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                presentDays
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                leaveDays
+                            )}
+                        </td>
+
+                        <td>
+                            ${formatNumber(
+                                lossOfPay
+                            )}
+                        </td>
+
+                        <td>
+                            ₹${formatNumber(
+                                finalSalary
+                            )}
+                        </td>
+
+                        <td>
+
+                            <button
+                                class="btn btn-primary"
+                                onclick="openSalaryModal(
+                                    ${item.employeeId},
+                                    '${escapeJs(
+                                        item.employeeName ||
+                                        ""
+                                    )}',
+                                    ${monthlySalary}
+                                )">
+                                Edit Salary
+                            </button>
+
+                        </td>
+
+                    </tr>
+                `;
+
+            }
+        ).join("");
+
+}
     /* =====================================================
        EXCEL
     ===================================================== */
@@ -6294,7 +6089,9 @@ function renderLeaves(
                             onclick="approveLeave(
                                 ${leave.id}
                             )">
+
                             Approve
+
                         </button>
 
                         <button
@@ -6302,7 +6099,9 @@ function renderLeaves(
                             onclick="rejectLeave(
                                 ${leave.id}
                             )">
+
                             Reject
+
                         </button>
                         `
 
@@ -6339,7 +6138,28 @@ function renderLeaves(
                         font-weight:600;
                         color:#c2410c;
                     ">
-                    🟡 Pending Leave Requests
+
+                    <span
+                        style="
+                            display:inline-flex;
+                            align-items:center;
+                            gap:7px;
+                        ">
+
+                        <i
+                            data-lucide="clock-3"
+                            style="
+                                width:18px;
+                                height:18px;
+                            ">
+                        </i>
+
+                        <span>
+                            Pending Leave Requests
+                        </span>
+
+                    </span>
+
                 </td>
             </tr>
         `;
@@ -6380,7 +6200,16 @@ function renderLeaves(
                         class="btn btn-success btn-small"
                         onclick="toggleLeaveHistory('approved')">
 
-                        🟢 Approved
+                        <i
+                            data-lucide="circle-check"
+                            style="
+                                width:16px;
+                                height:16px;
+                                vertical-align:middle;
+                            ">
+                        </i>
+
+                        Approved
                         (${approvedLeaves.length})
 
                     </button>
@@ -6441,7 +6270,16 @@ function renderLeaves(
                         class="btn btn-danger btn-small"
                         onclick="toggleLeaveHistory('rejected')">
 
-                        🔴 Rejected
+                        <i
+                            data-lucide="circle-x"
+                            style="
+                                width:16px;
+                                height:16px;
+                                vertical-align:middle;
+                            ">
+                        </i>
+
+                        Rejected
                         (${rejectedLeaves.length})
 
                     </button>
@@ -6500,9 +6338,17 @@ function renderLeaves(
     tbody.innerHTML =
         html;
 
+
+    if (
+        typeof lucide !==
+        "undefined"
+    ) {
+
+        lucide.createIcons();
+
+    }
+
 }
-
-
 /* =====================================================
    TOGGLE APPROVED / REJECTED LEAVE HISTORY
 ===================================================== */
