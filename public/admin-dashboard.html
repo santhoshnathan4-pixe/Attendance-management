@@ -937,7 +937,7 @@
                                 <th>Email</th>
                                 <th>Contact Number</th>
                                 <th>Role</th>
-                                <th>Salary</th>
+                                <!-- <th>Salary</th> -->
                                 <th>Joining Date</th>
                                 <th>Action</th>
                             </tr>
@@ -947,7 +947,7 @@
                             <tbody id="employeeTableBody">
 
                             <tr>
-                                <td colspan="8"
+                                <td colspan="7"
                                     class="empty-row">
                                     Loading employees...
                                 </td>
@@ -2673,123 +2673,117 @@
     }
 
 
-    function renderEmployees(
-        list = employees
+   function renderEmployees(
+    list = employees
+) {
+
+    const tbody =
+        document.getElementById(
+            "employeeTableBody"
+        );
+
+
+    if (!tbody) {
+        return;
+    }
+
+
+    if (
+        !list ||
+        list.length === 0
     ) {
 
-        const tbody =
-            document.getElementById(
-                "employeeTableBody"
-            );
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="7"
+                    class="empty-row">
+                    No employees found
+                </td>
+            </tr>
+        `;
 
-
-        if (!tbody) {
-            return;
-        }
-
-
-        if (
-            !list ||
-            list.length === 0
-        ) {
-
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="8"
-                        class="empty-row">
-                        No employees found
-                    </td>
-                </tr>
-            `;
-
-            return;
-
-        }
-
-
-        tbody.innerHTML =
-            list.map(
-                function (employee) {
-
-                    return `
-                    <tr>
-
-                        <td>
-                            <span class="badge badge-blue">
-                                ${escapeHtml(
-                                    employee.employeeCode
-                                )}
-                            </span>
-                        </td>
-
-                        <td>
-                            <strong>
-                                ${escapeHtml(
-                                    employee.name
-                                )}
-                            </strong>
-                        </td>
-
-                        <td>
-                            ${escapeHtml(
-                                employee.email
-                            )}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(
-                                employee.contactNumber ||
-                                "-"
-                            )}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(
-                                employee.role ||
-                                "-"
-                            )}
-                        </td>
-
-                        <td>
-                            ₹${formatNumber(
-                                employee.salary
-                            )}
-                        </td>
-
-                        <td>
-                            ${formatDate(
-                                employee.joiningDate
-                            )}
-                        </td>
-
-                        <td>
-
-                            <button
-                                class="btn btn-primary btn-small"
-                                onclick="openEmployeeModal(
-                                    'EDIT',
-                                    ${employee.id}
-                                )">
-                                Edit
-                            </button>
-
-                            <button
-                                class="btn btn-danger btn-small"
-                                onclick="deleteEmployee(
-                                    ${employee.id}
-                                )">
-                                Delete
-                            </button>
-
-                        </td>
-
-                    </tr>
-                    `;
-
-                }
-            ).join("");
+        return;
 
     }
+
+
+    tbody.innerHTML =
+        list.map(
+            function (employee) {
+
+                return `
+                <tr>
+
+                    <td>
+                        <span class="badge badge-blue">
+                            ${escapeHtml(
+                                employee.employeeCode
+                            )}
+                        </span>
+                    </td>
+
+                    <td>
+                        <strong>
+                            ${escapeHtml(
+                                employee.name
+                            )}
+                        </strong>
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            employee.email
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            employee.contactNumber ||
+                            "-"
+                        )}
+                    </td>
+
+                    <td>
+                        ${escapeHtml(
+                            employee.role ||
+                            "-"
+                        )}
+                    </td>
+
+                    <td>
+                        ${formatDate(
+                            employee.joiningDate
+                        )}
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="btn btn-primary btn-small"
+                            onclick="openEmployeeModal(
+                                'EDIT',
+                                ${employee.id}
+                            )">
+                            Edit
+                        </button>
+
+                        <button
+                            class="btn btn-danger btn-small"
+                            onclick="deleteEmployee(
+                                ${employee.id}
+                            )">
+                            Delete
+                        </button>
+
+                    </td>
+
+                </tr>
+                `;
+
+            }
+        ).join("");
+
+}
 
 
     function filterEmployees() {
@@ -6023,187 +6017,449 @@ async function deleteWorkingDaySetting(
     }
 
 
-    function renderLeaves(
-        leaves
+    
+function renderLeaves(
+    leaves
+) {
+
+    const tbody =
+        document.getElementById(
+            "leaveTableBody"
+        );
+
+
+    if (!tbody) {
+        return;
+    }
+
+
+    if (
+        !leaves ||
+        leaves.length === 0
     ) {
 
-        const tbody =
-            document.getElementById(
-                "leaveTableBody"
-            );
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="8"
+                    class="empty-row">
+                    No leave requests found.
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+
+    const pendingLeaves =
+        leaves.filter(
+            function (leave) {
+
+                return String(
+                    leave.status ||
+                    ""
+                ).toUpperCase() ===
+                    "PENDING";
+
+            }
+        );
+
+
+    const approvedLeaves =
+        leaves.filter(
+            function (leave) {
+
+                return String(
+                    leave.status ||
+                    ""
+                ).toUpperCase() ===
+                    "APPROVED";
+
+            }
+        );
+
+
+    const rejectedLeaves =
+        leaves.filter(
+            function (leave) {
+
+                return String(
+                    leave.status ||
+                    ""
+                ).toUpperCase() ===
+                    "REJECTED";
+
+            }
+        );
+
+
+    function renderLeaveRow(
+        leave
+    ) {
+
+        const status =
+            String(
+                leave.status ||
+                ""
+            ).toUpperCase();
+
+
+        let badgeClass =
+            "badge-gray";
 
 
         if (
-            !leaves ||
-            leaves.length === 0
+            status ===
+            "APPROVED"
         ) {
 
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="8"
-                        class="empty-row">
-                        No leave requests found.
-                    </td>
-                </tr>
-            `;
+            badgeClass =
+                "badge-green";
 
-            return;
+        }
+        else if (
+            status ===
+            "PENDING"
+        ) {
+
+            badgeClass =
+                "badge-orange";
+
+        }
+        else if (
+            status ===
+            "REJECTED"
+        ) {
+
+            badgeClass =
+                "badge-red";
 
         }
 
 
-        tbody.innerHTML =
-            leaves.map(
-                function (leave) {
-
-                    const status =
-                        String(
-                            leave.status ||
-                            ""
-                        ).toUpperCase();
+        const lopDays =
+            Number(
+                leave.lopDays ||
+                0
+            );
 
 
-                    let badgeClass =
-                        "badge-gray";
+        return `
+            <tr>
 
+                <td>
+                    ${escapeHtml(
+                        leave.employeeName ||
+                        leave.name ||
+                        "-"
+                    )}
+                </td>
 
-                    if (
-                        status ===
-                        "APPROVED"
-                    ) {
+                <td>
+                    ${escapeHtml(
+                        leave.leaveType ||
+                        "-"
+                    )}
+                </td>
 
-                        badgeClass =
-                            "badge-green";
+                <td>
+                    ${formatDate(
+                        leave.leaveDate
+                    )}
+                </td>
 
+                <td>
+                    ${formatNumber(
+                        leave.leaveDuration
+                    )}
+                </td>
+
+                <td>
+                    ${
+                        lopDays > 0
+                            ? `
+                                <span class="badge badge-red">
+                                    ${formatNumber(lopDays)}
+                                </span>
+                              `
+                            : "0.00"
                     }
-                    else if (
+                </td>
+
+                <td>
+                    ${escapeHtml(
+                        leave.reason ||
+                        "-"
+                    )}
+                </td>
+
+                <td>
+
+                    <span class="badge ${badgeClass}">
+                        ${escapeHtml(
+                            status ||
+                            "-"
+                        )}
+                    </span>
+
+                </td>
+
+                <td>
+
+                    ${
                         status ===
                         "PENDING"
-                    ) {
 
-                        badgeClass =
-                            "badge-orange";
+                        ?
+
+                        `
+                        <button
+                            class="btn btn-success btn-small"
+                            onclick="approveLeave(
+                                ${leave.id}
+                            )">
+                            Approve
+                        </button>
+
+                        <button
+                            class="btn btn-danger btn-small"
+                            onclick="rejectLeave(
+                                ${leave.id}
+                            )">
+                            Reject
+                        </button>
+                        `
+
+                        :
+
+                        "-"
 
                     }
-                    else if (
-                        status ===
-                        "REJECTED"
-                    ) {
 
-                        badgeClass =
-                            "badge-red";
+                </td>
 
-                    }
-
-
-                    const lopDays =
-                        Number(
-                            leave.lopDays ||
-                            0
-                        );
-
-
-                    return `
-                    <tr>
-
-                        <td>
-                            ${escapeHtml(
-                                leave.employeeName ||
-                                leave.name ||
-                                "-"
-                            )}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(
-                                leave.leaveType ||
-                                "-"
-                            )}
-                        </td>
-
-                        <td>
-                            ${formatDate(
-                                leave.leaveDate
-                            )}
-                        </td>
-
-                        <td>
-                            ${formatNumber(
-                                leave.leaveDuration
-                            )}
-                        </td>
-
-                        <td>
-                            ${
-                                lopDays > 0
-                                    ? `
-                                        <span class="badge badge-red">
-                                            ${formatNumber(lopDays)}
-                                        </span>
-                                      `
-                                    : "0.00"
-                            }
-                        </td>
-
-                        <td>
-                            ${escapeHtml(
-                                leave.reason ||
-                                "-"
-                            )}
-                        </td>
-
-                        <td>
-
-                            <span class="badge ${badgeClass}">
-                                ${escapeHtml(
-                                    status ||
-                                    "-"
-                                )}
-                            </span>
-
-                        </td>
-
-                        <td>
-
-                            ${
-                                status ===
-                                "PENDING"
-
-                                ?
-
-                                `
-                                <button
-                                    class="btn btn-success btn-small"
-                                    onclick="approveLeave(
-                                        ${leave.id}
-                                    )">
-                                    Approve
-                                </button>
-
-                                <button
-                                    class="btn btn-danger btn-small"
-                                    onclick="rejectLeave(
-                                        ${leave.id}
-                                    )">
-                                    Reject
-                                </button>
-                                `
-
-                                :
-
-                                "-"
-
-                            }
-
-                        </td>
-
-                    </tr>
-                    `;
-
-                }
-            ).join("");
+            </tr>
+        `;
 
     }
+
+
+    let html = "";
+
+
+    /*
+     * PENDING
+     * Always visible
+     */
+    if (
+        pendingLeaves.length > 0
+    ) {
+
+        html += `
+            <tr>
+                <td colspan="8"
+                    style="
+                        background:#fff7ed;
+                        font-weight:600;
+                        color:#c2410c;
+                    ">
+                    🟡 Pending Leave Requests
+                </td>
+            </tr>
+        `;
+
+
+        pendingLeaves.forEach(
+            function (leave) {
+
+                html +=
+                    renderLeaveRow(
+                        leave
+                    );
+
+            }
+        );
+
+    }
+
+
+    /*
+     * APPROVED
+     * Hidden initially
+     */
+    if (
+        approvedLeaves.length > 0
+    ) {
+
+        html += `
+            <tr>
+                <td colspan="8"
+                    style="
+                        background:#f0fdf4;
+                        padding:12px;
+                    ">
+
+                    <button
+                        type="button"
+                        class="btn btn-success btn-small"
+                        onclick="toggleLeaveHistory('approved')">
+
+                        🟢 Approved
+                        (${approvedLeaves.length})
+
+                    </button>
+
+                </td>
+            </tr>
+
+            <tr id="approvedLeaveRows"
+                style="display:none;">
+
+                <td colspan="8"
+                    style="padding:0;">
+
+                    <table style="width:100%;">
+
+                        <tbody>
+
+                            ${approvedLeaves.map(
+                                function (leave) {
+
+                                    return renderLeaveRow(
+                                        leave
+                                    );
+
+                                }
+                            ).join("")}
+
+                        </tbody>
+
+                    </table>
+
+                </td>
+
+            </tr>
+        `;
+
+    }
+
+
+    /*
+     * REJECTED
+     * Hidden initially
+     */
+    if (
+        rejectedLeaves.length > 0
+    ) {
+
+        html += `
+            <tr>
+                <td colspan="8"
+                    style="
+                        background:#fef2f2;
+                        padding:12px;
+                    ">
+
+                    <button
+                        type="button"
+                        class="btn btn-danger btn-small"
+                        onclick="toggleLeaveHistory('rejected')">
+
+                        🔴 Rejected
+                        (${rejectedLeaves.length})
+
+                    </button>
+
+                </td>
+            </tr>
+
+            <tr id="rejectedLeaveRows"
+                style="display:none;">
+
+                <td colspan="8"
+                    style="padding:0;">
+
+                    <table style="width:100%;">
+
+                        <tbody>
+
+                            ${rejectedLeaves.map(
+                                function (leave) {
+
+                                    return renderLeaveRow(
+                                        leave
+                                    );
+
+                                }
+                            ).join("")}
+
+                        </tbody>
+
+                    </table>
+
+                </td>
+
+            </tr>
+        `;
+
+    }
+
+
+    if (
+        html === ""
+    ) {
+
+        html = `
+            <tr>
+                <td colspan="8"
+                    class="empty-row">
+                    No leave requests found.
+                </td>
+            </tr>
+        `;
+
+    }
+
+
+    tbody.innerHTML =
+        html;
+
+}
+
+
+/* =====================================================
+   TOGGLE APPROVED / REJECTED LEAVE HISTORY
+===================================================== */
+
+function toggleLeaveHistory(
+    type
+) {
+
+    const elementId =
+        type === "approved"
+            ? "approvedLeaveRows"
+            : "rejectedLeaveRows";
+
+
+    const element =
+        document.getElementById(
+            elementId
+        );
+
+
+    if (!element) {
+        return;
+    }
+
+
+    element.style.display =
+        element.style.display ===
+        "none"
+            ? "table-row"
+            : "none";
+
+}
 
 
     function approveLeave(
