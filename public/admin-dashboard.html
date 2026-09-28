@@ -771,61 +771,76 @@
 
         <div class="menu">
 
-            <button class="menu-btn active"
-                    onclick="showSection('dashboard', this)">
-                <i data-lucide="layout-dashboard"></i>
-                Dashboard
-            </button>
+    <button class="menu-btn active"
+            onclick="showSection('dashboard', this)">
+        <i data-lucide="layout-dashboard"></i>
+        Dashboard
+    </button>
 
-            <button class="menu-btn"
-                    onclick="showSection('employees', this)">
-                <i data-lucide="users"></i>
-                Employees
-            </button>
+    <button class="menu-btn"
+            onclick="showSection('employees', this)">
+        <i data-lucide="users"></i>
+        Employees
+    </button>
 
-            <button class="menu-btn"
-                    onclick="showSection('leave', this)">
-                <i data-lucide="clipboard-list"></i>
-                Leave
-            </button>
+    <button class="menu-btn"
+            onclick="showSection('leave', this)">
+        <i data-lucide="clipboard-list"></i>
+        Leave
+    </button>
 
-            <button class="menu-btn" 
-        onclick="showSection('workingDaySection', this)"> 
-    <i data-lucide="calendar-days"></i> 
-    Working Day Settings 
+    
+<button class="menu-btn"
+        onclick="showSection('aiAssistant', this)">
+    <i data-lucide="sparkles"></i>
+    AI Assistant
 </button>
 
-            <button class="menu-btn"
-                    onclick="showSection('leaveSettings', this)">
-                <i data-lucide="settings"></i>
-                Leave & Permission Settings
-            </button>
 
-            <button class="menu-btn"
-                    onclick="showSection('salary', this)">
-                <i data-lucide="wallet"></i>
-                Salary
-            </button>
 
-            <button class="menu-btn"
-                    onclick="showSection('monthly', this)">
-                <i data-lucide="calendar-days"></i>
-                Monthly Report
-            </button>
+    <button class="menu-btn"
+            onclick="showSection('workingDaySection', this)">
+        <i data-lucide="calendar-days"></i>
+        Working Day Settings
+    </button>
 
-            <button class="menu-btn"
-                    onclick="showSection('history', this)">
-                <i data-lucide="history"></i>
-                History
-            </button>
+    <button class="menu-btn"
+            onclick="showSection('shiftSettings', this)">
+        <i data-lucide="clock-3"></i>
+        Shift Settings
+    </button>
 
-            <button class="menu-btn logout-btn"
-                    onclick="logout()">
-                <i data-lucide="log-out"></i>
-                Logout
-            </button>
+    <button class="menu-btn"
+            onclick="showSection('leaveSettings', this)">
+        <i data-lucide="settings"></i>
+        Leave & Permission Settings
+    </button>
 
-        </div>
+    <button class="menu-btn"
+            onclick="showSection('salary', this)">
+        <i data-lucide="wallet"></i>
+        Salary
+    </button>
+
+    <button class="menu-btn"
+            onclick="showSection('monthly', this)">
+        <i data-lucide="calendar-days"></i>
+        Monthly Report
+    </button>
+
+    <button class="menu-btn"
+            onclick="showSection('history', this)">
+        <i data-lucide="history"></i>
+        History
+    </button>
+
+    <button class="menu-btn logout-btn"
+            onclick="logout()">
+        <i data-lucide="log-out"></i>
+        Logout
+    </button>
+
+</div>
 
     </aside>
 
@@ -895,90 +910,653 @@
 
             </section>
 
+  <!-- AI ASSISTANT -->
 
-            <!-- EMPLOYEES -->
+<section id="aiAssistant" class="section">
 
-            <section id="employees" class="section">
+```
+<h2 class="section-title">
+    AI Assistant
+</h2>
 
-                <h2 class="section-title">
-                    Employee Management
-                </h2>
+<p class="section-subtitle">
+    Ask questions about employee attendance using text or voice
+</p>
 
-                <p class="section-subtitle">
-                    Add, edit, import and manage employees
-                </p>
+<div style="
+    background:#ffffff;
+    border:1px solid #e2e8f0;
+    border-radius:14px;
+    padding:20px;
+    margin-top:18px;
+    box-shadow:0 4px 18px rgba(15,23,42,.05);
+">
 
-                <div id="employeeMessage"
-                     class="message">
-                </div>
+    <label style="
+        display:block;
+        font-weight:600;
+        margin-bottom:8px;
+    ">
+        Ask your question
+    </label>
 
-                <div class="top-bar">
+    <textarea
+        id="adminAiQuestion"
+        placeholder="Example: intha month yaaru romba late ah vanthurukanga?"
+        style="
+            width:100%;
+            min-height:100px;
+            resize:vertical;
+            padding:12px;
+            border:1px solid #cbd5e1;
+            border-radius:9px;
+            outline:none;
+            font-size:14px;
+        "
+    ></textarea>
 
-                    <div class="top-bar-left">
+    <div style="
+        display:flex;
+        justify-content:flex-end;
+        gap:8px;
+        margin-top:12px;
+        flex-wrap:wrap;
+    ">
 
-                        <button class="btn btn-primary"
-                                onclick="openEmployeeModal('ADD')">
-                            + Add Employee
-                        </button>
+        <button
+            id="adminAiVoiceButton"
+            type="button"
+            class="btn"
+            onclick="toggleAdminAiVoice()"
+            style="
+                display:flex;
+                align-items:center;
+                gap:7px;
+            ">
 
-                        <button class="btn btn-success"
-                                onclick="openExcelImportModal()">
-                            📥 Import Excel
-                        </button>
+            <i
+                id="adminAiVoiceIcon"
+                data-lucide="mic">
+            </i>
 
-                    </div>
+            <span id="adminAiVoiceText">
+                Voice
+            </span>
 
-                    <div class="top-bar-right">
+        </button>
 
-                        <input type="text"
-                               id="employeeSearch"
-                               placeholder="Search employee..."
-                               oninput="filterEmployees()"
-                               style="padding:10px 12px;border:1px solid #cbd5e1;border-radius:8px;outline:none;">
+        <button
+            id="adminAiSpeakButton"
+            type="button"
+            class="btn"
+            onclick="speakAdminAiResponse()"
+            style="
+                display:flex;
+                align-items:center;
+                gap:7px;
+            ">
 
-                    </div>
+            <i data-lucide="volume-2"></i>
 
-                </div>
+            Speak Answer
 
-                <div class="table-card">
+        </button>
 
-                    <div class="table-wrapper">
+        <button
+            id="adminAiButton"
+            type="button"
+            class="btn btn-primary"
+            onclick="askAdminAttendanceAI()"
+            style="
+                display:flex;
+                align-items:center;
+                gap:7px;
+            ">
 
-                        <table>
+            <i data-lucide="sparkles"></i>
 
-                            <thead>
+            Ask AI
 
-                            <tr>
-                                <th>Employee Code</th>
-                                <th>Name</th>
-                                <th>Email</th>
-                                <th>Contact Number</th>
-                                <th>Role</th>
-                                <!-- <th>Salary</th> -->
-                                <th>Joining Date</th>
-                                <th>Action</th>
-                            </tr>
+        </button>
 
-                            </thead>
+    </div>
 
-                            <tbody id="employeeTableBody">
+    <div
+        id="adminAiVoiceStatus"
+        style="
+            margin-top:10px;
+            font-size:13px;
+            color:#64748b;
+            min-height:20px;
+        "
+    ></div>
 
-                            <tr>
-                                <td colspan="7"
-                                    class="empty-row">
-                                    Loading employees...
-                                </td>
-                            </tr>
+    <div
+        id="adminAiResponse"
+        style="
+            margin-top:18px;
+            padding:15px;
+            min-height:70px;
+            background:#f8fafc;
+            border:1px solid #e2e8f0;
+            border-radius:9px;
+            white-space:pre-wrap;
+            line-height:1.6;
+            color:#334155;
+        "
+    >
+        AI response will appear here.
+    </div>
 
-                            </tbody>
+</div>
+```
 
-                        </table>
+</section>
 
-                    </div>
+<script>
 
-                </div>
+let adminAiRecognition = null;
 
-            </section>
+let adminAiListening = false;
+
+
+function setupAdminAiVoice() {
+
+    const SpeechRecognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
+
+    const voiceButton =
+        document.getElementById(
+            "adminAiVoiceButton"
+        );
+
+    if (!SpeechRecognition) {
+
+        if (voiceButton) {
+            voiceButton.disabled = true;
+            voiceButton.title =
+                "Voice input is not supported in this browser.";
+        }
+
+        return;
+    }
+
+
+    adminAiRecognition =
+        new SpeechRecognition();
+
+
+    adminAiRecognition.continuous = false;
+
+    adminAiRecognition.interimResults = false;
+
+    adminAiRecognition.lang = "en-IN";
+
+
+    adminAiRecognition.onstart =
+        function () {
+
+            adminAiListening = true;
+
+            const status =
+                document.getElementById(
+                    "adminAiVoiceStatus"
+                );
+
+            const text =
+                document.getElementById(
+                    "adminAiVoiceText"
+                );
+
+            const icon =
+                document.getElementById(
+                    "adminAiVoiceIcon"
+                );
+
+
+            if (status) {
+                status.textContent =
+                    "Listening... Please speak your question.";
+            }
+
+            if (text) {
+                text.textContent =
+                    "Stop";
+            }
+
+            if (icon) {
+                icon.setAttribute(
+                    "data-lucide",
+                    "mic-off"
+                );
+            }
+
+            refreshAdminAiIcons();
+        };
+
+
+    adminAiRecognition.onresult =
+        function (event) {
+
+            const transcript =
+                event.results[0][0]
+                    .transcript
+                    .trim();
+
+
+            const question =
+                document.getElementById(
+                    "adminAiQuestion"
+                );
+
+
+            if (question) {
+                question.value =
+                    transcript;
+            }
+
+
+            const status =
+                document.getElementById(
+                    "adminAiVoiceStatus"
+                );
+
+
+            if (status) {
+                status.textContent =
+                    "Voice input captured. You can ask AI now.";
+            }
+        };
+
+
+    adminAiRecognition.onerror =
+        function (event) {
+
+            adminAiListening = false;
+
+            const status =
+                document.getElementById(
+                    "adminAiVoiceStatus"
+                );
+
+            if (status) {
+
+                if (event.error === "not-allowed") {
+
+                    status.textContent =
+                        "Microphone permission was denied.";
+
+                } else {
+
+                    status.textContent =
+                        "Voice input error: " +
+                        event.error;
+                }
+            }
+
+            resetAdminAiVoiceButton();
+        };
+
+
+    adminAiRecognition.onend =
+        function () {
+
+            adminAiListening = false;
+
+            resetAdminAiVoiceButton();
+        };
+}
+
+
+function toggleAdminAiVoice() {
+
+    if (!adminAiRecognition) {
+
+        setupAdminAiVoice();
+
+        if (!adminAiRecognition) {
+            return;
+        }
+    }
+
+
+    if (adminAiListening) {
+
+        adminAiRecognition.stop();
+
+        return;
+    }
+
+
+    const status =
+        document.getElementById(
+            "adminAiVoiceStatus"
+        );
+
+
+    if (status) {
+        status.textContent =
+            "Starting microphone...";
+    }
+
+
+    try {
+
+        adminAiRecognition.start();
+
+    } catch (error) {
+
+        if (status) {
+            status.textContent =
+                "Microphone could not be started.";
+        }
+    }
+}
+
+
+function resetAdminAiVoiceButton() {
+
+    const text =
+        document.getElementById(
+            "adminAiVoiceText"
+        );
+
+    const icon =
+        document.getElementById(
+            "adminAiVoiceIcon"
+        );
+
+
+    if (text) {
+        text.textContent =
+            "Voice";
+    }
+
+
+    if (icon) {
+
+        icon.setAttribute(
+            "data-lucide",
+            "mic"
+        );
+    }
+
+
+    refreshAdminAiIcons();
+}
+
+
+function refreshAdminAiIcons() {
+
+    if (
+        typeof lucide !==
+        "undefined"
+    ) {
+
+        lucide.createIcons();
+    }
+}
+
+
+function speakAdminAiResponse() {
+
+    const responseBox =
+        document.getElementById(
+            "adminAiResponse"
+        );
+
+
+    if (!responseBox) {
+        return;
+    }
+
+
+    const text =
+        responseBox.textContent.trim();
+
+
+    if (
+        !text ||
+        text ===
+        "AI response will appear here."
+    ) {
+
+        return;
+    }
+
+
+    if (
+        !("speechSynthesis" in window)
+    ) {
+
+        responseBox.textContent +=
+            "\n\nVoice output is not supported in this browser.";
+
+        return;
+    }
+
+
+    window.speechSynthesis.cancel();
+
+
+    const utterance =
+        new SpeechSynthesisUtterance(
+            text
+        );
+
+
+    if (
+        /[\u0B80-\u0BFF]/.test(text)
+    ) {
+
+        utterance.lang =
+            "ta-IN";
+
+    } else {
+
+        utterance.lang =
+            "en-IN";
+    }
+
+
+    utterance.rate = 0.95;
+
+    utterance.pitch = 1;
+
+
+    window.speechSynthesis.speak(
+        utterance
+    );
+}
+
+async function askAdminAttendanceAI() {
+
+const question =
+    document.getElementById(
+        "adminAiQuestion"
+    ).value.trim();
+
+const responseBox =
+    document.getElementById(
+        "adminAiResponse"
+    );
+
+const button =
+    document.getElementById(
+        "adminAiButton"
+    );
+
+if (!question) {
+
+    responseBox.textContent =
+        "Please enter a question.";
+
+    return;
+}
+
+button.disabled = true;
+
+responseBox.textContent =
+    "AI is analyzing attendance data...";
+
+try {
+
+    const response =
+        await fetch(
+            "https://attendance-management-d5h6.onrender.com/api/ai/attendance",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type":
+                        "application/json"
+                },
+
+                body: JSON.stringify({
+                    question: question
+                })
+            }
+        );
+
+    const data =
+        await response.json();
+
+    if (!response.ok) {
+
+        throw new Error(
+            data.error ||
+            "AI request failed."
+        );
+    }
+
+    responseBox.textContent =
+        data.response ||
+        "No response received.";
+
+} catch (error) {
+
+    responseBox.textContent =
+        "Error: " +
+        error.message;
+
+} finally {
+
+    button.disabled = false;
+
+    refreshAdminAiIcons();
+}
+
+
+}
+
+setupAdminAiVoice();
+
+refreshAdminAiIcons();
+
+</script>
+
+<!-- EMPLOYEES -->
+
+<section id="employees" class="section">
+
+
+<h2 class="section-title">
+    Employee Management
+</h2>
+
+<p class="section-subtitle">
+    Add, edit, import and manage employees
+</p>
+
+<div id="employeeMessage"
+     class="message">
+</div>
+
+<div class="top-bar">
+
+    <div class="top-bar-left">
+
+        <button
+            class="btn btn-primary"
+            onclick="openEmployeeModal('ADD')">
+
+            + Add Employee
+
+        </button>
+
+        <button
+            class="btn btn-success"
+            onclick="openExcelImportModal()">
+
+            Import Excel
+
+        </button>
+
+    </div>
+
+    <div class="top-bar-right">
+
+        <input
+            type="text"
+            id="employeeSearch"
+            placeholder="Search employee..."
+            oninput="filterEmployees()"
+            style="
+                padding:10px 12px;
+                border:1px solid #cbd5e1;
+                border-radius:8px;
+                outline:none;
+            ">
+
+    </div>
+
+</div>
+
+<div class="table-card">
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>Employee Code</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Contact Number</th>
+                    <th>Role</th>
+                    <th>Joining Date</th>
+                    <th>Action</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="employeeTableBody">
+
+                <tr>
+
+                    <td
+                        colspan="7"
+                        class="empty-row">
+
+                        Loading employees...
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+</section>
 
 
             <!-- LEAVE -->
@@ -1038,6 +1616,8 @@
             </section>
 
             <!-- ================= WORKING DAY SETTINGS ================= -->
+
+            
 
 <section id="workingDaySection" class="section">
 
@@ -1245,6 +1825,185 @@
 </div>
 
 
+<!-- ================= SHIFT SETTINGS MODAL ================= -->
+
+<div
+    id="shiftSettingModal"
+    class="modal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h3>
+                Shift Settings
+            </h3>
+
+            <button
+                type="button"
+                class="close-btn"
+                onclick="closeShiftSettingModal()">
+                <i data-lucide="x"></i>
+            </button>
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="shiftSettingType">
+                Shift
+            </label>
+
+            <select
+                id="shiftSettingType"
+                required>
+
+                <option value="GENERAL">
+                    General Shift
+                </option>
+
+                <option value="SHIFT_1">
+                    Shift 1
+                </option>
+
+                <option value="SHIFT_2">
+                    Shift 2
+                </option>
+
+                <option value="SHIFT_3">
+                    Shift 3
+                </option>
+
+            </select>
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="shiftStartTime">
+                Start Time
+            </label>
+
+            <input
+                type="time"
+                id="shiftStartTime"
+                required>
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="shiftEndTime">
+                End Time
+            </label>
+
+            <input
+                type="time"
+                id="shiftEndTime"
+                required>
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="shiftLateAfter">
+                Late After
+            </label>
+
+            <input
+                type="time"
+                id="shiftLateAfter">
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="shiftSalaryDeductionAfter">
+                Salary Deduction After
+            </label>
+
+            <input
+                type="time"
+                id="shiftSalaryDeductionAfter">
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="shiftEarlyDeductionBefore">
+                Early Deduction Before
+            </label>
+
+            <input
+                type="time"
+                id="shiftEarlyDeductionBefore">
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="shiftHalfDayBoundary">
+                Half-Day Boundary
+            </label>
+
+            <input
+                type="time"
+                id="shiftHalfDayBoundary">
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="shiftGraceMinutes">
+                Grace Period (Minutes)
+            </label>
+
+            <input
+                type="number"
+                id="shiftGraceMinutes"
+                min="0"
+                value="5">
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="shiftWorkingHours">
+                Working Hours
+            </label>
+
+            <input
+                type="number"
+                id="shiftWorkingHours"
+                min="0.1"
+                step="0.5"
+                required>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="closeShiftSettingModal()">
+                Cancel
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-primary"
+                onclick="saveShiftSetting()">
+                Save Shift
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
            <!-- LEAVE & PERMISSION SETTINGS -->
 
 <section id="leaveSettings" class="section">
@@ -1318,26 +2077,147 @@
 
             <table>
 
-                <thead>
+                
+<thead>
 
-                <tr>
-                    <th>Setting Type</th>
-                    <th>Role</th>
-                    <th>Employee</th>
-                    <th>Sick Leave</th>
-                    <th>Casual Leave</th>
-                    <th>Permission</th>
-                    <th>Updated</th>
-                </tr>
+    <tr>
+        <th>Setting Type</th>
+        <th>Role</th>
+        <th>Employee</th>
+        <th>Sick Leave</th>
+        <th>Casual Leave</th>
+        <th>Permission</th>
+        <th>Shift</th>
+        <th>Updated</th>
+    </tr>
 
-                </thead>
+</thead>
 
-                <tbody id="settingsTableBody">
+<tbody id="settingsTableBody">
+
 
                 <tr>
                     <td colspan="7"
                         class="empty-row">
                         Loading settings...
+                    </td>
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- SHIFT SETTINGS -->
+
+<section id="shiftSettings" class="section">
+
+    <h2 class="section-title">
+        Shift Settings
+    </h2>
+
+    <p class="section-subtitle">
+        Admin can control shift timings, attendance rules,
+        salary deduction rules and working hours.
+    </p>
+
+    <div id="shiftSettingsMessage"
+         class="message">
+    </div>
+
+    <div class="priority-box">
+
+        <strong>Available Shifts:</strong>
+
+        General Shift →
+        Shift 1 →
+        Shift 2 →
+        Shift 3
+
+        <br>
+
+        Admin can configure each shift separately.
+
+        <br>
+
+        Employee-specific shift →
+        Role-specific shift →
+        General shift
+
+    </div>
+
+    <div class="top-bar">
+
+        <div class="top-bar-left">
+
+            <button class="btn btn-primary"
+                    onclick="openShiftSettingModal('GENERAL')">
+                + General Shift
+            </button>
+
+            <button class="btn btn-success"
+                    onclick="openShiftSettingModal('SHIFT_1')">
+                + Shift 1
+            </button>
+
+            <button class="btn btn-warning"
+                    onclick="openShiftSettingModal('SHIFT_2')">
+                + Shift 2
+            </button>
+
+            <button class="btn btn-secondary"
+                    onclick="openShiftSettingModal('SHIFT_3')">
+                + Shift 3
+            </button>
+
+        </div>
+
+        <div class="top-bar-right">
+
+            <button class="btn btn-secondary"
+                    onclick="loadShiftSettings()">
+                Refresh
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="table-card">
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                <tr>
+                    <th>Shift</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Late After</th>
+                    <th>Salary Deduction After</th>
+                    <th>Early Deduction Before</th>
+                    <th>Half-Day Boundary</th>
+                    <th>Grace</th>
+                    <th>Working Hours</th>
+                    <th>Action</th>
+                </tr>
+
+                </thead>
+
+                <tbody id="shiftSettingsTableBody">
+
+                <tr>
+                    <td colspan="10"
+                        class="empty-row">
+                        Loading shift settings...
                     </td>
                 </tr>
 
@@ -1643,6 +2523,8 @@
 
         <div class="form-grid">
 
+            <!-- EMPLOYEE CODE -->
+
             <div class="form-group">
 
                 <label>
@@ -1657,6 +2539,9 @@
 
             </div>
 
+
+            <!-- EMPLOYEE NAME -->
+
             <div class="form-group">
 
                 <label>
@@ -1668,6 +2553,9 @@
                        placeholder="Employee name">
 
             </div>
+
+
+            <!-- EMAIL -->
 
             <div class="form-group">
 
@@ -1681,6 +2569,9 @@
 
             </div>
 
+
+            <!-- CONTACT NUMBER -->
+
             <div class="form-group">
 
                 <label>
@@ -1693,74 +2584,100 @@
 
             </div>
 
-            <div class="form-group">
 
-                <label>
-                    Role
-                </label>
+            <!-- ROLE -->
 
-                <select id="employeeRole">
+<div class="form-group">
 
-                    <option value="">
-                        Select Role
-                    </option>
+    <label>
+        Role
+    </label>
 
-                    <option value="EMPLOYEE">
-                        EMPLOYEE
-                    </option>
+    <select id="employeeRole"
+            onchange="handleEmployeeRoleChange()">
 
-                    <option value="DEVELOPER">
-                        DEVELOPER
-                    </option>
+        <option value="">
+            Select Role
+        </option>
 
-                    <option value="HR">
-                        HR
-                    </option>
+    </select>
 
-                    <option value="TEAM_LEAD">
-                        TEAM_LEAD
-                    </option>
+</div>
 
-                    <option value="MANAGER">
-                        MANAGER
-                    </option>
 
-                    <option value="ADMIN">
-                        ADMIN
-                    </option>
+<!-- TECHNOLOGY -->
 
-                </select>
+<div class="form-group">
 
-            </div>
+    <label>
+        Technology
+    </label>
 
-            <div class="form-group">
+    <select id="employeeTechnology"
+            onchange="handleEmployeeTechnologyChange()">
 
-                <label>
-                    Joining Date
-                </label>
+        <option value="">
+            Select Technology
+        </option>
 
-                <input type="date"
-                       id="employeeJoiningDate">
+    </select>
 
-            </div>
+</div>
 
-        </div>
 
-        <div class="modal-footer">
+<!-- DESIGNATION -->
 
-            <button class="btn btn-secondary"
-                    onclick="closeEmployeeModal()">
-                Cancel
-            </button>
+<div class="form-group">
 
-            <button class="btn btn-primary"
-                    onclick="saveEmployee()">
-                Save Employee
-            </button>
+    <label>
+        Designation
+    </label>
 
-        </div>
+    <select id="employeeDesignation">
 
-    </div>
+        <option value="">
+            Select Designation
+        </option>
+
+    </select>
+
+</div>
+
+
+<!-- JOINING DATE -->
+
+<div class="form-group">
+
+    <label>
+        Joining Date
+    </label>
+
+    <input type="date"
+           id="employeeJoiningDate">
+
+</div>
+
+</div>
+
+<div class="modal-footer">
+
+    <button class="btn btn-secondary"
+            onclick="closeEmployeeModal()">
+
+        Cancel
+
+    </button>
+
+    <button class="btn btn-primary"
+            onclick="saveEmployee()">
+
+        Save Employee
+
+    </button>
+
+</div>
+
+</div>
 
 </div>
 
@@ -1780,7 +2697,9 @@
 
             <button class="close-btn"
                     onclick="closeEmployeeReasonModal()">
-                ×
+
+                <i data-lucide="x"></i>
+
             </button>
 
         </div>
@@ -1804,10 +2723,13 @@
         <div class="form-group">
 
             <label>
+
                 Reason
+
                 <span style="color:#dc2626;">
                     *
                 </span>
+
             </label>
 
             <textarea id="employeeReason"
@@ -1820,12 +2742,16 @@
 
             <button class="btn btn-secondary"
                     onclick="closeEmployeeReasonModal()">
+
                 Cancel
+
             </button>
 
             <button class="btn btn-primary"
                     onclick="confirmEmployeeAction()">
+
                 Confirm
+
             </button>
 
         </div>
@@ -1850,7 +2776,9 @@
 
             <button class="close-btn"
                     onclick="closeActionReasonModal()">
-                ×
+
+                <i data-lucide="x"></i>
+
             </button>
 
         </div>
@@ -1874,11 +2802,14 @@
         <div class="form-group">
 
             <label>
+
                 Reason
 
                 <span id="actionReasonRequired"
                       style="color:#dc2626;">
+
                     *
+
                 </span>
 
             </label>
@@ -1893,12 +2824,16 @@
 
             <button class="btn btn-secondary"
                     onclick="closeActionReasonModal()">
+
                 Cancel
+
             </button>
 
             <button class="btn btn-primary"
                     onclick="confirmActionReason()">
+
                 Confirm
+
             </button>
 
         </div>
@@ -2251,7 +3186,10 @@
 <script>
 
     const API_BASE_URL =
-        "https://attendance-management-d5h6.onrender.com";
+        window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1"
+            ? "http://localhost:8080"
+            : "https://attendance-management-d5h6.onrender.com";
 
 
     async function apiFetch(
@@ -2308,13 +3246,14 @@
 
             initializeWorkingDayControls();
 
+            
+
             updateHeaderForSection(
                 "dashboard"
             );
 
         }
     );
-
 
     /* =====================================================
        ADMIN INFO
@@ -2478,213 +3417,228 @@
     }
 
 
-    /* =====================================================
-       NAVIGATION
-    ===================================================== */
+   /* =====================================================
+   NAVIGATION
+===================================================== */
 
-    function showSection(
-        sectionId,
-        button
-    ) {
+function showSection(
+    sectionId,
+    button
+) {
 
-        document.querySelectorAll(
-            ".section"
-        ).forEach(
-            function (section) {
+    document.querySelectorAll(
+        ".section"
+    ).forEach(
+        function (section) {
 
-                section.classList.remove(
-                    "active"
-                );
-
-            }
-        );
-
-
-        const section =
-            document.getElementById(
-                sectionId
-            );
-
-
-        if (section) {
-
-            section.classList.add(
+            section.classList.remove(
                 "active"
             );
 
         }
+    );
 
 
-        document.querySelectorAll(
-            ".menu-btn"
-        ).forEach(
-            function (btn) {
-
-                btn.classList.remove(
-                    "active"
-                );
-
-            }
-        );
-
-
-        if (button) {
-
-            button.classList.add(
-                "active"
-            );
-
-        }
-
-
-        updateHeaderForSection(
+    const section =
+        document.getElementById(
             sectionId
         );
 
 
-        if (
-            sectionId ===
-            "dashboard"
-        ) {
+    if (section) {
 
-            loadEmployees();
+        section.classList.add(
+            "active"
+        );
 
-            loadLeaves();
-
-        }
+    }
 
 
-        if (
-            sectionId ===
-            "employees"
-        ) {
+    document.querySelectorAll(
+        ".menu-btn"
+    ).forEach(
+        function (btn) {
 
-            loadEmployees();
-
-        }
-
-
-        if (
-            sectionId ===
-            "leave"
-        ) {
-
-            loadLeaves();
+            btn.classList.remove(
+                "active"
+            );
 
         }
+    );
 
-        if (
-    sectionId ===
-    "workingDaySection"
-) {
 
-    loadWorkingDaySettings();
+    if (button) {
+
+        button.classList.add(
+            "active"
+        );
+
+    }
+
+
+    updateHeaderForSection(
+        sectionId
+    );
+
+
+    if (
+        sectionId ===
+        "dashboard"
+    ) {
+
+        loadEmployees();
+
+        loadLeaves();
+
+    }
+
+
+    if (
+        sectionId ===
+        "employees"
+    ) {
+
+        loadEmployees();
+
+    }
+
+
+    if (
+        sectionId ===
+        "leave"
+    ) {
+
+        loadLeaves();
+
+    }
+
+
+    if (
+        sectionId ===
+        "workingDaySection"
+    ) {
+
+        loadWorkingDaySettings();
+
+    }
+
+
+    if (
+        sectionId ===
+        "leaveSettings"
+    ) {
+
+        loadEmployees();
+
+        loadLeaveSettings();
+
+    }
+
+
+    if (
+        sectionId ===
+        "shiftSettings"
+    ) {
+
+        loadShiftSettings();
+
+    }
+
+
+    if (
+        sectionId ===
+        "salary"
+    ) {
+
+        loadEmployees();
+
+        calculateSalary();
+
+    }
+
+
+    if (
+        sectionId ===
+        "monthly"
+    ) {
+
+        loadMonthlyReport();
+
+    }
+
+
+    if (
+        sectionId ===
+        "history"
+    ) {
+
+        loadHistory();
+
+    }
 
 }
 
 
-        if (
-            sectionId ===
-            "leaveSettings"
-        ) {
+/* =====================================================
+   EMPLOYEES
+===================================================== */
 
-            loadEmployees();
+async function loadEmployees() {
 
-            loadLeaveSettings();
+    try {
 
-        }
-
-
-        if (
-            sectionId ===
-            "salary"
-        ) {
-
-            loadEmployees();
-
-            calculateSalary();
-
-        }
-
-
-        if (
-            sectionId ===
-            "monthly"
-        ) {
-
-            loadMonthlyReport();
-
-        }
-
-
-        if (
-            sectionId ===
-            "history"
-        ) {
-
-            loadHistory();
-
-        }
-
-    }
-
-
-    /* =====================================================
-       EMPLOYEES
-    ===================================================== */
-
-    async function loadEmployees() {
-
-        try {
-
-            const response =
-                await apiFetch(
-                    "/admin/employees"
-                );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    await getErrorMessage(
-                        response
-                    )
-                );
-
-            }
-
-
-            employees =
-                await response.json();
-
-
-            renderEmployees();
-
-            populateSettingEmployees();
-
-            await updateDashboardStats();
-
-        }
-        catch (error) {
-
-            console.error(
-                "Load employees error:",
-                error
+        const response =
+            await apiFetch(
+                "/admin/employees"
             );
 
 
-            showMessage(
-                "employeeMessage",
-                error.message,
-                "error"
+        if (!response.ok) {
+
+            throw new Error(
+                await getErrorMessage(
+                    response
+                )
             );
 
         }
 
+
+        employees =
+            await response.json();
+
+
+        renderEmployees();
+
+        populateSettingEmployees();
+
+        await updateDashboardStats();
+
+    }
+    catch (error) {
+
+        console.error(
+            "Load employees error:",
+            error
+        );
+
+
+        showMessage(
+            "employeeMessage",
+            error.message,
+            "error"
+        );
+
     }
 
+}
 
-   function renderEmployees(
+
+/* =====================================================
+   RENDER EMPLOYEES
+===================================================== */
+
+function renderEmployees(
     list = employees
 ) {
 
@@ -2718,8 +3672,61 @@
     }
 
 
+    /*
+     * Sort Employees by Employee Code
+     *
+     * Example:
+     *
+     * EMP001
+     * EMP002
+     * EMP003
+     * ...
+     * EMP010
+     *
+     * Other codes such as:
+     *
+     * GBEMP001
+     * TEST100
+     * ss1
+     *
+     * will also be sorted by Employee Code.
+     */
+
+    const sortedEmployees =
+        [...list].sort(
+            function (a, b) {
+
+                const codeA =
+                    String(
+                        a.employeeCode || ""
+                    )
+                    .trim()
+                    .toUpperCase();
+
+
+                const codeB =
+                    String(
+                        b.employeeCode || ""
+                    )
+                    .trim()
+                    .toUpperCase();
+
+
+                return codeA.localeCompare(
+                    codeB,
+                    undefined,
+                    {
+                        numeric: true,
+                        sensitivity: "base"
+                    }
+                );
+
+            }
+        );
+
+
     tbody.innerHTML =
-        list.map(
+        sortedEmployees.map(
             function (employee) {
 
                 return `
@@ -2770,6 +3777,7 @@
                     <td>
 
                         <button
+                            type="button"
                             class="btn btn-primary btn-small"
                             onclick="openEmployeeModal(
                                 'EDIT',
@@ -2779,6 +3787,7 @@
                         </button>
 
                         <button
+                            type="button"
                             class="btn btn-danger btn-small"
                             onclick="deleteEmployee(
                                 ${employee.id}
@@ -2796,812 +3805,150 @@
 
 }
 
+function filterEmployees() {
 
-    function filterEmployees() {
-
-        const search =
-            document.getElementById(
-                "employeeSearch"
-            ).value
-                .toLowerCase()
-                .trim();
-
-
-        if (!search) {
-
-            renderEmployees(
-                employees
-            );
-
-            return;
-
-        }
+    const search =
+        document.getElementById(
+            "employeeSearch"
+        ).value
+            .toLowerCase()
+            .trim();
 
 
-        const filtered =
-            employees.filter(
-                function (employee) {
-
-                    return (
-
-                        String(
-                            employee.employeeCode ||
-                            ""
-                        )
-                            .toLowerCase()
-                            .includes(search)
-
-                        ||
-
-                        String(
-                            employee.name ||
-                            ""
-                        )
-                            .toLowerCase()
-                            .includes(search)
-
-                        ||
-
-                        String(
-                            employee.email ||
-                            ""
-                        )
-                            .toLowerCase()
-                            .includes(search)
-
-                        ||
-
-                        String(
-                            employee.role ||
-                            ""
-                        )
-                            .toLowerCase()
-                            .includes(search)
-
-                    );
-
-                }
-            );
-
+    if (!search) {
 
         renderEmployees(
-            filtered
+            employees
         );
+
+        return;
 
     }
 
 
-    function openEmployeeModal(
-        action,
-        employeeId = null
-    ) {
+    const filtered =
+        employees.filter(
+            function (employee) {
 
-        currentEmployeeAction =
-            action;
+                return (
 
-        editingEmployeeId =
-            employeeId;
+                    String(
+                        employee.employeeCode ||
+                        ""
+                    )
+                        .toLowerCase()
+                        .includes(search)
 
+                    ||
 
-        const modal =
-            document.getElementById(
-                "employeeModal"
-            );
+                    String(
+                        employee.name ||
+                        ""
+                    )
+                        .toLowerCase()
+                        .includes(search)
 
-        const title =
-            document.getElementById(
-                "employeeModalTitle"
-            );
+                    ||
 
+                    String(
+                        employee.email ||
+                        ""
+                    )
+                        .toLowerCase()
+                        .includes(search)
 
-        if (
-            action === "ADD"
-        ) {
+                    ||
 
-            title.textContent =
-                "Add Employee";
+                    String(
+                        employee.role ||
+                        ""
+                    )
+                        .toLowerCase()
+                        .includes(search)
 
-            clearEmployeeForm();
-
-        }
-        else {
-
-            title.textContent =
-                "Edit Employee";
-
-
-            const employee =
-                employees.find(
-                    function (item) {
-
-                        return Number(
-                            item.id
-                        ) === Number(
-                            employeeId
-                        );
-
-                    }
                 );
-
-
-            if (!employee) {
-
-                alert(
-                    "Employee not found."
-                );
-
-                return;
 
             }
-
-
-            document.getElementById(
-                "employeeCode"
-            ).value =
-                employee.employeeCode ||
-                "";
-
-
-            document.getElementById(
-                "employeeName"
-            ).value =
-                employee.name ||
-                "";
-
-
-            document.getElementById(
-                "employeeEmail"
-            ).value =
-                employee.email ||
-                "";
-
-
-            document.getElementById(
-                "employeeContact"
-            ).value =
-                employee.contactNumber ||
-                "";
-
-
-            document.getElementById(
-                "employeeRole"
-            ).value =
-                employee.role ||
-                "";
-
-
-            document.getElementById(
-                "employeeJoiningDate"
-            ).value =
-                employee.joiningDate ||
-                "";
-
-        }
-
-
-        modal.classList.add(
-            "show"
         );
 
-    }
+
+    renderEmployees(
+        filtered
+    );
+
+}
 
 
-    function clearEmployeeForm() {
 
-        document.getElementById(
-            "employeeCode"
-        ).value = "";
+/* =====================================================
+   OPEN EMPLOYEE MODAL
+===================================================== */
 
+function openEmployeeModal(
+    action,
+    employeeId = null
+) {
 
-        document.getElementById(
-            "employeeName"
-        ).value = "";
+    currentEmployeeAction =
+        action;
 
-
-        document.getElementById(
-            "employeeEmail"
-        ).value = "";
-
-
-        document.getElementById(
-            "employeeContact"
-        ).value = "";
+    editingEmployeeId =
+        employeeId;
 
 
-        document.getElementById(
-            "employeeRole"
-        ).value = "";
-
-
-        document.getElementById(
-            "employeeJoiningDate"
-        ).value = "";
-
-    }
-
-
-    function closeEmployeeModal() {
-
+    const modal =
         document.getElementById(
             "employeeModal"
-        ).classList.remove(
-            "show"
         );
 
-
-        currentEmployeeAction =
-            null;
-
-        editingEmployeeId =
-            null;
-
-    }
-
-
-    /* =====================================================
-       EMPLOYEE SAVE
-    ===================================================== */
-
-    async function saveEmployee() {
-
-        const name =
-            document.getElementById(
-                "employeeName"
-            ).value.trim();
-
-
-        const email =
-            document.getElementById(
-                "employeeEmail"
-            ).value.trim();
-
-
-        const contactNumber =
-            document.getElementById(
-                "employeeContact"
-            ).value.trim();
-
-
-        const role =
-            document.getElementById(
-                "employeeRole"
-            ).value.trim();
-
-
-        const joiningDate =
-            document.getElementById(
-                "employeeJoiningDate"
-            ).value;
-
-
-        if (!name) {
-
-            alert(
-                "Please enter Employee Name."
-            );
-
-            document.getElementById(
-                "employeeName"
-            ).focus();
-
-            return;
-
-        }
-
-
-        if (!email) {
-
-            alert(
-                "Please enter Employee Email."
-            );
-
-            document.getElementById(
-                "employeeEmail"
-            ).focus();
-
-            return;
-
-        }
-
-
-        if (!contactNumber) {
-
-            alert(
-                "Please enter Contact Number."
-            );
-
-            document.getElementById(
-                "employeeContact"
-            ).focus();
-
-            return;
-
-        }
-
-
-        if (!role) {
-
-            alert(
-                "Please select Employee Role."
-            );
-
-            document.getElementById(
-                "employeeRole"
-            ).focus();
-
-            return;
-
-        }
-
-
-        if (!joiningDate) {
-
-            alert(
-                "Please select Joining Date."
-            );
-
-            document.getElementById(
-                "employeeJoiningDate"
-            ).focus();
-
-            return;
-
-        }
-
-
-        const normalizedEmail =
-            email.toLowerCase();
-
-
-        const duplicateEmployee =
-            employees.find(
-                function (employee) {
-
-                    const existingEmail =
-                        String(
-                            employee.email ||
-                            ""
-                        )
-                            .trim()
-                            .toLowerCase();
-
-
-                    const sameEmail =
-                        existingEmail ===
-                        normalizedEmail;
-
-
-                    const sameEmployee =
-                        currentEmployeeAction ===
-                            "EDIT" &&
-                        Number(
-                            employee.id
-                        ) === Number(
-                            editingEmployeeId
-                        );
-
-
-                    return (
-                        sameEmail &&
-                        !sameEmployee
-                    );
-
-                }
-            );
-
-
-        if (duplicateEmployee) {
-
-            alert(
-                "Duplicate Employee Email.\n\n" +
-                "This email is already registered for " +
-                (
-                    duplicateEmployee.name ||
-                    "another employee"
-                ) +
-                ".\n\n" +
-                "Please use a different email."
-            );
-
-
-            document.getElementById(
-                "employeeEmail"
-            ).focus();
-
-            return;
-
-        }
-
-
-        pendingAction =
-            currentEmployeeAction;
-
-
-        pendingEmployeeData = {
-
-            name:
-                name,
-
-            email:
-                email,
-
-            contactNumber:
-                contactNumber,
-
-            role:
-                role,
-
-            joiningDate:
-                joiningDate
-
-        };
-
-
-        if (
-            currentEmployeeAction ===
-            "EDIT"
-        ) {
-
-            pendingEmployeeData.employeeId =
-                editingEmployeeId;
-
-        }
-
-
-        closeEmployeeModal();
-
-        openEmployeeReasonModal();
-
-    }
-
-
-    /* =====================================================
-       EMPLOYEE REASON
-    ===================================================== */
-
-    function openEmployeeReasonModal() {
-
-        const reason =
-            document.getElementById(
-                "employeeReason"
-            );
-
-
-        if (reason) {
-
-            reason.value =
-                "";
-
-        }
-
-
-        const title =
-            document.getElementById(
-                "employeeReasonTitle"
-            );
-
-
-        if (
-            pendingAction ===
-            "ADD"
-        ) {
-
-            title.textContent =
-                "Confirm Add Employee";
-
-        }
-        else if (
-            pendingAction ===
-            "EDIT"
-        ) {
-
-            title.textContent =
-                "Confirm Edit Employee";
-
-        }
-        else if (
-            pendingAction ===
-            "DELETE"
-        ) {
-
-            title.textContent =
-                "Confirm Delete Employee";
-
-        }
-        else {
-
-            title.textContent =
-                "Confirm Employee Action";
-
-        }
-
-
+    const title =
         document.getElementById(
-            "employeeReasonModal"
-        ).classList.add(
-            "show"
+            "employeeModalTitle"
         );
 
+
+    if (!modal || !title) {
+        return;
     }
 
 
-    function closeEmployeeReasonModal(
-        clearPending = true
+    /* =================================================
+       ADD EMPLOYEE
+    ================================================= */
+
+    if (
+        action === "ADD"
     ) {
 
-        document.getElementById(
-            "employeeReasonModal"
-        ).classList.remove(
-            "show"
-        );
+        title.textContent =
+            "Add Employee";
 
 
-        document.getElementById(
-            "employeeReason"
-        ).value = "";
+        /*
+         * Clear existing form values
+         */
+
+        clearEmployeeForm();
 
 
-        if (clearPending) {
+        /*
+         * Load Role options
+         */
 
-            pendingAction =
-                null;
-
-            pendingEmployeeData =
-                null;
-
-        }
+        loadEmployeeRoles();
 
     }
 
 
-    async function confirmEmployeeAction() {
+    /* =================================================
+       EDIT EMPLOYEE
+    ================================================= */
 
-        const reason =
-            document.getElementById(
-                "employeeReason"
-            ).value.trim();
+    else {
 
+        title.textContent =
+            "Edit Employee";
 
-        if (!reason) {
-
-            alert(
-                "Please enter a reason."
-            );
-
-            return;
-
-        }
-
-
-        if (
-            reason.length < 3
-        ) {
-
-            alert(
-                "Reason must contain at least 3 characters."
-            );
-
-            return;
-
-        }
-
-
-        const adminEmail =
-            localStorage.getItem(
-                "adminEmail"
-            );
-
-
-        if (!adminEmail) {
-
-            alert(
-                "Admin login information not found. Please login again."
-            );
-
-            logout();
-
-            return;
-
-        }
-
-
-        if (!pendingEmployeeData) {
-
-            alert(
-                "Employee data not found."
-            );
-
-            return;
-
-        }
-
-
-        try {
-
-            const action =
-                pendingAction;
-
-
-            const requestData = {
-
-                ...pendingEmployeeData,
-
-                adminEmail:
-                    adminEmail,
-
-                reason:
-                    reason
-
-            };
-
-
-            let response;
-
-
-            if (
-                action ===
-                "ADD"
-            ) {
-
-                response =
-                    await apiFetch(
-                        "/admin/employees",
-                        {
-                            method:
-                                "POST",
-
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
-
-                            body:
-                                JSON.stringify(
-                                    requestData
-                                )
-                        }
-                    );
-
-            }
-            else if (
-                action ===
-                "EDIT"
-            ) {
-
-                response =
-                    await apiFetch(
-                        "/admin/employees/" +
-                        pendingEmployeeData.employeeId,
-                        {
-                            method:
-                                "PUT",
-
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
-
-                            body:
-                                JSON.stringify(
-                                    requestData
-                                )
-                        }
-                    );
-
-            }
-            else if (
-                action ===
-                "DELETE"
-            ) {
-
-                response =
-                    await apiFetch(
-                        "/admin/employees/" +
-                        pendingEmployeeData.employeeId,
-                        {
-                            method:
-                                "DELETE",
-
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
-
-                            body:
-                                JSON.stringify({
-
-                                    adminEmail:
-                                        adminEmail,
-
-                                    reason:
-                                        reason
-
-                                })
-                        }
-                    );
-
-            }
-            else {
-
-                alert(
-                    "Invalid employee action."
-                );
-
-                return;
-
-            }
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    await getErrorMessage(
-                        response
-                    )
-                );
-
-            }
-
-
-            closeEmployeeReasonModal(
-                false
-            );
-
-
-            pendingAction =
-                null;
-
-            pendingEmployeeData =
-                null;
-
-
-            await loadEmployees();
-
-            await loadHistory();
-
-
-            showMessage(
-                "employeeMessage",
-
-                action === "ADD"
-                    ? "Employee added successfully."
-                    : action === "EDIT"
-                        ? "Employee updated successfully."
-                        : "Employee deleted successfully.",
-
-                "success"
-            );
-
-        }
-        catch (error) {
-
-            console.error(
-                "Employee action error:",
-                error
-            );
-
-
-            showMessage(
-                "employeeMessage",
-
-                error.message ||
-                "Unable to complete employee action.",
-
-                "error"
-            );
-
-        }
-
-    }
-
-
-    /* =====================================================
-       DELETE EMPLOYEE
-    ===================================================== */
-
-    function deleteEmployee(
-        employeeId
-    ) {
 
         const employee =
             employees.find(
@@ -3628,36 +3975,2341 @@
         }
 
 
-        const confirmed =
-            confirm(
-                `Are you sure you want to delete ${employee.name}?`
+        /*
+         * EMPLOYEE CODE
+         */
+
+        document.getElementById(
+            "employeeCode"
+        ).value =
+            employee.employeeCode ||
+            "";
+
+
+        /*
+         * NAME
+         */
+
+        document.getElementById(
+            "employeeName"
+        ).value =
+            employee.name ||
+            "";
+
+
+        /*
+         * EMAIL
+         */
+
+        document.getElementById(
+            "employeeEmail"
+        ).value =
+            employee.email ||
+            "";
+
+
+        /*
+         * CONTACT NUMBER
+         */
+
+        document.getElementById(
+            "employeeContact"
+        ).value =
+            employee.contactNumber ||
+            "";
+
+
+        /*
+         * ROLE
+         */
+
+        const roleSelect =
+            document.getElementById(
+                "employeeRole"
             );
 
 
-        if (!confirmed) {
-            return;
-        }
+        /*
+         * Load Role options first
+         */
 
+        loadEmployeeRoles();
+
+
+        /*
+         * Select employee Role
+         */
+
+        roleSelect.value =
+            employee.role ||
+            "";
+
+
+        /*
+         * Load Technology
+         * based on Role
+         */
+
+        handleEmployeeRoleChange();
+
+
+        /*
+         * TECHNOLOGY
+         */
+
+        const technologySelect =
+            document.getElementById(
+                "employeeTechnology"
+            );
+
+
+        technologySelect.value =
+            employee.technology ||
+            "";
+
+
+        /*
+         * Load Designation
+         * based on Role + Technology
+         */
+
+        handleEmployeeTechnologyChange();
+
+
+        /*
+         * DESIGNATION
+         */
+
+        const designationSelect =
+            document.getElementById(
+                "employeeDesignation"
+            );
+
+
+        designationSelect.value =
+            employee.designation ||
+            "";
+
+
+        /*
+         * JOINING DATE
+         */
+
+        document.getElementById(
+            "employeeJoiningDate"
+        ).value =
+            employee.joiningDate ||
+            "";
+
+    }
+
+
+    /*
+     * SHOW EMPLOYEE MODAL
+     */
+
+    modal.classList.add(
+        "show"
+    );
+
+}
+
+
+
+
+/* =====================================================
+   CLEAR EMPLOYEE FORM
+===================================================== */
+
+function clearEmployeeForm() {
+
+    /*
+     * EMPLOYEE CODE
+     */
+
+    document.getElementById(
+        "employeeCode"
+    ).value = "";
+
+
+    /*
+     * EMPLOYEE NAME
+     */
+
+    document.getElementById(
+        "employeeName"
+    ).value = "";
+
+
+    /*
+     * EMPLOYEE EMAIL
+     */
+
+    document.getElementById(
+        "employeeEmail"
+    ).value = "";
+
+
+    /*
+     * CONTACT NUMBER
+     */
+
+    document.getElementById(
+        "employeeContact"
+    ).value = "";
+
+
+    /*
+     * ROLE
+     */
+
+    document.getElementById(
+        "employeeRole"
+    ).innerHTML = `
+        <option value="">
+            Select Role
+        </option>
+    `;
+
+
+    /*
+     * TECHNOLOGY
+     */
+
+    document.getElementById(
+        "employeeTechnology"
+    ).innerHTML = `
+        <option value="">
+            Select Technology
+        </option>
+    `;
+
+
+    /*
+     * DESIGNATION
+     */
+
+    document.getElementById(
+        "employeeDesignation"
+    ).innerHTML = `
+        <option value="">
+            Select Designation
+        </option>
+    `;
+
+
+    /*
+     * JOINING DATE
+     */
+
+    document.getElementById(
+        "employeeJoiningDate"
+    ).value = "";
+
+}
+
+
+
+
+/* =====================================================
+   EMPLOYEE REASON MODAL
+===================================================== */
+
+function openEmployeeReasonModal() {
+
+    const reason =
+        document.getElementById(
+            "employeeReason"
+        );
+
+
+    if (reason) {
+
+        reason.value =
+            "";
+
+    }
+
+
+    const title =
+        document.getElementById(
+            "employeeReasonTitle"
+        );
+
+
+    if (
+        pendingAction ===
+        "ADD"
+    ) {
+
+        title.textContent =
+            "Confirm Add Employee";
+
+    }
+    else if (
+        pendingAction ===
+        "EDIT"
+    ) {
+
+        title.textContent =
+            "Confirm Edit Employee";
+
+    }
+    else if (
+        pendingAction ===
+        "DELETE"
+    ) {
+
+        title.textContent =
+            "Confirm Delete Employee";
+
+    }
+    else {
+
+        title.textContent =
+            "Confirm Employee Action";
+
+    }
+
+
+    document.getElementById(
+        "employeeReasonModal"
+    ).classList.add(
+        "show"
+    );
+
+}
+
+
+/* =====================================================
+   SAVE EMPLOYEE
+===================================================== */
+
+async function saveEmployee() {
+
+    /*
+     * EMPLOYEE NAME
+     */
+
+    const name =
+        document.getElementById(
+            "employeeName"
+        ).value.trim();
+
+
+    /*
+     * EMAIL
+     */
+
+    const email =
+        document.getElementById(
+            "employeeEmail"
+        ).value.trim();
+
+
+    /*
+     * CONTACT NUMBER
+     */
+
+    const contactNumber =
+        document.getElementById(
+            "employeeContact"
+        ).value.trim();
+
+
+    /*
+     * ROLE
+     */
+
+    const role =
+        document.getElementById(
+            "employeeRole"
+        ).value.trim();
+
+
+    /*
+     * TECHNOLOGY
+     */
+
+    const technology =
+        document.getElementById(
+            "employeeTechnology"
+        ).value.trim();
+
+
+    /*
+     * DESIGNATION
+     */
+
+    const designation =
+        document.getElementById(
+            "employeeDesignation"
+        ).value.trim();
+
+
+    /*
+     * JOINING DATE
+     */
+
+    const joiningDate =
+        document.getElementById(
+            "employeeJoiningDate"
+        ).value;
+
+
+    /* =================================================
+       VALIDATION
+    ================================================= */
+
+    if (!name) {
+
+        alert(
+            "Please enter Employee Name."
+        );
+
+        document.getElementById(
+            "employeeName"
+        ).focus();
+
+        return;
+
+    }
+
+
+    if (!email) {
+
+        alert(
+            "Please enter Employee Email."
+        );
+
+        document.getElementById(
+            "employeeEmail"
+        ).focus();
+
+        return;
+
+    }
+
+
+    if (!contactNumber) {
+
+        alert(
+            "Please enter Contact Number."
+        );
+
+        document.getElementById(
+            "employeeContact"
+        ).focus();
+
+        return;
+
+    }
+
+
+    if (!role) {
+
+        alert(
+            "Please select Employee Role."
+        );
+
+        document.getElementById(
+            "employeeRole"
+        ).focus();
+
+        return;
+
+    }
+
+
+    if (!technology) {
+
+        alert(
+            "Please select Employee Technology."
+        );
+
+        document.getElementById(
+            "employeeTechnology"
+        ).focus();
+
+        return;
+
+    }
+
+
+    if (!designation) {
+
+        alert(
+            "Please select Employee Designation."
+        );
+
+        document.getElementById(
+            "employeeDesignation"
+        ).focus();
+
+        return;
+
+    }
+
+
+    if (!joiningDate) {
+
+        alert(
+            "Please select Joining Date."
+        );
+
+        document.getElementById(
+            "employeeJoiningDate"
+        ).focus();
+
+        return;
+
+    }
+
+
+    /* =================================================
+       DUPLICATE EMAIL CHECK
+    ================================================= */
+
+    const normalizedEmail =
+        email.toLowerCase();
+
+
+    const duplicateEmployee =
+        employees.find(
+            function (employee) {
+
+                const existingEmail =
+                    String(
+                        employee.email || ""
+                    )
+                    .trim()
+                    .toLowerCase();
+
+
+                const sameEmail =
+                    existingEmail ===
+                    normalizedEmail;
+
+
+                const sameEmployee =
+                    currentEmployeeAction ===
+                    "EDIT" &&
+                    Number(
+                        employee.id
+                    ) === Number(
+                        editingEmployeeId
+                    );
+
+
+                return (
+                    sameEmail &&
+                    !sameEmployee
+                );
+
+            }
+        );
+
+
+    if (duplicateEmployee) {
+
+        alert(
+            "Duplicate Employee Email.\n\n" +
+            "This email is already registered for " +
+            (
+                duplicateEmployee.name ||
+                "another employee"
+            ) +
+            ".\n\n" +
+            "Please use a different email."
+        );
+
+
+        document.getElementById(
+            "employeeEmail"
+        ).focus();
+
+
+        return;
+
+    }
+
+
+    /* =================================================
+       PREPARE EMPLOYEE DATA
+    ================================================= */
+
+    pendingAction =
+        currentEmployeeAction;
+
+
+    pendingEmployeeData = {
+
+        name:
+            name,
+
+        email:
+            email,
+
+        contactNumber:
+            contactNumber,
+
+        role:
+            role,
+
+        technology:
+            technology,
+
+        designation:
+            designation,
+
+        joiningDate:
+            joiningDate
+
+    };
+
+
+    /*
+     * EDIT EMPLOYEE ID
+     */
+
+    if (
+        currentEmployeeAction ===
+        "EDIT"
+    ) {
+
+        pendingEmployeeData.employeeId =
+            editingEmployeeId;
+
+    }
+
+
+    /* =================================================
+       CLOSE EMPLOYEE MODAL
+    ================================================= */
+
+    closeEmployeeModal();
+
+
+    /* =================================================
+       OPEN REASON MODAL
+    ================================================= */
+
+    openEmployeeReasonModal();
+
+}
+
+
+/* =====================================================
+   CLOSE EMPLOYEE MODAL
+===================================================== */
+
+function closeEmployeeModal() {
+
+    const modal =
+        document.getElementById(
+            "employeeModal"
+        );
+
+
+    if (!modal) {
+        return;
+    }
+
+
+    /*
+     * Hide Employee Modal
+     */
+
+    modal.classList.remove(
+        "show"
+    );
+
+}
+
+
+/* =====================================================
+   CLOSE EMPLOYEE REASON
+===================================================== */
+
+function closeEmployeeReasonModal(
+    clearPending = true
+) {
+
+    const modal =
+        document.getElementById(
+            "employeeReasonModal"
+        );
+
+
+    if (modal) {
+
+        modal.classList.remove(
+            "show"
+        );
+
+    }
+
+
+    const reason =
+        document.getElementById(
+            "employeeReason"
+        );
+
+
+    if (reason) {
+
+        reason.value =
+            "";
+
+    }
+
+
+    if (clearPending) {
 
         pendingAction =
-            "DELETE";
+            null;
+
+        pendingEmployeeData =
+            null;
+
+    }
+
+}
 
 
-        pendingEmployeeData = {
+/* =====================================================
+   CONFIRM EMPLOYEE ACTION
+===================================================== */
 
-            employeeId:
-                employeeId
+async function confirmEmployeeAction() {
+
+    const reason =
+        document.getElementById(
+            "employeeReason"
+        ).value.trim();
+
+
+    /*
+     * Reason validation
+     */
+
+    if (!reason) {
+
+        alert(
+            "Please enter a reason."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        reason.length < 3
+    ) {
+
+        alert(
+            "Reason must contain at least 3 characters."
+        );
+
+        return;
+
+    }
+
+
+    /*
+     * Get logged-in Admin email
+     */
+
+    const adminEmail =
+        localStorage.getItem(
+            "adminEmail"
+        );
+
+
+    if (!adminEmail) {
+
+        alert(
+            "Admin login information not found. Please login again."
+        );
+
+        logout();
+
+        return;
+
+    }
+
+
+    /*
+     * Check pending employee data
+     */
+
+    if (!pendingEmployeeData) {
+
+        alert(
+            "Employee data not found."
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        const action =
+            pendingAction;
+
+
+        /*
+         * Prepare request
+         */
+
+        const requestData = {
+
+            ...pendingEmployeeData,
+
+            adminEmail:
+                adminEmail,
+
+            reason:
+                reason
 
         };
 
 
-        openEmployeeReasonModal();
+        let response;
+
+
+        /* =================================================
+           ADD EMPLOYEE
+        ================================================= */
+
+        if (
+            action ===
+            "ADD"
+        ) {
+
+            response =
+                await apiFetch(
+                    "/admin/employees",
+                    {
+
+                        method:
+                            "POST",
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/json"
+
+                        },
+
+                        body:
+                            JSON.stringify(
+                                requestData
+                            )
+
+                    }
+                );
+
+        }
+
+
+        /* =================================================
+           EDIT EMPLOYEE
+        ================================================= */
+
+        else if (
+            action ===
+            "EDIT"
+        ) {
+
+            response =
+                await apiFetch(
+                    "/admin/employees/" +
+                    pendingEmployeeData.employeeId,
+                    {
+
+                        method:
+                            "PUT",
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/json"
+
+                        },
+
+                        body:
+                            JSON.stringify(
+                                requestData
+                            )
+
+                    }
+                );
+
+        }
+
+
+        /* =================================================
+           DELETE EMPLOYEE
+        ================================================= */
+
+        else if (
+            action ===
+            "DELETE"
+        ) {
+
+            response =
+                await apiFetch(
+                    "/admin/employees/" +
+                    pendingEmployeeData.employeeId,
+                    {
+
+                        method:
+                            "DELETE",
+
+                        headers: {
+
+                            "Content-Type":
+                                "application/json"
+
+                        },
+
+                        body:
+                            JSON.stringify({
+
+                                adminEmail:
+                                    adminEmail,
+
+                                reason:
+                                    reason
+
+                            })
+
+                    }
+                );
+
+        }
+
+
+        /* =================================================
+           INVALID ACTION
+        ================================================= */
+
+        else {
+
+            alert(
+                "Invalid employee action."
+            );
+
+            return;
+
+        }
+
+
+        /*
+         * Backend error
+         */
+
+        if (!response.ok) {
+
+            throw new Error(
+                await getErrorMessage(
+                    response
+                )
+            );
+
+        }
+
+
+        /*
+         * Close Employee Reason Modal
+         */
+
+        closeEmployeeReasonModal(
+            false
+        );
+
+
+        /*
+         * Close Employee Add/Edit Modal
+         */
+
+        closeEmployeeModal();
+
+
+        /*
+         * Clear pending action
+         */
+
+        pendingAction =
+            null;
+
+        pendingEmployeeData =
+            null;
+
+
+        /*
+         * Reload employees
+         */
+
+        await loadEmployees();
+
+
+        /*
+         * Reload admin history
+         */
+
+        await loadHistory();
+
+
+        /*
+         * Success message
+         */
+
+        showMessage(
+            "employeeMessage",
+
+            action === "ADD"
+                ? "Employee added successfully."
+                : action === "EDIT"
+                    ? "Employee updated successfully."
+                    : "Employee deleted successfully.",
+
+            "success"
+        );
 
     }
+    catch (error) {
+
+        console.error(
+            "Employee action error:",
+            error
+        );
+
+
+        showMessage(
+            "employeeMessage",
+
+            error.message ||
+            "Unable to complete employee action.",
+
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   DELETE EMPLOYEE
+===================================================== */
+
+function deleteEmployee(
+    employeeId
+) {
+
+    const employee =
+        employees.find(
+            function (item) {
+
+                return Number(
+                    item.id
+                ) === Number(
+                    employeeId
+                );
+
+            }
+        );
+
+
+    if (!employee) {
+
+        alert(
+            "Employee not found."
+        );
+
+        return;
+
+    }
+
+
+    const confirmed =
+        confirm(
+            `Are you sure you want to delete ${employee.name}?`
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    pendingAction =
+        "DELETE";
+
+
+    pendingEmployeeData = {
+
+        employeeId:
+            employeeId
+
+    };
+
+
+    openEmployeeReasonModal();
+
+}
+
+
+
+/* =====================================================
+   SHIFT SETTINGS
+===================================================== */
+
+function openShiftSettingModal(
+    shiftType = "GENERAL"
+) {
+
+    const modal =
+        document.getElementById(
+            "shiftSettingModal"
+        );
+
+
+    if (!modal) {
+        return;
+    }
+
+
+    const shiftTypeField =
+        document.getElementById(
+            "shiftSettingType"
+        );
+
+
+    const startTime =
+        document.getElementById(
+            "shiftStartTime"
+        );
+
+
+    const endTime =
+        document.getElementById(
+            "shiftEndTime"
+        );
+
+
+    const lateAfter =
+        document.getElementById(
+            "shiftLateAfter"
+        );
+
+
+    const salaryDeductionAfter =
+        document.getElementById(
+            "shiftSalaryDeductionAfter"
+        );
+
+
+    const earlyDeductionBefore =
+        document.getElementById(
+            "shiftEarlyDeductionBefore"
+        );
+
+
+    const halfDayBoundary =
+        document.getElementById(
+            "shiftHalfDayBoundary"
+        );
+
+
+    const graceMinutes =
+        document.getElementById(
+            "shiftGraceMinutes"
+        );
+
+
+    const workingHours =
+        document.getElementById(
+            "shiftWorkingHours"
+        );
+
+
+    shiftTypeField.value =
+        shiftType;
+
+
+    startTime.value =
+        "";
+
+    endTime.value =
+        "";
+
+    lateAfter.value =
+        "";
+
+    salaryDeductionAfter.value =
+        "";
+
+    earlyDeductionBefore.value =
+        "";
+
+    halfDayBoundary.value =
+        "";
+
+    graceMinutes.value =
+        "5";
+
+    workingHours.value =
+        "";
+
+
+    const existingSetting =
+        shiftSettings.find(
+            function (setting) {
+
+                return String(
+                    setting.shiftType ||
+                    ""
+                ).toUpperCase() ===
+                String(
+                    shiftType
+                ).toUpperCase();
+
+            }
+        );
+
+
+    if (existingSetting) {
+
+        startTime.value =
+            existingSetting.startTime ||
+            "";
+
+        endTime.value =
+            existingSetting.endTime ||
+            "";
+
+        lateAfter.value =
+            existingSetting.lateAfter ||
+            "";
+
+        salaryDeductionAfter.value =
+            existingSetting.salaryDeductionAfter ||
+            "";
+
+        earlyDeductionBefore.value =
+            existingSetting.earlyDeductionBefore ||
+            "";
+
+        halfDayBoundary.value =
+            existingSetting.halfDayBoundary ||
+            "";
+
+        graceMinutes.value =
+            existingSetting.graceMinutes ??
+            5;
+
+        workingHours.value =
+            existingSetting.workingHours ??
+            "";
+
+    }
+
+
+    setupShiftTimeAutoCalculation();
+
+
+    modal.classList.add(
+        "show"
+    );
+
+}
+
+
+function closeShiftSettingModal() {
+
+    const modal =
+        document.getElementById(
+            "shiftSettingModal"
+        );
+
+
+    if (modal) {
+
+        modal.classList.remove(
+            "show"
+        );
+
+    }
+
+}
+
+
+
+function setupShiftTimeAutoCalculation() {
+
+    const startTime =
+        document.getElementById(
+            "shiftStartTime"
+        );
+
+
+    const endTime =
+        document.getElementById(
+            "shiftEndTime"
+        );
+
+
+    const lateAfter =
+        document.getElementById(
+            "shiftLateAfter"
+        );
+
+
+    const salaryDeductionAfter =
+        document.getElementById(
+            "shiftSalaryDeductionAfter"
+        );
+
+
+    const earlyDeductionBefore =
+        document.getElementById(
+            "shiftEarlyDeductionBefore"
+        );
+
+
+    const halfDayBoundary =
+        document.getElementById(
+            "shiftHalfDayBoundary"
+        );
+
+
+    const graceMinutes =
+        document.getElementById(
+            "shiftGraceMinutes"
+        );
+
+
+    const workingHours =
+        document.getElementById(
+            "shiftWorkingHours"
+        );
+
+
+    if (
+        !startTime ||
+        !endTime ||
+        !lateAfter ||
+        !salaryDeductionAfter ||
+        !earlyDeductionBefore ||
+        !halfDayBoundary ||
+        !graceMinutes ||
+        !workingHours
+    ) {
+        return;
+    }
+
+
+    function timeToMinutes(
+        time
+    ) {
+
+        if (!time) {
+            return null;
+        }
+
+
+        const parts =
+            time.split(":");
+
+
+        if (parts.length < 2) {
+            return null;
+        }
+
+
+        const hours =
+            Number(
+                parts[0]
+            );
+
+
+        const minutes =
+            Number(
+                parts[1]
+            );
+
+
+        if (
+            Number.isNaN(hours) ||
+            Number.isNaN(minutes)
+        ) {
+            return null;
+        }
+
+
+        return (
+            hours * 60 +
+            minutes
+        );
+
+    }
+
+
+    function minutesToTime(
+        totalMinutes
+    ) {
+
+        totalMinutes =
+            Math.max(
+                0,
+                Math.min(
+                    1439,
+                    totalMinutes
+                )
+            );
+
+
+        const hours =
+            Math.floor(
+                totalMinutes / 60
+            );
+
+
+        const minutes =
+            totalMinutes % 60;
+
+
+        return (
+            String(
+                hours
+            ).padStart(
+                2,
+                "0"
+            ) +
+            ":" +
+            String(
+                minutes
+            ).padStart(
+                2,
+                "0"
+            )
+        );
+
+    }
+
+
+    function updateAutomaticTimes() {
+
+        const start =
+            timeToMinutes(
+                startTime.value
+            );
+
+
+        const end =
+            timeToMinutes(
+                endTime.value
+            );
+
+
+        /*
+         * Wait until both Start Time
+         * and End Time are selected.
+         */
+        if (
+            start === null ||
+            end === null
+        ) {
+            return;
+        }
+
+
+        /*
+         * End Time must be after
+         * Start Time.
+         */
+        if (
+            end <= start
+        ) {
+            return;
+        }
+
+
+        const grace =
+            Number(
+                graceMinutes.value || 5
+            );
+
+
+        /*
+         * Late After
+         *
+         * Start Time + Grace Period
+         *
+         * Example:
+         * 10:00 + 5 = 10:05
+         */
+        lateAfter.value =
+            minutesToTime(
+                start + grace
+            );
+
+
+        /*
+         * Salary Deduction After
+         *
+         * Start Time + 30 minutes
+         *
+         * Example:
+         * 10:00 + 30 = 10:30
+         */
+        salaryDeductionAfter.value =
+            minutesToTime(
+                start + 30
+            );
+
+
+        /*
+         * Early Deduction Before
+         *
+         * End Time - 30 minutes
+         *
+         * Example:
+         * 17:30 - 30 = 17:00
+         */
+        earlyDeductionBefore.value =
+            minutesToTime(
+                end - 30
+            );
+
+
+        /*
+         * Half-Day Boundary
+         *
+         * Exact midpoint
+         *
+         * Example:
+         * 10:00 - 17:30
+         * midpoint = 13:45
+         */
+        const midpoint =
+            start +
+            Math.floor(
+                (end - start) / 2
+            );
+
+
+        halfDayBoundary.value =
+            minutesToTime(
+                midpoint
+            );
+
+
+        /*
+         * Working Hours
+         *
+         * Start Time -> End Time
+         *
+         * Break time is NOT deducted.
+         *
+         * Examples:
+         *
+         * 10:00 -> 17:30 = 7.5 hrs
+         * 09:00 -> 18:00 = 9 hrs
+         * 13:00 -> 22:00 = 9 hrs
+         */
+        const totalMinutes =
+            end - start;
+
+
+        const calculatedWorkingHours =
+            totalMinutes / 60;
+
+
+        workingHours.value =
+            calculatedWorkingHours
+                .toFixed(2)
+                .replace(
+                    /\.00$/,
+                    ""
+                );
+
+    }
+
+
+    /*
+     * Start Time
+     */
+    startTime.oninput =
+        updateAutomaticTimes;
+
+    startTime.onchange =
+        updateAutomaticTimes;
+
+
+    /*
+     * End Time
+     */
+    endTime.oninput =
+        updateAutomaticTimes;
+
+    endTime.onchange =
+        updateAutomaticTimes;
+
+
+    /*
+     * Grace Period
+     */
+    graceMinutes.oninput =
+        updateAutomaticTimes;
+
+    graceMinutes.onchange =
+        updateAutomaticTimes;
+
+}
+
+
+async function loadShiftSettings() {
+
+    const tbody =
+        document.getElementById(
+            "shiftSettingsTableBody"
+        );
+
+
+    if (!tbody) {
+        return;
+    }
+
+
+    tbody.innerHTML = `
+        <tr>
+            <td colspan="10"
+                class="empty-row">
+                Loading shift settings...
+            </td>
+        </tr>
+    `;
+
+
+    try {
+
+        const response =
+            await apiFetch(
+                "/admin/shift-settings"
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                await getErrorMessage(
+                    response
+                )
+            );
+
+        }
+
+
+        shiftSettings =
+            await response.json();
+
+
+        renderShiftSettings();
+
+    }
+    catch (error) {
+
+        console.error(
+            "Load shift settings error:",
+            error
+        );
+
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="10"
+                    class="empty-row">
+                    Unable to load shift settings.
+                </td>
+            </tr>
+        `;
+
+
+        showMessage(
+            "shiftSettingsMessage",
+            error.message ||
+            "Unable to load shift settings.",
+            "error"
+        );
+
+    }
+
+}
+
+
+function renderShiftSettings() {
+
+    const tbody =
+        document.getElementById(
+            "shiftSettingsTableBody"
+        );
+
+
+    if (!tbody) {
+        return;
+    }
+
+
+    if (
+        !shiftSettings ||
+        shiftSettings.length === 0
+    ) {
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="10"
+                    class="empty-row">
+                    No shift settings found. Admin can add a shift setting.
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+
+    const shiftOrder = {
+
+        GENERAL: 1,
+
+        SHIFT_1: 2,
+
+        SHIFT_2: 3,
+
+        SHIFT_3: 4
+
+    };
+
+
+    const sortedSettings =
+        [...shiftSettings].sort(
+            function (a, b) {
+
+                return (
+                    (
+                        shiftOrder[
+                            String(
+                                a.shiftType ||
+                                ""
+                            ).toUpperCase()
+                        ] || 99
+                    )
+                    -
+                    (
+                        shiftOrder[
+                            String(
+                                b.shiftType ||
+                                ""
+                            ).toUpperCase()
+                        ] || 99
+                    )
+                );
+
+            }
+        );
+
+
+    tbody.innerHTML =
+        sortedSettings.map(
+            function (setting) {
+
+                const shiftType =
+                    String(
+                        setting.shiftType ||
+                        ""
+                    ).toUpperCase();
+
+
+                const shiftName =
+                    shiftType === "GENERAL"
+                        ? "General Shift"
+                        : shiftType === "SHIFT_1"
+                            ? "Shift 1"
+                            : shiftType === "SHIFT_2"
+                                ? "Shift 2"
+                                : shiftType === "SHIFT_3"
+                                    ? "Shift 3"
+                                    : shiftType;
+
+
+                return `
+                    <tr>
+
+                        <td>
+                            <strong>
+                                ${escapeHtml(
+                                    shiftName
+                                )}
+                            </strong>
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                formatShiftTime(
+                                    setting.startTime
+                                )
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                formatShiftTime(
+                                    setting.endTime
+                                )
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                formatShiftTime(
+                                    setting.lateAfter
+                                )
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                formatShiftTime(
+                                    setting.salaryDeductionAfter
+                                )
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                formatShiftTime(
+                                    setting.earlyDeductionBefore
+                                )
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                formatShiftTime(
+                                    setting.halfDayBoundary
+                                )
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                String(
+                                    setting.graceMinutes ??
+                                    5
+                                )
+                            )} min
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                String(
+                                    setting.workingHours ??
+                                    "-"
+                                )
+                            )} hrs
+                        </td>
+
+                        <td>
+
+                            <button
+                                type="button"
+                                class="btn btn-primary btn-small"
+                                onclick="openShiftSettingModal('${escapeHtml(
+                                    shiftType
+                                )}')">
+                                Edit
+                            </button>
+
+                            <button
+                                type="button"
+                                class="btn btn-danger btn-small"
+                                onclick="deleteShiftSetting('${escapeHtml(
+                                    shiftType
+                                )}')">
+                                Delete
+                            </button>
+
+                        </td>
+
+                    </tr>
+                `;
+
+            }
+        ).join("");
+
+
+    if (
+        typeof lucide !== "undefined"
+    ) {
+
+        lucide.createIcons();
+
+    }
+
+}
+
+
+function formatShiftTime(
+    value
+) {
+
+    if (!value) {
+        return "-";
+    }
+
+
+    return String(
+        value
+    ).substring(
+        0,
+        5
+    );
+
+}
+
+
+async function saveShiftSetting() {
+
+    const shiftType =
+        document.getElementById(
+            "shiftSettingType"
+        ).value;
+
+
+    const startTime =
+        document.getElementById(
+            "shiftStartTime"
+        ).value;
+
+
+    const endTime =
+        document.getElementById(
+            "shiftEndTime"
+        ).value;
+
+
+    const lateAfter =
+        document.getElementById(
+            "shiftLateAfter"
+        ).value;
+
+
+    const salaryDeductionAfter =
+        document.getElementById(
+            "shiftSalaryDeductionAfter"
+        ).value;
+
+
+    const earlyDeductionBefore =
+        document.getElementById(
+            "shiftEarlyDeductionBefore"
+        ).value;
+
+
+    const halfDayBoundary =
+        document.getElementById(
+            "shiftHalfDayBoundary"
+        ).value;
+
+
+    const graceMinutes =
+        document.getElementById(
+            "shiftGraceMinutes"
+        ).value;
+
+
+    const workingHours =
+        document.getElementById(
+            "shiftWorkingHours"
+        ).value;
+
+
+    if (!shiftType) {
+
+        alert(
+            "Please select a shift."
+        );
+
+        return;
+
+    }
+
+
+    if (!startTime) {
+
+        alert(
+            "Please select Start Time."
+        );
+
+        document.getElementById(
+            "shiftStartTime"
+        ).focus();
+
+        return;
+
+    }
+
+
+    if (!endTime) {
+
+        alert(
+            "Please select End Time."
+        );
+
+        document.getElementById(
+            "shiftEndTime"
+        ).focus();
+
+        return;
+
+    }
+
+
+    /*
+     * Convert HH:mm time into minutes
+     * so that time comparison is numeric
+     * instead of string comparison.
+     */
+    const timeToMinutes = (
+        time
+    ) => {
+
+        if (!time) {
+            return null;
+        }
+
+
+        const parts =
+            time.split(":");
+
+
+        const hours =
+            Number(
+                parts[0]
+            );
+
+
+        const minutes =
+            Number(
+                parts[1]
+            );
+
+
+        if (
+            Number.isNaN(hours) ||
+            Number.isNaN(minutes)
+        ) {
+            return null;
+        }
+
+
+        return (
+            hours * 60 +
+            minutes
+        );
+
+    };
+
+
+    const startMinutes =
+        timeToMinutes(
+            startTime
+        );
+
+
+    const endMinutes =
+        timeToMinutes(
+            endTime
+        );
+
+
+    if (
+        startMinutes === null ||
+        endMinutes === null
+    ) {
+
+        alert(
+            "Please enter valid Start Time and End Time."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        endMinutes <=
+        startMinutes
+    ) {
+
+        alert(
+            "End Time must be after Start Time."
+        );
+
+        return;
+
+    }
+
+
+    if (
+        !workingHours ||
+        Number(
+            workingHours
+        ) <= 0
+    ) {
+
+        alert(
+            "Please enter valid Working Hours."
+        );
+
+        document.getElementById(
+            "shiftWorkingHours"
+        ).focus();
+
+        return;
+
+    }
+
+
+    if (
+        graceMinutes !== "" &&
+        Number(
+            graceMinutes
+        ) < 0
+    ) {
+
+        alert(
+            "Grace Period cannot be negative."
+        );
+
+        return;
+
+    }
+
+
+    const lateAfterMinutes =
+        timeToMinutes(
+            lateAfter
+        );
+
+
+    if (
+        lateAfter &&
+        (
+            lateAfterMinutes === null ||
+            lateAfterMinutes <
+            startMinutes
+        )
+    ) {
+
+        alert(
+            "Late After cannot be before Start Time."
+        );
+
+        return;
+
+    }
+
+
+    const salaryDeductionAfterMinutes =
+        timeToMinutes(
+            salaryDeductionAfter
+        );
+
+
+    if (
+        salaryDeductionAfter &&
+        (
+            salaryDeductionAfterMinutes === null ||
+            salaryDeductionAfterMinutes <
+            startMinutes
+        )
+    ) {
+
+        alert(
+            "Salary Deduction After cannot be before Start Time."
+        );
+
+        return;
+
+    }
+
+
+    const earlyDeductionBeforeMinutes =
+        timeToMinutes(
+            earlyDeductionBefore
+        );
+
+
+    if (
+        earlyDeductionBefore &&
+        (
+            earlyDeductionBeforeMinutes === null ||
+            earlyDeductionBeforeMinutes >
+            endMinutes
+        )
+    ) {
+
+        alert(
+            "Early Deduction Before cannot be after End Time."
+        );
+
+        return;
+
+    }
+
+
+    const halfDayBoundaryMinutes =
+        timeToMinutes(
+            halfDayBoundary
+        );
+
+
+    if (
+        halfDayBoundary &&
+        (
+            halfDayBoundaryMinutes === null ||
+            halfDayBoundaryMinutes <=
+            startMinutes ||
+            halfDayBoundaryMinutes >=
+            endMinutes
+        )
+    ) {
+
+        alert(
+            "Half-Day Boundary must be between Start Time and End Time."
+        );
+
+        return;
+
+    }
+
+
+    const requestData = {
+
+        shiftType:
+            shiftType,
+
+        startTime:
+            startTime,
+
+        endTime:
+            endTime,
+
+        lateAfter:
+            lateAfter || null,
+
+        salaryDeductionAfter:
+            salaryDeductionAfter || null,
+
+        earlyDeductionBefore:
+            earlyDeductionBefore || null,
+
+        halfDayBoundary:
+            halfDayBoundary || null,
+
+        graceMinutes:
+            graceMinutes === ""
+                ? 5
+                : Number(
+                    graceMinutes
+                ),
+
+        workingHours:
+            Number(
+                workingHours
+            )
+
+    };
+
+
+    try {
+
+        const response =
+            await apiFetch(
+                "/admin/shift-settings",
+                {
+                    method:
+                        "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify(
+                            requestData
+                        )
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                await getErrorMessage(
+                    response
+                )
+            );
+
+        }
+
+
+        closeShiftSettingModal();
+
+
+        await loadShiftSettings();
+
+
+        showMessage(
+            "shiftSettingsMessage",
+            "Shift setting saved successfully.",
+            "success"
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            "Save shift setting error:",
+            error
+        );
+
+
+        showMessage(
+            "shiftSettingsMessage",
+            error.message ||
+            "Unable to save shift setting.",
+            "error"
+        );
+
+    }
+
+}
 
     // ================= WORKING DAY SETTINGS =================
 
 let workingDaySettings = [];
+let shiftSettings = [];
 
 function initializeWorkingDayControls() {
     const yearSelect = document.getElementById("workingDayYear");
@@ -4726,54 +7378,229 @@ async function deleteWorkingDaySetting(
 
     }
 
+    /* ===================================================== 
+   LEAVE & PERMISSION SETTINGS 
+===================================================== */ 
 
-    /* =====================================================
-       LEAVE & PERMISSION SETTINGS
-    ===================================================== */
+async function loadLeaveSettings() { 
 
-    async function loadLeaveSettings() {
+    try { 
+
+        const response = 
+            await apiFetch( 
+                "/admin/leave-settings" 
+            ); 
+
+
+        if (!response.ok) { 
+
+            throw new Error( 
+                await getErrorMessage( 
+                    response 
+                ) 
+            ); 
+
+        } 
+
+
+        const settings = 
+            await response.json(); 
+
+
+        renderLeaveSettings( 
+            settings 
+        ); 
+
+    } 
+    catch (error) { 
+
+        console.error( 
+            "Load leave settings error:", 
+            error 
+        ); 
+
+
+        showMessage( 
+            "settingsMessage", 
+            error.message || 
+            "Unable to load leave settings.", 
+            "error" 
+        ); 
+
+    } 
+
+} 
+
+
+function formatSettingTime(time) { 
+
+    if (!time) { 
+        return "-"; 
+    } 
+
+    const parts = 
+        String(time).split(":"); 
+
+    if (parts.length < 2) { 
+        return String(time); 
+    } 
+
+    const hour = 
+        Number(parts[0]); 
+
+    const minute = 
+        parts[1]; 
+
+    if (Number.isNaN(hour)) { 
+        return String(time); 
+    } 
+
+    const suffix = 
+        hour >= 12 
+            ? "PM" 
+            : "AM"; 
+
+    const displayHour = 
+        hour % 12 === 0 
+            ? 12 
+            : hour % 12; 
+
+    return ( 
+        String(displayHour).padStart(2, "0") + 
+        ":" + 
+        minute + 
+        " " + 
+        suffix 
+    ); 
+
+} 
+
+
+function getGeneralShiftTiming() {
+
+    let generalShift = null;
+
+
+    if (
+        typeof shiftSettings !== "undefined" &&
+        Array.isArray(shiftSettings)
+    ) {
+
+        generalShift =
+            shiftSettings.find(
+                function (setting) {
+
+                    return String(
+                        setting.shiftType || ""
+                    ).toUpperCase() ===
+                    "GENERAL";
+
+                }
+            );
+
+    }
+
+
+    return {
+
+        startTime:
+            generalShift &&
+            generalShift.startTime
+                ? generalShift.startTime
+                : "",
+
+        endTime:
+            generalShift &&
+            generalShift.endTime
+                ? generalShift.endTime
+                : ""
+
+    };
+
+}
+
+async function getEffectiveLeaveSettingTiming(
+    settingType,
+    role,
+    employeeId
+) {
+
+    /*
+     * DEFAULT
+     * → General Shift
+     */
+    if (
+        String(settingType || "").toUpperCase() ===
+        "DEFAULT"
+    ) {
+
+        return getGeneralShiftTiming();
+
+    }
+
+
+    /*
+     * Employee selected
+     * → Employee Shift
+     */
+    if (
+        String(settingType || "").toUpperCase() ===
+        "EMPLOYEE" &&
+        employeeId
+    ) {
 
         try {
 
             const response =
                 await apiFetch(
-                    "/admin/leave-settings"
+                    "/admin/shift-assignments/employee/" +
+                    employeeId
                 );
 
+            if (response.ok) {
 
-            if (!response.ok) {
+                const assignment =
+                    await response.json();
 
-                throw new Error(
-                    await getErrorMessage(
-                        response
-                    )
-                );
+                const shiftType =
+                    String(
+                        assignment.shiftType || ""
+                    ).toUpperCase();
+
+                const employeeShift =
+                    shiftSettings.find(
+                        function (setting) {
+
+                            return String(
+                                setting.shiftType || ""
+                            ).toUpperCase() ===
+                            shiftType;
+
+                        }
+                    );
+
+                if (employeeShift) {
+
+                    return {
+
+                        startTime:
+                            employeeShift.startTime || "",
+
+                        endTime:
+                            employeeShift.endTime || ""
+
+                    };
+
+                }
 
             }
-
-
-            const settings =
-                await response.json();
-
-
-            renderLeaveSettings(
-                settings
-            );
 
         }
         catch (error) {
 
             console.error(
-                "Load leave settings error:",
+                "Employee shift timing error:",
                 error
-            );
-
-
-            showMessage(
-                "settingsMessage",
-                error.message ||
-                "Unable to load leave settings.",
-                "error"
             );
 
         }
@@ -4781,7 +7608,304 @@ async function deleteWorkingDaySetting(
     }
 
 
-    function renderLeaveSettings(
+    /*
+     * Role selected
+     * → Role Shift
+     */
+    if (
+        String(settingType || "").toUpperCase() ===
+        "ROLE" &&
+        role
+    ) {
+
+        try {
+
+            const normalizedRole =
+                String(role)
+                    .trim()
+                    .toUpperCase()
+                    .replace(/-/g, "_")
+                    .replace(/ /g, "_");
+
+            const response =
+                await apiFetch(
+                    "/admin/shift-assignments/role/" +
+                    encodeURIComponent(
+                        normalizedRole
+                    )
+                );
+
+            if (response.ok) {
+
+                const assignment =
+                    await response.json();
+
+                const shiftType =
+                    String(
+                        assignment.shiftType || ""
+                    ).toUpperCase();
+
+                const roleShift =
+                    shiftSettings.find(
+                        function (setting) {
+
+                            return String(
+                                setting.shiftType || ""
+                            ).toUpperCase() ===
+                            shiftType;
+
+                        }
+                    );
+
+                if (roleShift) {
+
+                    return {
+
+                        startTime:
+                            roleShift.startTime || "",
+
+                        endTime:
+                            roleShift.endTime || ""
+
+                    };
+
+                }
+
+            }
+
+        }
+        catch (error) {
+
+            console.error(
+                "Role shift timing error:",
+                error
+            );
+
+        }
+
+    }
+
+
+    /*
+     * Fallback
+     * → General Shift
+     */
+    return getGeneralShiftTiming();
+
+}
+
+
+
+function ensureLeaveSettingTimingFields() {
+
+    const modal =
+        document.getElementById(
+            "leaveSettingModal"
+        );
+
+    if (!modal) {
+        return;
+    }
+
+
+    let shiftWrapper =
+        document.getElementById(
+            "settingShiftFields"
+        );
+
+
+    if (!shiftWrapper) {
+
+        shiftWrapper =
+            document.createElement(
+                "div"
+            );
+
+        shiftWrapper.id =
+            "settingShiftFields";
+
+        shiftWrapper.style.width =
+            "100%";
+
+        shiftWrapper.style.marginTop =
+            "16px";
+
+        shiftWrapper.style.boxSizing =
+            "border-box";
+
+
+        shiftWrapper.innerHTML = `
+
+            <div
+                style="
+                    width:100%;
+                    max-width:320px;
+                "
+            >
+
+                <label
+                    for="settingShiftType"
+                    style="
+                        display:block;
+                        margin-bottom:6px;
+                        font-weight:600;
+                    "
+                >
+                    Shift
+                </label>
+
+                <select
+                    id="settingShiftType"
+                    style="
+                        width:100%;
+                        max-width:320px;
+                        padding:10px 12px;
+                        border:1px solid #2563eb;
+                        border-radius:8px;
+                        background:#eff6ff;
+                        color:#1e3a8a;
+                        font-size:14px;
+                        font-weight:500;
+                        outline:none;
+                        box-sizing:border-box;
+                        cursor:pointer;
+                    "
+                >
+
+                    <option value="GENERAL">
+                        General Shift
+                    </option>
+
+                    <option value="SHIFT_1">
+                        Shift 1
+                    </option>
+
+                    <option value="SHIFT_2">
+                        Shift 2
+                    </option>
+
+                    <option value="SHIFT_3">
+                        Shift 3
+                    </option>
+
+                </select>
+
+            </div>
+
+        `;
+
+
+        const modalBox =
+            modal.querySelector(
+                ".modal-box"
+            );
+
+
+        if (!modalBox) {
+
+            modal.appendChild(
+                shiftWrapper
+            );
+
+            return;
+        }
+
+
+        const footer =
+            modalBox.querySelector(
+                ".modal-footer"
+            );
+
+
+        if (footer) {
+
+            modalBox.insertBefore(
+                shiftWrapper,
+                footer
+            );
+
+        }
+        else {
+
+            const buttons =
+                modalBox.querySelectorAll(
+                    "button"
+                );
+
+
+            if (
+                buttons.length > 0
+            ) {
+
+                modalBox.insertBefore(
+                    shiftWrapper,
+                    buttons[0]
+                );
+
+            }
+            else {
+
+                modalBox.appendChild(
+                    shiftWrapper
+                );
+
+            }
+
+        }
+
+    }
+
+
+    const shiftSelect =
+        document.getElementById(
+            "settingShiftType"
+        );
+
+
+    if (shiftSelect) {
+
+        shiftSelect.style.width =
+            "100%";
+
+        shiftSelect.style.maxWidth =
+            "320px";
+
+        shiftSelect.style.padding =
+            "10px 12px";
+
+        shiftSelect.style.border =
+            "1px solid #2563eb";
+
+        shiftSelect.style.borderRadius =
+            "8px";
+
+        shiftSelect.style.background =
+            "#eff6ff";
+
+        shiftSelect.style.color =
+            "#1e3a8a";
+
+        shiftSelect.style.fontSize =
+            "14px";
+
+        shiftSelect.style.fontWeight =
+            "500";
+
+        shiftSelect.style.outline =
+            "none";
+
+        shiftSelect.style.boxSizing =
+            "border-box";
+
+        shiftSelect.style.cursor =
+            "pointer";
+
+    }
+
+}
+
+
+function renderLeaveSettings(
     settings
 ) {
 
@@ -4791,19 +7915,23 @@ async function deleteWorkingDaySetting(
         );
 
 
-    if (!settings || settings.length === 0) {
+    if (
+        !settings ||
+        settings.length === 0
+    ) {
 
         tbody.innerHTML = `
             <tr>
-                <td colspan="7"
-                    class="empty-row">
+                <td
+                    colspan="8"
+                    class="empty-row"
+                >
                     No leave settings found.
                 </td>
             </tr>
         `;
 
         return;
-
     }
 
 
@@ -4864,20 +7992,67 @@ async function deleteWorkingDaySetting(
                 }
 
 
+                // =========================
+                // SHIFT DISPLAY
+                // =========================
+
+                const shiftType =
+                    String(
+                        setting.shiftType ||
+                        "GENERAL"
+                    ).toUpperCase();
+
+
+                let shiftName =
+                    "General Shift";
+
+
+                if (
+                    shiftType ===
+                    "SHIFT_1"
+                ) {
+
+                    shiftName =
+                        "Shift 1";
+
+                }
+                else if (
+                    shiftType ===
+                    "SHIFT_2"
+                ) {
+
+                    shiftName =
+                        "Shift 2";
+
+                }
+                else if (
+                    shiftType ===
+                    "SHIFT_3"
+                ) {
+
+                    shiftName =
+                        "Shift 3";
+
+                }
+
+
                 return `
                     <tr>
 
                         <td>
-                            <span class="badge ${
-                                type === "DEFAULT"
-                                    ? "badge-blue"
-                                    : type === "ROLE"
-                                        ? "badge-orange"
-                                        : "badge-green"
-                            }">
+                            <span
+                                class="badge ${
+                                    type === "DEFAULT"
+                                        ? "badge-blue"
+                                        : type === "ROLE"
+                                            ? "badge-orange"
+                                            : "badge-green"
+                                }"
+                            >
                                 ${escapeHtml(type)}
                             </span>
                         </td>
+
 
                         <td>
                             ${escapeHtml(
@@ -4886,11 +8061,13 @@ async function deleteWorkingDaySetting(
                             )}
                         </td>
 
+
                         <td>
                             ${escapeHtml(
                                 employeeName
                             )}
                         </td>
+
 
                         <td>
                             ${formatNumber(
@@ -4898,11 +8075,13 @@ async function deleteWorkingDaySetting(
                             )}
                         </td>
 
+
                         <td>
                             ${formatNumber(
                                 setting.casualLeave
                             )}
                         </td>
+
 
                         <td>
                             ${Number(
@@ -4910,6 +8089,14 @@ async function deleteWorkingDaySetting(
                                 0
                             )}
                         </td>
+
+
+                        <td>
+                            ${escapeHtml(
+                                shiftName
+                            )}
+                        </td>
+
 
                         <td>
                             ${formatDateTime(
@@ -4926,79 +8113,78 @@ async function deleteWorkingDaySetting(
 }
 
 
-function populateSettingEmployees() {
+function populateSettingEmployees() { 
 
-    const select =
-        document.getElementById(
-            "settingEmployee"
-        );
-
-
-    if (!select) {
-        return;
-    }
+    const select = 
+        document.getElementById( 
+            "settingEmployee" 
+        ); 
 
 
-    const currentValue =
-        select.value;
+    if (!select) { 
+        return; 
+    } 
 
 
-    select.innerHTML = `
-        <option value="">
-            Select Employee
-        </option>
-    `;
+    const currentValue = 
+        select.value; 
 
 
-    employees.forEach(
-        function (employee) {
-
-            const option =
-                document.createElement(
-                    "option"
-                );
+    select.innerHTML = ` 
+        <option value=""> 
+            Select Employee 
+        </option> 
+    `; 
 
 
-            option.value =
-                employee.id;
+    employees.forEach( 
+        function (employee) { 
+
+            const option = 
+                document.createElement( 
+                    "option" 
+                ); 
 
 
-            option.textContent =
-                (
-                    employee.employeeCode ||
-                    "EMP-" + employee.id
-                ) +
-                " - " +
-                (
-                    employee.name ||
-                    "Unnamed"
-                ) +
-                (
-                    employee.role
-                        ? " (" +
-                          employee.role +
-                          ")"
-                        : ""
-                );
+            option.value = 
+                employee.id; 
 
 
-            select.appendChild(
-                option
-            );
+            option.textContent = 
+                ( 
+                    employee.employeeCode || 
+                    "EMP-" + employee.id 
+                ) + 
+                " - " + 
+                ( 
+                    employee.name || 
+                    "Unnamed" 
+                ) + 
+                ( 
+                    employee.role 
+                        ? " (" + 
+                          employee.role + 
+                          ")" 
+                        : "" 
+                ); 
 
-        }
-    );
+
+            select.appendChild( 
+                option 
+            ); 
+
+        } 
+    ); 
 
 
-    if (currentValue) {
+    if (currentValue) { 
 
-        select.value =
-            currentValue;
+        select.value = 
+            currentValue; 
 
-    }
+    } 
 
-}
-
+} 
 
 function openLeaveSettingModal(
     settingType
@@ -5006,18 +8192,14 @@ function openLeaveSettingModal(
 
     currentLeaveSettingType =
         String(
-            settingType ||
-            ""
+            settingType || ""
         ).toUpperCase();
 
 
     if (
-        currentLeaveSettingType !==
-            "DEFAULT" &&
-        currentLeaveSettingType !==
-            "ROLE" &&
-        currentLeaveSettingType !==
-            "EMPLOYEE"
+        currentLeaveSettingType !== "DEFAULT" &&
+        currentLeaveSettingType !== "ROLE" &&
+        currentLeaveSettingType !== "EMPLOYEE"
     ) {
 
         alert(
@@ -5119,9 +8301,92 @@ function openLeaveSettingModal(
     }
 
 
+    /*
+     * Create Shift field.
+     */
+    ensureLeaveSettingTimingFields();
+
+
+    const shiftSelect =
+        document.getElementById(
+            "settingShiftType"
+        );
+
+
+    if (shiftSelect) {
+
+        /*
+         * Default setting:
+         * Show General Shift only.
+         */
+        if (
+            currentLeaveSettingType ===
+            "DEFAULT"
+        ) {
+
+            shiftSelect.innerHTML = `
+                <option value="GENERAL">
+                    General Shift
+                </option>
+            `;
+
+            shiftSelect.value =
+                "GENERAL";
+
+            shiftSelect.disabled =
+                true;
+
+            shiftSelect.style.color =
+                "#000000";
+
+        }
+        else {
+
+            /*
+             * Role / Employee:
+             * Show all shift options.
+             */
+            shiftSelect.innerHTML = `
+                <option value="GENERAL">
+                    General Shift
+                </option>
+
+                <option value="SHIFT_1">
+                    Shift 1
+                </option>
+
+                <option value="SHIFT_2">
+                    Shift 2
+                </option>
+
+                <option value="SHIFT_3">
+                    Shift 3
+                </option>
+            `;
+
+            shiftSelect.value =
+                "GENERAL";
+
+            shiftSelect.disabled =
+                false;
+
+            shiftSelect.style.color =
+                "#000000";
+
+        }
+
+    }
+
+
+    /*
+     * Populate employee list.
+     */
     populateSettingEmployees();
 
 
+    /*
+     * Show modal.
+     */
     document.getElementById(
         "leaveSettingModal"
     ).classList.add(
@@ -5130,230 +8395,282 @@ function openLeaveSettingModal(
 
 }
 
-    function closeLeaveSettingModal() {
+function closeLeaveSettingModal() { 
 
+    document.getElementById( 
+        "leaveSettingModal" 
+    ).classList.remove( 
+        "show" 
+    ); 
+
+
+    currentLeaveSettingType = 
+        null; 
+
+} 
+
+
+
+async function saveLeaveSetting() {
+
+    if (!currentLeaveSettingType) {
+
+        alert(
+            "Setting type not selected."
+        );
+
+        return;
+    }
+
+
+    const sickValue =
         document.getElementById(
-            "leaveSettingModal"
-        ).classList.remove(
-            "show"
+            "settingSickLeave"
+        ).value;
+
+
+    const casualValue =
+        document.getElementById(
+            "settingCasualLeave"
+        ).value;
+
+
+    const permissionValue =
+        document.getElementById(
+            "settingPermissionCount"
+        ).value;
+
+
+    if (
+        sickValue === "" ||
+        Number(sickValue) < 0
+    ) {
+
+        alert(
+            "Please enter a valid Sick Leave allowance."
+        );
+
+        return;
+    }
+
+
+    if (
+        casualValue === "" ||
+        Number(casualValue) < 0
+    ) {
+
+        alert(
+            "Please enter a valid Casual Leave allowance."
+        );
+
+        return;
+    }
+
+
+    if (
+        permissionValue === "" ||
+        Number(permissionValue) < 0
+    ) {
+
+        alert(
+            "Please enter a valid Permission allowance."
+        );
+
+        return;
+    }
+
+
+    // =========================
+    // SHIFT
+    // =========================
+
+    const shiftElement =
+        document.getElementById(
+            "settingShiftType"
         );
 
 
-        currentLeaveSettingType =
-            null;
+    const shiftType =
+        shiftElement &&
+        shiftElement.value
+            ? shiftElement.value
+            : "GENERAL";
 
+
+    const normalizedShiftType =
+        String(
+            shiftType
+        )
+            .trim()
+            .toUpperCase();
+
+
+    if (
+        normalizedShiftType !== "GENERAL" &&
+        normalizedShiftType !== "SHIFT_1" &&
+        normalizedShiftType !== "SHIFT_2" &&
+        normalizedShiftType !== "SHIFT_3"
+    ) {
+
+        alert(
+            "Please select a valid shift."
+        );
+
+        return;
     }
 
 
-    async function saveLeaveSetting() {
+    // =========================
+    // REQUEST DATA
+    // =========================
 
-        if (!currentLeaveSettingType) {
+    const requestData = {
 
-            alert(
-                "Setting type not selected."
-            );
+        settingType:
+            currentLeaveSettingType,
 
-            return;
+        shiftType:
+            normalizedShiftType,
 
-        }
+        sickLeave:
+            Number(sickValue),
+
+        casualLeave:
+            Number(casualValue),
+
+        permissionCount:
+            Number(permissionValue)
+
+    };
 
 
-        const sickValue =
+    // =========================
+    // ROLE SETTING
+    // =========================
+
+    if (
+        currentLeaveSettingType ===
+        "ROLE"
+    ) {
+
+        const role =
             document.getElementById(
-                "settingSickLeave"
+                "settingRole"
             ).value;
 
 
-        const casualValue =
+        if (!role) {
+
+            alert(
+                "Please select a role."
+            );
+
+            return;
+        }
+
+
+        requestData.role =
+            role;
+    }
+
+
+    // =========================
+    // EMPLOYEE SETTING
+    // =========================
+
+    if (
+        currentLeaveSettingType ===
+        "EMPLOYEE"
+    ) {
+
+        const employeeId =
             document.getElementById(
-                "settingCasualLeave"
+                "settingEmployee"
             ).value;
 
 
-        const permissionValue =
-            document.getElementById(
-                "settingPermissionCount"
-            ).value;
-
-
-        if (
-            sickValue === "" ||
-            Number(sickValue) < 0
-        ) {
+        if (!employeeId) {
 
             alert(
-                "Please enter a valid Sick Leave allowance."
+                "Please select an employee."
             );
 
             return;
-
         }
 
 
-        if (
-            casualValue === "" ||
-            Number(casualValue) < 0
-        ) {
-
-            alert(
-                "Please enter a valid Casual Leave allowance."
-            );
-
-            return;
-
-        }
+        requestData.employeeId =
+            Number(employeeId);
+    }
 
 
-        if (
-            permissionValue === "" ||
-            Number(permissionValue) < 0
-        ) {
+    // =========================
+    // SAVE
+    // =========================
 
-            alert(
-                "Please enter a valid Permission allowance."
-            );
+    try {
 
-            return;
+        const response =
+            await apiFetch(
+                "/admin/leave-settings",
+                {
+                    method:
+                        "POST",
 
-        }
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
 
-
-        const requestData = {
-
-            settingType:
-                currentLeaveSettingType,
-
-            sickLeave:
-                Number(sickValue),
-
-            casualLeave:
-                Number(casualValue),
-
-            permissionCount:
-                Number(permissionValue)
-
-        };
-
-
-        if (
-            currentLeaveSettingType ===
-            "ROLE"
-        ) {
-
-            const role =
-                document.getElementById(
-                    "settingRole"
-                ).value;
-
-
-            if (!role) {
-
-                alert(
-                    "Please select a role."
-                );
-
-                return;
-
-            }
-
-
-            requestData.role =
-                role;
-
-        }
-
-
-        if (
-            currentLeaveSettingType ===
-            "EMPLOYEE"
-        ) {
-
-            const employeeId =
-                document.getElementById(
-                    "settingEmployee"
-                ).value;
-
-
-            if (!employeeId) {
-
-                alert(
-                    "Please select an employee."
-                );
-
-                return;
-
-            }
-
-
-            requestData.employeeId =
-                Number(employeeId);
-
-        }
-
-
-        try {
-
-            const response =
-                await apiFetch(
-                    "/admin/leave-settings",
-                    {
-                        method:
-                            "POST",
-
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-
-                        body:
-                            JSON.stringify(
-                                requestData
-                            )
-                    }
-                );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    await getErrorMessage(
-                        response
-                    )
-                );
-
-            }
-
-
-            closeLeaveSettingModal();
-
-            await loadLeaveSettings();
-
-
-            showMessage(
-                "settingsMessage",
-                "Leave & Permission settings saved successfully.",
-                "success"
-            );
-
-        }
-        catch (error) {
-
-            console.error(
-                "Save leave setting error:",
-                error
+                    body:
+                        JSON.stringify(
+                            requestData
+                        )
+                }
             );
 
 
-            showMessage(
-                "settingsMessage",
-                error.message ||
-                "Unable to save leave settings.",
-                "error"
-            );
+        if (!response.ok) {
 
+            throw new Error(
+                await getErrorMessage(
+                    response
+                )
+            );
         }
+
+
+        closeLeaveSettingModal();
+
+
+        await loadLeaveSettings();
+
+
+        showMessage(
+            "settingsMessage",
+            "Leave & Permission settings saved successfully.",
+            "success"
+        );
 
     }
+    catch (error) {
+
+        console.error(
+            "Save leave setting error:",
+            error
+        );
+
+
+        showMessage(
+            "settingsMessage",
+            error.message ||
+            "Unable to save leave settings.",
+            "error"
+        );
+
+    }
+
+}
 
 
     /* =====================================================
@@ -5596,174 +8913,175 @@ function openLeaveSettingModal(
 
     function renderSalary(data) {
 
-    const tbody =
-        document.getElementById(
-            "salaryTableBody"
-        );
+        const tbody =
+            document.getElementById(
+                "salaryTableBody"
+            );
 
-    const workingDaysValue =
-        document.getElementById(
-            "salaryWorkingDaysValue"
-        );
-
-
-    if (!tbody) return;
+        const workingDaysValue =
+            document.getElementById(
+                "salaryWorkingDaysValue"
+            );
 
 
-    if (!data || data.length === 0) {
+        if (!tbody) return;
 
-        if (workingDaysValue) {
 
-            workingDaysValue.textContent =
-                "Working Days: -";
+        if (!data || data.length === 0) {
+
+            if (workingDaysValue) {
+
+                workingDaysValue.textContent =
+                    "Working Days: -";
+
+            }
+
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="8"
+                        style="text-align:center;">
+                        No salary data found
+                    </td>
+                </tr>
+            `;
+
+            return;
 
         }
 
 
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="8"
-                    style="text-align:center;">
-                    No salary data found
-                </td>
-            </tr>
-        `;
+        const firstItem =
+            data[0];
 
-        return;
+
+        const workingDays =
+            Number(
+                firstItem.workingDays ||
+                26
+            );
+
+
+        if (workingDaysValue) {
+
+            workingDaysValue.textContent =
+                "Working Days: " +
+                workingDays;
+
+        }
+
+
+        tbody.innerHTML =
+            data.map(
+                function (item) {
+
+                    const monthlySalary =
+                        Number(
+                            item.monthlySalary ||
+                            0
+                        );
+
+
+                    const presentDays =
+                        Number(
+                            item.presentDays ||
+                            0
+                        );
+
+
+                    const leaveDays =
+                        Number(
+                            item.leaveDays ||
+                            0
+                        );
+
+
+                    const lossOfPay =
+                        Number(
+                            item.lossOfPay ||
+                            0
+                        );
+
+
+                    const finalSalary =
+                        Number(
+                            item.finalSalary ||
+                            0
+                        );
+
+
+                    return `
+                        <tr>
+
+                            <td>
+                                ${escapeHtml(
+                                    item.employeeCode ||
+                                    "-"
+                                )}
+                            </td>
+
+                            <td>
+                                ${escapeHtml(
+                                    item.employeeName ||
+                                    "-"
+                                )}
+                            </td>
+
+                            <td>
+                                ₹${formatNumber(
+                                    monthlySalary
+                                )}
+                            </td>
+
+                            <td>
+                                ${escapeHtml(
+                                    presentDays
+                                )}
+                            </td>
+
+                            <td>
+                                ${escapeHtml(
+                                    leaveDays
+                                )}
+                            </td>
+
+                            <td>
+                                ${formatNumber(
+                                    lossOfPay
+                                )}
+                            </td>
+
+                            <td>
+                                ₹${formatNumber(
+                                    finalSalary
+                                )}
+                            </td>
+
+                            <td>
+
+                                <button
+                                    class="btn btn-primary"
+                                    onclick="openSalaryModal(
+                                        ${item.employeeId},
+                                        '${escapeJs(
+                                            item.employeeName ||
+                                            ""
+                                        )}',
+                                        ${monthlySalary}
+                                    )">
+                                    Edit Salary
+                                </button>
+
+                            </td>
+
+                        </tr>
+                    `;
+
+                }
+            ).join("");
 
     }
-
-
-    const firstItem =
-        data[0];
-
-
-    const workingDays =
-        Number(
-            firstItem.workingDays ||
-            26
-        );
-
-
-    if (workingDaysValue) {
-
-        workingDaysValue.textContent =
-            "Working Days: " +
-            workingDays;
-
-    }
-
-
-    tbody.innerHTML =
-        data.map(
-            function (item) {
-
-                const monthlySalary =
-                    Number(
-                        item.monthlySalary ||
-                        0
-                    );
-
-
-                const presentDays =
-                    Number(
-                        item.presentDays ||
-                        0
-                    );
-
-
-                const leaveDays =
-                    Number(
-                        item.leaveDays ||
-                        0
-                    );
-
-
-                const lossOfPay =
-                    Number(
-                        item.lossOfPay ||
-                        0
-                    );
-
-
-                const finalSalary =
-                    Number(
-                        item.finalSalary ||
-                        0
-                    );
-
-
-                return `
-                    <tr>
-
-                        <td>
-                            ${escapeHtml(
-                                item.employeeCode ||
-                                "-"
-                            )}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(
-                                item.employeeName ||
-                                "-"
-                            )}
-                        </td>
-
-                        <td>
-                            ₹${formatNumber(
-                                monthlySalary
-                            )}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(
-                                presentDays
-                            )}
-                        </td>
-
-                        <td>
-                            ${escapeHtml(
-                                leaveDays
-                            )}
-                        </td>
-
-                        <td>
-                            ${formatNumber(
-                                lossOfPay
-                            )}
-                        </td>
-
-                        <td>
-                            ₹${formatNumber(
-                                finalSalary
-                            )}
-                        </td>
-
-                        <td>
-
-                            <button
-                                class="btn btn-primary"
-                                onclick="openSalaryModal(
-                                    ${item.employeeId},
-                                    '${escapeJs(
-                                        item.employeeName ||
-                                        ""
-                                    )}',
-                                    ${monthlySalary}
-                                )">
-                                Edit Salary
-                            </button>
-
-                        </td>
-
-                    </tr>
-                `;
-
-            }
-        ).join("");
-
-}
+    
     /* =====================================================
        EXCEL
     ===================================================== */
@@ -7655,38 +10973,1063 @@ function toggleLeaveHistory(
 
     }
 
+       
+   /* =====================================================
+   EMPLOYEE ROLE OPTIONS
+===================================================== */
 
-    /* =====================================================
-       OUTSIDE CLICK
-    ===================================================== */
+const employeeRoleOptions = [
 
-    document.querySelectorAll(
-        ".modal"
-    ).forEach(
-        function (modal) {
+    {
+        value: "SOFTWARE_DEVELOPER",
+        label: "Software Developer"
+    },
 
-            modal.addEventListener(
-                "click",
-                function (event) {
+    {
+        value: "BACKEND_DEVELOPER",
+        label: "Backend Developer"
+    },
 
-                    if (
-                        event.target ===
-                        modal
-                    ) {
+    {
+        value: "FRONTEND_DEVELOPER",
+        label: "Frontend Developer"
+    },
 
-                        modal.classList.remove(
-                            "show"
-                        );
+    {
+        value: "FULL_STACK_DEVELOPER",
+        label: "Full Stack Developer"
+    },
 
-                    }
+    {
+        value: "MOBILE_APP_DEVELOPER",
+        label: "Mobile App Developer"
+    },
 
-                }
+    {
+        value: "DEVOPS_ENGINEER",
+        label: "DevOps Engineer"
+    },
+
+    {
+        value: "CLOUD_ENGINEER",
+        label: "Cloud Engineer"
+    },
+
+    {
+        value: "CLOUD_ARCHITECT",
+        label: "Cloud Architect"
+    },
+
+    {
+        value: "DATA_ENGINEER",
+        label: "Data Engineer"
+    },
+
+    {
+        value: "DATA_ANALYST",
+        label: "Data Analyst"
+    },
+
+    {
+        value: "DATA_SCIENTIST",
+        label: "Data Scientist"
+    },
+
+    {
+        value: "MACHINE_LEARNING_ENGINEER",
+        label: "Machine Learning Engineer"
+    },
+
+    {
+        value: "AI_ENGINEER",
+        label: "AI Engineer"
+    },
+
+    {
+        value: "QA_ENGINEER",
+        label: "QA Engineer"
+    },
+
+    {
+        value: "SECURITY_ENGINEER",
+        label: "Security Engineer"
+    },
+
+    {
+        value: "UI_UX_DESIGNER",
+        label: "UI/UX Designer"
+    },
+
+    {
+        value: "PRODUCT_DESIGNER",
+        label: "Product Designer"
+    },
+
+    {
+        value: "PRODUCT_ANALYST",
+        label: "Product Analyst"
+    },
+
+    {
+        value: "BUSINESS_ANALYST",
+        label: "Business Analyst"
+    },
+
+    {
+        value: "PROJECT_MANAGER",
+        label: "Project Manager"
+    },
+
+    {
+        value: "PRODUCT_MANAGER",
+        label: "Product Manager"
+    },
+
+    {
+        value: "SCRUM_MASTER",
+        label: "Scrum Master"
+    },
+
+    {
+        value: "TECHNICAL_LEAD",
+        label: "Technical Lead"
+    },
+
+    {
+        value: "TEAM_LEAD",
+        label: "Team Lead"
+    },
+
+    {
+        value: "ENGINEERING_MANAGER",
+        label: "Engineering Manager"
+    },
+
+    {
+        value: "ENGINEERING_HEAD",
+        label: "Engineering Head"
+    },
+
+    {
+        value: "HR",
+        label: "HR"
+    },
+
+    {
+        value: "DIGITAL_MARKETING",
+        label: "Digital Marketing"
+    },
+
+    {
+        value: "SEO_SPECIALIST",
+        label: "SEO Specialist"
+    },
+
+    {
+        value: "CONTENT_WRITER",
+        label: "Content Writer"
+    },
+
+    {
+        value: "SOCIAL_MEDIA_EXECUTIVE",
+        label: "Social Media Executive"
+    },
+
+    {
+        value: "BUSINESS_DEVELOPMENT_EXECUTIVE",
+        label: "Business Development Executive"
+    },
+
+    {
+        value: "SALES_EXECUTIVE",
+        label: "Sales Executive"
+    },
+
+    {
+        value: "CUSTOMER_SUPPORT",
+        label: "Customer Support"
+    },
+
+    {
+        value: "OPERATIONS",
+        label: "Operations"
+    },
+
+    {
+        value: "FINANCE",
+        label: "Finance"
+    },
+
+    {
+        value: "ADMIN",
+        label: "Admin"
+    }
+
+];
+
+
+/* =====================================================
+   ROLE -> TECHNOLOGY OPTIONS
+===================================================== */
+
+const employeeTechnologyOptions = {
+
+    SOFTWARE_DEVELOPER: [
+        "Java",
+        "Python",
+        "PHP",
+        "C#",
+        "C++",
+        "JavaScript",
+        "TypeScript",
+        "Go"
+    ],
+
+    BACKEND_DEVELOPER: [
+        "Java",
+        "Python",
+        "PHP",
+        "Node.js",
+        "C#",
+        "Go",
+        "Ruby"
+    ],
+
+    FRONTEND_DEVELOPER: [
+        "HTML/CSS/JavaScript",
+        "React",
+        "Angular",
+        "Vue.js",
+        "TypeScript"
+    ],
+
+    FULL_STACK_DEVELOPER: [
+        "Java + React",
+        "Java + Angular",
+        "Node.js + React",
+        "Node.js + Angular",
+        "Python + React",
+        "PHP + React",
+        "C# + Angular"
+    ],
+
+    MOBILE_APP_DEVELOPER: [
+        "Android",
+        "iOS",
+        "Flutter",
+        "React Native"
+    ],
+
+    DEVOPS_ENGINEER: [
+        "Docker",
+        "Kubernetes",
+        "Jenkins",
+        "GitHub Actions",
+        "GitLab CI/CD",
+        "Terraform"
+    ],
+
+    CLOUD_ENGINEER: [
+        "AWS",
+        "Azure",
+        "Google Cloud",
+        "Oracle Cloud"
+    ],
+
+    CLOUD_ARCHITECT: [
+        "AWS",
+        "Azure",
+        "Google Cloud",
+        "Multi-Cloud"
+    ],
+
+    DATA_ENGINEER: [
+        "Python",
+        "SQL",
+        "Apache Spark",
+        "Databricks",
+        "AWS",
+        "Azure"
+    ],
+
+    DATA_ANALYST: [
+        "SQL",
+        "Excel",
+        "Power BI",
+        "Tableau",
+        "Python"
+    ],
+
+    DATA_SCIENTIST: [
+        "Python",
+        "R",
+        "SQL",
+        "Machine Learning",
+        "Deep Learning"
+    ],
+
+    MACHINE_LEARNING_ENGINEER: [
+        "Python",
+        "TensorFlow",
+        "PyTorch",
+        "Scikit-learn",
+        "MLflow"
+    ],
+
+    AI_ENGINEER: [
+        "Python",
+        "Generative AI",
+        "Machine Learning",
+        "Deep Learning",
+        "NLP",
+        "Computer Vision"
+    ],
+
+    QA_ENGINEER: [
+        "Manual Testing",
+        "Selenium",
+        "Playwright",
+        "Cypress",
+        "API Testing",
+        "Performance Testing"
+    ],
+
+    SECURITY_ENGINEER: [
+        "Network Security",
+        "Cloud Security",
+        "Application Security",
+        "Cyber Security",
+        "SIEM"
+    ],
+
+    UI_UX_DESIGNER: [
+        "Figma",
+        "Adobe XD",
+        "Sketch",
+        "Photoshop"
+    ],
+
+    PRODUCT_DESIGNER: [
+        "Figma",
+        "Adobe XD",
+        "Sketch",
+        "Design Systems"
+    ],
+
+    PRODUCT_ANALYST: [
+        "SQL",
+        "Excel",
+        "Power BI",
+        "Tableau",
+        "Product Analytics"
+    ],
+
+    BUSINESS_ANALYST: [
+        "Excel",
+        "SQL",
+        "Power BI",
+        "Tableau",
+        "Business Process",
+        "Requirements Analysis"
+    ],
+
+    PROJECT_MANAGER: [
+        "Agile",
+        "Scrum",
+        "Jira",
+        "Project Management"
+    ],
+
+    PRODUCT_MANAGER: [
+        "Product Management",
+        "Agile",
+        "Scrum",
+        "Jira",
+        "Product Analytics"
+    ],
+
+    SCRUM_MASTER: [
+        "Scrum",
+        "Agile",
+        "Jira",
+        "Kanban"
+    ],
+
+    TECHNICAL_LEAD: [
+        "Java",
+        "Python",
+        "JavaScript",
+        "Cloud",
+        "Software Architecture"
+    ],
+
+    TEAM_LEAD: [
+        "Software Development",
+        "QA",
+        "DevOps",
+        "Project Management"
+    ],
+
+    ENGINEERING_MANAGER: [
+        "Software Engineering",
+        "Cloud",
+        "DevOps",
+        "Engineering Management"
+    ],
+
+    ENGINEERING_HEAD: [
+        "Software Engineering",
+        "Cloud Architecture",
+        "Engineering Management",
+        "Technology Strategy"
+    ],
+
+    HR: [
+        "HR Operations",
+        "Recruitment",
+        "Payroll",
+        "Employee Relations"
+    ],
+
+    DIGITAL_MARKETING: [
+        "Google Ads",
+        "Meta Ads",
+        "Content Marketing",
+        "Email Marketing",
+        "Analytics"
+    ],
+
+    SEO_SPECIALIST: [
+        "Technical SEO",
+        "On-Page SEO",
+        "Off-Page SEO",
+        "Google Search Console",
+        "Google Analytics"
+    ],
+
+    CONTENT_WRITER: [
+        "Technical Writing",
+        "Content Writing",
+        "Copywriting",
+        "SEO Content"
+    ],
+
+    SOCIAL_MEDIA_EXECUTIVE: [
+        "Instagram",
+        "Facebook",
+        "LinkedIn",
+        "YouTube",
+        "Social Media Marketing"
+    ],
+
+    BUSINESS_DEVELOPMENT_EXECUTIVE: [
+        "B2B Sales",
+        "Lead Generation",
+        "CRM",
+        "Client Relationship"
+    ],
+
+    SALES_EXECUTIVE: [
+        "Inside Sales",
+        "Field Sales",
+        "B2B Sales",
+        "CRM"
+    ],
+
+    CUSTOMER_SUPPORT: [
+        "Technical Support",
+        "Customer Service",
+        "CRM",
+        "Help Desk"
+    ],
+
+    OPERATIONS: [
+        "Operations Management",
+        "Process Management",
+        "Office Administration",
+        "Inventory Management"
+    ],
+
+    FINANCE: [
+        "Accounting",
+        "Tally",
+        "Excel",
+        "Financial Analysis",
+        "Payroll"
+    ],
+
+    ADMIN: [
+        "Administration",
+        "Office Management",
+        "HR Administration",
+        "Operations"
+    ]
+
+};
+
+
+/* =====================================================
+   DESIGNATION OPTIONS
+===================================================== */
+
+const employeeDesignationOptions = {
+
+    SOFTWARE_DEVELOPER: [
+        "Junior Software Developer",
+        "Software Developer",
+        "Senior Software Developer",
+        "Lead Software Developer"
+    ],
+
+    BACKEND_DEVELOPER: [
+        "Junior Backend Developer",
+        "Backend Developer",
+        "Senior Backend Developer",
+        "Lead Backend Developer"
+    ],
+
+    FRONTEND_DEVELOPER: [
+        "Junior Frontend Developer",
+        "Frontend Developer",
+        "Senior Frontend Developer",
+        "Lead Frontend Developer"
+    ],
+
+    FULL_STACK_DEVELOPER: [
+        "Junior Full Stack Developer",
+        "Full Stack Developer",
+        "Senior Full Stack Developer",
+        "Lead Full Stack Developer"
+    ],
+
+    MOBILE_APP_DEVELOPER: [
+        "Junior Mobile App Developer",
+        "Mobile App Developer",
+        "Senior Mobile App Developer",
+        "Lead Mobile App Developer"
+    ],
+
+    DEVOPS_ENGINEER: [
+        "Junior DevOps Engineer",
+        "DevOps Engineer",
+        "Senior DevOps Engineer",
+        "Lead DevOps Engineer"
+    ],
+
+    CLOUD_ENGINEER: [
+        "Junior Cloud Engineer",
+        "Cloud Engineer",
+        "Senior Cloud Engineer",
+        "Lead Cloud Engineer"
+    ],
+
+    CLOUD_ARCHITECT: [
+        "Cloud Architect",
+        "Senior Cloud Architect",
+        "Lead Cloud Architect"
+    ],
+
+    DATA_ENGINEER: [
+        "Junior Data Engineer",
+        "Data Engineer",
+        "Senior Data Engineer",
+        "Lead Data Engineer"
+    ],
+
+    DATA_ANALYST: [
+        "Junior Data Analyst",
+        "Data Analyst",
+        "Senior Data Analyst",
+        "Lead Data Analyst"
+    ],
+
+    DATA_SCIENTIST: [
+        "Junior Data Scientist",
+        "Data Scientist",
+        "Senior Data Scientist",
+        "Lead Data Scientist"
+    ],
+
+    MACHINE_LEARNING_ENGINEER: [
+        "Junior Machine Learning Engineer",
+        "Machine Learning Engineer",
+        "Senior Machine Learning Engineer",
+        "Lead Machine Learning Engineer"
+    ],
+
+    AI_ENGINEER: [
+        "Junior AI Engineer",
+        "AI Engineer",
+        "Senior AI Engineer",
+        "Lead AI Engineer"
+    ],
+
+    QA_ENGINEER: [
+        "Junior QA Engineer",
+        "QA Engineer",
+        "Senior QA Engineer",
+        "Lead QA Engineer"
+    ],
+
+    SECURITY_ENGINEER: [
+        "Junior Security Engineer",
+        "Security Engineer",
+        "Senior Security Engineer",
+        "Lead Security Engineer"
+    ],
+
+    UI_UX_DESIGNER: [
+        "Junior UI/UX Designer",
+        "UI/UX Designer",
+        "Senior UI/UX Designer",
+        "Lead UI/UX Designer"
+    ],
+
+    PRODUCT_DESIGNER: [
+        "Junior Product Designer",
+        "Product Designer",
+        "Senior Product Designer",
+        "Lead Product Designer"
+    ],
+
+    PRODUCT_ANALYST: [
+        "Junior Product Analyst",
+        "Product Analyst",
+        "Senior Product Analyst",
+        "Lead Product Analyst"
+    ],
+
+    BUSINESS_ANALYST: [
+        "Junior Business Analyst",
+        "Business Analyst",
+        "Senior Business Analyst",
+        "Lead Business Analyst"
+    ],
+
+    PROJECT_MANAGER: [
+        "Project Manager",
+        "Senior Project Manager",
+        "Project Management Lead"
+    ],
+
+    PRODUCT_MANAGER: [
+        "Product Manager",
+        "Senior Product Manager",
+        "Product Lead"
+    ],
+
+    SCRUM_MASTER: [
+        "Scrum Master",
+        "Senior Scrum Master",
+        "Agile Lead"
+    ],
+
+    TECHNICAL_LEAD: [
+        "Technical Lead",
+        "Senior Technical Lead",
+        "Lead Technical Architect"
+    ],
+
+    TEAM_LEAD: [
+        "Team Lead",
+        "Senior Team Lead",
+        "Technical Team Lead"
+    ],
+
+    ENGINEERING_MANAGER: [
+        "Engineering Manager",
+        "Senior Engineering Manager",
+        "Engineering Lead"
+    ],
+
+    ENGINEERING_HEAD: [
+        "Engineering Head",
+        "Head of Engineering",
+        "Director of Engineering"
+    ],
+
+    HR: [
+        "HR Executive",
+        "HR Specialist",
+        "HR Manager",
+        "Senior HR Manager"
+    ],
+
+    DIGITAL_MARKETING: [
+        "Digital Marketing Executive",
+        "Digital Marketing Specialist",
+        "Digital Marketing Manager",
+        "Senior Digital Marketing Manager"
+    ],
+
+    SEO_SPECIALIST: [
+        "SEO Executive",
+        "SEO Specialist",
+        "Senior SEO Specialist",
+        "SEO Manager"
+    ],
+
+    CONTENT_WRITER: [
+        "Content Writer",
+        "Senior Content Writer",
+        "Content Specialist",
+        "Content Manager"
+    ],
+
+    SOCIAL_MEDIA_EXECUTIVE: [
+        "Social Media Executive",
+        "Social Media Specialist",
+        "Social Media Manager",
+        "Senior Social Media Manager"
+    ],
+
+    BUSINESS_DEVELOPMENT_EXECUTIVE: [
+        "Business Development Executive",
+        "Business Development Associate",
+        "Business Development Manager",
+        "Senior Business Development Manager"
+    ],
+
+    SALES_EXECUTIVE: [
+        "Sales Executive",
+        "Sales Associate",
+        "Sales Manager",
+        "Senior Sales Manager"
+    ],
+
+    CUSTOMER_SUPPORT: [
+        "Customer Support Executive",
+        "Customer Support Specialist",
+        "Senior Customer Support Executive",
+        "Customer Support Manager"
+    ],
+
+    OPERATIONS: [
+        "Operations Executive",
+        "Operations Specialist",
+        "Operations Manager",
+        "Senior Operations Manager"
+    ],
+
+    FINANCE: [
+        "Finance Executive",
+        "Accountant",
+        "Finance Analyst",
+        "Finance Manager"
+    ],
+
+    ADMIN: [
+        "Admin Executive",
+        "Administrative Officer",
+        "Admin Manager",
+        "Senior Admin Manager"
+    ]
+
+};
+
+
+/* =====================================================
+   LOAD EMPLOYEE ROLES
+===================================================== */
+
+function loadEmployeeRoles() {
+
+    const roleSelect =
+        document.getElementById(
+            "employeeRole"
+        );
+
+    const technologySelect =
+        document.getElementById(
+            "employeeTechnology"
+        );
+
+    const designationSelect =
+        document.getElementById(
+            "employeeDesignation"
+        );
+
+
+    if (!roleSelect) {
+        return;
+    }
+
+
+    roleSelect.innerHTML = `
+        <option value="">
+            Select Role
+        </option>
+    `;
+
+
+    if (technologySelect) {
+
+        technologySelect.innerHTML = `
+            <option value="">
+                Select Technology
+            </option>
+        `;
+
+    }
+
+
+    if (designationSelect) {
+
+        designationSelect.innerHTML = `
+            <option value="">
+                Select Designation
+            </option>
+        `;
+
+    }
+
+
+    employeeRoleOptions.forEach(
+        function (role) {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                role.value;
+
+
+            option.textContent =
+                role.label;
+
+
+            roleSelect.appendChild(
+                option
             );
 
         }
     );
 
+}
+
+
+/* =====================================================
+   ROLE CHANGE
+===================================================== */
+
+function handleEmployeeRoleChange() {
+
+    const roleSelect =
+        document.getElementById(
+            "employeeRole"
+        );
+
+    const technologySelect =
+        document.getElementById(
+            "employeeTechnology"
+        );
+
+    const designationSelect =
+        document.getElementById(
+            "employeeDesignation"
+        );
+
+
+    if (!roleSelect) {
+        return;
+    }
+
+
+    const role =
+        roleSelect.value;
+
+
+    if (technologySelect) {
+
+        technologySelect.innerHTML = `
+            <option value="">
+                Select Technology
+            </option>
+        `;
+
+    }
+
+
+    if (designationSelect) {
+
+        designationSelect.innerHTML = `
+            <option value="">
+                Select Designation
+            </option>
+        `;
+
+    }
+
+
+    if (!role) {
+        return;
+    }
+
+
+    const technologies =
+        employeeTechnologyOptions[
+            role
+        ] || [];
+
+
+    if (technologySelect) {
+
+        technologies.forEach(
+            function (technology) {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                option.value =
+                    technology;
+
+
+                option.textContent =
+                    technology;
+
+
+                technologySelect.appendChild(
+                    option
+                );
+
+            }
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   TECHNOLOGY CHANGE
+===================================================== */
+
+function handleEmployeeTechnologyChange() {
+
+    const roleSelect =
+        document.getElementById(
+            "employeeRole"
+        );
+
+    const technologySelect =
+        document.getElementById(
+            "employeeTechnology"
+        );
+
+    const designationSelect =
+        document.getElementById(
+            "employeeDesignation"
+        );
+
+
+    if (
+        !roleSelect ||
+        !technologySelect ||
+        !designationSelect
+    ) {
+        return;
+    }
+
+
+    const role =
+        roleSelect.value;
+
+
+    const technology =
+        technologySelect.value;
+
+
+    designationSelect.innerHTML = `
+        <option value="">
+            Select Designation
+        </option>
+    `;
+
+
+    if (!role || !technology) {
+        return;
+    }
+
+
+    const designations =
+        employeeDesignationOptions[
+            role
+        ] || [];
+
+
+    designations.forEach(
+        function (designation) {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                designation;
+
+
+            option.textContent =
+                designation;
+
+
+            designationSelect.appendChild(
+                option
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   OUTSIDE CLICK
+===================================================== */
+
+document.querySelectorAll(
+    ".modal"
+).forEach(
+    function (modal) {
+
+        modal.addEventListener(
+            "click",
+            function (event) {
+
+                if (
+                    event.target ===
+                    modal
+                ) {
+
+                    modal.classList.remove(
+                        "show"
+                    );
+
+                }
+
+            }
+        );
+
+    }
+);
+
+
+/* =====================================================
+   INITIALIZE EMPLOYEE ROLES
+===================================================== */
+
+loadEmployeeRoles();
+
+
 </script>
+
 
 </body>
 

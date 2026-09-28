@@ -1,0 +1,3694 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Course Management | Growbytee Academy</title>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --primary: #1d4ed8;
+            --primary-dark: #1e40af;
+            --primary-light: #eff6ff;
+
+            --text: #111827;
+            --text-secondary: #4b5563;
+            --text-muted: #6b7280;
+
+            --border: #e5e7eb;
+            --border-light: #eef0f3;
+
+            --background: #f6f8fb;
+            --surface: #ffffff;
+
+            --success: #15803d;
+            --success-bg: #ecfdf3;
+
+            --danger: #b91c1c;
+            --danger-bg: #fef2f2;
+
+            --warning: #b45309;
+            --warning-bg: #fffbeb;
+
+            --shadow-sm:
+                0 1px 2px rgba(15, 23, 42, 0.04);
+
+            --shadow-md:
+                0 8px 25px rgba(15, 23, 42, 0.08);
+
+            --radius: 12px;
+        }
+
+        body {
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: var(--background);
+            color: var(--text);
+
+            min-height: 100vh;
+        }
+
+        button,
+        input,
+        select,
+        textarea {
+            font-family: inherit;
+        }
+
+        button {
+            border: none;
+        }
+
+        /* =========================================
+           PAGE
+        ========================================= */
+
+        .page {
+            min-height: 100vh;
+            padding: 28px;
+        }
+
+        .page-container {
+            max-width: 1500px;
+            margin: 0 auto;
+        }
+
+        /* =========================================
+           HEADER
+        ========================================= */
+
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 24px;
+
+            margin-bottom: 26px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-icon {
+            width: 48px;
+            height: 48px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: var(--primary-light);
+            color: var(--primary);
+
+            border: 1px solid #dbeafe;
+
+            border-radius: 12px;
+        }
+
+        .brand-icon svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .header-text h1 {
+            font-size: 24px;
+            line-height: 1.25;
+
+            font-weight: 700;
+
+            letter-spacing: -0.02em;
+        }
+
+        .header-text p {
+            margin-top: 5px;
+
+            color: var(--text-muted);
+
+            font-size: 14px;
+        }
+
+        /* =========================================
+           BUTTONS
+        ========================================= */
+
+        .btn {
+            min-height: 40px;
+
+            padding:
+                0 15px;
+
+            border-radius: 8px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            gap: 8px;
+
+            cursor: pointer;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            transition:
+                background 0.15s ease,
+                border-color 0.15s ease,
+                box-shadow 0.15s ease,
+                transform 0.15s ease;
+        }
+
+        .btn svg {
+            width: 17px;
+            height: 17px;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+
+            box-shadow:
+                0 2px 5px
+                rgba(29, 78, 216, 0.18);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+
+            box-shadow:
+                0 4px 10px
+                rgba(29, 78, 216, 0.22);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text-secondary);
+
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: #f9fafb;
+        }
+
+        .btn:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+
+        /* =========================================
+           SUMMARY CARDS
+        ========================================= */
+
+        .summary-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+
+            gap: 16px;
+
+            margin-bottom: 20px;
+        }
+
+        .summary-card {
+            background: var(--surface);
+
+            border:
+                1px solid var(--border);
+
+            border-radius: var(--radius);
+
+            padding: 19px 20px;
+
+            display: flex;
+            align-items: center;
+
+            gap: 14px;
+
+            box-shadow: var(--shadow-sm);
+        }
+
+        .summary-icon {
+            width: 44px;
+            height: 44px;
+
+            flex-shrink: 0;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 10px;
+
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .summary-icon svg {
+            width: 21px;
+            height: 21px;
+        }
+
+        .summary-info {
+            min-width: 0;
+        }
+
+        .summary-value {
+            font-size: 23px;
+            line-height: 1;
+
+            font-weight: 700;
+
+            margin-bottom: 5px;
+        }
+
+        .summary-label {
+            font-size: 12px;
+
+            color: var(--text-muted);
+
+            font-weight: 500;
+        }
+
+        /* =========================================
+           CONTENT CARD
+        ========================================= */
+
+        .content-card {
+            background: var(--surface);
+
+            border:
+                1px solid var(--border);
+
+            border-radius: var(--radius);
+
+            box-shadow: var(--shadow-sm);
+
+            overflow: hidden;
+        }
+
+        /* =========================================
+           TOOLBAR
+        ========================================= */
+
+        .toolbar {
+            min-height: 70px;
+
+            padding:
+                14px 18px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 15px;
+
+            border-bottom:
+                1px solid var(--border);
+        }
+
+        .toolbar-title {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .toolbar-title svg {
+            width: 18px;
+            height: 18px;
+
+            color: var(--primary);
+        }
+
+        .toolbar-title span {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .search-box {
+            position: relative;
+
+            width: 310px;
+        }
+
+        .search-box svg {
+            position: absolute;
+
+            left: 12px;
+            top: 50%;
+
+            transform:
+                translateY(-50%);
+
+            width: 17px;
+            height: 17px;
+
+            color: #9ca3af;
+
+            pointer-events: none;
+        }
+
+        .search-box input {
+            width: 100%;
+
+            height: 40px;
+
+            padding:
+                0 12px 0 38px;
+
+            border:
+                1px solid #d1d5db;
+
+            border-radius: 8px;
+
+            outline: none;
+
+            color: var(--text);
+
+            background: white;
+
+            font-size: 13px;
+
+            transition:
+                border-color 0.15s ease,
+                box-shadow 0.15s ease;
+        }
+
+        .search-box input::placeholder {
+            color: #9ca3af;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(37, 99, 235, 0.08);
+        }
+
+        /* =========================================
+           ERROR
+        ========================================= */
+
+        .error-message {
+            display: none;
+
+            margin:
+                14px 18px 0;
+
+            padding:
+                11px 13px;
+
+            border:
+                1px solid #fecaca;
+
+            border-radius: 8px;
+
+            background: var(--danger-bg);
+            color: var(--danger);
+
+            font-size: 13px;
+        }
+
+        /* =========================================
+           TABLE
+        ========================================= */
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+
+            border-collapse: collapse;
+
+            min-width: 1100px;
+        }
+
+        thead {
+            background: #f8fafc;
+        }
+
+        th {
+            padding:
+                12px 16px;
+
+            text-align: left;
+
+            border-bottom:
+                1px solid var(--border);
+
+            color: #64748b;
+
+            font-size: 11px;
+
+            font-weight: 700;
+
+            letter-spacing:
+                0.045em;
+
+            text-transform: uppercase;
+
+            white-space: nowrap;
+        }
+
+        td {
+            padding:
+                15px 16px;
+
+            border-bottom:
+                1px solid var(--border-light);
+
+            color: var(--text-secondary);
+
+            font-size: 13px;
+
+            vertical-align: middle;
+        }
+
+        tbody tr {
+            transition:
+                background 0.12s ease;
+        }
+
+        tbody tr:hover {
+            background: #fafcff;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .course-cell {
+            min-width: 220px;
+        }
+
+        .course-name {
+            color: var(--text);
+
+            font-weight: 600;
+
+            font-size: 13px;
+
+            line-height: 1.45;
+        }
+
+        .course-description {
+            max-width: 280px;
+
+            color: var(--text-muted);
+
+            white-space: nowrap;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            line-height: 1.5;
+        }
+
+        .duration-cell {
+            white-space: nowrap;
+        }
+
+        .duration-main {
+            color: var(--text);
+
+            font-weight: 600;
+        }
+
+        .duration-sub {
+            margin-top: 4px;
+
+            color: var(--text-muted);
+
+            font-size: 11px;
+        }
+
+        .internship-text {
+            color: var(--text-secondary);
+
+            white-space: nowrap;
+        }
+
+        .total-duration {
+            color: var(--primary);
+
+            font-weight: 700;
+
+            white-space: nowrap;
+        }
+
+        /* =========================================
+           BADGES
+        ========================================= */
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+
+            min-height: 26px;
+
+            padding:
+                0 9px;
+
+            border-radius: 6px;
+
+            font-size: 11px;
+
+            font-weight: 600;
+
+            white-space: nowrap;
+        }
+
+        .badge-mode {
+            background: #f1f5f9;
+            color: #475569;
+
+            border:
+                1px solid #e2e8f0;
+        }
+
+        .badge-online {
+            background: #eff6ff;
+            color: #1d4ed8;
+
+            border:
+                1px solid #dbeafe;
+        }
+
+        .badge-offline {
+            background: #f8fafc;
+            color: #475569;
+
+            border:
+                1px solid #e2e8f0;
+        }
+
+        .badge-hybrid {
+            background: #f5f3ff;
+            color: #6d28d9;
+
+            border:
+                1px solid #ede9fe;
+        }
+
+        .badge-active {
+            background: var(--success-bg);
+            color: var(--success);
+
+            border:
+                1px solid #bbf7d0;
+        }
+
+        .badge-inactive {
+            background: var(--danger-bg);
+            color: var(--danger);
+
+            border:
+                1px solid #fecaca;
+        }
+
+        /* =========================================
+           ACTIONS
+        ========================================= */
+
+        .actions {
+            display: flex;
+            align-items: center;
+
+            gap: 6px;
+        }
+
+        .icon-btn {
+            width: 33px;
+            height: 33px;
+
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            border:
+                1px solid var(--border);
+
+            background: white;
+
+            border-radius: 7px;
+
+            color: #64748b;
+
+            cursor: pointer;
+
+            transition:
+                background 0.15s ease,
+                color 0.15s ease,
+                border-color 0.15s ease;
+        }
+
+        .icon-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .icon-btn:hover {
+            background: #f8fafc;
+            color: var(--primary);
+
+            border-color: #bfdbfe;
+        }
+
+        .icon-btn.toggle:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+
+            border-color: #bfdbfe;
+        }
+
+        .icon-btn.delete:hover {
+            background: var(--danger-bg);
+            color: var(--danger);
+
+            border-color: #fecaca;
+        }
+
+        /* =========================================
+           EMPTY / LOADING
+        ========================================= */
+
+        .loading {
+            padding: 50px 20px !important;
+
+            text-align: center;
+
+            color: var(--text-muted);
+        }
+
+        .empty-state {
+            padding: 55px 20px !important;
+
+            text-align: center;
+
+            color: var(--text-muted);
+        }
+
+        .empty-state svg {
+            width: 38px;
+            height: 38px;
+
+            margin-bottom: 10px;
+
+            color: #94a3b8;
+        }
+
+        .empty-state-text {
+            font-size: 13px;
+        }
+
+        /* =========================================
+           MODAL
+        ========================================= */
+
+        .modal {
+            position: fixed;
+
+            inset: 0;
+
+            display: none;
+
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+
+            background:
+                rgba(15, 23, 42, 0.58);
+
+            z-index: 1000;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-box {
+            width: 100%;
+
+            max-width: 680px;
+
+            max-height: 92vh;
+
+            overflow-y: auto;
+
+            background: white;
+
+            border-radius: 14px;
+
+            box-shadow:
+                0 25px 70px
+                rgba(15, 23, 42, 0.22);
+        }
+
+        .modal-header {
+            padding:
+                18px 21px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            border-bottom:
+                1px solid var(--border);
+        }
+
+        .modal-heading {
+            display: flex;
+            align-items: center;
+
+            gap: 11px;
+        }
+
+        .modal-heading-icon {
+            width: 36px;
+            height: 36px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 8px;
+
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .modal-heading-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .modal-heading h2 {
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .modal-heading p {
+            margin-top: 3px;
+
+            color: var(--text-muted);
+
+            font-size: 11px;
+        }
+
+        .close-btn {
+            width: 34px;
+            height: 34px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 7px;
+
+            background: transparent;
+
+            color: #64748b;
+
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            background: #f1f5f9;
+            color: var(--text);
+        }
+
+        .close-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* =========================================
+           FORM
+        ========================================= */
+
+        .modal-body {
+            padding: 21px;
+        }
+
+        .form-section {
+            margin-bottom: 21px;
+        }
+
+        .form-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-section-title {
+            margin-bottom: 13px;
+
+            padding-bottom: 9px;
+
+            border-bottom:
+                1px solid #f1f5f9;
+
+            color: #334155;
+
+            font-size: 12px;
+
+            font-weight: 700;
+
+            text-transform: uppercase;
+
+            letter-spacing:
+                0.04em;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-row {
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr;
+
+            gap: 14px;
+        }
+
+        .form-row-three {
+            display: grid;
+
+            grid-template-columns:
+                1fr 1fr 1fr;
+
+            gap: 14px;
+        }
+
+        .form-group label {
+            display: block;
+
+            margin-bottom: 6px;
+
+            color: #374151;
+
+            font-size: 12px;
+
+            font-weight: 600;
+        }
+
+        .required {
+            color: #dc2626;
+        }
+
+        .form-control {
+            width: 100%;
+
+            min-height: 40px;
+
+            padding:
+                9px 11px;
+
+            border:
+                1px solid #d1d5db;
+
+            border-radius: 8px;
+
+            outline: none;
+
+            background: white;
+
+            color: var(--text);
+
+            font-size: 13px;
+
+            transition:
+                border-color 0.15s ease,
+                box-shadow 0.15s ease;
+        }
+
+        .form-control::placeholder {
+            color: #9ca3af;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(37, 99, 235, 0.08);
+        }
+
+        textarea.form-control {
+            min-height: 90px;
+
+            resize: vertical;
+
+            line-height: 1.5;
+        }
+
+        .field-help {
+            margin-top: 5px;
+
+            color: #94a3b8;
+
+            font-size: 10px;
+        }
+
+        .duration-preview {
+            margin-top: 14px;
+
+            padding:
+                12px 14px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 15px;
+
+            border:
+                1px solid #dbeafe;
+
+            border-radius: 8px;
+
+            background: #f8fbff;
+        }
+
+        .duration-preview-label {
+            color: #64748b;
+
+            font-size: 11px;
+        }
+
+        .duration-preview-value {
+            color: var(--primary);
+
+            font-size: 13px;
+
+            font-weight: 700;
+        }
+
+        /* =========================================
+           MODAL FOOTER
+        ========================================= */
+
+        .modal-footer {
+            padding:
+                15px 21px;
+
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+
+            gap: 9px;
+
+            border-top:
+                1px solid var(--border);
+        }
+
+        /* =========================================
+           TOAST
+        ========================================= */
+
+        .toast {
+            position: fixed;
+
+            right: 24px;
+            bottom: 24px;
+
+            min-width: 280px;
+
+            max-width: 420px;
+
+            padding:
+                12px 15px;
+
+            display: none;
+            align-items: center;
+
+            border-radius: 9px;
+
+            color: white;
+
+            font-size: 13px;
+            font-weight: 500;
+
+            box-shadow:
+                0 10px 30px
+                rgba(15, 23, 42, 0.18);
+
+            z-index: 2000;
+        }
+
+        .toast.show {
+            display: flex;
+        }
+
+        .toast.success {
+            background: #15803d;
+        }
+
+        .toast.error {
+            background: #b91c1c;
+        }
+
+        /* =========================================
+           RESPONSIVE
+        ========================================= */
+
+        @media (max-width: 900px) {
+
+            .page {
+                padding: 20px;
+            }
+
+            .summary-grid {
+                grid-template-columns:
+                    1fr;
+            }
+
+            .page-header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .toolbar {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .form-row-three {
+                grid-template-columns:
+                    1fr;
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .page {
+                padding: 14px;
+            }
+
+            .header-content {
+                align-items: flex-start;
+            }
+
+            .brand-icon {
+                width: 42px;
+                height: 42px;
+            }
+
+            .header-text h1 {
+                font-size: 20px;
+            }
+
+            .btn-primary {
+                width: 100%;
+            }
+
+            .modal {
+                padding: 10px;
+            }
+
+            .modal-box {
+                max-height: 95vh;
+            }
+
+            .modal-body {
+                padding: 17px;
+            }
+
+            .form-row {
+                grid-template-columns:
+                    1fr;
+            }
+
+            .modal-footer {
+                padding:
+                    13px 17px;
+            }
+
+            .modal-footer .btn {
+                flex: 1;
+            }
+
+            .toast {
+                left: 14px;
+                right: 14px;
+                bottom: 14px;
+
+                min-width: auto;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="page">
+
+    <div class="page-container">
+
+        <!-- =====================================
+             HEADER
+        ====================================== -->
+
+        <div class="page-header">
+
+            <div class="header-content">
+
+                <div class="brand-icon">
+
+                    <i data-lucide="graduation-cap"></i>
+
+                </div>
+
+                <div class="header-text">
+
+                    <h1>
+                        Course Management
+                    </h1>
+
+                    <p>
+                        Manage and maintain Growbytee Academy training programs
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="btn btn-primary"
+                onclick="openAddCourseModal()">
+
+                <i data-lucide="plus"></i>
+
+                Add Course
+
+            </button>
+
+        </div>
+
+
+        <!-- =====================================
+             SUMMARY
+        ====================================== -->
+
+        <div class="summary-grid">
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+
+                    <i data-lucide="book-open"></i>
+
+                </div>
+
+                <div class="summary-info">
+
+                    <div
+                        class="summary-value"
+                        id="totalCourses">
+
+                        0
+
+                    </div>
+
+                    <div class="summary-label">
+                        Total Courses
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+
+                    <i data-lucide="circle-check"></i>
+
+                </div>
+
+                <div class="summary-info">
+
+                    <div
+                        class="summary-value"
+                        id="activeCourses">
+
+                        0
+
+                    </div>
+
+                    <div class="summary-label">
+                        Active Courses
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="summary-card">
+
+                <div class="summary-icon">
+
+                    <i data-lucide="archive"></i>
+
+                </div>
+
+                <div class="summary-info">
+
+                    <div
+                        class="summary-value"
+                        id="inactiveCourses">
+
+                        0
+
+                    </div>
+
+                    <div class="summary-label">
+                        Inactive Courses
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================
+             COURSE TABLE
+        ====================================== -->
+
+        <div class="content-card">
+
+            <div class="toolbar">
+
+                <div class="toolbar-title">
+
+                    <i data-lucide="layers-3"></i>
+
+                    <span>
+                        Academy Courses
+                    </span>
+
+                </div>
+
+
+                <div class="search-box">
+
+                    <i data-lucide="search"></i>
+
+                    <input
+                        type="text"
+                        id="courseSearch"
+                        placeholder="Search course, description or mode..."
+                        oninput="filterCourses()">
+
+                </div>
+
+            </div>
+
+
+            <div
+                id="errorMessage"
+                class="error-message">
+            </div>
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                    <tr>
+
+                        <th>
+                            Course
+                        </th>
+
+                        <th>
+                            Description
+                        </th>
+
+                        <th>
+                            Training
+                        </th>
+
+                        <th>
+                            Internship
+                        </th>
+
+                        <th>
+                            Total Duration
+                        </th>
+
+                        <th>
+                            Mode
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                        <th>
+                            Actions
+                        </th>
+
+                    </tr>
+
+                    </thead>
+
+
+                    <tbody id="courseTableBody">
+
+                    <tr>
+
+                        <td
+                            colspan="8"
+                            class="loading">
+
+                            Loading courses...
+
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     COURSE MODAL
+========================================= -->
+
+<div
+    id="courseModal"
+    class="modal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <div class="modal-heading">
+
+                <div class="modal-heading-icon">
+
+                    <i data-lucide="book-plus"></i>
+
+                </div>
+
+                <div>
+
+                    <h2 id="modalTitle">
+                        Add Course
+                    </h2>
+
+                    <p>
+                        Configure the academy training program
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="close-btn"
+                onclick="closeCourseModal()">
+
+                <i data-lucide="x"></i>
+
+            </button>
+
+        </div>
+
+
+        <form
+            id="courseForm"
+            onsubmit="saveCourse(event)">
+
+            <div class="modal-body">
+
+                <input
+                    type="hidden"
+                    id="courseId">
+
+
+                <!-- COURSE INFORMATION -->
+
+                <div class="form-section">
+
+                    <div class="form-section-title">
+                        Course Information
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="courseName">
+
+                            Course Name
+
+                            <span class="required">
+                                *
+                            </span>
+
+                        </label>
+
+                        <input
+                            type="text"
+                            id="courseName"
+                            class="form-control"
+                            maxlength="150"
+                            placeholder="Example: Java Full Stack Development"
+                            required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="courseDescription">
+                            Description
+                        </label>
+
+                        <textarea
+                            id="courseDescription"
+                            class="form-control"
+                            maxlength="1000"
+                            placeholder="Enter course overview, technologies and learning objectives"></textarea>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DURATION -->
+
+                <div class="form-section">
+
+                    <div class="form-section-title">
+                        Program Duration
+                    </div>
+
+
+                    <div class="form-row-three">
+
+                        <div class="form-group">
+
+                            <label for="trainingDuration">
+
+                                Training Duration
+
+                                <span class="required">
+                                    *
+                                </span>
+
+                            </label>
+
+                            <input
+                                type="number"
+                                id="trainingDuration"
+                                class="form-control"
+                                min="1"
+                                max="120"
+                                placeholder="Example: 5"
+                                oninput="updateDurationPreview()"
+                                required>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="trainingDurationType">
+
+                                Duration Type
+
+                                <span class="required">
+                                    *
+                                </span>
+
+                            </label>
+
+                            <select
+                                id="trainingDurationType"
+                                class="form-control"
+                                onchange="updateDurationPreview()"
+                                required>
+
+                                <option value="">
+                                    Select
+                                </option>
+
+                                <option value="DAYS">
+                                    Days
+                                </option>
+
+                                <option value="WEEKS">
+                                    Weeks
+                                </option>
+
+                                <option value="MONTHS">
+                                    Months
+                                </option>
+
+                                <option value="YEARS">
+                                    Years
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="form-group">
+
+                            <label for="internshipDuration">
+
+                                Internship
+
+                            </label>
+
+                            <input
+                                type="number"
+                                id="internshipDuration"
+                                class="form-control"
+                                min="0"
+                                max="24"
+                                placeholder="Example: 1"
+                                oninput="updateDurationPreview()">
+
+                            <div class="field-help">
+                                Leave empty if not applicable
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="duration-preview">
+
+                        <div class="duration-preview-label">
+                            Program Duration
+                        </div>
+
+                        <div
+                            class="duration-preview-value"
+                            id="durationPreview">
+
+                            Enter training duration
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DELIVERY -->
+
+                <div class="form-section">
+
+                    <div class="form-section-title">
+                        Delivery
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="courseMode">
+                            Training Mode
+                        </label>
+
+                        <select
+                            id="courseMode"
+                            class="form-control">
+
+                            <option value="">
+                                Select Training Mode
+                            </option>
+
+                            <option value="ONLINE">
+                                Online
+                            </option>
+
+                            <option value="OFFLINE">
+                                Offline
+                            </option>
+
+                            <option value="HYBRID">
+                                Hybrid
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    onclick="closeCourseModal()">
+
+                    Cancel
+
+                </button>
+
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                    id="saveCourseButton">
+
+                    <i data-lucide="save"></i>
+
+                    Save Course
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     TOAST
+========================================= -->
+
+<div
+    id="toast"
+    class="toast">
+</div>
+
+
+<script>
+
+    const API_BASE_URL =
+        "http://localhost:8080";
+
+
+    let courses = [];
+
+    let editingCourseId = null;
+
+
+    // =========================================
+    // PAGE LOAD
+    // =========================================
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            loadCourses();
+
+            refreshIcons();
+
+        }
+    );
+
+
+    // =========================================
+    // LOAD COURSES
+    // =========================================
+
+    async function loadCourses() {
+
+        hideError();
+
+        const tableBody =
+            document.getElementById(
+                "courseTableBody"
+            );
+
+
+        tableBody.innerHTML = `
+            <tr>
+                <td
+                    colspan="8"
+                    class="loading">
+
+                    Loading courses...
+
+                </td>
+            </tr>
+        `;
+
+
+        try {
+
+            const response =
+                await fetch(
+                    API_BASE_URL +
+                    "/admin/student-courses"
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Failed to load courses"
+                );
+
+            }
+
+
+            courses =
+                await response.json();
+
+
+            updateSummary();
+
+            renderCourses();
+
+
+        } catch (error) {
+
+            console.error(
+                "Course loading error:",
+                error
+            );
+
+
+            tableBody.innerHTML = `
+                <tr>
+                    <td
+                        colspan="8"
+                        class="empty-state">
+
+                        <i data-lucide="circle-alert"></i>
+
+                        <div class="empty-state-text">
+                            Unable to load courses
+                        </div>
+
+                    </td>
+                </tr>
+            `;
+
+
+            showError(
+                "Unable to connect to the Course API. Make sure the backend is running on port 8080."
+            );
+
+
+            refreshIcons();
+
+        }
+
+    }
+
+
+    // =========================================
+    // SUMMARY
+    // =========================================
+
+    function updateSummary() {
+
+        const total =
+            courses.length;
+
+
+        const active =
+            courses.filter(
+                function (course) {
+
+                    return course.active === true;
+
+                }
+            ).length;
+
+
+        const inactive =
+            total - active;
+
+
+        document.getElementById(
+            "totalCourses"
+        ).textContent = total;
+
+
+        document.getElementById(
+            "activeCourses"
+        ).textContent = active;
+
+
+        document.getElementById(
+            "inactiveCourses"
+        ).textContent = inactive;
+
+    }
+
+
+    // =========================================
+    // RENDER COURSES
+    // =========================================
+
+    function renderCourses(
+        list = courses
+    ) {
+
+        const tableBody =
+            document.getElementById(
+                "courseTableBody"
+            );
+
+
+        if (!list.length) {
+
+            tableBody.innerHTML = `
+                <tr>
+
+                    <td
+                        colspan="8"
+                        class="empty-state">
+
+                        <i data-lucide="book-open"></i>
+
+                        <div class="empty-state-text">
+                            No courses found
+                        </div>
+
+                    </td>
+
+                </tr>
+            `;
+
+
+            refreshIcons();
+
+            return;
+
+        }
+
+
+        tableBody.innerHTML =
+            list.map(
+                function (course) {
+
+                    const trainingDuration =
+                        getTrainingDurationText(
+                            course
+                        );
+
+
+                    const internshipDuration =
+                        getInternshipDurationText(
+                            course
+                        );
+
+
+                    const totalDuration =
+                        getTotalDurationText(
+                            course
+                        );
+
+
+                    const mode =
+                        course.mode
+                            ? String(course.mode)
+                            : "-";
+
+
+                    const description =
+                        course.description
+                            ? escapeHtml(
+                                course.description
+                              )
+                            : "-";
+
+
+                    const active =
+                        course.active === true;
+
+
+                    const modeClass =
+                        getModeClass(
+                            mode
+                        );
+
+
+                    return `
+
+                        <tr>
+
+                            <td>
+
+                                <div class="course-cell">
+
+                                    <div class="course-name">
+
+                                        ${escapeHtml(
+                                            course.courseName || "-"
+                                        )}
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+
+                            <td>
+
+                                <div
+                                    class="course-description"
+                                    title="${description}">
+
+                                    ${description}
+
+                                </div>
+
+                            </td>
+
+
+                            <td>
+
+                                <div class="duration-cell">
+
+                                    <div class="duration-main">
+
+                                        ${escapeHtml(
+                                            trainingDuration
+                                        )}
+
+                                    </div>
+
+                                    <div class="duration-sub">
+
+                                        Training
+
+                                    </div>
+
+                                </div>
+
+                            </td>
+
+
+                            <td>
+
+                                <div class="internship-text">
+
+                                    ${escapeHtml(
+                                        internshipDuration
+                                    )}
+
+                                </div>
+
+                            </td>
+
+
+                            <td>
+
+                                <div class="total-duration">
+
+                                    ${escapeHtml(
+                                        totalDuration
+                                    )}
+
+                                </div>
+
+                            </td>
+
+
+                            <td>
+
+                                ${
+                                    mode === "-"
+                                        ? "-"
+                                        : `
+                                            <span
+                                                class="badge ${modeClass}">
+
+                                                ${escapeHtml(
+                                                    mode
+                                                )}
+
+                                            </span>
+                                          `
+                                }
+
+                            </td>
+
+
+                            <td>
+
+                                <span
+                                    class="badge ${
+                                        active
+                                            ? "badge-active"
+                                            : "badge-inactive"
+                                    }">
+
+                                    ${
+                                        active
+                                            ? "Active"
+                                            : "Inactive"
+                                    }
+
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                <div class="actions">
+
+                                    <button
+                                        type="button"
+                                        class="icon-btn"
+                                        title="Edit Course"
+                                        onclick="openEditCourseModal(${course.id})">
+
+                                        <i data-lucide="pencil"></i>
+
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        class="icon-btn toggle"
+                                        title="${
+                                            active
+                                                ? "Deactivate Course"
+                                                : "Activate Course"
+                                        }"
+                                        onclick="toggleCourse(${course.id})">
+
+                                        <i data-lucide="${
+                                            active
+                                                ? "toggle-right"
+                                                : "toggle-left"
+                                        }"></i>
+
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        class="icon-btn delete"
+                                        title="Delete Course"
+                                        onclick="deleteCourse(${course.id})">
+
+                                        <i data-lucide="trash-2"></i>
+
+                                    </button>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                }
+            )
+            .join("");
+
+
+        refreshIcons();
+
+    }
+
+
+    // =========================================
+    // TRAINING DURATION
+    // =========================================
+
+    function getTrainingDurationText(
+        course
+    ) {
+
+        /*
+         * New field
+         */
+        if (
+            course.trainingDuration != null
+        ) {
+
+            const type =
+                formatDurationType(
+                    course.durationType
+                );
+
+
+            return (
+                course.trainingDuration +
+                " " +
+                type
+            );
+
+        }
+
+
+        /*
+         * Backward compatibility
+         *
+         * Existing courses may still
+         * have the old duration field.
+         */
+        if (
+            course.duration != null
+        ) {
+
+            const type =
+                formatDurationType(
+                    course.durationType
+                );
+
+
+            return (
+                course.duration +
+                " " +
+                type
+            );
+
+        }
+
+
+        return "-";
+
+    }
+
+
+    // =========================================
+    // INTERNSHIP DURATION
+    // =========================================
+
+    function getInternshipDurationText(
+        course
+    ) {
+
+        if (
+            course.internshipDuration == null
+            ||
+            course.internshipDuration === ""
+        ) {
+
+            return "-";
+
+        }
+
+
+        return (
+            course.internshipDuration +
+            " Month" +
+            (
+                Number(
+                    course.internshipDuration
+                ) === 1
+                    ? ""
+                    : "s"
+            )
+        );
+
+    }
+
+
+    // =========================================
+    // TOTAL DURATION
+    // =========================================
+
+    function getTotalDurationText(
+        course
+    ) {
+
+        const training =
+            course.trainingDuration != null
+                ? Number(
+                    course.trainingDuration
+                  )
+                : (
+                    course.duration != null
+                        ? Number(
+                            course.duration
+                          )
+                        : null
+                  );
+
+
+        const internship =
+            course.internshipDuration != null
+                ? Number(
+                    course.internshipDuration
+                  )
+                : 0;
+
+
+        if (
+            training == null
+            ||
+            Number.isNaN(training)
+        ) {
+
+            return "-";
+
+        }
+
+
+        /*
+         * Total is displayed as a
+         * simple month-based value
+         * when training duration is
+         * configured in months.
+         */
+        if (
+            course.durationType === "MONTHS"
+        ) {
+
+            const total =
+                training +
+                (
+                    Number.isNaN(
+                        internship
+                    )
+                        ? 0
+                        : internship
+                );
+
+
+            return (
+                total +
+                " Month" +
+                (
+                    total === 1
+                        ? ""
+                        : "s"
+                )
+            );
+
+        }
+
+
+        /*
+         * For DAYS / WEEKS / YEARS,
+         * display training duration
+         * with internship separately.
+         */
+        const trainingText =
+            getTrainingDurationText(
+                course
+            );
+
+
+        if (
+            internship > 0
+        ) {
+
+            return (
+                trainingText +
+                " + " +
+                internship +
+                " Month Internship"
+            );
+
+        }
+
+
+        return trainingText;
+
+    }
+
+
+    // =========================================
+    // MODE CLASS
+    // =========================================
+
+    function getModeClass(
+        mode
+    ) {
+
+        switch (
+            String(mode)
+                .toUpperCase()
+        ) {
+
+            case "ONLINE":
+                return "badge-online";
+
+            case "OFFLINE":
+                return "badge-offline";
+
+            case "HYBRID":
+                return "badge-hybrid";
+
+            default:
+                return "badge-mode";
+
+        }
+
+    }
+
+
+    // =========================================
+    // SEARCH
+    // =========================================
+
+    function filterCourses() {
+
+        const search =
+            document.getElementById(
+                "courseSearch"
+            )
+            .value
+            .trim()
+            .toLowerCase();
+
+
+        if (!search) {
+
+            renderCourses(
+                courses
+            );
+
+            return;
+
+        }
+
+
+        const filtered =
+            courses.filter(
+                function (course) {
+
+                    return (
+
+                        String(
+                            course.courseName || ""
+                        )
+                        .toLowerCase()
+                        .includes(search)
+
+                        ||
+
+                        String(
+                            course.description || ""
+                        )
+                        .toLowerCase()
+                        .includes(search)
+
+                        ||
+
+                        String(
+                            course.mode || ""
+                        )
+                        .toLowerCase()
+                        .includes(search)
+
+                        ||
+
+                        String(
+                            course.durationType || ""
+                        )
+                        .toLowerCase()
+                        .includes(search)
+
+                    );
+
+                }
+            );
+
+
+        renderCourses(
+            filtered
+        );
+
+    }
+
+
+    // =========================================
+    // OPEN ADD MODAL
+    // =========================================
+
+    function openAddCourseModal() {
+
+        editingCourseId = null;
+
+
+        document.getElementById(
+            "modalTitle"
+        ).textContent =
+            "Add Course";
+
+
+        document.getElementById(
+            "courseForm"
+        ).reset();
+
+
+        document.getElementById(
+            "courseId"
+        ).value = "";
+
+
+        document.getElementById(
+            "durationPreview"
+        ).textContent =
+            "Enter training duration";
+
+
+        document.getElementById(
+            "saveCourseButton"
+        ).innerHTML = `
+
+            <i data-lucide="save"></i>
+
+            Save Course
+
+        `;
+
+
+        document.getElementById(
+            "courseModal"
+        ).classList.add(
+            "show"
+        );
+
+
+        refreshIcons();
+
+
+        setTimeout(
+            function () {
+
+                document.getElementById(
+                    "courseName"
+                ).focus();
+
+            },
+            100
+        );
+
+    }
+
+
+    // =========================================
+    // OPEN EDIT MODAL
+    // =========================================
+
+    function openEditCourseModal(
+        id
+    ) {
+
+        const course =
+            courses.find(
+                function (item) {
+
+                    return item.id === id;
+
+                }
+            );
+
+
+        if (!course) {
+
+            showToast(
+                "Course not found",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        editingCourseId =
+            id;
+
+
+        document.getElementById(
+            "modalTitle"
+        ).textContent =
+            "Edit Course";
+
+
+        document.getElementById(
+            "courseId"
+        ).value =
+            course.id;
+
+
+        document.getElementById(
+            "courseName"
+        ).value =
+            course.courseName || "";
+
+
+        document.getElementById(
+            "courseDescription"
+        ).value =
+            course.description || "";
+
+
+        /*
+         * New training duration field.
+         *
+         * Old courses are supported by
+         * reading the previous duration field.
+         */
+        document.getElementById(
+            "trainingDuration"
+        ).value =
+            course.trainingDuration != null
+                ? course.trainingDuration
+                : (
+                    course.duration != null
+                        ? course.duration
+                        : ""
+                  );
+
+
+        document.getElementById(
+            "trainingDurationType"
+        ).value =
+            course.durationType || "";
+
+
+        document.getElementById(
+            "internshipDuration"
+        ).value =
+            course.internshipDuration != null
+                ? course.internshipDuration
+                : "";
+
+
+        document.getElementById(
+            "courseMode"
+        ).value =
+            course.mode || "";
+
+
+        updateDurationPreview();
+
+
+        document.getElementById(
+            "saveCourseButton"
+        ).innerHTML = `
+
+            <i data-lucide="save"></i>
+
+            Update Course
+
+        `;
+
+
+        document.getElementById(
+            "courseModal"
+        ).classList.add(
+            "show"
+        );
+
+
+        refreshIcons();
+
+    }
+
+
+    // =========================================
+    // DURATION PREVIEW
+    // =========================================
+
+    function updateDurationPreview() {
+
+        const trainingValue =
+            document.getElementById(
+                "trainingDuration"
+            ).value;
+
+
+        const durationType =
+            document.getElementById(
+                "trainingDurationType"
+            ).value;
+
+
+        const internshipValue =
+            document.getElementById(
+                "internshipDuration"
+            ).value;
+
+
+        const preview =
+            document.getElementById(
+                "durationPreview"
+            );
+
+
+        if (!trainingValue) {
+
+            preview.textContent =
+                "Enter training duration";
+
+            return;
+
+        }
+
+
+        if (!durationType) {
+
+            preview.textContent =
+                "Select duration type";
+
+            return;
+
+        }
+
+
+        const training =
+            Number(
+                trainingValue
+            );
+
+
+        const internship =
+            internshipValue
+                ? Number(
+                    internshipValue
+                  )
+                : 0;
+
+
+        const trainingText =
+            training +
+            " " +
+            formatDurationType(
+                durationType
+            );
+
+
+        if (
+            internship > 0
+            &&
+            durationType === "MONTHS"
+        ) {
+
+            const total =
+                training +
+                internship;
+
+
+            preview.textContent =
+                trainingText +
+                " + " +
+                internship +
+                " Month Internship = " +
+                total +
+                " Months Total";
+
+            return;
+
+        }
+
+
+        if (
+            internship > 0
+        ) {
+
+            preview.textContent =
+                trainingText +
+                " + " +
+                internship +
+                " Month Internship";
+
+            return;
+
+        }
+
+
+        preview.textContent =
+            trainingText;
+
+    }
+
+
+    // =========================================
+    // CLOSE MODAL
+    // =========================================
+
+    function closeCourseModal() {
+
+        document.getElementById(
+            "courseModal"
+        ).classList.remove(
+            "show"
+        );
+
+
+        editingCourseId = null;
+
+    }
+
+
+    // =========================================
+    // SAVE COURSE
+    // =========================================
+
+    async function saveCourse(
+        event
+    ) {
+
+        event.preventDefault();
+
+
+        const courseName =
+            document.getElementById(
+                "courseName"
+            )
+            .value
+            .trim();
+
+
+        const description =
+            document.getElementById(
+                "courseDescription"
+            )
+            .value
+            .trim();
+
+
+        const trainingValue =
+            document.getElementById(
+                "trainingDuration"
+            )
+            .value
+            .trim();
+
+
+        const durationType =
+            document.getElementById(
+                "trainingDurationType"
+            )
+            .value;
+
+
+        const internshipValue =
+            document.getElementById(
+                "internshipDuration"
+            )
+            .value
+            .trim();
+
+
+        const mode =
+            document.getElementById(
+                "courseMode"
+            )
+            .value;
+
+
+        if (!courseName) {
+
+            showToast(
+                "Course name is required",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        if (!trainingValue) {
+
+            showToast(
+                "Training duration is required",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        const trainingDuration =
+            Number(
+                trainingValue
+            );
+
+
+        if (
+            !Number.isInteger(
+                trainingDuration
+            )
+            ||
+            trainingDuration <= 0
+        ) {
+
+            showToast(
+                "Training duration must be greater than 0",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        if (!durationType) {
+
+            showToast(
+                "Duration type is required",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        let internshipDuration =
+            null;
+
+
+        if (internshipValue) {
+
+            internshipDuration =
+                Number(
+                    internshipValue
+                );
+
+
+            if (
+                !Number.isInteger(
+                    internshipDuration
+                )
+                ||
+                internshipDuration < 0
+            ) {
+
+                showToast(
+                    "Internship duration must be 0 or greater",
+                    "error"
+                );
+
+                return;
+
+            }
+
+        }
+
+
+        /*
+         * Keep old duration field synchronized
+         * for backward compatibility.
+         */
+        const payload = {
+
+            courseName:
+                courseName,
+
+            description:
+                description || null,
+
+            duration:
+                trainingDuration,
+
+            durationType:
+                durationType,
+
+            trainingDuration:
+                trainingDuration,
+
+            internshipDuration:
+                internshipDuration,
+
+            mode:
+                mode || null
+
+        };
+
+
+        if (
+            editingCourseId !== null
+        ) {
+
+            const existingCourse =
+                courses.find(
+                    function (course) {
+
+                        return course.id ===
+                            editingCourseId;
+
+                    }
+                );
+
+
+            if (existingCourse) {
+
+                payload.active =
+                    existingCourse.active;
+
+            }
+
+        }
+
+
+        const saveButton =
+            document.getElementById(
+                "saveCourseButton"
+            );
+
+
+        const originalText =
+            saveButton.innerHTML;
+
+
+        saveButton.disabled = true;
+
+
+        saveButton.innerHTML = `
+            Saving...
+        `;
+
+
+        try {
+
+            const url =
+                editingCourseId === null
+
+                    ? API_BASE_URL +
+                      "/admin/student-courses"
+
+                    : API_BASE_URL +
+                      "/admin/student-courses/" +
+                      editingCourseId;
+
+
+            const method =
+                editingCourseId === null
+                    ? "POST"
+                    : "PUT";
+
+
+            const response =
+                await fetch(
+                    url,
+                    {
+                        method:
+                            method,
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify(
+                                payload
+                            )
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                let message =
+                    "Unable to save course";
+
+
+                try {
+
+                    const errorData =
+                        await response.json();
+
+
+                    if (
+                        errorData &&
+                        errorData.message
+                    ) {
+
+                        message =
+                            errorData.message;
+
+                    }
+
+                } catch (
+                    ignored
+                ) {
+                }
+
+
+                throw new Error(
+                    message
+                );
+
+            }
+
+
+            const savedCourse =
+                await response.json();
+
+
+            if (
+                editingCourseId === null
+            ) {
+
+                courses.push(
+                    savedCourse
+                );
+
+
+                showToast(
+                    "Course added successfully",
+                    "success"
+                );
+
+            } else {
+
+                const index =
+                    courses.findIndex(
+                        function (course) {
+
+                            return course.id ===
+                                editingCourseId;
+
+                        }
+                    );
+
+
+                if (index !== -1) {
+
+                    courses[index] =
+                        savedCourse;
+
+                }
+
+
+                showToast(
+                    "Course updated successfully",
+                    "success"
+                );
+
+            }
+
+
+            updateSummary();
+
+            filterCourses();
+
+            closeCourseModal();
+
+
+        } catch (error) {
+
+            console.error(
+                "Save course error:",
+                error
+            );
+
+
+            showToast(
+                error.message ||
+                "Unable to save course",
+                "error"
+            );
+
+
+        } finally {
+
+            saveButton.disabled =
+                false;
+
+
+            saveButton.innerHTML =
+                originalText;
+
+
+            refreshIcons();
+
+        }
+
+    }
+
+
+    // =========================================
+    // TOGGLE COURSE
+    // =========================================
+
+    async function toggleCourse(
+        id
+    ) {
+
+        const course =
+            courses.find(
+                function (item) {
+
+                    return item.id === id;
+
+                }
+            );
+
+
+        if (!course) {
+
+            return;
+
+        }
+
+
+        const newStatus =
+            course.active !== true;
+
+
+        const action =
+            newStatus
+                ? "activate"
+                : "deactivate";
+
+
+        const confirmed =
+            window.confirm(
+                "Are you sure you want to " +
+                action +
+                " this course?"
+            );
+
+
+        if (!confirmed) {
+
+            return;
+
+        }
+
+
+        const trainingDuration =
+            course.trainingDuration != null
+                ? course.trainingDuration
+                : course.duration;
+
+
+        const payload = {
+
+            courseName:
+                course.courseName,
+
+            description:
+                course.description,
+
+            duration:
+                trainingDuration,
+
+            durationType:
+                course.durationType,
+
+            trainingDuration:
+                trainingDuration,
+
+            internshipDuration:
+                course.internshipDuration,
+
+            mode:
+                course.mode,
+
+            active:
+                newStatus
+
+        };
+
+
+        try {
+
+            const response =
+                await fetch(
+                    API_BASE_URL +
+                    "/admin/student-courses/" +
+                    id,
+                    {
+                        method:
+                            "PUT",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify(
+                                payload
+                            )
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Unable to update course status"
+                );
+
+            }
+
+
+            const updatedCourse =
+                await response.json();
+
+
+            const index =
+                courses.findIndex(
+                    function (item) {
+
+                        return item.id === id;
+
+                    }
+                );
+
+
+            if (index !== -1) {
+
+                courses[index] =
+                    updatedCourse;
+
+            }
+
+
+            updateSummary();
+
+            filterCourses();
+
+
+            showToast(
+                newStatus
+                    ? "Course activated successfully"
+                    : "Course deactivated successfully",
+                "success"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Toggle course error:",
+                error
+            );
+
+
+            showToast(
+                error.message ||
+                "Unable to update course status",
+                "error"
+            );
+
+        }
+
+    }
+
+
+    // =========================================
+    // DELETE COURSE
+    // =========================================
+
+    async function deleteCourse(
+        id
+    ) {
+
+        const course =
+            courses.find(
+                function (item) {
+
+                    return item.id === id;
+
+                }
+            );
+
+
+        if (!course) {
+
+            return;
+
+        }
+
+
+        const confirmed =
+            window.confirm(
+                "Are you sure you want to delete \"" +
+                course.courseName +
+                "\"?"
+            );
+
+
+        if (!confirmed) {
+
+            return;
+
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    API_BASE_URL +
+                    "/admin/student-courses/" +
+                    id,
+                    {
+                        method:
+                            "DELETE"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Unable to delete course"
+                );
+
+            }
+
+
+            const index =
+                courses.findIndex(
+                    function (item) {
+
+                        return item.id === id;
+
+                    }
+                );
+
+
+            if (index !== -1) {
+
+                /*
+                 * Backend performs soft delete.
+                 */
+                courses[index].active =
+                    false;
+
+                courses[index].updatedAt =
+                    new Date()
+                        .toISOString();
+
+            }
+
+
+            updateSummary();
+
+            filterCourses();
+
+
+            showToast(
+                "Course deleted successfully",
+                "success"
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Delete course error:",
+                error
+            );
+
+
+            showToast(
+                error.message ||
+                "Unable to delete course",
+                "error"
+            );
+
+        }
+
+    }
+
+
+    // =========================================
+    // DURATION TYPE FORMAT
+    // =========================================
+
+    function formatDurationType(
+        type
+    ) {
+
+        if (!type) {
+
+            return "";
+
+        }
+
+
+        const value =
+            String(type)
+                .toLowerCase();
+
+
+        return (
+            value.charAt(0)
+                .toUpperCase() +
+            value.slice(1)
+        );
+
+    }
+
+
+    // =========================================
+    // ESCAPE HTML
+    // =========================================
+
+    function escapeHtml(
+        value
+    ) {
+
+        return String(value)
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+            .replace(
+                /</g,
+                "&lt;"
+            )
+            .replace(
+                />/g,
+                "&gt;"
+            )
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+            .replace(
+                /'/g,
+                "&#039;"
+            );
+
+    }
+
+
+    // =========================================
+    // ERROR
+    // =========================================
+
+    function showError(
+        message
+    ) {
+
+        const element =
+            document.getElementById(
+                "errorMessage"
+            );
+
+
+        element.textContent =
+            message;
+
+
+        element.style.display =
+            "block";
+
+    }
+
+
+    function hideError() {
+
+        const element =
+            document.getElementById(
+                "errorMessage"
+            );
+
+
+        element.textContent =
+            "";
+
+
+        element.style.display =
+            "none";
+
+    }
+
+
+    // =========================================
+    // TOAST
+    // =========================================
+
+    function showToast(
+        message,
+        type
+    ) {
+
+        const toast =
+            document.getElementById(
+                "toast"
+            );
+
+
+        toast.textContent =
+            message;
+
+
+        toast.className =
+            "toast " +
+            type +
+            " show";
+
+
+        setTimeout(
+            function () {
+
+                toast.classList.remove(
+                    "show"
+                );
+
+            },
+            3000
+        );
+
+    }
+
+
+    // =========================================
+    // LUCIDE
+    // =========================================
+
+    function refreshIcons() {
+
+        if (
+            window.lucide &&
+            typeof window.lucide.createIcons ===
+                "function"
+        ) {
+
+            window.lucide.createIcons();
+
+        }
+
+    }
+
+
+    // =========================================
+    // OUTSIDE MODAL CLICK
+    // =========================================
+
+    document.getElementById(
+        "courseModal"
+    ).addEventListener(
+        "click",
+        function (event) {
+
+            if (
+                event.target ===
+                this
+            ) {
+
+                closeCourseModal();
+
+            }
+
+        }
+    );
+
+
+    // =========================================
+    // ESC KEY
+    // =========================================
+
+    document.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (
+                event.key ===
+                "Escape"
+            ) {
+
+                closeCourseModal();
+
+            }
+
+        }
+    );
+
+</script>
+
+</body>
+
+</html>

@@ -1,3 +1,4 @@
+
 package com.example.attendance;
 
 public class AdminEmployeeResponse {
@@ -13,6 +14,10 @@ public class AdminEmployeeResponse {
     private String contactNumber;
 
     private String role;
+
+    private String technology;
+
+    private String designation;
 
     private Double salary;
 
@@ -30,6 +35,8 @@ public class AdminEmployeeResponse {
             String email,
             String contactNumber,
             String role,
+            String technology,
+            String designation,
             Double salary,
             String joiningDate) {
 
@@ -39,6 +46,8 @@ public class AdminEmployeeResponse {
         this.email = email;
         this.contactNumber = contactNumber;
         this.role = role;
+        this.technology = technology;
+        this.designation = designation;
         this.salary = salary;
         this.joiningDate = joiningDate;
     }
@@ -70,6 +79,14 @@ public class AdminEmployeeResponse {
 
     public String getRole() {
         return role;
+    }
+
+    public String getTechnology() {
+        return technology;
+    }
+
+    public String getDesignation() {
+        return designation;
     }
 
     public Double getSalary() {
@@ -109,6 +126,14 @@ public class AdminEmployeeResponse {
         this.role = role;
     }
 
+    public void setTechnology(String technology) {
+        this.technology = technology;
+    }
+
+    public void setDesignation(String designation) {
+        this.designation = designation;
+    }
+
     public void setSalary(Double salary) {
         this.salary = salary;
     }
@@ -116,4 +141,5 @@ public class AdminEmployeeResponse {
     public void setJoiningDate(String joiningDate) {
         this.joiningDate = joiningDate;
     }
+
 }

@@ -1,6 +1,8 @@
 
 package com.example.attendance;
 
+import java.time.LocalTime;
+
 public class LeavePermissionSettingRequest {
 
     private String settingType;
@@ -10,6 +12,13 @@ public class LeavePermissionSettingRequest {
     private Double sickLeave;
     private Double casualLeave;
     private Integer permissionCount;
+
+    private Double permissionHours;
+
+    private LocalTime officeStartTime;
+    private LocalTime officeEndTime;
+
+    private String shiftType;
 
 
     // =========================
@@ -40,6 +49,22 @@ public class LeavePermissionSettingRequest {
         return permissionCount;
     }
 
+    public Double getPermissionHours() {
+        return permissionHours;
+    }
+
+    public LocalTime getOfficeStartTime() {
+        return officeStartTime;
+    }
+
+    public LocalTime getOfficeEndTime() {
+        return officeEndTime;
+    }
+
+    public String getShiftType() {
+        return shiftType;
+    }
+
 
     // =========================
     // SETTERS
@@ -68,5 +93,20 @@ public class LeavePermissionSettingRequest {
     public void setPermissionCount(Integer permissionCount) {
         this.permissionCount = permissionCount;
     }
-}
 
+    public void setPermissionHours(Double permissionHours) {
+        this.permissionHours = permissionHours;
+    }
+
+    public void setOfficeStartTime(LocalTime officeStartTime) {
+        this.officeStartTime = officeStartTime;
+    }
+
+    public void setOfficeEndTime(LocalTime officeEndTime) {
+        this.officeEndTime = officeEndTime;
+    }
+
+    public void setShiftType(String shiftType) {
+        this.shiftType = shiftType;
+    }
+}

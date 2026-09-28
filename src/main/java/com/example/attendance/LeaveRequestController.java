@@ -1,4 +1,3 @@
-
 package com.example.attendance;
 
 import org.springframework.web.bind.annotation.*;
@@ -146,17 +145,6 @@ public class LeaveRequestController {
     //
     // AVAILABLE BALANCE:
     // SICK -> CASUAL -> LOP
-    //
-    // Example:
-    // Sick = 1
-    // Casual = 1
-    // 3 days requested
-    //
-    // Day 1 = SICK
-    // Day 2 = CASUAL
-    // Day 3 = LOP
-    //
-    // Carry-forward balances are automatically included.
     // =====================================================
 
     private String applyCombinedLeave(
@@ -240,14 +228,6 @@ public class LeaveRequestController {
                             )
                             : 0;
 
-            // =================================================
-            // ONE FULL DAY REQUEST
-            //
-            // SICK FIRST
-            // THEN CASUAL
-            // THEN LOP
-            // =================================================
-
             double sickUsed = 0;
             double casualUsed = 0;
             double lop = 0;
@@ -258,7 +238,6 @@ public class LeaveRequestController {
 
             } else if (sickAvailable > 0) {
 
-                // Remaining sick balance can be used.
                 sickUsed = sickAvailable;
             }
 
@@ -554,6 +533,16 @@ public class LeaveRequestController {
 
     // =====================================================
     // PERMISSION
+    //
+    // RULES:
+    //
+    // 1. One permission maximum = 90 minutes FIXED.
+    // 2. Monthly permission COUNT comes from Admin Setting.
+    // 3. Monthly permission HOURS comes from Admin Setting.
+    // 4. Count includes APPROVED + PENDING.
+    // 5. Hours are calculated from actual start/end time.
+    // 6. Hours exceeding the configured allowance are allowed
+    //    and will be handled as LOP during salary calculation.
     // =====================================================
 
     private String applyPermission(
@@ -594,8 +583,16 @@ public class LeaveRequestController {
                         .between(start, end)
                         .toMinutes();
 
+        // =================================================
+        // FIXED MAXIMUM PER PERMISSION
+        // =================================================
+
         if (minutes > 90) {
             return "Permission Maximum Is 1 Hour 30 Minutes";
+        }
+
+        if (minutes <= 0) {
+            return "Permission Duration Must Be Greater Than 0";
         }
 
         LocalDate month =
@@ -606,6 +603,10 @@ public class LeaveRequestController {
                         employee,
                         month
                 );
+
+        // =================================================
+        // ADMIN CONFIGURED PERMISSION COUNT
+        // =================================================
 
         long permissionUsed =
                 countPermissionIncludingPending(
@@ -618,12 +619,76 @@ public class LeaveRequestController {
 
         int permissionLimit =
                 balance.getPermissionBalance() != null
-                        ? balance.getPermissionBalance()
+                        ? Math.max(
+                                0,
+                                balance.getPermissionBalance()
+                        )
                         : 2;
 
         if (permissionUsed >= permissionLimit) {
             return "Monthly Permission Limit Reached";
         }
+
+        // =================================================
+        // ADMIN CONFIGURED TOTAL PERMISSION HOURS
+        //
+        // IMPORTANT:
+        //
+        // We DO NOT reject when hours exceed the allowance.
+        //
+        // The permission is still recorded.
+        // Salary calculation will later deduct ONLY
+        // the excess hours.
+        // =================================================
+
+        LeavePermissionSetting setting =
+                getEffectiveSetting(employee);
+
+        double allowedPermissionHours =
+                setting.getPermissionHours() != null
+                        ? Math.max(
+                                0,
+                                setting.getPermissionHours()
+                        )
+                        : 3.0;
+
+        long usedPermissionMinutes =
+                getPermissionMinutesIncludingPending(
+                        employee.getId(),
+                        month,
+                        month.withDayOfMonth(
+                                month.lengthOfMonth()
+                        )
+                );
+
+        long allowedPermissionMinutes =
+                Math.round(
+                        allowedPermissionHours * 60.0
+                );
+
+        /*
+         * Existing usage + this request is allowed even if
+         * it exceeds the configured hours.
+         *
+         * Excess hours are calculated later during salary
+         * calculation.
+         */
+        long totalAfterRequest =
+                usedPermissionMinutes + minutes;
+
+        /*
+         * Keep this variable intentionally calculated here
+         * so the configured policy is evaluated for this
+         * permission request.
+         *
+         * No rejection is performed for excess hours.
+         */
+        boolean exceedsAllowedHours =
+                totalAfterRequest > allowedPermissionMinutes;
+
+        // =================================================
+        // SAME DATE PERMISSION CHECK
+        // =================================================
 
         List<LeaveRequest> sameDateRequests =
                 leaveRequestRepository
@@ -644,6 +709,10 @@ public class LeaveRequestController {
                 return "Permission Already Applied For This Date";
             }
         }
+
+        // =================================================
+        // SAVE PERMISSION
+        // =================================================
 
         LeaveRequest request =
                 createLeaveRequest(
@@ -720,11 +789,6 @@ public class LeaveRequestController {
 
         // =================================================
         // CARRY FORWARD
-        //
-        // Previous unused Sick/Casual balance is added
-        // to the new month's allowance.
-        //
-        // No carry-forward cap is applied.
         // =================================================
 
         LocalDate previousMonth =
@@ -844,6 +908,7 @@ public class LeaveRequestController {
                     defaultSetting.setSickLeave(1.0);
                     defaultSetting.setCasualLeave(1.0);
                     defaultSetting.setPermissionCount(2);
+                    defaultSetting.setPermissionHours(3.0);
 
                     LocalDateTime now =
                             LocalDateTime.now();
@@ -893,6 +958,70 @@ public class LeaveRequestController {
         }
 
         return count;
+    }
+
+    // =====================================================
+    // PERMISSION HOURS
+    // APPROVED + PENDING
+    //
+    // Actual duration comes from:
+    // permissionStart -> permissionEnd
+    // =====================================================
+
+    private long getPermissionMinutesIncludingPending(
+            Integer employeeId,
+            LocalDate startDate,
+            LocalDate endDate) {
+
+        List<LeaveRequest> requests =
+                leaveRequestRepository
+                        .findByEmployeeIdAndLeaveTypeAndLeaveDateBetween(
+                                employeeId,
+                                "PERMISSION",
+                                startDate,
+                                endDate
+                        );
+
+        long totalMinutes = 0;
+
+        for (LeaveRequest request : requests) {
+
+            if (request == null) {
+                continue;
+            }
+
+            String status =
+                    request.getStatus();
+
+            if (status == null ||
+                    (!status.equalsIgnoreCase("APPROVED")
+                            &&
+                     !status.equalsIgnoreCase("PENDING"))) {
+
+                continue;
+            }
+
+            LocalTime start =
+                    request.getPermissionStart();
+
+            LocalTime end =
+                    request.getPermissionEnd();
+
+            if (start == null || end == null) {
+                continue;
+            }
+
+            if (!end.isAfter(start)) {
+                continue;
+            }
+
+            totalMinutes +=
+                    Duration
+                            .between(start, end)
+                            .toMinutes();
+        }
+
+        return totalMinutes;
     }
 
     // =====================================================
@@ -1110,4 +1239,3 @@ public class LeaveRequestController {
                 .orElse(0.0);
     }
 }
-

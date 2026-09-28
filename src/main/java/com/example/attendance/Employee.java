@@ -19,7 +19,14 @@ public class Employee {
 
     private String password;
 
+    @Column(name = "employee_type")
+    private String employeeType;
+
     private String role;
+
+    private String technology;
+
+    private String designation;
 
     private Double salary;
 
@@ -31,6 +38,7 @@ public class Employee {
 
     @Column(name = "active", nullable = false)
     private Boolean active = true;
+
 
     // =========================
     // GETTERS
@@ -56,8 +64,20 @@ public class Employee {
         return password;
     }
 
+    public String getEmployeeType() {
+        return employeeType;
+    }
+
     public String getRole() {
         return role;
+    }
+
+    public String getTechnology() {
+        return technology;
+    }
+
+    public String getDesignation() {
+        return designation;
     }
 
     public Double getSalary() {
@@ -75,6 +95,7 @@ public class Employee {
     public Boolean getActive() {
         return active;
     }
+
 
     // =========================
     // SETTERS
@@ -100,8 +121,20 @@ public class Employee {
         this.password = password;
     }
 
+    public void setEmployeeType(String employeeType) {
+        this.employeeType = employeeType;
+    }
+
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public void setTechnology(String technology) {
+        this.technology = technology;
+    }
+
+    public void setDesignation(String designation) {
+        this.designation = designation;
     }
 
     public void setSalary(Double salary) {
@@ -119,4 +152,5 @@ public class Employee {
     public void setActive(Boolean active) {
         this.active = active;
     }
+
 }

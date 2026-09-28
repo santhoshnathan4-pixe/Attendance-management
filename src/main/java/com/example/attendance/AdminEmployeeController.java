@@ -1,3 +1,4 @@
+
 package com.example.attendance;
 
 import org.springframework.dao.DataIntegrityViolationException;
@@ -9,7 +10,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/admin/employees")
@@ -28,19 +28,6 @@ public class AdminEmployeeController {
         this.adminRepository = adminRepository;
         this.historyRepository = historyRepository;
     }
-
-    // =====================================================
-    // ALLOWED ROLES
-    // =====================================================
-
-    private static final Set<String> ALLOWED_ROLES = Set.of(
-            "EMPLOYEE",
-            "DEVELOPER",
-            "HR",
-            "TEAM_LEAD",
-            "MANAGER",
-            "ADMIN"
-    );
 
     // =====================================================
     // GET ALL ACTIVE EMPLOYEES
@@ -63,56 +50,24 @@ public class AdminEmployeeController {
     public AdminEmployeeResponse addEmployee(
             @RequestBody AdminEmployeeActionRequest request) {
 
-        if (request.getName() == null
-                || request.getName().trim().isEmpty()) {
+        validateEmployeeRequest(request);
 
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Employee name is required"
-            );
-        }
+        String email =
+                request.getEmail()
+                        .trim();
 
-        if (request.getEmail() == null
-                || request.getEmail().trim().isEmpty()) {
+        String role =
+                normalizeValue(
+                        request.getRole()
+                );
 
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Employee email is required"
-            );
-        }
+        String technology =
+                request.getTechnology()
+                        .trim();
 
-        if (request.getRole() == null
-                || request.getRole().trim().isEmpty()) {
-
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Employee role is required"
-            );
-        }
-
-        if (request.getJoiningDate() == null) {
-
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Joining date is required"
-            );
-        }
-
-        validateReason(request.getReason());
-
-        String email = request.getEmail().trim();
-
-        String role = request.getRole()
-                .trim()
-                .toUpperCase();
-
-        if (!ALLOWED_ROLES.contains(role)) {
-
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Invalid employee role. Allowed roles: EMPLOYEE, DEVELOPER, HR, TEAM_LEAD, MANAGER, ADMIN"
-            );
-        }
+        String designation =
+                request.getDesignation()
+                        .trim();
 
         boolean emailExists =
                 employeeRepository
@@ -174,6 +129,14 @@ public class AdminEmployeeController {
                 role
         );
 
+        employee.setTechnology(
+                technology
+        );
+
+        employee.setDesignation(
+                designation
+        );
+
         if (request.getSalary() != null) {
 
             employee.setSalary(
@@ -232,58 +195,24 @@ public class AdminEmployeeController {
                                 )
                         );
 
-        if (request.getName() == null
-                || request.getName().trim().isEmpty()) {
-
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Employee name is required"
-            );
-        }
-
-        if (request.getEmail() == null
-                || request.getEmail().trim().isEmpty()) {
-
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Employee email is required"
-            );
-        }
-
-        if (request.getRole() == null
-                || request.getRole().trim().isEmpty()) {
-
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Employee role is required"
-            );
-        }
-
-        if (request.getJoiningDate() == null) {
-
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Joining date is required"
-            );
-        }
-
-        validateReason(request.getReason());
+        validateEmployeeRequest(request);
 
         String email =
-                request.getEmail().trim();
+                request.getEmail()
+                        .trim();
 
         String role =
-                request.getRole()
-                        .trim()
-                        .toUpperCase();
+                normalizeValue(
+                        request.getRole()
+                );
 
-        if (!ALLOWED_ROLES.contains(role)) {
+        String technology =
+                request.getTechnology()
+                        .trim();
 
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Invalid employee role. Allowed roles: EMPLOYEE, DEVELOPER, HR, TEAM_LEAD, MANAGER, ADMIN"
-            );
-        }
+        String designation =
+                request.getDesignation()
+                        .trim();
 
         boolean emailExists =
                 employeeRepository
@@ -356,6 +285,14 @@ public class AdminEmployeeController {
                 role
         );
 
+        employee.setTechnology(
+                technology
+        );
+
+        employee.setDesignation(
+                designation
+        );
+
         employee.setJoiningDate(
                 request.getJoiningDate()
         );
@@ -405,7 +342,9 @@ public class AdminEmployeeController {
                                 )
                         );
 
-        validateReason(request.getReason());
+        validateReason(
+                request.getReason()
+        );
 
         Admin admin =
                 findLoggedInAdmin(
@@ -424,6 +363,98 @@ public class AdminEmployeeController {
         );
 
         return "Employee deleted successfully";
+    }
+
+    // =====================================================
+    // EMPLOYEE REQUEST VALIDATION
+    // =====================================================
+
+    private void validateEmployeeRequest(
+            AdminEmployeeActionRequest request) {
+
+        if (request == null) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Employee request is required"
+            );
+        }
+
+        if (request.getName() == null
+                || request.getName().trim().isEmpty()) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Employee name is required"
+            );
+        }
+
+        if (request.getEmail() == null
+                || request.getEmail().trim().isEmpty()) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Employee email is required"
+            );
+        }
+
+        if (request.getRole() == null
+                || request.getRole().trim().isEmpty()) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Employee role is required"
+            );
+        }
+
+        if (request.getTechnology() == null
+                || request.getTechnology().trim().isEmpty()) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Employee technology is required"
+            );
+        }
+
+        if (request.getDesignation() == null
+                || request.getDesignation().trim().isEmpty()) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Employee designation is required"
+            );
+        }
+
+        if (request.getJoiningDate() == null
+                || request.getJoiningDate().trim().isEmpty()) {
+
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Joining date is required"
+            );
+        }
+
+        validateReason(
+                request.getReason()
+        );
+    }
+
+    // =====================================================
+    // NORMALIZE VALUE
+    // =====================================================
+
+    private String normalizeValue(
+            String value) {
+
+        if (value == null) {
+            return "";
+        }
+
+        return value
+                .trim()
+                .toUpperCase()
+                .replace("-", "_")
+                .replace(" ", "_");
     }
 
     // =====================================================
@@ -678,10 +709,6 @@ public class AdminEmployeeController {
                 reason.trim()
         );
 
-        // =================================================
-        // DATE & TIME - INDIA (IST)
-        // =================================================
-
         ZoneId indiaZone =
                 ZoneId.of("Asia/Kolkata");
 
@@ -712,8 +739,12 @@ public class AdminEmployeeController {
                 employee.getEmail(),
                 employee.getContactNumber(),
                 employee.getRole(),
+                employee.getTechnology(),
+                employee.getDesignation(),
                 employee.getSalary(),
                 employee.getJoiningDate()
         );
     }
+
 }
+

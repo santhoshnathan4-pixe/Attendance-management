@@ -6,7 +6,16 @@ public class AdminEmployeeActionRequest {
     private String name;
     private String email;
     private String contactNumber;
+
+    // Employee role
     private String role;
+
+    // Employee technology
+    private String technology;
+
+    // Employee designation
+    private String designation;
+
     private Double salary;
     private String joiningDate;
 
@@ -17,6 +26,11 @@ public class AdminEmployeeActionRequest {
     // Reason for ADD / EDIT / DELETE
     private String reason;
 
+
+    // =========================================
+    // EMPLOYEE CODE
+    // =========================================
+
     public String getEmployeeCode() {
         return employeeCode;
     }
@@ -24,6 +38,11 @@ public class AdminEmployeeActionRequest {
     public void setEmployeeCode(String employeeCode) {
         this.employeeCode = employeeCode;
     }
+
+
+    // =========================================
+    // NAME
+    // =========================================
 
     public String getName() {
         return name;
@@ -33,6 +52,11 @@ public class AdminEmployeeActionRequest {
         this.name = name;
     }
 
+
+    // =========================================
+    // EMAIL
+    // =========================================
+
     public String getEmail() {
         return email;
     }
@@ -40,6 +64,11 @@ public class AdminEmployeeActionRequest {
     public void setEmail(String email) {
         this.email = email;
     }
+
+
+    // =========================================
+    // CONTACT NUMBER
+    // =========================================
 
     public String getContactNumber() {
         return contactNumber;
@@ -49,6 +78,11 @@ public class AdminEmployeeActionRequest {
         this.contactNumber = contactNumber;
     }
 
+
+    // =========================================
+    // ROLE
+    // =========================================
+
     public String getRole() {
         return role;
     }
@@ -56,6 +90,37 @@ public class AdminEmployeeActionRequest {
     public void setRole(String role) {
         this.role = role;
     }
+
+
+    // =========================================
+    // TECHNOLOGY
+    // =========================================
+
+    public String getTechnology() {
+        return technology;
+    }
+
+    public void setTechnology(String technology) {
+        this.technology = technology;
+    }
+
+
+    // =========================================
+    // DESIGNATION
+    // =========================================
+
+    public String getDesignation() {
+        return designation;
+    }
+
+    public void setDesignation(String designation) {
+        this.designation = designation;
+    }
+
+
+    // =========================================
+    // SALARY
+    // =========================================
 
     public Double getSalary() {
         return salary;
@@ -65,6 +130,11 @@ public class AdminEmployeeActionRequest {
         this.salary = salary;
     }
 
+
+    // =========================================
+    // JOINING DATE
+    // =========================================
+
     public String getJoiningDate() {
         return joiningDate;
     }
@@ -72,6 +142,11 @@ public class AdminEmployeeActionRequest {
     public void setJoiningDate(String joiningDate) {
         this.joiningDate = joiningDate;
     }
+
+
+    // =========================================
+    // ADMIN EMAIL
+    // =========================================
 
     public String getAdminEmail() {
         return adminEmail;
@@ -81,6 +156,11 @@ public class AdminEmployeeActionRequest {
         this.adminEmail = adminEmail;
     }
 
+
+    // =========================================
+    // ADMIN PASSWORD
+    // =========================================
+
     public String getAdminPassword() {
         return adminPassword;
     }
@@ -88,6 +168,7 @@ public class AdminEmployeeActionRequest {
     public void setAdminPassword(String adminPassword) {
         this.adminPassword = adminPassword;
     }
+
 
     // =========================================
     // REASON
@@ -100,4 +181,5 @@ public class AdminEmployeeActionRequest {
     public void setReason(String reason) {
         this.reason = reason;
     }
+
 }

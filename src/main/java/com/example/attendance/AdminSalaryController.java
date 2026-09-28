@@ -1,4 +1,3 @@
-
 package com.example.attendance;
 
 import org.springframework.http.HttpStatus;
@@ -10,7 +9,9 @@ import java.time.LocalTime;
 import java.time.YearMonth;
 import java.time.ZoneId;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/admin/salary")
@@ -184,7 +185,9 @@ public class AdminSalaryController {
         // =========================================
         // COMPANY DEFAULT WORKING DAYS
         //
-        // September 2026 default = 26
+        // Default = 26
+        //
+        // Working-day settings can adjust this.
         // =========================================
 
         int workingDays =
@@ -218,81 +221,304 @@ public class AdminSalaryController {
                                     .findByEmployeeIdOrderByAttendanceDateDesc(
                                             employee.getId());
 
-                    long presentDays =
-                            attendanceList.stream()
-                                    .filter(attendance ->
-                                            !attendance.getAttendanceDate()
-                                                    .isBefore(startDate)
+                    /*
+                     * One employee can have only one attendance
+                     * record per date.
+                     *
+                     * Attendance with check-in is treated as
+                     * attendance coverage for that date.
+                     *
+                     * Timing duration is NOT used to change
+                     * the daily salary value.
+                     */
 
-                                            &&
+                    Map<LocalDate, Double> paidDayCoverage =
+                            new HashMap<>();
 
-                                            !attendance.getAttendanceDate()
-                                                    .isAfter(endDate)
-
-                                            &&
-
-                                            attendance.getCheckIn() != null
+                    attendanceList.stream()
+                            .filter(attendance ->
+                                    attendance.getAttendanceDate() != null)
+                            .filter(attendance ->
+                                    !attendance.getAttendanceDate()
+                                            .isBefore(startDate))
+                            .filter(attendance ->
+                                    !attendance.getAttendanceDate()
+                                            .isAfter(endDate))
+                            .filter(attendance ->
+                                    attendance.getCheckIn() != null)
+                            .forEach(attendance ->
+                                    paidDayCoverage.merge(
+                                            attendance.getAttendanceDate(),
+                                            1.0,
+                                            Math::max
                                     )
-                                    .count();
+                            );
 
                     // =========================================
-                    // SICK LEAVE
+                    // APPROVED SICK / CASUAL LEAVE
                     // =========================================
 
-                    List<LeaveRequest> sickLeaveList =
+                    List<LeaveRequest> leaveList =
                             leaveRequestRepository
-                                    .findByEmployeeIdAndLeaveTypeAndLeaveDateBetween(
-                                            employee.getId(),
-                                            "SICK",
-                                            startDate,
-                                            endDate
+                                    .findByEmployeeIdOrderByLeaveDateDesc(
+                                            employee.getId());
+
+                    /*
+                     * Leave is processed date-by-date.
+                     *
+                     * Only APPROVED SICK/CASUAL records are
+                     * considered paid leave.
+                     *
+                     * PERMISSION is intentionally excluded.
+                     *
+                     * Multiple records for the same date
+                     * cannot make the paid-day coverage exceed
+                     * 1.0.
+                     */
+
+                    Map<LocalDate, Double> approvedLeaveCoverage =
+                            new HashMap<>();
+
+                    for (LeaveRequest leave : leaveList) {
+
+                        if (leave == null ||
+                                leave.getLeaveDate() == null) {
+
+                            continue;
+                        }
+
+                        LocalDate leaveDate =
+                                leave.getLeaveDate();
+
+                        if (leaveDate.isBefore(startDate) ||
+                                leaveDate.isAfter(endDate)) {
+
+                            continue;
+                        }
+
+                        if (!"APPROVED".equalsIgnoreCase(
+                                leave.getStatus())) {
+
+                            continue;
+                        }
+
+                        String leaveType =
+                                leave.getLeaveType();
+
+                        if (leaveType == null) {
+                            continue;
+                        }
+
+                        /*
+                         * Permission is an hourly permission.
+                         * It must NEVER become one full salary day.
+                         */
+                        if ("PERMISSION".equalsIgnoreCase(
+                                leaveType)) {
+
+                            continue;
+                        }
+
+                        if (!"SICK".equalsIgnoreCase(leaveType) &&
+                                !"CASUAL".equalsIgnoreCase(leaveType)) {
+
+                            continue;
+                        }
+
+                        double duration =
+                                leave.getLeaveDuration() != null
+                                        ? leave.getLeaveDuration()
+                                        : 1.0;
+
+                        /*
+                         * Only valid positive leave duration.
+                         */
+                        if (duration <= 0) {
+                            continue;
+                        }
+
+                        /*
+                         * A leave record can never contribute
+                         * more than one day.
+                         */
+                        duration =
+                                Math.min(duration, 1.0);
+
+                        approvedLeaveCoverage.merge(
+                                leaveDate,
+                                duration,
+                                (oldValue, newValue) ->
+                                        Math.min(
+                                                1.0,
+                                                oldValue + newValue
+                                        )
+                        );
+                    }
+
+                    // =========================================
+                    // COMBINE ATTENDANCE + LEAVE
+                    // =========================================
+
+                    /*
+                     * For every date:
+                     *
+                     * Attendance + half-day leave
+                     * = maximum 1 paid day.
+                     *
+                     * Attendance + full-day leave
+                     * = maximum 1 paid day.
+                     *
+                     * This prevents double salary counting.
+                     */
+
+                    Map<LocalDate, Double> totalPaidCoverage =
+                            new HashMap<>();
+
+                    paidDayCoverage.forEach(
+                            (date, attendanceValue) -> {
+
+                                double leaveValue =
+                                        approvedLeaveCoverage
+                                                .getOrDefault(
+                                                        date,
+                                                        0.0
+                                                );
+
+                                double total =
+                                        Math.min(
+                                                1.0,
+                                                attendanceValue
+                                                        + leaveValue
+                                        );
+
+                                totalPaidCoverage.put(
+                                        date,
+                                        total
+                                );
+                            }
+                    );
+
+                    approvedLeaveCoverage.forEach(
+                            (date, leaveValue) -> {
+
+                                if (!totalPaidCoverage
+                                        .containsKey(date)) {
+
+                                    totalPaidCoverage.put(
+                                            date,
+                                            Math.min(
+                                                    1.0,
+                                                    leaveValue
+                                            )
                                     );
+                                }
+                            }
+                    );
 
-                    double sickLeaveDays =
-                            sickLeaveList.stream()
-                                    .filter(leave ->
-                                            "APPROVED".equalsIgnoreCase(
-                                                    leave.getStatus()))
-                                    .mapToDouble(leave ->
+                    // =========================================
+                    // PAID DAYS
+                    // =========================================
 
-                                            leave.getLeaveDuration() != null
-                                                    ? leave.getLeaveDuration()
-                                                    : 1.0
+                    double paidDays =
+                            totalPaidCoverage.values()
+                                    .stream()
+                                    .mapToDouble(
+                                            Double::doubleValue
                                     )
                                     .sum();
 
+                    /*
+                     * Salary cannot have more paid attendance
+                     * days than the month's working days.
+                     */
+                    paidDays =
+                            Math.min(
+                                    paidDays,
+                                    workingDays
+                            );
+
                     // =========================================
-                    // CASUAL LEAVE
+                    // DISPLAY PRESENT DAYS
                     // =========================================
 
-                    List<LeaveRequest> casualLeaveList =
-                            leaveRequestRepository
-                                    .findByEmployeeIdAndLeaveTypeAndLeaveDateBetween(
-                                            employee.getId(),
-                                            "CASUAL",
-                                            startDate,
-                                            endDate
-                                    );
+                    /*
+                     * Existing SalaryResponse has an integer
+                     * presentDays field.
+                     *
+                     * Full attendance days are counted here.
+                     * Half-day leave combined with attendance
+                     * still remains one paid day overall.
+                     */
 
-                    double casualLeaveDays =
-                            casualLeaveList.stream()
-                                    .filter(leave ->
-                                            "APPROVED".equalsIgnoreCase(
-                                                    leave.getStatus()))
-                                    .mapToDouble(leave ->
+                    int presentDays =
+                            (int) Math.floor(
+                                    paidDayCoverage.values()
+                                            .stream()
+                                            .mapToDouble(
+                                                    Double::doubleValue
+                                            )
+                                            .sum()
+                            );
 
-                                            leave.getLeaveDuration() != null
-                                                    ? leave.getLeaveDuration()
-                                                    : 1.0
-                                    )
-                                    .sum();
+                    /*
+                     * Do not let display presentDays exceed
+                     * working days.
+                     */
+                    presentDays =
+                            Math.min(
+                                    presentDays,
+                                    workingDays
+                            );
 
                     // =========================================
                     // TOTAL PAID LEAVE
                     // =========================================
 
                     double leaveDays =
-                            sickLeaveDays + casualLeaveDays;
+                            approvedLeaveCoverage.values()
+                                    .stream()
+                                    .mapToDouble(
+                                            Double::doubleValue
+                                    )
+                                    .sum();
+
+                    /*
+                     * Leave which overlaps with attendance
+                     * should not be displayed as additional
+                     * salary days.
+                     */
+                    double leaveOnlyDays =
+                            approvedLeaveCoverage
+                                    .entrySet()
+                                    .stream()
+                                    .mapToDouble(entry -> {
+
+                                        double attendanceValue =
+                                                paidDayCoverage
+                                                        .getOrDefault(
+                                                                entry.getKey(),
+                                                                0.0
+                                                        );
+
+                                        return Math.max(
+                                                0.0,
+                                                Math.min(
+                                                        1.0,
+                                                        entry.getValue()
+                                                ) - attendanceValue
+                                        );
+                                    })
+                                    .sum();
+
+                    /*
+                     * Salary leaveDays represents the actual
+                     * paid leave contribution after overlap.
+                     */
+                    leaveDays =
+                            Math.max(
+                                    0.0,
+                                    leaveOnlyDays
+                            );
 
                     // =========================================
                     // MONTHLY SALARY
@@ -305,6 +531,16 @@ public class AdminSalaryController {
 
                     // =========================================
                     // PER DAY SALARY
+                    //
+                    // IMPORTANT:
+                    //
+                    // Office timing duration is NOT used here.
+                    //
+                    // 9:00 - 18:00
+                    // 10:00 - 17:30
+                    // 10:00 - 18:00
+                    //
+                    // All have the SAME daily salary.
                     // =========================================
 
                     double perDaySalary =
@@ -318,10 +554,8 @@ public class AdminSalaryController {
 
                     double lopDays =
                             Math.max(
-                                    0,
-                                    workingDays
-                                            - presentDays
-                                            - leaveDays
+                                    0.0,
+                                    workingDays - paidDays
                             );
 
                     double lossOfPay =
@@ -340,10 +574,16 @@ public class AdminSalaryController {
                             employee.getName(),
                             monthlySalary,
                             workingDays,
-                            (int) presentDays,
-                            leaveDays,
-                            Math.round(lossOfPay * 100.0) / 100.0,
-                            Math.round(finalSalary * 100.0) / 100.0
+                            presentDays,
+                            Math.round(
+                                    leaveDays * 100.0
+                            ) / 100.0,
+                            Math.round(
+                                    lossOfPay * 100.0
+                            ) / 100.0,
+                            Math.round(
+                                    finalSalary * 100.0
+                            ) / 100.0
                     );
 
                 })
@@ -399,7 +639,6 @@ public class AdminSalaryController {
             } else if ("WORKING_SATURDAY".equals(type)) {
 
                 workingDays++;
-
             }
         }
 
@@ -556,4 +795,3 @@ public class AdminSalaryController {
         historyRepository.save(history);
     }
 }
-

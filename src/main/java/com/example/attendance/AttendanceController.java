@@ -1,4 +1,3 @@
-
 package com.example.attendance;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -24,38 +23,180 @@ public class AttendanceController {
     private final EmployeeRepository employeeRepository;
     private final LeaveRequestRepository leaveRequestRepository;
     private final EmployeeLeaveBalanceRepository balanceRepository;
+    private final LeavePermissionSettingRepository settingRepository;
 
     // India Time Zone
-    private static final ZoneId INDIA_ZONE = ZoneId.of("Asia/Kolkata");
+    private static final ZoneId INDIA_ZONE =
+            ZoneId.of("Asia/Kolkata");
 
-    // Office Timing
-    private static final LocalTime OFFICE_START_TIME = LocalTime.of(10, 0);
+    // Default Office Timing
+    // Used when no Employee / Role / Default setting
+    // has valid timing configured.
+    private static final LocalTime DEFAULT_OFFICE_START_TIME =
+            LocalTime.of(9, 0);
 
-    private static final LocalTime OFFICE_END_TIME = LocalTime.of(17, 30);
+    private static final LocalTime DEFAULT_OFFICE_END_TIME =
+            LocalTime.of(18, 0);
+
+    // Existing 5-minute grace rule
+    private static final int GRACE_MINUTES = 5;
 
     public AttendanceController(
             AttendanceRepository attendanceRepository,
             EmployeeRepository employeeRepository,
             LeaveRequestRepository leaveRequestRepository,
-            EmployeeLeaveBalanceRepository balanceRepository) {
+            EmployeeLeaveBalanceRepository balanceRepository,
+            LeavePermissionSettingRepository settingRepository) {
 
         this.attendanceRepository = attendanceRepository;
         this.employeeRepository = employeeRepository;
         this.leaveRequestRepository = leaveRequestRepository;
         this.balanceRepository = balanceRepository;
+        this.settingRepository = settingRepository;
     }
 
     // =========================
     // TEST API
     // =========================
+
     @GetMapping("/")
     public String home() {
         return "Attendance API Running Successfully!";
     }
 
     // =========================
+    // GET EFFECTIVE OFFICE TIMING
+    //
+    // PRIORITY:
+    // EMPLOYEE > ROLE > DEFAULT
+    // =========================
+
+    private LeavePermissionSetting getEffectiveSetting(
+            Employee employee) {
+
+        // =========================
+        // 1. EMPLOYEE SETTING
+        // =========================
+
+        if (employee.getId() != null) {
+
+            var employeeSetting =
+                    settingRepository
+                            .findBySettingTypeAndEmployeeId(
+                                    "EMPLOYEE",
+                                    employee.getId()
+                            );
+
+            if (employeeSetting.isPresent()
+                    && hasValidTiming(employeeSetting.get())) {
+
+                return employeeSetting.get();
+            }
+        }
+
+        // =========================
+        // 2. ROLE SETTING
+        // =========================
+
+        if (employee.getRole() != null &&
+                !employee.getRole().isBlank()) {
+
+            var roleSetting =
+                    settingRepository
+                            .findBySettingTypeAndRole(
+                                    "ROLE",
+                                    employee.getRole()
+                                            .trim()
+                                            .toUpperCase()
+                            );
+
+            if (roleSetting.isPresent()
+                    && hasValidTiming(roleSetting.get())) {
+
+                return roleSetting.get();
+            }
+        }
+
+        // =========================
+        // 3. DEFAULT SETTING
+        // =========================
+
+        var defaultSetting =
+                settingRepository
+                        .findBySettingType("DEFAULT");
+
+        if (defaultSetting.isPresent()
+                && hasValidTiming(defaultSetting.get())) {
+
+            return defaultSetting.get();
+        }
+
+        return null;
+    }
+
+    // =========================
+    // CHECK VALID TIMING
+    // =========================
+
+    private boolean hasValidTiming(
+            LeavePermissionSetting setting) {
+
+        if (setting == null) {
+            return false;
+        }
+
+        if (setting.getOfficeStartTime() == null ||
+                setting.getOfficeEndTime() == null) {
+
+            return false;
+        }
+
+        return setting.getOfficeEndTime()
+                .isAfter(setting.getOfficeStartTime());
+    }
+
+    // =========================
+    // GET EFFECTIVE START TIME
+    // =========================
+
+    private LocalTime getOfficeStartTime(
+            Employee employee) {
+
+        LeavePermissionSetting setting =
+                getEffectiveSetting(employee);
+
+        if (setting != null &&
+                setting.getOfficeStartTime() != null) {
+
+            return setting.getOfficeStartTime();
+        }
+
+        return DEFAULT_OFFICE_START_TIME;
+    }
+
+    // =========================
+    // GET EFFECTIVE END TIME
+    // =========================
+
+    private LocalTime getOfficeEndTime(
+            Employee employee) {
+
+        LeavePermissionSetting setting =
+                getEffectiveSetting(employee);
+
+        if (setting != null &&
+                setting.getOfficeEndTime() != null) {
+
+            return setting.getOfficeEndTime();
+        }
+
+        return DEFAULT_OFFICE_END_TIME;
+    }
+
+    // =========================
     // CHECK IN
     // =========================
+
     @PostMapping("/check-in")
     @Transactional
     public String checkIn(@RequestParam String email) {
@@ -69,11 +210,16 @@ public class AttendanceController {
             return "Employee Not Found or Employee is Inactive";
         }
 
-        LocalDate today = LocalDate.now(INDIA_ZONE);
+        LocalDate today =
+                LocalDate.now(INDIA_ZONE);
 
-        LocalTime currentTime = LocalTime.now(INDIA_ZONE);
+        LocalTime currentTime =
+                LocalTime.now(INDIA_ZONE);
 
-        // Duplicate check-in prevention
+        // =========================
+        // DUPLICATE CHECK-IN
+        // =========================
+
         if (attendanceRepository
                 .findByEmployeeIdAndAttendanceDate(
                         employee.getId(),
@@ -93,36 +239,72 @@ public class AttendanceController {
                 today
         );
 
-        Attendance attendance = new Attendance();
+        Attendance attendance =
+                new Attendance();
 
-        attendance.setEmployeeId(employee.getId());
-        attendance.setAttendanceDate(today);
-        attendance.setCheckIn(currentTime);
+        attendance.setEmployeeId(
+                employee.getId()
+        );
+
+        attendance.setAttendanceDate(
+                today
+        );
+
+        attendance.setCheckIn(
+                currentTime
+        );
+
+        // =========================
+        // DYNAMIC OFFICE TIMING
+        // =========================
+
+        LocalTime officeStartTime =
+                getOfficeStartTime(employee);
+
+        LocalTime graceEndTime =
+                officeStartTime.plusMinutes(
+                        GRACE_MINUTES
+                );
 
         // =========================
         // ATTENDANCE STATUS
+        //
+        // Start time through 5-minute
+        // grace period = PRESENT
+        //
+        // After grace period = LATE
         // =========================
 
-        if (currentTime.isAfter(OFFICE_START_TIME)) {
-            attendance.setStatus("LATE");
-        } else {
+        if (!currentTime.isAfter(graceEndTime)) {
+
             attendance.setStatus("PRESENT");
+
+        } else {
+
+            attendance.setStatus("LATE");
         }
 
-        attendanceRepository.save(attendance);
+        attendanceRepository.save(
+                attendance
+        );
 
-        if ("LATE".equals(attendance.getStatus())) {
-            return "Check In Successful - " + employee.getName()
+        if ("LATE".equalsIgnoreCase(
+                attendance.getStatus())) {
+
+            return "Check In Successful - "
+                    + employee.getName()
                     + " (LATE)";
         }
 
-        return "Check In Successful - " + employee.getName();
+        return "Check In Successful - "
+                + employee.getName();
     }
 
     // =========================
     // CANCEL APPROVED LEAVE
     // WHEN EMPLOYEE COMES TO OFFICE
     // =========================
+
     private void cancelApprovedLeaveForCheckIn(
             Integer employeeId,
             LocalDate today) {
@@ -140,7 +322,8 @@ public class AttendanceController {
             return;
         }
 
-        for (LeaveRequest leave : leaveRequests) {
+        for (LeaveRequest leave :
+                leaveRequests) {
 
             // Only APPROVED leave is cancelled.
             if (!"APPROVED".equalsIgnoreCase(
@@ -156,7 +339,8 @@ public class AttendanceController {
             // Do not cancel permission just because
             // employee checked in.
             if (leaveType == null ||
-                    leaveType.equalsIgnoreCase("PERMISSION")) {
+                    leaveType.equalsIgnoreCase(
+                            "PERMISSION")) {
 
                 continue;
             }
@@ -168,14 +352,18 @@ public class AttendanceController {
             if (leaveType.equalsIgnoreCase("SICK") ||
                     leaveType.equalsIgnoreCase("CASUAL")) {
 
-                restorePaidLeaveBalance(leave);
+                restorePaidLeaveBalance(
+                        leave
+                );
             }
 
             // =========================
             // REMOVE CANCELLED LEAVE
             // =========================
 
-            leaveRequestRepository.delete(leave);
+            leaveRequestRepository.delete(
+                    leave
+            );
         }
     }
 
@@ -183,6 +371,7 @@ public class AttendanceController {
     // RESTORE SICK / CASUAL
     // BALANCE AFTER CHECK-IN
     // =========================
+
     private void restorePaidLeaveBalance(
             LeaveRequest leave) {
 
@@ -254,14 +443,18 @@ public class AttendanceController {
                 LocalDateTime.now(INDIA_ZONE)
         );
 
-        balanceRepository.save(balance);
+        balanceRepository.save(
+                balance
+        );
     }
 
     // =========================
     // CHECK OUT
     // =========================
+
     @PostMapping("/check-out")
-    public String checkOut(@RequestParam String email) {
+    public String checkOut(
+            @RequestParam String email) {
 
         // Active employee only
         Employee employee = employeeRepository
@@ -272,62 +465,101 @@ public class AttendanceController {
             return "Employee Not Found or Employee is Inactive";
         }
 
-        LocalDate today = LocalDate.now(INDIA_ZONE);
+        LocalDate today =
+                LocalDate.now(INDIA_ZONE);
 
-        LocalTime currentTime = LocalTime.now(INDIA_ZONE);
+        LocalTime currentTime =
+                LocalTime.now(INDIA_ZONE);
 
-        Attendance attendance = attendanceRepository
-                .findByEmployeeIdAndAttendanceDate(
-                        employee.getId(),
-                        today)
-                .orElse(null);
+        Attendance attendance =
+                attendanceRepository
+                        .findByEmployeeIdAndAttendanceDate(
+                                employee.getId(),
+                                today)
+                        .orElse(null);
 
-        // Check-in required
+        // =========================
+        // CHECK-IN REQUIRED
+        // =========================
+
         if (attendance == null) {
             return "Please Check In First";
         }
 
-        // Duplicate checkout prevention
+        // =========================
+        // DUPLICATE CHECKOUT
+        // =========================
+
         if (attendance.getCheckOut() != null) {
             return "Already Checked Out";
         }
 
-        attendance.setCheckOut(currentTime);
+        attendance.setCheckOut(
+                currentTime
+        );
+
+        // =========================
+        // DYNAMIC OFFICE END TIME
+        // =========================
+
+        LocalTime officeEndTime =
+                getOfficeEndTime(employee);
 
         // =========================
         // EARLY CHECK-OUT
         // =========================
 
-        if (currentTime.isBefore(OFFICE_END_TIME)) {
+        if (currentTime.isBefore(
+                officeEndTime)) {
 
-            // Preserve LATE status if employee was late
-            if ("LATE".equalsIgnoreCase(attendance.getStatus())) {
-                attendance.setStatus("LATE / EARLY CHECK-OUT");
+            // Preserve LATE status if employee
+            // was late.
+            if ("LATE".equalsIgnoreCase(
+                    attendance.getStatus())) {
+
+                attendance.setStatus(
+                        "LATE / EARLY CHECK-OUT"
+                );
+
             } else {
-                attendance.setStatus("EARLY CHECK-OUT");
+
+                attendance.setStatus(
+                        "EARLY CHECK-OUT"
+                );
             }
 
         } else {
 
             // Preserve LATE status
-            if (!"LATE".equalsIgnoreCase(attendance.getStatus())) {
-                attendance.setStatus("PRESENT");
+            if (!"LATE".equalsIgnoreCase(
+                    attendance.getStatus())) {
+
+                attendance.setStatus(
+                        "PRESENT"
+                );
             }
         }
 
-        attendanceRepository.save(attendance);
+        attendanceRepository.save(
+                attendance
+        );
 
-        if (currentTime.isBefore(OFFICE_END_TIME)) {
-            return "Check Out Successful - " + employee.getName()
+        if (currentTime.isBefore(
+                officeEndTime)) {
+
+            return "Check Out Successful - "
+                    + employee.getName()
                     + " (EARLY CHECK-OUT)";
         }
 
-        return "Check Out Successful - " + employee.getName();
+        return "Check Out Successful - "
+                + employee.getName();
     }
 
     // =========================
     // ATTENDANCE HISTORY
     // =========================
+
     @GetMapping("/history")
     public List<AttendanceResponse> getHistory(
             @RequestParam String email) {
@@ -345,25 +577,29 @@ public class AttendanceController {
                 .findByEmployeeIdOrderByAttendanceDateDesc(
                         employee.getId())
                 .stream()
-                .map(attendance -> new AttendanceResponse(
-                        employee.getName(),
-                        attendance.getAttendanceDate(),
-                        attendance.getCheckIn(),
-                        attendance.getCheckOut(),
-                        attendance.getStatus()))
+                .map(attendance ->
+                        new AttendanceResponse(
+                                employee.getName(),
+                                attendance.getAttendanceDate(),
+                                attendance.getCheckIn(),
+                                attendance.getCheckOut(),
+                                attendance.getStatus()))
                 .toList();
     }
 
     // =========================
     // ADMIN - ALL ATTENDANCE
     // =========================
+
     @GetMapping("/admin/all")
     public List<Attendance> getAllAttendance(
             @RequestParam(required = false) String date) {
 
-        if (date != null && !date.isBlank()) {
+        if (date != null &&
+                !date.isBlank()) {
 
-            LocalDate attendanceDate = LocalDate.parse(date);
+            LocalDate attendanceDate =
+                    LocalDate.parse(date);
 
             return attendanceRepository
                     .findByAttendanceDateOrderByAttendanceDateDesc(

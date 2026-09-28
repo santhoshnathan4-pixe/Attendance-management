@@ -3,6 +3,7 @@ package com.example.attendance;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @Table(name = "leave_permission_settings")
@@ -30,16 +31,23 @@ public class LeavePermissionSetting {
     @Column(name = "permission_count", nullable = false)
     private Integer permissionCount = 2;
 
+    @Column(name = "permission_hours", nullable = false)
+    private Double permissionHours = 3.00;
+
+    @Column(name = "office_start_time")
+    private LocalTime officeStartTime;
+
+    @Column(name = "office_end_time")
+    private LocalTime officeEndTime;
+
+    @Column(name = "shift_type", nullable = false)
+    private String shiftType = "GENERAL";
+
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
-
-
-    // =========================
-    // GETTERS
-    // =========================
 
     public Long getId() {
         return id;
@@ -69,6 +77,22 @@ public class LeavePermissionSetting {
         return permissionCount;
     }
 
+    public Double getPermissionHours() {
+        return permissionHours;
+    }
+
+    public LocalTime getOfficeStartTime() {
+        return officeStartTime;
+    }
+
+    public LocalTime getOfficeEndTime() {
+        return officeEndTime;
+    }
+
+    public String getShiftType() {
+        return shiftType;
+    }
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
@@ -76,11 +100,6 @@ public class LeavePermissionSetting {
     public LocalDateTime getUpdatedAt() {
         return updatedAt;
     }
-
-
-    // =========================
-    // SETTERS
-    // =========================
 
     public void setId(Long id) {
         this.id = id;
@@ -108,6 +127,22 @@ public class LeavePermissionSetting {
 
     public void setPermissionCount(Integer permissionCount) {
         this.permissionCount = permissionCount;
+    }
+
+    public void setPermissionHours(Double permissionHours) {
+        this.permissionHours = permissionHours;
+    }
+
+    public void setOfficeStartTime(LocalTime officeStartTime) {
+        this.officeStartTime = officeStartTime;
+    }
+
+    public void setOfficeEndTime(LocalTime officeEndTime) {
+        this.officeEndTime = officeEndTime;
+    }
+
+    public void setShiftType(String shiftType) {
+        this.shiftType = shiftType;
     }
 
     public void setCreatedAt(LocalDateTime createdAt) {

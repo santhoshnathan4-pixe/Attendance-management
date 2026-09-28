@@ -1,3 +1,4 @@
+
 package com.example.attendance;
 
 import org.springframework.web.bind.annotation.*;
@@ -133,6 +134,38 @@ public class AdminLeavePermissionController {
 
 
         // =========================
+        // SHIFT TYPE
+        // =========================
+
+        String shiftType =
+                request.getShiftType();
+
+        if (shiftType == null ||
+                shiftType.isBlank()) {
+
+            shiftType = "GENERAL";
+        }
+
+        shiftType =
+                shiftType
+                        .trim()
+                        .toUpperCase()
+                        .replace("-", "_")
+                        .replace(" ", "_");
+
+
+        if (!shiftType.equals("GENERAL") &&
+                !shiftType.equals("SHIFT_1") &&
+                !shiftType.equals("SHIFT_2") &&
+                !shiftType.equals("SHIFT_3")) {
+
+            throw new RuntimeException(
+                    "Invalid Shift Type"
+            );
+        }
+
+
+        // =========================
         // FIND EXISTING SETTING
         // =========================
 
@@ -232,6 +265,13 @@ public class AdminLeavePermissionController {
 
 
         // =========================
+        // SET SHIFT
+        // =========================
+
+        setting.setShiftType(shiftType);
+
+
+        // =========================
         // LEAVE VALUES
         // =========================
 
@@ -278,6 +318,52 @@ public class AdminLeavePermissionController {
 
 
         // =========================
+        // PERMISSION HOURS
+        // =========================
+
+        if (request.getPermissionHours() != null) {
+
+            if (request.getPermissionHours() < 0) {
+                throw new RuntimeException(
+                        "Permission Hours Cannot Be Negative"
+                );
+            }
+
+            setting.setPermissionHours(
+                    request.getPermissionHours()
+            );
+        }
+
+
+        // =========================
+        // OFFICE TIMING
+        // =========================
+        /*
+         * Office timing is no longer required
+         * from Leave & Permission Settings.
+         *
+         * Shift timing is controlled through
+         * Shift Settings.
+         *
+         * Existing office timing data is preserved.
+         */
+
+        if (request.getOfficeStartTime() != null) {
+
+            setting.setOfficeStartTime(
+                    request.getOfficeStartTime()
+            );
+        }
+
+        if (request.getOfficeEndTime() != null) {
+
+            setting.setOfficeEndTime(
+                    request.getOfficeEndTime()
+            );
+        }
+
+
+        // =========================
         // TIMESTAMPS
         // =========================
 
@@ -294,3 +380,4 @@ public class AdminLeavePermissionController {
         return settingRepository.save(setting);
     }
 }
+
