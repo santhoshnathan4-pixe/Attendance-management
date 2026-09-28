@@ -55,6 +55,13 @@
             <version>5.4.1</version>
         </dependency>
 
+        <!-- Google Gemini AI -->
+        <dependency>
+            <groupId>com.google.genai</groupId>
+            <artifactId>google-genai</artifactId>
+            <version>1.40.0</version>
+        </dependency>
+
         <!-- Spring Boot Test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
