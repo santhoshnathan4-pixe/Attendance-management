@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -133,6 +132,10 @@
             color: #1e40af;
         }
 
+        /* =========================================
+           ATTENDANCE
+        ========================================= */
+
         .attendance-card {
             background: white;
             padding: 25px;
@@ -203,6 +206,10 @@
             font-weight: bold;
         }
 
+        /* =========================================
+           LEAVE BALANCE
+        ========================================= */
+
         .balance-title {
             margin: 25px 0 15px;
         }
@@ -237,6 +244,10 @@
             margin-top: 8px;
             color: #777;
         }
+
+        /* =========================================
+           APPLY LEAVE
+        ========================================= */
 
         .apply-section {
             text-align: center;
@@ -351,6 +362,145 @@
             font-weight: bold;
         }
 
+        /* =========================================
+           EMPLOYEE AI ASSISTANT
+        ========================================= */
+
+        .employee-ai-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+            border: 1px solid #dbeafe;
+        }
+
+        .employee-ai-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .employee-ai-header-icon {
+            width: 42px;
+            height: 42px;
+            padding: 9px;
+            border-radius: 10px;
+            background: #eff6ff;
+            color: #2563eb;
+        }
+
+        .employee-ai-header h2 {
+            color: #2563eb;
+            margin-bottom: 4px;
+        }
+
+        .employee-ai-header p {
+            color: #777;
+            font-size: 14px;
+        }
+
+        .employee-ai-input-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        #employeeAiQuestion {
+            flex: 1;
+            padding: 13px 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            outline: none;
+            font-size: 15px;
+        }
+
+        #employeeAiQuestion:focus {
+            border-color: #2563eb;
+        }
+
+        .employee-ai-icon-btn {
+            width: 46px;
+            min-width: 46px;
+            border: none;
+            border-radius: 8px;
+            background: #eff6ff;
+            color: #2563eb;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .employee-ai-icon-btn:hover {
+            background: #dbeafe;
+        }
+
+        .employee-ai-icon-btn.listening {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .employee-ai-ask-btn {
+            border: none;
+            border-radius: 8px;
+            padding: 0 20px;
+            background: #2563eb;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .employee-ai-ask-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .employee-ai-voice-status {
+            display: none;
+            margin-top: 10px;
+            color: #dc2626;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .employee-ai-response {
+            margin-top: 18px;
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 18px;
+            min-height: 70px;
+            line-height: 1.7;
+            white-space: pre-wrap;
+            color: #374151;
+        }
+
+        .employee-ai-speak-btn {
+            display: none;
+            margin-top: 12px;
+            padding: 10px 16px;
+            border: none;
+            border-radius: 8px;
+            background: #f1f5f9;
+            color: #334155;
+            cursor: pointer;
+            font-weight: bold;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .employee-ai-speak-btn:hover {
+            background: #e2e8f0;
+        }
+
+        /* =========================================
+           HISTORY
+        ========================================= */
+
         .table-card {
             background: white;
             padding: 25px;
@@ -359,10 +509,6 @@
             margin-bottom: 30px;
             overflow-x: auto;
         }
-
-        /* =========================================
-           HISTORY HEADER + TOGGLE BUTTON
-        ========================================= */
 
         .history-header {
             display: flex;
@@ -478,6 +624,18 @@
                 width: 100%;
             }
 
+            .employee-ai-input-row {
+                flex-direction: column;
+            }
+
+            .employee-ai-icon-btn,
+            .employee-ai-ask-btn {
+                width: 100%;
+                min-height: 45px;
+                justify-content: center;
+                padding: 10px;
+            }
+
         }
 
     </style>
@@ -514,12 +672,12 @@
 
     </div>
 
+
     <!-- =========================================
          WORKING DAY ALERT
     ========================================= -->
 
-    <div
-        id="workingDayAlert">
+    <div id="workingDayAlert">
 
         <div class="working-day-alert-content">
 
@@ -546,6 +704,11 @@
         </div>
 
     </div>
+
+
+    <!-- =========================================
+         TODAY ATTENDANCE
+    ========================================= -->
 
     <div class="attendance-card">
 
@@ -616,6 +779,11 @@
 
     </div>
 
+
+    <!-- =========================================
+         LEAVE BALANCE
+    ========================================= -->
+
     <h2 class="balance-title">
         This Month Leave Balance
     </h2>
@@ -684,6 +852,11 @@
 
     </div>
 
+
+    <!-- =========================================
+         APPLY LEAVE
+    ========================================= -->
+
     <div class="apply-section">
 
         <button
@@ -695,6 +868,7 @@
         </button>
 
     </div>
+
 
     <div
         class="leave-form-container"
@@ -899,6 +1073,102 @@
 
     </div>
 
+
+    <!-- =========================================
+         EMPLOYEE AI ASSISTANT
+    ========================================= -->
+
+    <div class="employee-ai-card">
+
+        <div class="employee-ai-header">
+
+            <i
+                class="employee-ai-header-icon"
+                data-lucide="sparkles">
+            </i>
+
+            <div>
+
+                <h2>
+                    Employee AI Assistant
+                </h2>
+
+                <p>
+                    உங்கள் Attendance, Leave, Permission மற்றும் Shift பற்றிய தகவல்களை கேட்கலாம்.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="employee-ai-input-row">
+
+            <input
+                type="text"
+                id="employeeAiQuestion"
+                placeholder="உங்கள் கேள்வியை கேளுங்கள்..."
+                autocomplete="off">
+
+            <button
+                type="button"
+                id="employeeAiVoiceButton"
+                class="employee-ai-icon-btn"
+                title="Voice Input"
+                onclick="toggleEmployeeAiVoice()">
+
+                <i data-lucide="mic"></i>
+
+            </button>
+
+            <button
+                type="button"
+                id="employeeAiButton"
+                class="employee-ai-ask-btn"
+                onclick="askEmployeeAI()">
+
+                <i data-lucide="send"></i>
+
+                Ask AI
+
+            </button>
+
+        </div>
+
+
+        <div
+            id="employeeAiVoiceStatus"
+            class="employee-ai-voice-status">
+
+            Listening...
+
+        </div>
+
+
+        <div
+            id="employeeAiResponse"
+            class="employee-ai-response">
+
+            உங்கள் Attendance, Leave, Permission அல்லது Shift பற்றிய கேள்வியை கேளுங்கள்.
+
+        </div>
+
+
+        <button
+            type="button"
+            id="employeeAiSpeakButton"
+            class="employee-ai-speak-btn"
+            onclick="speakEmployeeAiResponse()">
+
+            <i data-lucide="volume-2"></i>
+
+            Speak
+
+        </button>
+
+    </div>
+
+
     <!-- =========================================
          ATTENDANCE HISTORY
     ========================================= -->
@@ -951,6 +1221,7 @@
 
     </div>
 
+
     <!-- =========================================
          LEAVE HISTORY
     ========================================= -->
@@ -984,18 +1255,18 @@
 
                 <thead>
 
-                <tr>
+                    <tr>
 
-                    <th>Date</th>
-                    <th>Type</th>
-                    <th>Duration</th>
-                    <th>Session</th>
-                    <th>Permission</th>
-                    <th>Reason</th>
-                    <th>LOP Days</th>
-                    <th>Status</th>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Duration</th>
+                        <th>Session</th>
+                        <th>Permission</th>
+                        <th>Reason</th>
+                        <th>LOP Days</th>
+                        <th>Status</th>
 
-                </tr>
+                    </tr>
 
                 </thead>
 
@@ -1009,13 +1280,18 @@
 
 </div>
 
+
 <script>
 
 const API_BASE_URL =
     "https://attendance-management-d5h6.onrender.com";
 
+
 const employeeEmail =
-    localStorage.getItem("employeeEmail");
+    localStorage.getItem(
+        "employeeEmail"
+    );
+
 
 if (!employeeEmail) {
 
@@ -1023,6 +1299,7 @@ if (!employeeEmail) {
         "login.html";
 
 }
+
 
 let currentSickRemaining = 0;
 
@@ -1086,7 +1363,6 @@ function loadEmployeeDetails() {
 
 /* =========================================
    WORKING DAY ALERT
-   SHOW TODAY + UPCOMING SETTINGS
 ========================================= */
 
 async function loadWorkingDayAlert() {
@@ -1096,34 +1372,12 @@ async function loadWorkingDayAlert() {
             "workingDayAlert"
         );
 
-    const alertTitle =
-        document.getElementById(
-            "workingDayAlertTitle"
-        );
-
-    const alertReason =
-        document.getElementById(
-            "workingDayAlertReason"
-        );
-
-    const alertIcon =
-        document.getElementById(
-            "workingDayAlertIcon"
-        );
-
-    if (
-        !alertBox ||
-        !alertTitle ||
-        !alertReason ||
-        !alertIcon
-    ) {
+    if (!alertBox) {
         return;
     }
 
     alertBox.style.display =
         "none";
-
-    alertBox.className = "";
 
     try {
 
@@ -1149,21 +1403,16 @@ async function loadWorkingDayAlert() {
                 ? JSON.parse(text)
                 : [];
 
+
         if (
             !Array.isArray(settings) ||
             settings.length === 0
         ) {
 
-            alertBox.style.display =
-                "none";
-
             return;
 
         }
 
-        /* =========================================
-           TODAY'S DATE
-        ========================================= */
 
         const now =
             new Date();
@@ -1180,11 +1429,6 @@ async function loadWorkingDayAlert() {
             ).padStart(2, "0");
 
 
-        /* =========================================
-           KEEP TODAY + FUTURE SETTINGS
-           REMOVE PAST SETTINGS
-        ========================================= */
-
         const validSettings =
             settings
                 .filter(setting => {
@@ -1193,7 +1437,9 @@ async function loadWorkingDayAlert() {
                         !setting ||
                         !setting.settingDate
                     ) {
+
                         return false;
+
                     }
 
                     return (
@@ -1214,19 +1460,13 @@ async function loadWorkingDayAlert() {
             validSettings.length === 0
         ) {
 
-            alertBox.style.display =
-                "none";
-
             return;
 
         }
 
 
-        /* =========================================
-           SHOW ALL ACTIVE / UPCOMING SETTINGS
-        ========================================= */
-
         alertBox.innerHTML = "";
+
 
         validSettings.forEach(setting => {
 
@@ -1245,12 +1485,9 @@ async function loadWorkingDayAlert() {
                 setting.settingDate;
 
 
-            /* =========================================
-               FORMAT DATE
-            ========================================= */
-
             const dateParts =
                 settingDate.split("-");
+
 
             const formattedDate =
                 dateParts.length === 3
@@ -1262,14 +1499,11 @@ async function loadWorkingDayAlert() {
                     : settingDate;
 
 
-            /* =========================================
-               CREATE ALERT ITEM
-            ========================================= */
-
             const alertItem =
                 document.createElement(
                     "div"
                 );
+
 
             alertItem.style.padding =
                 "18px 20px";
@@ -1289,6 +1523,7 @@ async function loadWorkingDayAlert() {
                     "div"
                 );
 
+
             content.className =
                 "working-day-alert-content";
 
@@ -1298,8 +1533,10 @@ async function loadWorkingDayAlert() {
                     "i"
                 );
 
+
             icon.className =
                 "working-day-alert-icon";
+
 
             icon.setAttribute(
                 "data-lucide",
@@ -1318,6 +1555,7 @@ async function loadWorkingDayAlert() {
                     "div"
                 );
 
+
             title.className =
                 "alert-title";
 
@@ -1327,16 +1565,14 @@ async function loadWorkingDayAlert() {
                     "div"
                 );
 
+
             reasonText.className =
                 "alert-reason";
 
 
-            /* =========================================
-               COMPANY HOLIDAY
-            ========================================= */
-
             if (
-                type === "COMPANY_HOLIDAY"
+                type ===
+                "COMPANY_HOLIDAY"
             ) {
 
                 alertItem.className =
@@ -1353,12 +1589,9 @@ async function loadWorkingDayAlert() {
             }
 
 
-            /* =========================================
-               GOVERNMENT HOLIDAY
-            ========================================= */
-
             else if (
-                type === "GOVERNMENT_HOLIDAY"
+                type ===
+                "GOVERNMENT_HOLIDAY"
             ) {
 
                 alertItem.className =
@@ -1375,12 +1608,9 @@ async function loadWorkingDayAlert() {
             }
 
 
-            /* =========================================
-               WORKING SATURDAY
-            ========================================= */
-
             else if (
-                type === "WORKING_SATURDAY"
+                type ===
+                "WORKING_SATURDAY"
             ) {
 
                 alertItem.className =
@@ -1445,9 +1675,6 @@ async function loadWorkingDayAlert() {
             alertBox.children.length === 0
         ) {
 
-            alertBox.style.display =
-                "none";
-
             return;
 
         }
@@ -1457,13 +1684,7 @@ async function loadWorkingDayAlert() {
             "block";
 
 
-        if (
-            typeof lucide !== "undefined"
-        ) {
-
-            lucide.createIcons();
-
-        }
+        initializeLucideIcons();
 
     }
     catch (error) {
@@ -1497,8 +1718,11 @@ function toggleAttendanceHistory() {
             "attendanceHistoryToggle"
         );
 
+
     const isOpen =
-        content.style.display === "block";
+        content.style.display ===
+        "block";
+
 
     if (isOpen) {
 
@@ -1542,8 +1766,11 @@ function toggleLeaveHistory() {
             "leaveHistoryToggle"
         );
 
+
     const isOpen =
-        content.style.display === "block";
+        content.style.display ===
+        "block";
+
 
     if (isOpen) {
 
@@ -1591,10 +1818,13 @@ function checkIn() {
             "checkInBtn"
         );
 
-    button.disabled = true;
+
+    button.disabled =
+        true;
 
     message.innerText =
         "Checking in...";
+
 
     fetch(
         `${API_BASE_URL}/attendance/check-in?email=${encodeURIComponent(employeeEmail)}`,
@@ -1607,6 +1837,7 @@ function checkIn() {
         const data =
             await response.text();
 
+
         if (!response.ok) {
 
             throw new Error(
@@ -1615,6 +1846,7 @@ function checkIn() {
             );
 
         }
+
 
         return data;
 
@@ -1667,10 +1899,13 @@ function checkOut() {
             "checkOutBtn"
         );
 
-    button.disabled = true;
+
+    button.disabled =
+        true;
 
     message.innerText =
         "Checking out...";
+
 
     fetch(
         `${API_BASE_URL}/attendance/check-out?email=${encodeURIComponent(employeeEmail)}`,
@@ -1683,6 +1918,7 @@ function checkOut() {
         const data =
             await response.text();
 
+
         if (!response.ok) {
 
             throw new Error(
@@ -1691,6 +1927,7 @@ function checkOut() {
             );
 
         }
+
 
         return data;
 
@@ -1738,11 +1975,13 @@ function showLeaveForm() {
     ).style.display =
         "block";
 
+
     document.getElementById(
         "leaveForm"
     ).scrollIntoView({
         behavior: "smooth"
     });
+
 
     loadLeaveBalance();
 
@@ -1759,6 +1998,7 @@ function hideLeaveForm() {
         "leaveForm"
     ).style.display =
         "none";
+
 
     document.getElementById(
         "leaveMessage"
@@ -1794,49 +2034,64 @@ function updateLeaveOptions() {
             "permissionOption"
         );
 
+
     fullDayLeaveOption.disabled =
         false;
+
 
     sickHalfOption.disabled =
         currentSickRemaining < 0.5;
 
+
     casualHalfOption.disabled =
         currentCasualRemaining < 0.5;
 
+
     permissionOption.disabled =
         currentPermissionRemaining <= 0;
+
 
     const leaveType =
         document.getElementById(
             "leaveType"
         );
 
+
     if (
-        leaveType.value === "SICK_HALF" &&
+        leaveType.value ===
+            "SICK_HALF" &&
         sickHalfOption.disabled
     ) {
 
-        leaveType.value = "";
+        leaveType.value =
+            "";
 
     }
 
+
     if (
-        leaveType.value === "CASUAL_HALF" &&
+        leaveType.value ===
+            "CASUAL_HALF" &&
         casualHalfOption.disabled
     ) {
 
-        leaveType.value = "";
+        leaveType.value =
+            "";
 
     }
 
+
     if (
-        leaveType.value === "PERMISSION" &&
+        leaveType.value ===
+            "PERMISSION" &&
         permissionOption.disabled
     ) {
 
-        leaveType.value = "";
+        leaveType.value =
+            "";
 
     }
+
 
     changeLeaveType();
 
@@ -1853,6 +2108,7 @@ function changeLeaveType() {
         document.getElementById(
             "leaveType"
         ).value;
+
 
     const halfDayGroup =
         document.getElementById(
@@ -1874,6 +2130,7 @@ function changeLeaveType() {
             "endDateGroup"
         );
 
+
     halfDayGroup.style.display =
         "none";
 
@@ -1885,6 +2142,7 @@ function changeLeaveType() {
 
     endDateGroup.style.display =
         "block";
+
 
     if (
         type === "SICK_HALF" ||
@@ -1898,6 +2156,7 @@ function changeLeaveType() {
             "none";
 
     }
+
 
     if (
         type === "PERMISSION"
@@ -1928,10 +2187,12 @@ function updateEndDateMinimum() {
             "leaveDate"
         ).value;
 
+
     const endDateInput =
         document.getElementById(
             "endDate"
         );
+
 
     if (!startDate) {
 
@@ -1943,8 +2204,10 @@ function updateEndDateMinimum() {
 
     }
 
+
     endDateInput.min =
         startDate;
+
 
     if (
         endDateInput.value === "" ||
@@ -1970,45 +2233,54 @@ function applyLeave() {
             "leaveType"
         ).value;
 
+
     const date =
         document.getElementById(
             "leaveDate"
         ).value;
+
 
     const endDate =
         document.getElementById(
             "endDate"
         ).value;
 
+
     const halfDaySession =
         document.getElementById(
             "halfDaySession"
         ).value;
+
 
     const permissionStart =
         document.getElementById(
             "permissionStart"
         ).value;
 
+
     const permissionEnd =
         document.getElementById(
             "permissionEnd"
         ).value;
+
 
     const reason =
         document.getElementById(
             "reason"
         ).value.trim();
 
+
     const message =
         document.getElementById(
             "leaveMessage"
         );
 
+
     const submitButton =
         document.getElementById(
             "submitLeaveBtn"
         );
+
 
     if (
         type === "" ||
@@ -2025,8 +2297,10 @@ function applyLeave() {
 
     }
 
+
     const fullDayLeave =
         type === "SICK";
+
 
     if (fullDayLeave) {
 
@@ -2041,6 +2315,7 @@ function applyLeave() {
             return;
 
         }
+
 
         if (
             new Date(endDate) <
@@ -2058,6 +2333,7 @@ function applyLeave() {
         }
 
     }
+
 
     if (
         type === "SICK_HALF" ||
@@ -2080,6 +2356,7 @@ function applyLeave() {
 
     }
 
+
     if (
         type === "PERMISSION"
     ) {
@@ -2099,6 +2376,7 @@ function applyLeave() {
 
         }
 
+
         if (
             permissionEnd <=
             permissionStart
@@ -2116,28 +2394,34 @@ function applyLeave() {
 
     }
 
+
     const params =
         new URLSearchParams();
+
 
     params.append(
         "email",
         employeeEmail
     );
 
+
     params.append(
         "leaveType",
         type
     );
+
 
     params.append(
         "leaveDate",
         date
     );
 
+
     params.append(
         "reason",
         reason
     );
+
 
     if (fullDayLeave) {
 
@@ -2147,6 +2431,7 @@ function applyLeave() {
         );
 
     }
+
 
     if (
         type === "SICK_HALF" ||
@@ -2160,6 +2445,7 @@ function applyLeave() {
 
     }
 
+
     if (
         type === "PERMISSION"
     ) {
@@ -2169,6 +2455,7 @@ function applyLeave() {
             permissionStart
         );
 
+
         params.append(
             "permissionEnd",
             permissionEnd
@@ -2176,14 +2463,18 @@ function applyLeave() {
 
     }
 
+
     message.innerText =
         "Submitting leave...";
+
 
     message.style.color =
         "#2563eb";
 
+
     submitButton.disabled =
         true;
+
 
     fetch(
         `${API_BASE_URL}/leave/apply?${params.toString()}`,
@@ -2196,6 +2487,7 @@ function applyLeave() {
         const data =
             await response.text();
 
+
         if (!response.ok) {
 
             throw new Error(
@@ -2204,6 +2496,7 @@ function applyLeave() {
             );
 
         }
+
 
         return data;
 
@@ -2214,6 +2507,7 @@ function applyLeave() {
             data ||
             "Leave applied successfully";
 
+
         if (
             data.toLowerCase().includes(
                 "success"
@@ -2223,39 +2517,48 @@ function applyLeave() {
             message.style.color =
                 "green";
 
+
             document.getElementById(
                 "leaveType"
             ).value = "";
+
 
             document.getElementById(
                 "leaveDate"
             ).value = "";
 
+
             document.getElementById(
                 "endDate"
             ).value = "";
+
 
             document.getElementById(
                 "halfDaySession"
             ).value = "";
 
+
             document.getElementById(
                 "permissionStart"
             ).value = "";
+
 
             document.getElementById(
                 "permissionEnd"
             ).value = "";
 
+
             document.getElementById(
                 "reason"
             ).value = "";
+
 
             document.getElementById(
                 "endDate"
             ).removeAttribute(
                 "min"
             );
+
 
             changeLeaveType();
 
@@ -2270,6 +2573,7 @@ function applyLeave() {
                 "red";
 
         }
+
 
         submitButton.disabled =
             false;
@@ -2301,6 +2605,7 @@ function formatBalanceNumber(value) {
     const number =
         Number(value ?? 0);
 
+
     if (
         Number.isInteger(number)
     ) {
@@ -2308,6 +2613,7 @@ function formatBalanceNumber(value) {
         return String(number);
 
     }
+
 
     return number
         .toFixed(2)
@@ -2330,6 +2636,7 @@ function loadLeaveBalance() {
         const text =
             await response.text();
 
+
         if (!response.ok) {
 
             throw new Error(
@@ -2338,6 +2645,7 @@ function loadLeaveBalance() {
             );
 
         }
+
 
         return text
             ? JSON.parse(text)
@@ -2351,17 +2659,21 @@ function loadLeaveBalance() {
                 data.sickRemaining ?? 0
             );
 
+
         const sickUsed =
             Number(
                 data.sickUsed ?? 0
             );
 
+
         currentSickRemaining =
             sickRemaining;
+
 
         const sickTotal =
             sickRemaining +
             sickUsed;
+
 
         document.getElementById(
             "sickBalance"
@@ -2374,22 +2686,27 @@ function loadLeaveBalance() {
                 sickTotal
             );
 
+
         const casualRemaining =
             Number(
                 data.casualRemaining ?? 0
             );
+
 
         const casualUsed =
             Number(
                 data.casualUsed ?? 0
             );
 
+
         currentCasualRemaining =
             casualRemaining;
+
 
         const casualTotal =
             casualRemaining +
             casualUsed;
+
 
         document.getElementById(
             "casualBalance"
@@ -2402,22 +2719,27 @@ function loadLeaveBalance() {
                 casualTotal
             );
 
+
         const permissionRemaining =
             Number(
                 data.permissionRemaining ?? 0
             );
+
 
         const permissionUsed =
             Number(
                 data.permissionUsed ?? 0
             );
 
+
         currentPermissionRemaining =
             permissionRemaining;
+
 
         const permissionTotal =
             permissionRemaining +
             permissionUsed;
+
 
         document.getElementById(
             "permissionBalance"
@@ -2429,6 +2751,7 @@ function loadLeaveBalance() {
             formatBalanceNumber(
                 permissionTotal
             );
+
 
         updateLeaveOptions();
 
@@ -2459,6 +2782,7 @@ function loadAttendanceHistory() {
         const text =
             await response.text();
 
+
         if (!response.ok) {
 
             throw new Error(
@@ -2467,6 +2791,7 @@ function loadAttendanceHistory() {
             );
 
         }
+
 
         return text
             ? JSON.parse(text)
@@ -2480,50 +2805,64 @@ function loadAttendanceHistory() {
                 "attendanceTable"
             );
 
+
         const checkInBtn =
             document.getElementById(
                 "checkInBtn"
             );
+
 
         const checkOutBtn =
             document.getElementById(
                 "checkOutBtn"
             );
 
+
         const todayCheckIn =
             document.getElementById(
                 "todayCheckIn"
             );
+
 
         const todayCheckOut =
             document.getElementById(
                 "todayCheckOut"
             );
 
+
         const todayStatus =
             document.getElementById(
                 "todayStatus"
             );
 
-        table.innerHTML = "";
+
+        table.innerHTML =
+            "";
+
 
         checkInBtn.disabled =
             false;
 
+
         checkOutBtn.disabled =
             true;
+
 
         todayCheckIn.innerText =
             "--:--";
 
+
         todayCheckOut.innerText =
             "--:--";
+
 
         todayStatus.innerText =
             "Not Checked In";
 
+
         const now =
             new Date();
+
 
         const today =
             now.getFullYear() +
@@ -2536,23 +2875,28 @@ function loadAttendanceHistory() {
                 now.getDate()
             ).padStart(2, "0");
 
+
         const todayRecord =
             data.find(item =>
                 item.attendanceDate === today
             );
+
 
         if (todayRecord) {
 
             checkInBtn.disabled =
                 true;
 
+
             todayCheckIn.innerText =
                 todayRecord.checkIn ||
                 "--:--";
 
+
             todayStatus.innerText =
                 todayRecord.status ||
                 "PRESENT";
+
 
             if (
                 todayRecord.checkOut
@@ -2560,6 +2904,7 @@ function loadAttendanceHistory() {
 
                 checkOutBtn.disabled =
                     true;
+
 
                 todayCheckOut.innerText =
                     todayRecord.checkOut;
@@ -2570,12 +2915,14 @@ function loadAttendanceHistory() {
                 checkOutBtn.disabled =
                     false;
 
+
                 todayCheckOut.innerText =
                     "Not Checked Out";
 
             }
 
         }
+
 
         if (
             data.length === 0
@@ -2594,12 +2941,14 @@ function loadAttendanceHistory() {
 
         }
 
+
         data.forEach(item => {
 
             const row =
                 document.createElement(
                     "tr"
                 );
+
 
             row.innerHTML =
                 `
@@ -2619,6 +2968,7 @@ function loadAttendanceHistory() {
                     ${item.status || "-"}
                 </td>
                 `;
+
 
             table.appendChild(row);
 
@@ -2651,6 +3001,7 @@ function loadLeaveHistory() {
         const text =
             await response.text();
 
+
         if (!response.ok) {
 
             throw new Error(
@@ -2659,6 +3010,7 @@ function loadLeaveHistory() {
             );
 
         }
+
 
         return text
             ? JSON.parse(text)
@@ -2672,7 +3024,10 @@ function loadLeaveHistory() {
                 "leaveTable"
             );
 
-        table.innerHTML = "";
+
+        table.innerHTML =
+            "";
+
 
         if (
             data.length === 0
@@ -2691,6 +3046,7 @@ function loadLeaveHistory() {
 
         }
 
+
         data.forEach(item => {
 
             const row =
@@ -2698,8 +3054,10 @@ function loadLeaveHistory() {
                     "tr"
                 );
 
+
             let permission =
                 "-";
+
 
             if (
                 item.permissionStart &&
@@ -2713,8 +3071,10 @@ function loadLeaveHistory() {
 
             }
 
+
             let duration =
                 "-";
+
 
             if (
                 item.leaveDuration !== null &&
@@ -2725,6 +3085,7 @@ function loadLeaveHistory() {
                     Number(
                         item.leaveDuration
                     );
+
 
                 if (
                     durationNumber === 0.5
@@ -2749,15 +3110,18 @@ function loadLeaveHistory() {
 
             }
 
+
             const lopDays =
                 Number(
                     item.lopDays ?? 0
                 );
 
+
             const lopDisplay =
                 lopDays > 0
                     ? `<span class="lop-badge">${formatBalanceNumber(lopDays)}</span>`
                     : `<span class="normal-badge">0</span>`;
+
 
             row.innerHTML =
                 `
@@ -2794,6 +3158,7 @@ function loadLeaveHistory() {
                 </td>
                 `;
 
+
             table.appendChild(row);
 
         });
@@ -2812,6 +3177,475 @@ function loadLeaveHistory() {
 
 
 /* =========================================
+   EMPLOYEE AI
+========================================= */
+
+let employeeAiRecognition =
+    null;
+
+let employeeAiListening =
+    false;
+
+
+function setupEmployeeAiVoice() {
+
+    const SpeechRecognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
+
+
+    if (!SpeechRecognition) {
+
+        return;
+
+    }
+
+
+    employeeAiRecognition =
+        new SpeechRecognition();
+
+
+    employeeAiRecognition.lang =
+        "en-IN";
+
+
+    employeeAiRecognition.continuous =
+        false;
+
+
+    employeeAiRecognition.interimResults =
+        false;
+
+
+    employeeAiRecognition.onstart =
+        function () {
+
+            employeeAiListening =
+                true;
+
+
+            const button =
+                document.getElementById(
+                    "employeeAiVoiceButton"
+                );
+
+
+            const status =
+                document.getElementById(
+                    "employeeAiVoiceStatus"
+                );
+
+
+            if (button) {
+
+                button.classList.add(
+                    "listening"
+                );
+
+            }
+
+
+            if (status) {
+
+                status.style.display =
+                    "block";
+
+                status.innerText =
+                    "Listening...";
+
+            }
+
+        };
+
+
+    employeeAiRecognition.onresult =
+        function (event) {
+
+            const text =
+                event
+                    .results[0][0]
+                    .transcript;
+
+
+            const input =
+                document.getElementById(
+                    "employeeAiQuestion"
+                );
+
+
+            if (input) {
+
+                input.value =
+                    text;
+
+            }
+
+        };
+
+
+    employeeAiRecognition.onend =
+        function () {
+
+            employeeAiListening =
+                false;
+
+
+            const button =
+                document.getElementById(
+                    "employeeAiVoiceButton"
+                );
+
+
+            const status =
+                document.getElementById(
+                    "employeeAiVoiceStatus"
+                );
+
+
+            if (button) {
+
+                button.classList.remove(
+                    "listening"
+                );
+
+            }
+
+
+            if (status) {
+
+                status.style.display =
+                    "none";
+
+            }
+
+        };
+
+
+    employeeAiRecognition.onerror =
+        function (event) {
+
+            console.error(
+                "EMPLOYEE AI VOICE ERROR:",
+                event
+            );
+
+
+            employeeAiListening =
+                false;
+
+
+            const button =
+                document.getElementById(
+                    "employeeAiVoiceButton"
+                );
+
+
+            const status =
+                document.getElementById(
+                    "employeeAiVoiceStatus"
+                );
+
+
+            if (button) {
+
+                button.classList.remove(
+                    "listening"
+                );
+
+            }
+
+
+            if (status) {
+
+                status.style.display =
+                    "none";
+
+            }
+
+        };
+
+}
+
+
+function toggleEmployeeAiVoice() {
+
+    if (!employeeAiRecognition) {
+
+        setupEmployeeAiVoice();
+
+    }
+
+
+    if (!employeeAiRecognition) {
+
+        alert(
+            "Voice input இந்த browser-ல் support செய்யப்படவில்லை."
+        );
+
+        return;
+
+    }
+
+
+    if (employeeAiListening) {
+
+        employeeAiRecognition.stop();
+
+        return;
+
+    }
+
+
+    employeeAiRecognition.start();
+
+}
+
+
+async function askEmployeeAI() {
+
+    const input =
+        document.getElementById(
+            "employeeAiQuestion"
+        );
+
+
+    const responseBox =
+        document.getElementById(
+            "employeeAiResponse"
+        );
+
+
+    const askButton =
+        document.getElementById(
+            "employeeAiButton"
+        );
+
+
+    const speakButton =
+        document.getElementById(
+            "employeeAiSpeakButton"
+        );
+
+
+    const question =
+        input
+            ? input.value.trim()
+            : "";
+
+
+    if (!employeeEmail) {
+
+        responseBox.innerText =
+            "Employee login session கிடைக்கவில்லை.";
+
+        return;
+
+    }
+
+
+    if (!question) {
+
+        responseBox.innerText =
+            "முதலில் உங்கள் கேள்வியை உள்ளிடுங்கள்.";
+
+        return;
+
+    }
+
+
+    askButton.disabled =
+        true;
+
+
+    responseBox.innerText =
+        "AI பதில் தயாராகிறது...";
+
+
+    speakButton.style.display =
+        "none";
+
+
+    try {
+
+        const response =
+            await fetch(
+                `${API_BASE_URL}/api/ai/employee/ask`,
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        employeeEmail:
+                            employeeEmail,
+
+                        question:
+                            question
+
+                    })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.error ||
+                "Employee AI request failed"
+            );
+
+        }
+
+
+        responseBox.innerText =
+            data.response ||
+            "AI response கிடைக்கவில்லை.";
+
+
+        speakButton.style.display =
+            "inline-flex";
+
+
+        initializeLucideIcons();
+
+    }
+    catch (error) {
+
+        console.error(
+            "EMPLOYEE AI ERROR:",
+            error
+        );
+
+
+        responseBox.innerText =
+            "AI service தற்போது கிடைக்கவில்லை. சிறிது நேரம் கழித்து முயற்சி செய்யுங்கள்.";
+
+    }
+    finally {
+
+        askButton.disabled =
+            false;
+
+    }
+
+}
+
+
+function speakEmployeeAiResponse() {
+
+    const responseBox =
+        document.getElementById(
+            "employeeAiResponse"
+        );
+
+
+    if (!responseBox) {
+
+        return;
+
+    }
+
+
+    const text =
+        responseBox.innerText.trim();
+
+
+    if (!text) {
+
+        return;
+
+    }
+
+
+    if (
+        !window.speechSynthesis
+    ) {
+
+        return;
+
+    }
+
+
+    window.speechSynthesis.cancel();
+
+
+    const speech =
+        new SpeechSynthesisUtterance(
+            text
+        );
+
+
+    speech.lang =
+        /[\u0B80-\u0BFF]/.test(text)
+            ? "ta-IN"
+            : "en-IN";
+
+
+    speech.rate =
+        0.95;
+
+
+    speech.pitch =
+        1;
+
+
+    window.speechSynthesis.speak(
+        speech
+    );
+
+}
+
+
+/* =========================================
+   ENTER KEY FOR EMPLOYEE AI
+========================================= */
+
+function setupEmployeeAiInput() {
+
+    const input =
+        document.getElementById(
+            "employeeAiQuestion"
+        );
+
+
+    if (!input) {
+
+        return;
+
+    }
+
+
+    input.addEventListener(
+        "keydown",
+        function (event) {
+
+            if (
+                event.key ===
+                "Enter"
+            ) {
+
+                event.preventDefault();
+
+                askEmployeeAI();
+
+            }
+
+        }
+    );
+
+}
+
+
+/* =========================================
    LOGOUT
 ========================================= */
 
@@ -2821,6 +3655,7 @@ function logout() {
         "employeeEmail"
     );
 
+
     window.location.href =
         "login.html";
 
@@ -2828,13 +3663,14 @@ function logout() {
 
 
 /* =========================================
-   INITIAL LUCIDE ICONS
+   LUCIDE ICONS
 ========================================= */
 
 function initializeLucideIcons() {
 
     if (
-        typeof lucide !== "undefined"
+        typeof lucide !==
+        "undefined"
     ) {
 
         lucide.createIcons();
@@ -2849,6 +3685,10 @@ function initializeLucideIcons() {
 ========================================= */
 
 initializeLucideIcons();
+
+setupEmployeeAiVoice();
+
+setupEmployeeAiInput();
 
 loadEmployeeDetails();
 
@@ -2867,4 +3707,3 @@ changeLeaveType();
 </body>
 
 </html>
-
