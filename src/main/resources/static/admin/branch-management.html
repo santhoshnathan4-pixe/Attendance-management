@@ -1,0 +1,2594 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GROWBYTEE - Branch Management</title>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+        background: #f4f7fb;
+        color: #1f2937;
+    }
+
+    .container {
+        display: flex;
+        min-height: 100vh;
+    }
+
+    .sidebar {
+        width: 250px;
+        background: #334155;
+        color: white;
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        padding: 25px 15px;
+        overflow-y: auto;
+    }
+
+    .logo {
+        text-align: center;
+        font-size: 25px;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+
+    .admin-title {
+        text-align: center;
+        color: #cbd5e1;
+        font-size: 13px;
+        margin-bottom: 30px;
+    }
+
+    .menu {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .menu button {
+        border: none;
+        background: transparent;
+        color: #e5e7eb;
+        text-align: left;
+        padding: 14px 15px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 15px;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .menu button svg {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+    }
+
+    .menu button:hover,
+    .menu button.active {
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
+    }
+
+    .logout-btn {
+        margin-top: 25px;
+        background: #dc2626 !important;
+        color: white !important;
+        text-align: center !important;
+    }
+
+    .logout-btn:hover {
+        background: #b91c1c !important;
+    }
+
+    .main {
+        margin-left: 250px;
+        width: calc(100% - 250px);
+        min-height: 100vh;
+    }
+
+    .header {
+        height: 75px;
+        background: white;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 30px;
+        position: sticky;
+        top: 0;
+        z-index: 20;
+    }
+
+    .header h1 {
+        font-size: 23px;
+        color: #111827;
+    }
+
+    .admin-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #475569;
+        font-size: 14px;
+    }
+
+    .admin-badge {
+        background: #2563eb;
+        color: white;
+        padding: 8px 13px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .content {
+        padding: 30px;
+    }
+
+    .section {
+        display: none;
+        padding: 24px;
+        border-radius: 16px;
+        min-height: calc(100vh - 135px);
+        border: 1px solid #e5e7eb;
+    }
+
+    .section.active {
+        display: block;
+    }
+
+    #branchManagement {
+        background: #f8fafc;
+    }
+
+    .section-title {
+        font-size: 25px;
+        margin-bottom: 8px;
+        color: #111827;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 20px;
+    }
+
+    .section-subtitle {
+        color: #64748b;
+        margin-bottom: 25px;
+        font-size: 14px;
+    }
+
+    .btn {
+        border: none;
+        border-radius: 8px;
+        padding: 10px 16px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        transition: 0.2s;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+    }
+
+    .btn svg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .btn-primary {
+        background: #2563eb;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #1d4ed8;
+    }
+
+    .btn-warning {
+        background: #f59e0b;
+        color: white;
+    }
+
+    .btn-warning:hover {
+        background: #d97706;
+    }
+
+    .btn-secondary {
+        background: #64748b;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background: #475569;
+    }
+
+    .table-card {
+        background: white;
+        border-radius: 14px;
+        box-shadow: 0 5px 20px rgba(15, 23, 42, 0.06);
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 1050px;
+    }
+
+    th {
+        background: #eff6ff;
+        color: #1e3a8a;
+        font-size: 13px;
+        text-align: left;
+        padding: 14px;
+        white-space: nowrap;
+    }
+
+    td {
+        padding: 13px 14px;
+        border-top: 1px solid #e5e7eb;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+    tr:hover td {
+        background: #f8fafc;
+    }
+
+    .empty-row {
+        text-align: center;
+        color: #64748b;
+        padding: 30px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+        margin-bottom: 18px;
+    }
+
+    .form-group label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #374151;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 11px 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        outline: none;
+        font-size: 14px;
+        background: white;
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 90px;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .priority-box {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        color: #1e40af;
+        border-radius: 10px;
+        padding: 13px 15px;
+        font-size: 13px;
+        line-height: 1.7;
+        margin-bottom: 20px;
+    }
+
+    .verification-box {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 18px;
+    }
+
+    .verification-title {
+        font-size: 14px;
+        font-weight: 700;
+        color: #1f2937;
+        margin-bottom: 12px;
+    }
+
+    .verification-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 10px 0;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .verification-row:first-of-type {
+        border-top: none;
+        padding-top: 0;
+    }
+
+    .verification-label {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .verification-label strong {
+        font-size: 13px;
+        color: #374151;
+    }
+
+    .verification-label span {
+        font-size: 12px;
+        color: #64748b;
+    }
+
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 48px;
+        height: 26px;
+        flex-shrink: 0;
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        inset: 0;
+        background: #cbd5e1;
+        border-radius: 26px;
+        transition: 0.2s;
+    }
+
+    .slider::before {
+        content: "";
+        position: absolute;
+        height: 20px;
+        width: 20px;
+        left: 3px;
+        top: 3px;
+        background: white;
+        border-radius: 50%;
+        transition: 0.2s;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    .switch input:checked + .slider {
+        background: #2563eb;
+    }
+
+    .switch input:checked + .slider::before {
+        transform: translateX(22px);
+    }
+
+    .verification-status {
+        display: inline-flex;
+        align-items: center;
+        padding: 5px 9px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .verification-status.on {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .verification-status.off {
+        background: #f1f5f9;
+        color: #64748b;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.65);
+        z-index: 100;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .modal.show {
+        display: flex;
+    }
+
+    .modal-box {
+        width: 100%;
+        max-width: 650px;
+        background: white;
+        border-radius: 16px;
+        padding: 25px;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 22px;
+    }
+
+    .modal-header h2,
+    .modal-header h3 {
+        font-size: 20px;
+        color: #111827;
+    }
+
+    .close-btn {
+        border: none;
+        background: #f1f5f9;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .close-btn:hover {
+        background: #e2e8f0;
+    }
+
+    .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 25px;
+    }
+
+    .message {
+        display: none;
+        margin-bottom: 18px;
+        padding: 12px 15px;
+        border-radius: 9px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .message.show {
+        display: block;
+    }
+
+    .message.success {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .message.error {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    @media (max-width: 800px) {
+
+        .sidebar {
+            width: 210px;
+        }
+
+        .main {
+            margin-left: 210px;
+            width: calc(100% - 210px);
+        }
+
+        .header {
+            padding: 0 15px;
+        }
+
+        .content {
+            padding: 20px 15px;
+        }
+
+        .section {
+            padding: 18px;
+        }
+
+        .section-title {
+            flex-direction: column;
+        }
+
+    }
+
+    @media (max-width: 600px) {
+
+        .sidebar {
+            position: relative;
+            width: 100%;
+            min-height: auto;
+        }
+
+        .container {
+            display: block;
+        }
+
+        .main {
+            margin-left: 0;
+            width: 100%;
+        }
+
+        .header {
+            position: relative;
+        }
+
+        .admin-info {
+            display: none;
+        }
+
+    }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            GROWBYTEE
+        </div>
+
+        <div class="admin-title">
+            Admin / CEO Dashboard
+        </div>
+
+        <div class="menu">
+
+          <button class="menu-btn"
+        onclick="window.location.href='/admin-dashboard.html'">
+    <i data-lucide="layout-dashboard"></i>
+    Dashboard
+</button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='employees.html'">
+                <i data-lucide="users"></i>
+                Employees
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='leave.html'">
+                <i data-lucide="clipboard-list"></i>
+                Leave
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='ai-assistant.html'">
+                <i data-lucide="sparkles"></i>
+                AI Assistant
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='working-day-settings.html'">
+                <i data-lucide="calendar-days"></i>
+                Working Day Settings
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='shift-settings.html'">
+                <i data-lucide="clock-3"></i>
+                Shift Settings
+            </button>
+
+            <button class="menu-btn active"
+                    onclick="window.location.href='branch-management.html'">
+                <i data-lucide="building-2"></i>
+                Branch Management
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='leave-permission-settings.html'">
+                <i data-lucide="settings"></i>
+                Leave & Permission Settings
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='salary.html'">
+                <i data-lucide="wallet"></i>
+                Salary
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='monthly-report.html'">
+                <i data-lucide="calendar-days"></i>
+                Monthly Report
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='history.html'">
+                <i data-lucide="history"></i>
+                History
+            </button>
+
+            <button class="menu-btn logout-btn"
+                    onclick="logout()">
+                <i data-lucide="log-out"></i>
+                Logout
+            </button>
+
+        </div>
+
+    </aside>
+
+    <main class="main">
+
+        <header class="header">
+
+            <h1>
+                GROWBYTEE - Admin Dashboard
+            </h1>
+
+            <div class="admin-info" id="adminInfo" style="display: none;">
+
+                <span id="loggedAdminName">
+                    Welcome, Admin
+                </span>
+
+                <span class="admin-badge">
+                    ADMIN
+                </span>
+
+            </div>
+
+        </header>
+
+        <div class="content">
+
+            <section id="branchManagement" class="section active">
+
+                <div class="section-title">
+
+                    <div>
+
+                        <h2>
+                            Branch Management
+                        </h2>
+
+                        <p class="section-subtitle">
+                            Manage company branches and attendance verification settings.
+                        </p>
+
+                    </div>
+
+                    <button
+                        class="btn btn-primary"
+                        onclick="openBranchModal()">
+
+                        <i data-lucide="plus"></i>
+
+                        Add Branch
+
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="branchMessage"
+                    class="message">
+                </div>
+
+
+                <div class="priority-box">
+
+                    <strong>Attendance Verification:</strong>
+
+                    <br>
+
+                    Location Verification controls whether employees must be
+                    inside the configured GPS radius.
+
+                    <br>
+
+                    Face Verification controls whether employees must complete
+                    face verification before attendance.
+
+                    <br>
+
+                    Both settings are controlled independently for each branch.
+
+                </div>
+
+
+                <div class="table-card">
+
+                    <div class="table-wrapper">
+
+                        <table>
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Branch Name
+                                    </th>
+
+                                    <th>
+                                        Latitude
+                                    </th>
+
+                                    <th>
+                                        Longitude
+                                    </th>
+
+                                    <th>
+                                        Radius
+                                    </th>
+
+                                    <th>
+                                        Location
+                                    </th>
+
+                                    <th>
+                                        Face
+                                    </th>
+
+                                    <th>
+                                        Status
+                                    </th>
+
+                                    <th>
+                                        Action
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody id="branchTableBody">
+
+                                <tr>
+
+                                    <td
+                                        colspan="8"
+                                        class="empty-row">
+
+                                        Loading branches...
+
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- ================= BRANCH MANAGEMENT MODAL ================= -->
+
+            <div
+                id="branchModal"
+                class="modal">
+
+                <div class="modal-box">
+
+                    <div class="modal-header">
+
+                        <h3 id="branchModalTitle">
+                            Add Branch
+                        </h3>
+
+                        <button
+                            type="button"
+                            class="close-btn"
+                            onclick="closeBranchModal()">
+
+                            <i data-lucide="x"></i>
+
+                        </button>
+
+                    </div>
+
+
+                    <input
+                        type="hidden"
+                        id="branchId">
+
+
+                    <div class="form-group">
+
+                        <label for="branchName">
+                            Branch Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="branchName"
+                            placeholder="Enter branch name"
+                            maxlength="150"
+                            required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="branchLatitude">
+                            Latitude
+                        </label>
+
+                        <input
+                            type="number"
+                            id="branchLatitude"
+                            placeholder="GPS latitude"
+                            step="0.0000001"
+                            min="-90"
+                            max="90"
+                            required>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="branchLongitude">
+                            Longitude
+                        </label>
+
+                        <input
+                            type="number"
+                            id="branchLongitude"
+                            placeholder="GPS longitude"
+                            step="0.0000001"
+                            min="-180"
+                            max="180"
+                            required>
+
+                    </div>
+
+
+                    <div
+                        style="
+                            display: flex;
+                            justify-content: flex-start;
+                            margin-top: -5px;
+                            margin-bottom: 18px;
+                        ">
+
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            onclick="getBranchCurrentLocation()">
+
+                            <i data-lucide="map-pin"></i>
+
+                            Get Current Location
+
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        id="branchLocationMessage"
+                        class="message">
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="branchRadius">
+
+                            Allowed Radius
+                            (Meters)
+
+                        </label>
+
+                        <input
+                            type="number"
+                            id="branchRadius"
+                            value="150"
+                            min="1"
+                            required>
+
+                    </div>
+
+
+                    <!-- ================= VERIFICATION SETTINGS ================= -->
+
+                    <div class="verification-box">
+
+                        <div class="verification-title">
+                            Attendance Verification Settings
+                        </div>
+
+
+                        <div class="verification-row">
+
+                            <div class="verification-label">
+
+                                <strong>
+                                    Location Verification
+                                </strong>
+
+                                <span>
+                                    Require employees to be inside the branch GPS radius.
+                                </span>
+
+                            </div>
+
+
+                            <label class="switch">
+
+                                <input
+                                    type="checkbox"
+                                    id="locationVerificationEnabled">
+
+                                <span class="slider"></span>
+
+                            </label>
+
+                        </div>
+
+
+                        <div class="verification-row">
+
+                            <div class="verification-label">
+
+                                <strong>
+                                    Face Verification
+                                </strong>
+
+                                <span>
+                                    Require face verification before attendance.
+                                </span>
+
+                            </div>
+
+
+                            <label class="switch">
+
+                                <input
+                                    type="checkbox"
+                                    id="faceVerificationEnabled">
+
+                                <span class="slider"></span>
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="branchReason">
+                            Reason
+                        </label>
+
+                        <textarea
+                            id="branchReason"
+                            rows="3"
+                            placeholder="Enter reason for this branch operation"
+                            required></textarea>
+
+                    </div>
+
+
+                    <div class="modal-footer">
+
+                        <button
+                            type="button"
+                            class="btn btn-secondary"
+                            onclick="closeBranchModal()">
+
+                            Cancel
+
+                        </button>
+
+
+                        <button
+                            type="button"
+                            class="btn btn-primary"
+                            onclick="saveBranch()">
+
+                            Save Branch
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script>
+
+    const API_BASE_URL =
+        window.location.hostname === "localhost" ||
+            window.location.hostname === "127.0.0.1"
+            ? "http://localhost:8080"
+            : "https://attendance-management-d5h6.onrender.com";
+
+
+    function loadAdminInfo() {
+
+        const adminEmail =
+            localStorage.getItem(
+                "adminEmail"
+            );
+
+        const adminName =
+            localStorage.getItem(
+                "adminName"
+            );
+
+
+        if (adminName) {
+
+            const adminNameElement =
+                document.getElementById(
+                    "loggedAdminName"
+                );
+
+            if (adminNameElement) {
+
+                adminNameElement.textContent =
+                    "Welcome, " + adminName;
+
+            }
+
+        }
+
+
+        if (adminEmail) {
+
+            const emailField =
+                document.getElementById(
+                    "verifyAdminEmail"
+                );
+
+            if (emailField) {
+
+                emailField.value =
+                    adminEmail;
+
+            }
+
+        }
+
+    }
+
+
+    function escapeHtml(
+        value
+    ) {
+
+        if (
+            value === null ||
+            value === undefined
+        ) {
+
+            return "";
+
+        }
+
+
+        return String(value)
+            .replaceAll(
+                "&",
+                "&amp;"
+            )
+            .replaceAll(
+                "<",
+                "&lt;"
+            )
+            .replaceAll(
+                ">",
+                "&gt;"
+            )
+            .replaceAll(
+                '"',
+                "&quot;"
+            )
+            .replaceAll(
+                "'",
+                "&#039;"
+            );
+
+    }
+
+
+    function getVerificationStatus(
+        enabled
+    ) {
+
+        return Boolean(enabled)
+            ? `<span class="verification-status on">ON</span>`
+            : `<span class="verification-status off">OFF</span>`;
+
+    }
+
+
+    function logout() {
+
+        const confirmed =
+            confirm(
+                "Are you sure you want to logout?"
+            );
+
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        localStorage.removeItem(
+            "adminEmail"
+        );
+
+
+        localStorage.removeItem(
+            "adminName"
+        );
+
+
+        window.location.href =
+            "admin-login.html";
+
+    }
+
+
+    let editingBranchId = null;
+
+
+    async function loadBranches() {
+
+        const tableBody =
+            document.getElementById(
+                "branchTableBody"
+            );
+
+        if (!tableBody) {
+            return;
+        }
+
+
+        tableBody.innerHTML = `
+            <tr>
+                <td
+                    colspan="8"
+                    class="empty-row">
+                    Loading branches...
+                </td>
+            </tr>
+        `;
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_BASE_URL}/admin/branches/all`
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Failed to load branches"
+                );
+
+            }
+
+
+            const branches =
+                await response.json();
+
+
+            if (
+                !branches ||
+                branches.length === 0
+            ) {
+
+                tableBody.innerHTML = `
+                    <tr>
+                        <td
+                            colspan="8"
+                            class="empty-row">
+                            No branches found
+                        </td>
+                    </tr>
+                `;
+
+                return;
+            }
+
+
+            tableBody.innerHTML =
+                branches.map(
+                    function(branch) {
+
+                        const isActive =
+                            Boolean(
+                                branch.active
+                            );
+
+
+                        const statusText =
+                            isActive
+                                ? `<span style="color: green; font-weight: 600;">Active</span>`
+                                : `<span style="color: red; font-weight: 600;">Inactive</span>`;
+
+
+                        const actionButtons =
+                            isActive
+                                ? `
+                                    <button
+                                        type="button"
+                                        class="btn btn-secondary"
+                                        onclick="editBranch(${branch.id})">
+
+                                        <i data-lucide="pencil"></i>
+
+                                        Edit
+
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-warning"
+                                        onclick="deleteBranch(${branch.id})">
+
+                                        <i data-lucide="power"></i>
+
+                                        Deactivate
+
+                                    </button>
+                                `
+                                : `
+                                    <button
+                                        type="button"
+                                        class="btn btn-secondary"
+                                        onclick="editBranch(${branch.id})">
+
+                                        <i data-lucide="pencil"></i>
+
+                                        Edit
+
+                                    </button>
+
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-primary"
+                                        onclick="activateBranch(${branch.id})">
+
+                                        <i data-lucide="power"></i>
+
+                                        Activate
+
+                                    </button>
+                                `;
+
+
+                        return `
+                            <tr>
+
+                                <td>
+                                    ${escapeHtml(
+                                        branch.branchName || "-"
+                                    )}
+                                </td>
+
+
+                                <td>
+                                    ${branch.latitude ?? "-"}
+                                </td>
+
+
+                                <td>
+                                    ${branch.longitude ?? "-"}
+                                </td>
+
+
+                                <td>
+                                    ${branch.allowedRadiusMeters ?? "-"}
+                                    m
+                                </td>
+
+
+                                <td>
+                                    ${getVerificationStatus(
+                                        branch.locationVerificationEnabled
+                                    )}
+                                </td>
+
+
+                                <td>
+                                    ${getVerificationStatus(
+                                        branch.faceVerificationEnabled
+                                    )}
+                                </td>
+
+
+                                <td>
+                                    ${statusText}
+                                </td>
+
+
+                                <td>
+                                    ${actionButtons}
+                                </td>
+
+                            </tr>
+                        `;
+
+                    }
+                ).join("");
+
+
+            if (
+                typeof lucide !== "undefined"
+            ) {
+
+                lucide.createIcons();
+
+            }
+
+        }
+        catch (error) {
+
+            console.error(
+                "loadBranches error:",
+                error
+            );
+
+
+            tableBody.innerHTML = `
+                <tr>
+                    <td
+                        colspan="8"
+                        class="empty-row">
+
+                        Failed to load branches
+
+                    </td>
+                </tr>
+            `;
+
+        }
+
+    }
+
+
+    function getBranchCurrentLocation() {
+
+        const latitudeField =
+            document.getElementById(
+                "branchLatitude"
+            );
+
+        const longitudeField =
+            document.getElementById(
+                "branchLongitude"
+            );
+
+        const message =
+            document.getElementById(
+                "branchLocationMessage"
+            );
+
+
+        if (
+            !latitudeField ||
+            !longitudeField
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            !navigator.geolocation
+        ) {
+
+            if (message) {
+
+                message.textContent =
+                    "Geolocation is not supported by this browser.";
+
+                message.className =
+                    "message error";
+
+            }
+
+            return;
+
+        }
+
+
+        if (message) {
+
+            message.textContent =
+                "Getting current location...";
+
+            message.className =
+                "message";
+
+        }
+
+
+        navigator.geolocation.getCurrentPosition(
+
+            function(position) {
+
+                const latitude =
+                    position.coords.latitude;
+
+                const longitude =
+                    position.coords.longitude;
+
+
+                latitudeField.value =
+                    latitude.toFixed(7);
+
+
+                longitudeField.value =
+                    longitude.toFixed(7);
+
+
+                if (message) {
+
+                    message.textContent =
+                        "Current location captured successfully.";
+
+                    message.className =
+                        "message success";
+
+                }
+
+            },
+
+            function(error) {
+
+                console.error(
+                    "Branch GPS error:",
+                    error
+                );
+
+
+                let errorMessage =
+                    "Unable to get current location.";
+
+
+                if (
+                    error.code ===
+                    error.PERMISSION_DENIED
+                ) {
+
+                    errorMessage =
+                        "Location permission was denied.";
+
+                }
+                else if (
+                    error.code ===
+                    error.POSITION_UNAVAILABLE
+                ) {
+
+                    errorMessage =
+                        "Current location is unavailable.";
+
+                }
+                else if (
+                    error.code ===
+                    error.TIMEOUT
+                ) {
+
+                    errorMessage =
+                        "Location request timed out.";
+
+                }
+
+
+                if (message) {
+
+                    message.textContent =
+                        errorMessage;
+
+                    message.className =
+                        "message error";
+
+                }
+
+            },
+
+            {
+                enableHighAccuracy: true,
+                timeout: 15000,
+                maximumAge: 0
+            }
+
+        );
+
+    }
+
+
+    function openBranchModal() {
+
+        editingBranchId = null;
+
+
+        const modalTitle =
+            document.getElementById(
+                "branchModalTitle"
+            );
+
+        const branchId =
+            document.getElementById(
+                "branchId"
+            );
+
+        const branchName =
+            document.getElementById(
+                "branchName"
+            );
+
+        const latitude =
+            document.getElementById(
+                "branchLatitude"
+            );
+
+        const longitude =
+            document.getElementById(
+                "branchLongitude"
+            );
+
+        const radius =
+            document.getElementById(
+                "branchRadius"
+            );
+
+        const locationVerification =
+            document.getElementById(
+                "locationVerificationEnabled"
+            );
+
+        const faceVerification =
+            document.getElementById(
+                "faceVerificationEnabled"
+            );
+
+        const reason =
+            document.getElementById(
+                "branchReason"
+            );
+
+
+        if (modalTitle) {
+
+            modalTitle.textContent =
+                "Add Branch";
+
+        }
+
+
+        if (branchId) {
+
+            branchId.value = "";
+
+        }
+
+
+        if (branchName) {
+
+            branchName.value = "";
+
+        }
+
+
+        if (latitude) {
+
+            latitude.value = "";
+
+        }
+
+
+        if (longitude) {
+
+            longitude.value = "";
+
+        }
+
+
+        if (radius) {
+
+            radius.value = "150";
+
+        }
+
+
+        if (locationVerification) {
+
+            locationVerification.checked =
+                false;
+
+        }
+
+
+        if (faceVerification) {
+
+            faceVerification.checked =
+                false;
+
+        }
+
+
+        if (reason) {
+
+            reason.value = "";
+
+        }
+
+
+        const locationMessage =
+            document.getElementById(
+                "branchLocationMessage"
+            );
+
+        if (locationMessage) {
+
+            locationMessage.textContent =
+                "";
+
+            locationMessage.className =
+                "message";
+
+        }
+
+
+        const modal =
+            document.getElementById(
+                "branchModal"
+            );
+
+
+        if (modal) {
+
+            modal.classList.add(
+                "show"
+            );
+
+        }
+
+
+        if (
+            typeof lucide !== "undefined"
+        ) {
+
+            lucide.createIcons();
+
+        }
+
+    }
+
+
+    function closeBranchModal() {
+
+        const modal =
+            document.getElementById(
+                "branchModal"
+            );
+
+
+        if (modal) {
+
+            modal.classList.remove(
+                "show"
+            );
+
+        }
+
+
+        editingBranchId = null;
+
+    }
+
+
+    async function editBranch(
+        branchId
+    ) {
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_BASE_URL}/admin/branches`
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "Failed to load branch"
+                );
+
+            }
+
+
+            const branches =
+                await response.json();
+
+
+            const branch =
+                branches.find(
+                    function(item) {
+
+                        return Number(item.id) ===
+                            Number(branchId);
+
+                    }
+                );
+
+
+            if (!branch) {
+
+                alert(
+                    "Branch not found"
+                );
+
+                return;
+
+            }
+
+
+            editingBranchId =
+                branch.id;
+
+
+            const modalTitle =
+                document.getElementById(
+                    "branchModalTitle"
+                );
+
+            const branchIdField =
+                document.getElementById(
+                    "branchId"
+                );
+
+            const branchName =
+                document.getElementById(
+                    "branchName"
+                );
+
+            const latitude =
+                document.getElementById(
+                    "branchLatitude"
+                );
+
+            const longitude =
+                document.getElementById(
+                    "branchLongitude"
+                );
+
+            const radius =
+                document.getElementById(
+                    "branchRadius"
+                );
+
+            const locationVerification =
+                document.getElementById(
+                    "locationVerificationEnabled"
+                );
+
+            const faceVerification =
+                document.getElementById(
+                    "faceVerificationEnabled"
+                );
+
+            const reason =
+                document.getElementById(
+                    "branchReason"
+                );
+
+
+            if (modalTitle) {
+
+                modalTitle.textContent =
+                    "Edit Branch";
+
+            }
+
+
+            if (branchIdField) {
+
+                branchIdField.value =
+                    branch.id;
+
+            }
+
+
+            if (branchName) {
+
+                branchName.value =
+                    branch.branchName || "";
+
+            }
+
+
+            if (latitude) {
+
+                latitude.value =
+                    branch.latitude ?? "";
+
+            }
+
+
+            if (longitude) {
+
+                longitude.value =
+                    branch.longitude ?? "";
+
+            }
+
+
+            if (radius) {
+
+                radius.value =
+                    branch.allowedRadiusMeters ?? 150;
+
+            }
+
+
+            if (locationVerification) {
+
+                locationVerification.checked =
+                    Boolean(
+                        branch.locationVerificationEnabled
+                    );
+
+            }
+
+
+            if (faceVerification) {
+
+                faceVerification.checked =
+                    Boolean(
+                        branch.faceVerificationEnabled
+                    );
+
+            }
+
+
+            if (reason) {
+
+                reason.value = "";
+
+            }
+
+
+            const locationMessage =
+                document.getElementById(
+                    "branchLocationMessage"
+                );
+
+            if (locationMessage) {
+
+                locationMessage.textContent =
+                    "";
+
+                locationMessage.className =
+                    "message";
+
+            }
+
+
+            const modal =
+                document.getElementById(
+                    "branchModal"
+                );
+
+
+            if (modal) {
+
+                modal.classList.add(
+                    "show"
+                );
+
+            }
+
+
+            if (
+                typeof lucide !== "undefined"
+            ) {
+
+                lucide.createIcons();
+
+            }
+
+        }
+        catch (error) {
+
+            console.error(
+                "editBranch error:",
+                error
+            );
+
+
+            alert(
+                "Failed to load branch details"
+            );
+
+        }
+
+    }
+
+
+    async function saveBranch() {
+
+        const branchName =
+            document.getElementById(
+                "branchName"
+            ).value.trim();
+
+
+        const latitude =
+            document.getElementById(
+                "branchLatitude"
+            ).value;
+
+
+        const longitude =
+            document.getElementById(
+                "branchLongitude"
+            ).value;
+
+
+        const radius =
+            document.getElementById(
+                "branchRadius"
+            ).value;
+
+
+        const locationVerification =
+            document.getElementById(
+                "locationVerificationEnabled"
+            ).checked;
+
+
+        const faceVerification =
+            document.getElementById(
+                "faceVerificationEnabled"
+            ).checked;
+
+
+        const reason =
+            document.getElementById(
+                "branchReason"
+            ).value.trim();
+
+
+        const adminEmail =
+            localStorage.getItem(
+                "adminEmail"
+            );
+
+
+        if (!branchName) {
+
+            alert(
+                "Branch name is required"
+            );
+
+            return;
+
+        }
+
+
+        if (!latitude) {
+
+            alert(
+                "Latitude is required"
+            );
+
+            return;
+
+        }
+
+
+        if (!longitude) {
+
+            alert(
+                "Longitude is required"
+            );
+
+            return;
+
+        }
+
+
+        if (!radius) {
+
+            alert(
+                "Allowed radius is required"
+            );
+
+            return;
+
+        }
+
+
+        if (!reason) {
+
+            alert(
+                "Reason is required"
+            );
+
+            return;
+
+        }
+
+
+        if (!adminEmail) {
+
+            alert(
+                "Admin login required"
+            );
+
+            return;
+
+        }
+
+
+        const requestBody = {
+
+            branchName:
+                branchName,
+
+            latitude:
+                Number(latitude),
+
+            longitude:
+                Number(longitude),
+
+            allowedRadiusMeters:
+                Number(radius),
+
+            locationVerificationEnabled:
+                locationVerification,
+
+            faceVerificationEnabled:
+                faceVerification,
+
+            adminEmail:
+                adminEmail,
+
+            reason:
+                reason
+
+        };
+
+
+        const url =
+            editingBranchId
+                ? `${API_BASE_URL}/admin/branches/${editingBranchId}`
+                : `${API_BASE_URL}/admin/branches`;
+
+
+        const method =
+            editingBranchId
+                ? "PUT"
+                : "POST";
+
+
+        try {
+
+            const response =
+                await fetch(
+                    url,
+                    {
+                        method:
+                            method,
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify(
+                                requestBody
+                            )
+                    }
+                );
+
+
+            const responseText =
+                await response.text();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    responseText ||
+                    "Failed to save branch"
+                );
+
+            }
+
+
+            const wasEditing =
+                Boolean(
+                    editingBranchId
+                );
+
+
+            closeBranchModal();
+
+
+            showBranchMessage(
+                wasEditing
+                    ? "Branch updated successfully"
+                    : "Branch added successfully",
+                "success"
+            );
+
+
+            await loadBranches();
+
+        }
+        catch (error) {
+
+            console.error(
+                "saveBranch error:",
+                error
+            );
+
+
+            showBranchMessage(
+                error.message ||
+                "Failed to save branch",
+                "error"
+            );
+
+        }
+
+    }
+
+
+    async function deleteBranch(
+        branchId
+    ) {
+
+        const adminEmail =
+            localStorage.getItem(
+                "adminEmail"
+            );
+
+
+        if (!adminEmail) {
+
+            alert(
+                "Admin login required"
+            );
+
+            return;
+
+        }
+
+
+        const reason =
+            prompt(
+                "Enter reason for deactivating this branch:"
+            );
+
+
+        if (
+            reason === null ||
+            reason.trim() === ""
+        ) {
+
+            return;
+
+        }
+
+
+        if (
+            reason.trim().length < 3
+        ) {
+
+            alert(
+                "Please enter a valid reason"
+            );
+
+            return;
+
+        }
+
+
+        const confirmed =
+            confirm(
+                "Are you sure you want to deactivate this branch?"
+            );
+
+
+        if (!confirmed) {
+
+            return;
+
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_BASE_URL}/admin/branches/${branchId}`,
+                    {
+                        method:
+                            "DELETE",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({
+
+                                adminEmail:
+                                    adminEmail,
+
+                                reason:
+                                    reason.trim()
+
+                            })
+                    }
+                );
+
+
+            const responseText =
+                await response.text();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    responseText ||
+                    "Failed to deactivate branch"
+                );
+
+            }
+
+
+            showBranchMessage(
+                "Branch deactivated successfully",
+                "success"
+            );
+
+
+            await loadBranches();
+
+        }
+        catch (error) {
+
+            console.error(
+                "deleteBranch error:",
+                error
+            );
+
+
+            showBranchMessage(
+                error.message ||
+                "Failed to deactivate branch",
+                "error"
+            );
+
+        }
+
+    }
+
+
+    async function activateBranch(
+        branchId
+    ) {
+
+        const adminEmail =
+            localStorage.getItem(
+                "adminEmail"
+            );
+
+
+        if (!adminEmail) {
+
+            alert(
+                "Admin login required"
+            );
+
+            return;
+        }
+
+
+        const reason =
+            prompt(
+                "Enter reason for activating this branch:"
+            );
+
+
+        if (
+            reason === null
+        ) {
+
+            return;
+        }
+
+
+        if (
+            reason.trim().length < 3
+        ) {
+
+            alert(
+                "Please enter a valid reason"
+            );
+
+            return;
+        }
+
+
+        const confirmed =
+            confirm(
+                "Are you sure you want to activate this branch?"
+            );
+
+
+        if (!confirmed) {
+
+            return;
+        }
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_BASE_URL}/admin/branches/${branchId}/activate`,
+                    {
+                        method: "PUT",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            adminEmail:
+                                adminEmail,
+
+                            reason:
+                                reason.trim()
+                        })
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                let errorMessage =
+                    "Failed to activate branch";
+
+                try {
+
+                    const errorData =
+                        await response.json();
+
+                    if (
+                        errorData &&
+                        errorData.message
+                    ) {
+
+                        errorMessage =
+                            errorData.message;
+                    }
+
+                }
+                catch (ignore) {
+                }
+
+
+                throw new Error(
+                    errorMessage
+                );
+            }
+
+
+            showBranchMessage(
+                "Branch activated successfully.",
+                "success"
+            );
+
+
+            await loadBranches();
+
+        }
+        catch (error) {
+
+            console.error(
+                "activateBranch error:",
+                error
+            );
+
+
+            showBranchMessage(
+                error.message ||
+                "Failed to activate branch.",
+                "error"
+            );
+
+        }
+
+    }
+
+
+    function showBranchMessage(
+        message,
+        type
+    ) {
+
+        const element =
+            document.getElementById(
+                "branchMessage"
+            );
+
+
+        if (!element) {
+            return;
+        }
+
+
+        element.textContent =
+            message;
+
+
+        element.className =
+            "message";
+
+
+        if (type === "success") {
+
+            element.classList.add(
+                "success"
+            );
+
+        }
+        else {
+
+            element.classList.add(
+                "error"
+            );
+
+        }
+
+
+        setTimeout(
+            function() {
+
+                element.textContent = "";
+
+                element.className =
+                    "message";
+
+            },
+            4000
+        );
+
+    }
+
+
+    document.querySelectorAll(
+        ".modal"
+    ).forEach(
+        function(modal) {
+
+            modal.addEventListener(
+                "click",
+                function(event) {
+
+                    if (
+                        event.target ===
+                        modal
+                    ) {
+
+                        modal.classList.remove(
+                            "show"
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function() {
+
+            if (typeof lucide !== "undefined") {
+
+                lucide.createIcons();
+
+            }
+
+            loadAdminInfo();
+
+            loadBranches();
+
+        }
+    );
+
+</script>
+
+</body>
+
+</html>
+

@@ -1,4 +1,3 @@
-
 package com.example.attendance;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -40,4 +39,11 @@ public interface LeaveRequestRepository
         List<LeaveRequest> findByLeaveDateBetween(
                         LocalDate startDate,
                         LocalDate endDate);
+
+        // =========================================
+        // FIND ALL ROWS OF ONE LEAVE REQUEST
+        // =========================================
+
+        List<LeaveRequest> findByRequestGroupId(
+                        String requestGroupId);
 }

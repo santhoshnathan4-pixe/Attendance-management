@@ -1,0 +1,5576 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GROWBYTEE - Employees</title>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+        background: #f4f7fb;
+        color: #1f2937;
+    }
+
+    .container {
+        display: flex;
+        min-height: 100vh;
+    }
+
+    .sidebar {
+        width: 250px;
+        background: #334155;
+        color: white;
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        padding: 25px 15px;
+        overflow-y: auto;
+    }
+
+    .logo {
+        text-align: center;
+        font-size: 25px;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+
+    .admin-title {
+        text-align: center;
+        color: #cbd5e1;
+        font-size: 13px;
+        margin-bottom: 30px;
+    }
+
+    .menu {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .menu button {
+        border: none;
+        background: transparent;
+        color: #e5e7eb;
+        text-align: left;
+        padding: 14px 15px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 15px;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .menu button svg {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+    }
+
+    .menu button:hover,
+    .menu button.active {
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
+    }
+
+    .logout-btn {
+        margin-top: 25px;
+        background: #dc2626 !important;
+        color: white !important;
+        text-align: center !important;
+    }
+
+    .logout-btn:hover {
+        background: #b91c1c !important;
+    }
+
+    .main {
+        margin-left: 250px;
+        width: calc(100% - 250px);
+        min-height: 100vh;
+    }
+
+    .header {
+        height: 75px;
+        background: white;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 30px;
+        position: sticky;
+        top: 0;
+        z-index: 20;
+    }
+
+    .header h1 {
+        font-size: 23px;
+        color: #111827;
+    }
+
+    .admin-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #475569;
+        font-size: 14px;
+    }
+
+    .admin-badge {
+        background: #2563eb;
+        color: white;
+        padding: 8px 13px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .content {
+        padding: 30px;
+    }
+
+    .section {
+        display: none;
+        padding: 24px;
+        border-radius: 16px;
+        min-height: calc(100vh - 135px);
+        border: 1px solid #e5e7eb;
+    }
+
+    .section.active {
+        display: block;
+    }
+
+    #dashboard {
+        background: #f8fafc;
+    }
+
+    #employees {
+        background: #f8fbff;
+    }
+
+    #leave {
+        background: #fbfaf8;
+    }
+
+    #salary {
+        background: #f8fbfa;
+    }
+
+    #history {
+        background: #f8fafb;
+    }
+
+    .section-title {
+        font-size: 25px;
+        margin-bottom: 8px;
+        color: #111827;
+    }
+
+    .section-subtitle {
+        color: #64748b;
+        margin-bottom: 25px;
+        font-size: 14px;
+    }
+
+    .top-bar {
+        background: white;
+        padding: 18px;
+        border-radius: 13px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
+    }
+
+    .top-bar-left,
+    .top-bar-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn {
+        border: none;
+        border-radius: 8px;
+        padding: 10px 16px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+    .btn-primary {
+        background: #2563eb;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #1d4ed8;
+    }
+
+    .btn-success {
+        background: #16a34a;
+        color: white;
+    }
+
+    .btn-success:hover {
+        background: #15803d;
+    }
+
+    .btn-danger {
+        background: #dc2626;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background: #b91c1c;
+    }
+
+    .btn-secondary {
+        background: #64748b;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background: #475569;
+    }
+
+    .btn-small {
+        padding: 7px 11px;
+        font-size: 12px;
+    }
+
+    .table-card {
+        background: white;
+        border-radius: 14px;
+        box-shadow: 0 5px 20px rgba(15, 23, 42, 0.06);
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 1000px;
+    }
+
+    th {
+        background: #eff6ff;
+        color: #1e3a8a;
+        font-size: 13px;
+        text-align: left;
+        padding: 14px;
+        white-space: nowrap;
+    }
+
+    td {
+        padding: 13px 14px;
+        border-top: 1px solid #e5e7eb;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+    tr:hover td {
+        background: #f8fafc;
+    }
+
+    .empty-row {
+        text-align: center;
+        color: #64748b;
+        padding: 30px;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 5px 9px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: bold;
+    }
+
+    .badge-blue {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 17px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .form-group label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #374151;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 11px 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        outline: none;
+        font-size: 14px;
+        background: white;
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 90px;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .form-group input.email-error {
+        border-color: #dc2626;
+        box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+    }
+
+    .email-error-message {
+        display: none;
+        color: #dc2626;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 1.4;
+    }
+
+    .email-error-message.show {
+        display: block;
+    }
+
+    .readonly {
+        background: #f1f5f9 !important;
+        cursor: not-allowed;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.65);
+        z-index: 100;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .modal.show {
+        display: flex;
+    }
+
+    .modal-box {
+        width: 100%;
+        max-width: 650px;
+        background: white;
+        border-radius: 16px;
+        padding: 25px;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-box.small {
+        max-width: 450px;
+    }
+
+    .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 22px;
+    }
+
+    .modal-header h2 {
+        font-size: 20px;
+        color: #111827;
+    }
+
+    .close-btn {
+        border: none;
+        background: #f1f5f9;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 18px;
+    }
+
+    .close-btn:hover {
+        background: #e2e8f0;
+    }
+
+    .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 25px;
+    }
+
+    .info-box {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        color: #1e40af;
+        border-radius: 10px;
+        padding: 13px 15px;
+        font-size: 13px;
+        line-height: 1.6;
+        margin-bottom: 18px;
+    }
+
+    .file-box {
+        border: 2px dashed #94a3b8;
+        padding: 25px;
+        text-align: center;
+        border-radius: 12px;
+        background: #f8fafc;
+    }
+
+    .file-box:hover {
+        border-color: #2563eb;
+    }
+
+    .file-box input {
+        margin-top: 15px;
+    }
+
+    .file-name {
+        margin-top: 12px;
+        font-size: 13px;
+        color: #2563eb;
+        font-weight: 600;
+        word-break: break-word;
+    }
+
+    .message {
+        display: none;
+        margin-bottom: 18px;
+        padding: 12px 15px;
+        border-radius: 9px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .message.show {
+        display: block;
+    }
+
+    .message.success {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .message.error {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    @media (max-width: 800px) {
+
+        .sidebar {
+            width: 210px;
+        }
+
+        .main {
+            margin-left: 210px;
+            width: calc(100% - 210px);
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .header {
+            padding: 0 15px;
+        }
+
+        .content {
+            padding: 20px 15px;
+        }
+
+        .section {
+            padding: 18px;
+        }
+
+    }
+
+    @media (max-width: 600px) {
+
+        .sidebar {
+            position: relative;
+            width: 100%;
+            min-height: auto;
+        }
+
+        .container {
+            display: block;
+        }
+
+        .main {
+            margin-left: 0;
+            width: 100%;
+        }
+
+        .header {
+            position: relative;
+        }
+
+        .top-bar {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .admin-info {
+            display: none;
+        }
+
+    }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            GROWBYTEE
+        </div>
+
+        <div class="admin-title">
+            Admin / CEO Dashboard
+        </div>
+
+        <div class="menu">
+
+            <button class="menu-btn"
+                    onclick="window.location.href='/admin-dashboard.html'">
+                <i data-lucide="layout-dashboard"></i>
+                Dashboard
+            </button>
+
+            <button class="menu-btn active"
+                    onclick="window.location.href='employees.html'">
+                <i data-lucide="users"></i>
+                Employees
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='leave.html'">
+                <i data-lucide="clipboard-list"></i>
+                Leave
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='ai-assistant.html'">
+                <i data-lucide="sparkles"></i>
+                AI Assistant
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='working-day-settings.html'">
+                <i data-lucide="calendar-days"></i>
+                Working Day Settings
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='shift-settings.html'">
+                <i data-lucide="clock-3"></i>
+                Shift Settings
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='branch-management.html'">
+                <i data-lucide="building-2"></i>
+                Branch Management
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='leave-permission-settings.html'">
+                <i data-lucide="settings"></i>
+                Leave & Permission Settings
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='salary.html'">
+                <i data-lucide="wallet"></i>
+                Salary
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='monthly-report.html'">
+                <i data-lucide="calendar-days"></i>
+                Monthly Report
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='history.html'">
+                <i data-lucide="history"></i>
+                History
+            </button>
+
+            <button class="menu-btn logout-btn"
+                    onclick="logout()">
+                <i data-lucide="log-out"></i>
+                Logout
+            </button>
+
+        </div>
+
+    </aside>
+
+    <main class="main">
+
+        <header class="header">
+
+            <h1>
+                GROWBYTEE - Admin Dashboard
+            </h1>
+
+            <div class="admin-info" id="adminInfo" style="display: none;">
+
+                <span id="loggedAdminName">
+                    Welcome, Admin
+                </span>
+
+                <span class="admin-badge">
+                    ADMIN
+                </span>
+
+            </div>
+
+        </header>
+
+        <div class="content">
+
+<section id="employees" class="section active">
+
+    <h2 class="section-title">
+        Employee Management
+    </h2>
+
+    <p class="section-subtitle">
+        Add, edit, import and manage employees
+    </p>
+
+    <div id="employeeMessage"
+         class="message">
+    </div>
+
+    <div class="top-bar">
+
+        <div class="top-bar-left">
+
+            <button
+                class="btn btn-primary"
+                onclick="openEmployeeModal('ADD')">
+
+                + Add Employee
+
+            </button>
+
+            <button
+                class="btn btn-success"
+                onclick="openExcelImportModal()">
+
+                Import Excel
+
+            </button>
+
+        </div>
+
+        <div class="top-bar-right">
+
+            <input
+                type="text"
+                id="employeeSearch"
+                placeholder="Search employee..."
+                oninput="filterEmployees()"
+                style="
+                    padding:10px 12px;
+                    border:1px solid #cbd5e1;
+                    border-radius:8px;
+                    outline:none;
+                ">
+
+        </div>
+
+    </div>
+
+    <div class="table-card">
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Employee Code</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Contact Number</th>
+                        <th>Role</th>
+                        <th>Branch</th>
+                        <th>Joining Date</th>
+                        <th>Action</th>
+                    </tr>
+
+                </thead>
+
+                <tbody id="employeeTableBody">
+
+                    <tr>
+
+                        <td
+                            colspan="8"
+                            class="empty-row">
+
+                            Loading employees...
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- EMPLOYEE MODAL -->
+
+<div id="employeeModal" class="modal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h2 id="employeeModalTitle">
+                Add Employee
+            </h2>
+
+            <button class="close-btn"
+                    onclick="closeEmployeeModal()">
+                ×
+            </button>
+
+        </div>
+
+        <div class="info-box">
+
+            <strong>
+                Employee Code is generated automatically.
+            </strong>
+
+            <br>
+
+            Do not enter Employee Code manually.
+
+            <br>
+
+            Salary is managed separately.
+
+        </div>
+
+        <div class="form-grid">
+
+            <div class="form-group">
+
+                <label>
+                    Employee Code
+                </label>
+
+                <input type="text"
+                       id="employeeCode"
+                       class="readonly"
+                       placeholder="Auto-generated"
+                       readonly>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Employee Name
+                </label>
+
+                <input type="text"
+                       id="employeeName"
+                       placeholder="Employee name">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Email
+                </label>
+
+                <input type="email"
+                       id="employeeEmail"
+                       placeholder="employee@example.com"
+                       autocomplete="off"
+                       oninput="validateEmployeeEmail(false)"
+                       onblur="validateEmployeeEmail(true)">
+
+                <div id="employeeEmailError"
+                     class="email-error-message">
+                </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Contact Number
+                </label>
+
+                <input type="text"
+                       id="employeeContact"
+                       placeholder="Contact number">
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Role
+                </label>
+
+                <select id="employeeRole"
+                        onchange="handleEmployeeRoleChange()">
+
+                    <option value="">
+                        Select Role
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Technology / Tool
+                </label>
+
+                <select id="employeeTechnology"
+                        onchange="handleEmployeeTechnologyChange()">
+
+                    <option value="">
+                        Select Technology / Tool
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Designation
+                </label>
+
+                <select id="employeeDesignation">
+
+                    <option value="">
+                        Select Designation
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Branch
+                </label>
+
+                <select id="employeeBranch">
+
+                    <option value="">
+                        Select Branch
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Joining Date
+                </label>
+
+                <input type="date"
+                       id="employeeJoiningDate">
+
+            </div>
+
+        </div>
+
+
+        <div class="modal-footer">
+
+            <button class="btn btn-secondary"
+                    onclick="closeEmployeeModal()">
+
+                Cancel
+
+            </button>
+
+            <button class="btn btn-primary"
+                    onclick="saveEmployee()">
+
+                Save Employee
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- EMPLOYEE REASON MODAL -->
+
+<div id="employeeReasonModal"
+     class="modal">
+
+    <div class="modal-box small">
+
+        <div class="modal-header">
+
+            <h2 id="employeeReasonTitle">
+                Confirm Employee Action
+            </h2>
+
+            <button class="close-btn"
+                    onclick="closeEmployeeReasonModal()">
+
+                <i data-lucide="x"></i>
+
+            </button>
+
+        </div>
+
+        <div class="info-box">
+
+            <strong>
+                Admin password is not required.
+            </strong>
+
+            <br>
+
+            You are already logged in as an administrator.
+
+            <br>
+
+            Enter the reason for this action.
+
+        </div>
+
+        <div class="form-group">
+
+            <label>
+
+                Reason
+
+                <span style="color:#dc2626;">
+                    *
+                </span>
+
+            </label>
+
+            <textarea id="employeeReason"
+                      rows="4"
+                      placeholder="Enter reason for this action..."></textarea>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button class="btn btn-secondary"
+                    onclick="closeEmployeeReasonModal()">
+
+                Cancel
+
+            </button>
+
+            <button class="btn btn-primary"
+                    onclick="confirmEmployeeAction()">
+
+                Confirm
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ACTION REASON MODAL -->
+
+<div id="actionReasonModal"
+     class="modal">
+
+    <div class="modal-box small">
+
+        <div class="modal-header">
+
+            <h2 id="actionReasonTitle">
+                Confirm Action
+            </h2>
+
+            <button class="close-btn"
+                    onclick="closeActionReasonModal()">
+
+                <i data-lucide="x"></i>
+
+            </button>
+
+        </div>
+
+        <div class="info-box">
+
+            <strong>
+                No admin password required.
+            </strong>
+
+            <br>
+
+            You are already logged in as an administrator.
+
+            <br>
+
+            Enter the reason for this action.
+
+        </div>
+
+        <div class="form-group">
+
+            <label>
+
+                Reason
+
+                <span id="actionReasonRequired"
+                      style="color:#dc2626;">
+
+                    *
+
+                </span>
+
+            </label>
+
+            <textarea id="actionReason"
+                      rows="4"
+                      placeholder="Enter reason for this action..."></textarea>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button class="btn btn-secondary"
+                    onclick="closeActionReasonModal()">
+
+                Cancel
+
+            </button>
+
+            <button class="btn btn-primary"
+                    onclick="confirmActionReason()">
+
+                Confirm
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- EXCEL MODAL -->
+
+<div id="excelImportModal"
+     class="modal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h2>
+                Import Employees from Excel
+            </h2>
+
+            <button class="close-btn"
+                    onclick="closeExcelImportModal()">
+                ×
+            </button>
+
+        </div>
+
+        <div class="info-box">
+
+            <strong>
+                Required Excel columns:
+            </strong>
+
+            <br>
+
+            Name, Email, Contact Number,
+            Role, Joining Date
+
+            <br><br>
+
+            Employee Code will be generated automatically.
+
+            <br>
+
+            Extra columns will be ignored automatically.
+
+            <br>
+
+            Salary is not imported from Excel.
+
+        </div>
+
+        <div class="file-box">
+
+            <strong>
+                Select Excel file
+            </strong>
+
+            <p style="margin-top:7px;color:#64748b;font-size:12px;">
+                Supported: .xlsx / .xls
+            </p>
+
+            <input type="file"
+                   id="excelFileInput"
+                   accept=".xlsx,.xls"
+                   onchange="handleExcelFileSelected()">
+
+            <div id="selectedFileName"
+                 class="file-name">
+                No file selected
+            </div>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button class="btn btn-secondary"
+                    onclick="closeExcelImportModal()">
+                Cancel
+            </button>
+
+            <button class="btn btn-success"
+                    onclick="startExcelImport()">
+                Import Excel
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script>
+
+    const API_BASE_URL =
+        window.location.hostname === "localhost" ||
+            window.location.hostname === "127.0.0.1"
+            ? "http://localhost:8080"
+            : "https://attendance-management-d5h6.onrender.com";
+
+
+    async function apiFetch(
+        url,
+        options = {}
+    ) {
+
+        return fetch(
+            API_BASE_URL + url,
+            options
+        );
+
+    }
+
+
+    function loadAdminInfo() {
+
+        const adminEmail =
+            localStorage.getItem(
+                "adminEmail"
+            );
+
+        const adminName =
+            localStorage.getItem(
+                "adminName"
+            );
+
+
+        if (adminName) {
+
+            const adminNameElement =
+                document.getElementById(
+                    "loggedAdminName"
+                );
+
+            if (adminNameElement) {
+
+                adminNameElement.textContent =
+                    "Welcome, " + adminName;
+
+            }
+
+        }
+
+
+        if (adminEmail) {
+
+            const emailField =
+                document.getElementById(
+                    "verifyAdminEmail"
+                );
+
+            if (emailField) {
+
+                emailField.value =
+                    adminEmail;
+
+            }
+
+        }
+
+    }
+
+
+    async function getErrorMessage(
+        response
+    ) {
+
+        try {
+
+            const text =
+                await response.text();
+
+
+            if (!text) {
+
+                return (
+                    "Request failed. HTTP " +
+                    response.status
+                );
+
+            }
+
+
+            try {
+
+                const json =
+                    JSON.parse(
+                        text
+                    );
+
+
+                return (
+                    json.message ||
+                    json.error ||
+                    text
+                );
+
+            }
+            catch {
+
+                return text;
+
+            }
+
+        }
+        catch {
+
+            return (
+                "Request failed. HTTP " +
+                response.status
+            );
+
+        }
+
+    }
+
+
+    function showMessage(
+        elementId,
+        message,
+        type
+    ) {
+
+        const element =
+            document.getElementById(
+                elementId
+            );
+
+
+        if (!element) {
+            return;
+        }
+
+
+        element.textContent =
+            message;
+
+
+        element.className =
+            "message show " +
+            (
+                type === "success"
+                    ? "success"
+                    : "error"
+            );
+
+
+        setTimeout(
+            function() {
+
+                element.classList.remove(
+                    "show"
+                );
+
+            },
+            5000
+        );
+
+    }
+
+
+    function formatDate(
+        value
+    ) {
+
+        if (!value) {
+            return "-";
+        }
+
+
+        const date =
+            new Date(value);
+
+
+        if (
+            Number.isNaN(
+                date.getTime()
+            )
+        ) {
+
+            return escapeHtml(
+                String(value)
+            );
+
+        }
+
+
+        const day =
+            String(
+                date.getDate()
+            ).padStart(
+                2,
+                "0"
+            );
+
+
+        const month =
+            String(
+                date.getMonth() + 1
+            ).padStart(
+                2,
+                "0"
+            );
+
+
+        const year =
+            date.getFullYear();
+
+
+        return (
+            day +
+            "-" +
+            month +
+            "-" +
+            year
+        );
+
+    }
+
+
+    function escapeHtml(
+        value
+    ) {
+
+        if (
+            value === null ||
+            value === undefined
+        ) {
+
+            return "";
+
+        }
+
+
+        return String(value)
+            .replaceAll(
+                "&",
+                "&amp;"
+            )
+            .replaceAll(
+                "<",
+                "&lt;"
+            )
+            .replaceAll(
+                ">",
+                "&gt;"
+            )
+            .replaceAll(
+                '"',
+                "&quot;"
+            )
+            .replaceAll(
+                "'",
+                "&#039;"
+            );
+
+    }
+
+
+    function logout() {
+
+        const confirmed =
+            confirm(
+                "Are you sure you want to logout?"
+            );
+
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        localStorage.removeItem(
+            "adminEmail"
+        );
+
+
+        localStorage.removeItem(
+            "adminName"
+        );
+
+
+        window.location.href =
+            "admin-login.html";
+
+    }
+
+
+    let employees = [];
+
+    let branches = [];
+
+    let currentEmployeeAction = null;
+
+    let editingEmployeeId = null;
+
+    let pendingImportFile = null;
+
+    let pendingAction = null;
+
+    let pendingEmployeeData = null;
+
+    let pendingActionReasonRequired = true;
+
+
+    /* =================================================
+       EMAIL DUPLICATE VALIDATION
+    ================================================= */
+
+    function validateEmployeeEmail(
+        focusBack = false
+    ) {
+
+        const emailInput =
+            document.getElementById(
+                "employeeEmail"
+            );
+
+        const errorElement =
+            document.getElementById(
+                "employeeEmailError"
+            );
+
+
+        if (!emailInput || !errorElement) {
+            return true;
+        }
+
+
+        const email =
+            emailInput.value.trim();
+
+
+        if (!email) {
+
+            emailInput.classList.remove(
+                "email-error"
+            );
+
+            errorElement.textContent =
+                "";
+
+            errorElement.classList.remove(
+                "show"
+            );
+
+            return true;
+
+        }
+
+
+        const normalizedEmail =
+            email.toLowerCase();
+
+
+        const duplicateEmployee =
+            employees.find(
+                function(employee) {
+
+                    const existingEmail =
+                        String(
+                            employee.email || ""
+                        )
+                            .trim()
+                            .toLowerCase();
+
+
+                    const sameEmail =
+                        existingEmail ===
+                        normalizedEmail;
+
+
+                    const sameEmployee =
+                        currentEmployeeAction ===
+                        "EDIT" &&
+                        Number(
+                            employee.id
+                        ) === Number(
+                            editingEmployeeId
+                        );
+
+
+                    return (
+                        sameEmail &&
+                        !sameEmployee
+                    );
+
+                }
+            );
+
+
+        if (duplicateEmployee) {
+
+            errorElement.textContent =
+                "Employee with this email already exists.";
+
+
+            errorElement.classList.add(
+                "show"
+            );
+
+
+            emailInput.classList.add(
+                "email-error"
+            );
+
+
+            if (focusBack) {
+
+                setTimeout(
+                    function() {
+
+                        emailInput.focus();
+
+                        emailInput.setSelectionRange(
+                            emailInput.value.length,
+                            emailInput.value.length
+                        );
+
+                    },
+                    0
+                );
+
+            }
+
+
+            return false;
+
+        }
+
+
+        emailInput.classList.remove(
+            "email-error"
+        );
+
+
+        errorElement.textContent =
+            "";
+
+        errorElement.classList.remove(
+            "show"
+        );
+
+
+        return true;
+
+    }
+
+
+    /* =================================================
+       LOAD ACTIVE BRANCHES
+    ================================================= */
+
+    async function loadBranches() {
+
+        try {
+
+            const response =
+                await apiFetch(
+                    "/admin/branches"
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    await getErrorMessage(
+                        response
+                    )
+                );
+
+            }
+
+
+            branches =
+                await response.json();
+
+
+            populateBranchSelect();
+
+        }
+        catch (error) {
+
+            console.error(
+                "Load branches error:",
+                error
+            );
+
+
+            branches = [];
+
+            populateBranchSelect();
+
+        }
+
+    }
+
+
+    /* =================================================
+       POPULATE ACTIVE BRANCH DROPDOWN
+    ================================================= */
+
+    function populateBranchSelect(
+        selectedBranchId = null
+    ) {
+
+        const branchSelect =
+            document.getElementById(
+                "employeeBranch"
+            );
+
+
+        if (!branchSelect) {
+            return;
+        }
+
+
+        branchSelect.innerHTML = `
+            <option value="">
+                Select Branch
+            </option>
+        `;
+
+
+        branches.forEach(
+            function(branch) {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                option.value =
+                    branch.id;
+
+
+                option.textContent =
+                    branch.branchName;
+
+
+                branchSelect.appendChild(
+                    option
+                );
+
+            }
+        );
+
+
+        if (
+            selectedBranchId !== null &&
+            selectedBranchId !== undefined
+        ) {
+
+            branchSelect.value =
+                String(
+                    selectedBranchId
+                );
+
+        }
+
+    }
+
+
+    async function loadEmployees() {
+
+        try {
+
+            const response =
+                await apiFetch(
+                    "/admin/employees"
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    await getErrorMessage(
+                        response
+                    )
+                );
+
+            }
+
+
+            employees =
+                await response.json();
+
+
+            renderEmployees();
+
+        }
+        catch (error) {
+
+            console.error(
+                "Load employees error:",
+                error
+            );
+
+
+            showMessage(
+                "employeeMessage",
+                error.message,
+                "error"
+            );
+
+        }
+
+    }
+
+
+    function renderEmployees(
+        list = employees
+    ) {
+
+        const tbody =
+            document.getElementById(
+                "employeeTableBody"
+            );
+
+
+        if (!tbody) {
+            return;
+        }
+
+
+        if (
+            !list ||
+            list.length === 0
+        ) {
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="8"
+                        class="empty-row">
+                        No employees found
+                    </td>
+                </tr>
+            `;
+
+            return;
+
+        }
+
+
+        const sortedEmployees =
+            [...list].sort(
+                function(a, b) {
+
+                    const codeA =
+                        String(
+                            a.employeeCode || ""
+                        )
+                            .trim()
+                            .toUpperCase();
+
+
+                    const codeB =
+                        String(
+                            b.employeeCode || ""
+                        )
+                            .trim()
+                            .toUpperCase();
+
+
+                    return codeA.localeCompare(
+                        codeB,
+                        undefined,
+                        {
+                            numeric: true,
+                            sensitivity: "base"
+                        }
+                    );
+
+                }
+            );
+
+
+        tbody.innerHTML =
+            sortedEmployees.map(
+                function(employee) {
+
+                    return `
+                    <tr>
+
+                        <td>
+                            <span class="badge badge-blue">
+                                ${escapeHtml(
+                                    employee.employeeCode
+                                )}
+                            </span>
+                        </td>
+
+                        <td>
+                            <strong>
+                                ${escapeHtml(
+                                    employee.name
+                                )}
+                            </strong>
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                employee.email
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                employee.contactNumber ||
+                                "-"
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                employee.role ||
+                                "-"
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                employee.branchName ||
+                                "-"
+                            )}
+                        </td>
+
+                        <td>
+                            ${formatDate(
+                                employee.joiningDate
+                            )}
+                        </td>
+
+                        <td>
+
+                            <button
+                                type="button"
+                                class="btn btn-primary btn-small"
+                                onclick="openEmployeeModal(
+                                    'EDIT',
+                                    ${employee.id}
+                                )">
+                                Edit
+                            </button>
+
+                            <button
+                                type="button"
+                                class="btn btn-danger btn-small"
+                                onclick="deleteEmployee(
+                                    ${employee.id}
+                                )">
+                                Delete
+                            </button>
+
+                        </td>
+
+                    </tr>
+                    `;
+
+                }
+            ).join("");
+
+    }
+
+
+    /* =================================================
+       EMPLOYEE SEARCH
+       Searches all employee information available
+    ================================================= */
+
+    function filterEmployees() {
+
+        const searchInput =
+            document.getElementById(
+                "employeeSearch"
+            );
+
+
+        if (!searchInput) {
+            return;
+        }
+
+
+        const search =
+            searchInput.value
+                .toLowerCase()
+                .trim();
+
+
+        if (!search) {
+
+            renderEmployees(
+                employees
+            );
+
+            return;
+
+        }
+
+
+        const filtered =
+            employees.filter(
+                function(employee) {
+
+                    const employeeCode =
+                        String(
+                            employee.employeeCode ||
+                            ""
+                        ).toLowerCase();
+
+                    const name =
+                        String(
+                            employee.name ||
+                            ""
+                        ).toLowerCase();
+
+                    const email =
+                        String(
+                            employee.email ||
+                            ""
+                        ).toLowerCase();
+
+                    const contactNumber =
+                        String(
+                            employee.contactNumber ||
+                            ""
+                        ).toLowerCase();
+
+                    const role =
+                        String(
+                            employee.role ||
+                            ""
+                        ).toLowerCase();
+
+                    const technology =
+                        String(
+                            employee.technology ||
+                            ""
+                        ).toLowerCase();
+
+                    const designation =
+                        String(
+                            employee.designation ||
+                            ""
+                        ).toLowerCase();
+
+                    const branchName =
+                        String(
+                            employee.branchName ||
+                            ""
+                        ).toLowerCase();
+
+                    const joiningDate =
+                        String(
+                            employee.joiningDate ||
+                            ""
+                        ).toLowerCase();
+
+
+                    return (
+
+                        employeeCode.includes(search)
+
+                        ||
+
+                        name.includes(search)
+
+                        ||
+
+                        email.includes(search)
+
+                        ||
+
+                        contactNumber.includes(search)
+
+                        ||
+
+                        role.includes(search)
+
+                        ||
+
+                        technology.includes(search)
+
+                        ||
+
+                        designation.includes(search)
+
+                        ||
+
+                        branchName.includes(search)
+
+                        ||
+
+                        joiningDate.includes(search)
+
+                    );
+
+                }
+            );
+
+
+        renderEmployees(
+            filtered
+        );
+
+    }
+
+
+    async function openEmployeeModal(
+        action,
+        employeeId = null
+    ) {
+
+        currentEmployeeAction =
+            action;
+
+        editingEmployeeId =
+            employeeId;
+
+
+        const modal =
+            document.getElementById(
+                "employeeModal"
+            );
+
+        const title =
+            document.getElementById(
+                "employeeModalTitle"
+            );
+
+
+        if (!modal || !title) {
+            return;
+        }
+
+
+        await loadBranches();
+
+
+        if (
+            action === "ADD"
+        ) {
+
+            title.textContent =
+                "Add Employee";
+
+
+            clearEmployeeForm();
+
+
+            loadEmployeeRoles();
+
+
+            populateBranchSelect();
+
+        }
+
+
+        else {
+
+            title.textContent =
+                "Edit Employee";
+
+
+            const employee =
+                employees.find(
+                    function(item) {
+
+                        return Number(
+                            item.id
+                        ) === Number(
+                            employeeId
+                        );
+
+                    }
+                );
+
+
+            if (!employee) {
+
+                alert(
+                    "Employee not found."
+                );
+
+                return;
+
+            }
+
+
+            document.getElementById(
+                "employeeCode"
+            ).value =
+                employee.employeeCode ||
+                "";
+
+
+            document.getElementById(
+                "employeeName"
+            ).value =
+                employee.name ||
+                "";
+
+
+            document.getElementById(
+                "employeeEmail"
+            ).value =
+                employee.email ||
+                "";
+
+
+            validateEmployeeEmail(false);
+
+
+            document.getElementById(
+                "employeeContact"
+            ).value =
+                employee.contactNumber ||
+                "";
+
+
+            const roleSelect =
+                document.getElementById(
+                    "employeeRole"
+                );
+
+
+            loadEmployeeRoles();
+
+
+            roleSelect.value =
+                employee.role ||
+                "";
+
+
+            handleEmployeeRoleChange();
+
+
+            const technologySelect =
+                document.getElementById(
+                    "employeeTechnology"
+                );
+
+
+            technologySelect.value =
+                employee.technology ||
+                "";
+
+
+            handleEmployeeTechnologyChange();
+
+
+            const designationSelect =
+                document.getElementById(
+                    "employeeDesignation"
+                );
+
+
+            designationSelect.value =
+                employee.designation ||
+                "";
+
+
+            populateBranchSelect(
+                employee.branchId
+            );
+
+
+            document.getElementById(
+                "employeeJoiningDate"
+            ).value =
+                employee.joiningDate ||
+                "";
+
+        }
+
+
+        modal.classList.add(
+            "show"
+        );
+
+    }
+
+
+    function clearEmployeeForm() {
+
+        document.getElementById(
+            "employeeCode"
+        ).value = "";
+
+
+        document.getElementById(
+            "employeeName"
+        ).value = "";
+
+
+        const emailInput =
+            document.getElementById(
+                "employeeEmail"
+            );
+
+
+        const emailError =
+            document.getElementById(
+                "employeeEmailError"
+            );
+
+
+        emailInput.value =
+            "";
+
+
+        emailInput.classList.remove(
+            "email-error"
+        );
+
+
+        emailError.textContent =
+            "";
+
+
+        emailError.classList.remove(
+            "show"
+        );
+
+
+        document.getElementById(
+            "employeeContact"
+        ).value = "";
+
+
+        document.getElementById(
+            "employeeRole"
+        ).innerHTML = `
+            <option value="">
+                Select Role
+            </option>
+        `;
+
+
+        document.getElementById(
+            "employeeTechnology"
+        ).innerHTML = `
+            <option value="">
+                Select Technology / Tool
+            </option>
+        `;
+
+
+        document.getElementById(
+            "employeeDesignation"
+        ).innerHTML = `
+            <option value="">
+                Select Designation
+            </option>
+        `;
+
+
+        document.getElementById(
+            "employeeBranch"
+        ).value = "";
+
+
+        document.getElementById(
+            "employeeJoiningDate"
+        ).value = "";
+
+    }
+
+
+    function closeEmployeeModal() {
+
+        const modal =
+            document.getElementById(
+                "employeeModal"
+            );
+
+
+        if (!modal) {
+            return;
+        }
+
+
+        modal.classList.remove(
+            "show"
+        );
+
+    }
+
+
+    function openEmployeeReasonModal() {
+
+        const reason =
+            document.getElementById(
+                "employeeReason"
+            );
+
+
+        if (reason) {
+
+            reason.value =
+                "";
+
+        }
+
+
+        const title =
+            document.getElementById(
+                "employeeReasonTitle"
+            );
+
+
+        if (
+            pendingAction ===
+            "ADD"
+        ) {
+
+            title.textContent =
+                "Confirm Add Employee";
+
+        }
+        else if (
+            pendingAction ===
+            "EDIT"
+        ) {
+
+            title.textContent =
+                "Confirm Edit Employee";
+
+        }
+        else if (
+            pendingAction ===
+            "DELETE"
+        ) {
+
+            title.textContent =
+                "Confirm Delete Employee";
+
+        }
+        else {
+
+            title.textContent =
+                "Confirm Employee Action";
+
+        }
+
+
+        document.getElementById(
+            "employeeReasonModal"
+        ).classList.add(
+            "show"
+        );
+
+    }
+
+
+    async function saveEmployee() {
+
+        const name =
+            document.getElementById(
+                "employeeName"
+            ).value.trim();
+
+
+        const email =
+            document.getElementById(
+                "employeeEmail"
+            ).value.trim();
+
+
+        const contactNumber =
+            document.getElementById(
+                "employeeContact"
+            ).value.trim();
+
+
+        const role =
+            document.getElementById(
+                "employeeRole"
+            ).value.trim();
+
+
+        const technology =
+            document.getElementById(
+                "employeeTechnology"
+            ).value.trim();
+
+
+        const designation =
+            document.getElementById(
+                "employeeDesignation"
+            ).value.trim();
+
+
+        const branchValue =
+            document.getElementById(
+                "employeeBranch"
+            ).value;
+
+
+        const branchId =
+            branchValue
+                ? Number(branchValue)
+                : null;
+
+
+        const joiningDate =
+            document.getElementById(
+                "employeeJoiningDate"
+            ).value;
+
+
+        if (!name) {
+
+            alert(
+                "Please enter Employee Name."
+            );
+
+            document.getElementById(
+                "employeeName"
+            ).focus();
+
+            return;
+
+        }
+
+
+        if (!email) {
+
+            alert(
+                "Please enter Employee Email."
+            );
+
+            document.getElementById(
+                "employeeEmail"
+            ).focus();
+
+            return;
+
+        }
+
+
+        if (!validateEmployeeEmail(true)) {
+
+            return;
+
+        }
+
+
+        if (!contactNumber) {
+
+            alert(
+                "Please enter Contact Number."
+            );
+
+            document.getElementById(
+                "employeeContact"
+            ).focus();
+
+            return;
+
+        }
+
+
+        if (!role) {
+
+            alert(
+                "Please select Employee Role."
+            );
+
+            document.getElementById(
+                "employeeRole"
+            ).focus();
+
+            return;
+
+        }
+
+
+        if (!technology) {
+
+            alert(
+                "Please select Employee Technology / Tool."
+            );
+
+            document.getElementById(
+                "employeeTechnology"
+            ).focus();
+
+            return;
+
+        }
+
+
+        if (!designation) {
+
+            alert(
+                "Please select Employee Designation."
+            );
+
+            document.getElementById(
+                "employeeDesignation"
+            ).focus();
+
+            return;
+
+        }
+
+
+        if (!joiningDate) {
+
+            alert(
+                "Please select Joining Date."
+            );
+
+            document.getElementById(
+                "employeeJoiningDate"
+            ).focus();
+
+            return;
+
+        }
+
+
+        pendingAction =
+            currentEmployeeAction;
+
+
+        pendingEmployeeData = {
+
+            name:
+                name,
+
+            email:
+                email,
+
+            contactNumber:
+                contactNumber,
+
+            role:
+                role,
+
+            technology:
+                technology,
+
+            designation:
+                designation,
+
+            joiningDate:
+                joiningDate,
+
+            branchId:
+                branchId
+
+        };
+
+
+        if (
+            currentEmployeeAction ===
+            "EDIT"
+        ) {
+
+            pendingEmployeeData.employeeId =
+                editingEmployeeId;
+
+        }
+
+
+        closeEmployeeModal();
+
+
+        openEmployeeReasonModal();
+
+    }
+
+
+    function closeEmployeeReasonModal(
+        clearPending = true
+    ) {
+
+        const modal =
+            document.getElementById(
+                "employeeReasonModal"
+            );
+
+
+        if (modal) {
+
+            modal.classList.remove(
+                "show"
+            );
+
+        }
+
+
+        const reason =
+            document.getElementById(
+                "employeeReason"
+            );
+
+
+        if (reason) {
+
+            reason.value =
+                "";
+
+        }
+
+
+        if (clearPending) {
+
+            pendingAction =
+                null;
+
+            pendingEmployeeData =
+                null;
+
+        }
+
+    }
+
+
+    async function confirmEmployeeAction() {
+
+        const reason =
+            document.getElementById(
+                "employeeReason"
+            ).value.trim();
+
+
+        if (!reason) {
+
+            alert(
+                "Please enter a reason."
+            );
+
+            return;
+
+        }
+
+
+        if (reason.length < 3) {
+
+            alert(
+                "Reason must contain at least 3 characters."
+            );
+
+            return;
+
+        }
+
+
+        const adminEmail =
+            localStorage.getItem(
+                "adminEmail"
+            );
+
+
+        if (!adminEmail) {
+
+            alert(
+                "Admin login information not found. Please login again."
+            );
+
+            logout();
+
+            return;
+
+        }
+
+
+        if (!pendingEmployeeData) {
+
+            alert(
+                "Employee data not found."
+            );
+
+            return;
+
+        }
+
+
+        try {
+
+            const action =
+                pendingAction;
+
+
+            const requestData = {
+
+                ...pendingEmployeeData,
+
+                adminEmail:
+                    adminEmail,
+
+                reason:
+                    reason
+
+            };
+
+
+            let response;
+
+
+            if (action === "ADD") {
+
+                response =
+                    await apiFetch(
+                        "/admin/employees",
+                        {
+
+                            method:
+                                "POST",
+
+                            headers: {
+
+                                "Content-Type":
+                                    "application/json"
+
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    requestData
+                                )
+
+                        }
+                    );
+
+            }
+
+
+            else if (action === "EDIT") {
+
+                response =
+                    await apiFetch(
+                        "/admin/employees/" +
+                        pendingEmployeeData.employeeId,
+                        {
+
+                            method:
+                                "PUT",
+
+                            headers: {
+
+                                "Content-Type":
+                                    "application/json"
+
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    requestData
+                                )
+
+                        }
+                    );
+
+            }
+
+
+            else if (action === "DELETE") {
+
+                response =
+                    await apiFetch(
+                        "/admin/employees/" +
+                        pendingEmployeeData.employeeId,
+                        {
+
+                            method:
+                                "DELETE",
+
+                            headers: {
+
+                                "Content-Type":
+                                    "application/json"
+
+                            },
+
+                            body:
+                                JSON.stringify({
+
+                                    adminEmail:
+                                        adminEmail,
+
+                                    reason:
+                                        reason
+
+                                })
+
+                        }
+                    );
+
+            }
+
+
+            else {
+
+                alert(
+                    "Invalid employee action."
+                );
+
+                return;
+
+            }
+
+
+            if (!response.ok) {
+
+                if (
+                    response.status === 409 &&
+                    (
+                        action === "ADD" ||
+                        action === "EDIT"
+                    )
+                ) {
+
+                    const backendMessage =
+                        await getErrorMessage(
+                            response
+                        );
+
+
+                    closeEmployeeReasonModal(
+                        false
+                    );
+
+
+                    document
+                        .getElementById("employeeModal")
+                        .classList.add("show");
+
+
+                    const emailInput =
+                        document.getElementById(
+                            "employeeEmail"
+                        );
+
+
+                    const emailError =
+                        document.getElementById(
+                            "employeeEmailError"
+                        );
+
+
+                    if (emailInput) {
+
+                        emailInput.classList.add(
+                            "email-error"
+                        );
+
+                    }
+
+
+                    if (emailError) {
+
+                        emailError.textContent =
+                            backendMessage &&
+                            backendMessage
+                                .toLowerCase()
+                                .includes("email")
+
+                                ? backendMessage
+
+                                : "Employee with this email already exists. Please use a different email.";
+
+
+                        emailError.classList.add(
+                            "show"
+                        );
+
+                    }
+
+
+                    if (emailInput) {
+
+                        setTimeout(
+                            function() {
+
+                                emailInput.focus();
+
+                                emailInput.setSelectionRange(
+                                    emailInput.value.length,
+                                    emailInput.value.length
+                                );
+
+                            },
+                            100
+                        );
+
+                    }
+
+
+                    return;
+
+                }
+
+
+                throw new Error(
+                    await getErrorMessage(
+                        response
+                    )
+                );
+
+            }
+
+
+            closeEmployeeReasonModal(
+                false
+            );
+
+
+            closeEmployeeModal();
+
+
+            pendingAction =
+                null;
+
+            pendingEmployeeData =
+                null;
+
+
+            await loadEmployees();
+
+
+            showMessage(
+                "employeeMessage",
+
+                action === "ADD"
+                    ? "Employee added successfully."
+                    : action === "EDIT"
+                        ? "Employee updated successfully."
+                        : "Employee deleted successfully.",
+
+                "success"
+            );
+
+        }
+        catch (error) {
+
+            console.error(
+                "Employee action error:",
+                error
+            );
+
+
+            showMessage(
+                "employeeMessage",
+
+                error.message ||
+                "Unable to complete employee action.",
+
+                "error"
+            );
+
+        }
+
+    }
+
+
+    function deleteEmployee(
+        employeeId
+    ) {
+
+        const employee =
+            employees.find(
+                function(item) {
+
+                    return Number(
+                        item.id
+                    ) === Number(
+                        employeeId
+                    );
+
+                }
+            );
+
+
+        if (!employee) {
+
+            alert(
+                "Employee not found."
+            );
+
+            return;
+
+        }
+
+
+        const confirmed =
+            confirm(
+                `Are you sure you want to delete ${employee.name}?`
+            );
+
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        pendingAction =
+            "DELETE";
+
+
+        pendingEmployeeData = {
+
+            employeeId:
+                employeeId
+
+        };
+
+
+        openEmployeeReasonModal();
+
+    }
+
+
+    function openActionReasonModal(
+        action,
+        required = true
+    ) {
+
+        pendingAction =
+            action;
+
+        pendingActionReasonRequired =
+            required;
+
+
+        const title =
+            document.getElementById(
+                "actionReasonTitle"
+            );
+
+
+        const requiredMark =
+            document.getElementById(
+                "actionReasonRequired"
+            );
+
+
+        const textarea =
+            document.getElementById(
+                "actionReason"
+            );
+
+
+        textarea.value =
+            "";
+
+
+        if (
+            action ===
+            "EXCEL_IMPORT"
+        ) {
+
+            title.textContent =
+                "Confirm Excel Import";
+
+            textarea.placeholder =
+                "Enter reason for importing employees...";
+
+        }
+        else {
+
+            title.textContent =
+                "Confirm Action";
+
+        }
+
+
+        requiredMark.style.display =
+            required
+                ? "inline"
+                : "none";
+
+
+        document.getElementById(
+            "actionReasonModal"
+        ).classList.add(
+            "show"
+        );
+
+
+        setTimeout(
+            function() {
+
+                textarea.focus();
+
+            },
+            100
+        );
+
+    }
+
+
+    function closeActionReasonModal(
+        clearPending = true
+    ) {
+
+        document.getElementById(
+            "actionReasonModal"
+        ).classList.remove(
+            "show"
+        );
+
+
+        document.getElementById(
+            "actionReason"
+        ).value =
+            "";
+
+
+        if (clearPending) {
+
+            if (
+                pendingAction ===
+                "EXCEL_IMPORT"
+            ) {
+
+                pendingImportFile =
+                    null;
+
+            }
+
+            pendingAction =
+                null;
+
+        }
+
+    }
+
+
+    async function confirmActionReason() {
+
+        const reason =
+            document.getElementById(
+                "actionReason"
+            ).value.trim();
+
+
+        if (
+            pendingActionReasonRequired &&
+            !reason
+        ) {
+
+            alert(
+                "Please enter a reason."
+            );
+
+            return;
+
+        }
+
+
+        if (
+            reason &&
+            reason.length < 3
+        ) {
+
+            alert(
+                "Reason must contain at least 3 characters."
+            );
+
+            return;
+
+        }
+
+
+        const adminEmail =
+            localStorage.getItem(
+                "adminEmail"
+            );
+
+
+        if (!adminEmail) {
+
+            alert(
+                "Admin login information not found. Please login again."
+            );
+
+            logout();
+
+            return;
+
+        }
+
+
+        try {
+
+            if (
+                pendingAction ===
+                "EXCEL_IMPORT"
+            ) {
+
+                if (!pendingImportFile) {
+
+                    throw new Error(
+                        "Please select an Excel file."
+                    );
+
+                }
+
+
+                const file =
+                    pendingImportFile;
+
+
+                const formData =
+                    new FormData();
+
+
+                formData.append(
+                    "file",
+                    file
+                );
+
+
+                formData.append(
+                    "adminEmail",
+                    adminEmail
+                );
+
+
+                formData.append(
+                    "reason",
+                    reason
+                );
+
+
+                const response =
+                    await apiFetch(
+                        "/admin/employees/import",
+                        {
+
+                            method:
+                                "POST",
+
+                            body:
+                                formData
+
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        await getErrorMessage(
+                            response
+                        )
+                    );
+
+                }
+
+
+                const result =
+                    await response.json();
+
+
+                closeActionReasonModal(
+                    false
+                );
+
+
+                closeExcelImportModal();
+
+
+                await loadEmployees();
+
+
+                let message =
+                    "Excel import completed. " +
+                    "Imported: " +
+                    (
+                        result.importedCount ??
+                        0
+                    ) +
+                    ", Skipped: " +
+                    (
+                        result.skippedCount ??
+                        0
+                    );
+
+
+                if (
+                    result.errors &&
+                    result.errors.length > 0
+                ) {
+
+                    message +=
+                        " | Some rows were skipped.";
+
+                    console.warn(
+                        "Excel import errors:",
+                        result.errors
+                    );
+
+                }
+
+
+                pendingImportFile =
+                    null;
+
+                pendingAction =
+                    null;
+
+
+                showMessage(
+                    "employeeMessage",
+                    message,
+                    "success"
+                );
+
+
+                return;
+
+            }
+
+        }
+        catch (error) {
+
+            console.error(
+                "Admin action error:",
+                error
+            );
+
+
+            showMessage(
+                "employeeMessage",
+                error.message ||
+                "Unable to complete action.",
+                "error"
+            );
+
+        }
+
+    }
+
+
+    function openExcelImportModal() {
+
+        pendingImportFile =
+            null;
+
+
+        document.getElementById(
+            "excelFileInput"
+        ).value =
+            "";
+
+
+        document.getElementById(
+            "selectedFileName"
+        ).textContent =
+            "No file selected";
+
+
+        document.getElementById(
+            "excelImportModal"
+        ).classList.add(
+            "show"
+        );
+
+    }
+
+
+    function handleExcelFileSelected() {
+
+        const input =
+            document.getElementById(
+                "excelFileInput"
+            );
+
+
+        if (
+            !input.files ||
+            input.files.length === 0
+        ) {
+
+            pendingImportFile =
+                null;
+
+
+            document.getElementById(
+                "selectedFileName"
+            ).textContent =
+                "No file selected";
+
+
+            return;
+
+        }
+
+
+        const file =
+            input.files[0];
+
+
+        const fileName =
+            file.name.toLowerCase();
+
+
+        if (
+            !fileName.endsWith(".xlsx") &&
+            !fileName.endsWith(".xls")
+        ) {
+
+            alert(
+                "Please select an Excel file (.xlsx or .xls)."
+            );
+
+
+            input.value =
+                "";
+
+
+            pendingImportFile =
+                null;
+
+
+            return;
+
+        }
+
+
+        pendingImportFile =
+            file;
+
+
+        document.getElementById(
+            "selectedFileName"
+        ).textContent =
+            "Selected: " +
+            file.name;
+
+    }
+
+
+    function startExcelImport() {
+
+        if (!pendingImportFile) {
+
+            alert(
+                "Please select an Excel file first."
+            );
+
+            return;
+
+        }
+
+
+        closeExcelImportModal();
+
+
+        openActionReasonModal(
+            "EXCEL_IMPORT",
+            true
+        );
+
+    }
+
+
+    function closeExcelImportModal() {
+
+        document.getElementById(
+            "excelImportModal"
+        ).classList.remove(
+            "show"
+        );
+
+    }
+
+
+    /* =================================================
+       COMPLETE COMPANY ROLE LIST
+    ================================================= */
+
+    const employeeRoleOptions = [
+
+        /* IT / SOFTWARE */
+
+        {
+            value: "SOFTWARE_DEVELOPER",
+            label: "Software Developer"
+        },
+
+        {
+            value: "BACKEND_DEVELOPER",
+            label: "Backend Developer"
+        },
+
+        {
+            value: "FRONTEND_DEVELOPER",
+            label: "Frontend Developer"
+        },
+
+        {
+            value: "FULL_STACK_DEVELOPER",
+            label: "Full Stack Developer"
+        },
+
+        {
+            value: "MOBILE_APP_DEVELOPER",
+            label: "Mobile App Developer"
+        },
+
+        {
+            value: "DEVOPS_ENGINEER",
+            label: "DevOps Engineer"
+        },
+
+        {
+            value: "CLOUD_ENGINEER",
+            label: "Cloud Engineer"
+        },
+
+        {
+            value: "CLOUD_ARCHITECT",
+            label: "Cloud Architect"
+        },
+
+        {
+            value: "DATABASE_ADMINISTRATOR",
+            label: "Database Administrator"
+        },
+
+        {
+            value: "SYSTEM_ADMINISTRATOR",
+            label: "System Administrator"
+        },
+
+        {
+            value: "NETWORK_ENGINEER",
+            label: "Network Engineer"
+        },
+
+        {
+            value: "DATA_ENGINEER",
+            label: "Data Engineer"
+        },
+
+        {
+            value: "DATA_ANALYST",
+            label: "Data Analyst"
+        },
+
+        {
+            value: "DATA_SCIENTIST",
+            label: "Data Scientist"
+        },
+
+        {
+            value: "DATA_ENTRY_OPERATOR",
+            label: "Data Entry Operator"
+        },
+
+        {
+            value: "MACHINE_LEARNING_ENGINEER",
+            label: "Machine Learning Engineer"
+        },
+
+        {
+            value: "AI_ENGINEER",
+            label: "AI Engineer"
+        },
+
+        {
+            value: "QA_ENGINEER",
+            label: "QA Engineer"
+        },
+
+        {
+            value: "SECURITY_ENGINEER",
+            label: "Security Engineer"
+        },
+
+        {
+            value: "IT_SUPPORT",
+            label: "IT Support"
+        },
+
+        {
+            value: "TECHNICAL_SUPPORT",
+            label: "Technical Support"
+        },
+
+
+        /* DESIGN / CREATIVE */
+
+        {
+            value: "UI_UX_DESIGNER",
+            label: "UI/UX Designer"
+        },
+
+        {
+            value: "PRODUCT_DESIGNER",
+            label: "Product Designer"
+        },
+
+        {
+            value: "GRAPHIC_DESIGNER",
+            label: "Graphic Designer"
+        },
+
+        {
+            value: "VIDEO_EDITOR",
+            label: "Video Editor"
+        },
+
+        {
+            value: "MOTION_GRAPHICS_DESIGNER",
+            label: "Motion Graphics Designer"
+        },
+
+        {
+            value: "PHOTOGRAPHER",
+            label: "Photographer"
+        },
+
+        {
+            value: "CONTENT_CREATOR",
+            label: "Content Creator"
+        },
+
+        {
+            value: "PRODUCT_ANALYST",
+            label: "Product Analyst"
+        },
+
+
+        /* BUSINESS / MANAGEMENT */
+
+        {
+            value: "BUSINESS_ANALYST",
+            label: "Business Analyst"
+        },
+
+        {
+            value: "PROJECT_MANAGER",
+            label: "Project Manager"
+        },
+
+        {
+            value: "PRODUCT_MANAGER",
+            label: "Product Manager"
+        },
+
+        {
+            value: "SCRUM_MASTER",
+            label: "Scrum Master"
+        },
+
+        {
+            value: "TECHNICAL_LEAD",
+            label: "Technical Lead"
+        },
+
+        {
+            value: "TEAM_LEAD",
+            label: "Team Lead"
+        },
+
+        {
+            value: "ENGINEERING_MANAGER",
+            label: "Engineering Manager"
+        },
+
+        {
+            value: "ENGINEERING_HEAD",
+            label: "Engineering Head"
+        },
+
+        {
+            value: "GENERAL_MANAGER",
+            label: "General Manager"
+        },
+
+        {
+            value: "OPERATIONS_MANAGER",
+            label: "Operations Manager"
+        },
+
+
+        /* HR */
+
+        {
+            value: "HR",
+            label: "HR"
+        },
+
+        {
+            value: "HR_EXECUTIVE",
+            label: "HR Executive"
+        },
+
+        {
+            value: "RECRUITMENT_EXECUTIVE",
+            label: "Recruitment Executive"
+        },
+
+        {
+            value: "TALENT_ACQUISITION",
+            label: "Talent Acquisition"
+        },
+
+        {
+            value: "TRAINING_COORDINATOR",
+            label: "Training Coordinator"
+        },
+
+        {
+            value: "PAYROLL_EXECUTIVE",
+            label: "Payroll Executive"
+        },
+
+
+        /* MARKETING */
+
+        {
+            value: "DIGITAL_MARKETING",
+            label: "Digital Marketing"
+        },
+
+        {
+            value: "MARKETING_EXECUTIVE",
+            label: "Marketing Executive"
+        },
+
+        {
+            value: "SEO_SPECIALIST",
+            label: "SEO Specialist"
+        },
+
+        {
+            value: "CONTENT_WRITER",
+            label: "Content Writer"
+        },
+
+        {
+            value: "CONTENT_MARKETING",
+            label: "Content Marketing"
+        },
+
+        {
+            value: "SOCIAL_MEDIA_EXECUTIVE",
+            label: "Social Media Executive"
+        },
+
+        {
+            value: "BRAND_EXECUTIVE",
+            label: "Brand Executive"
+        },
+
+
+        /* SALES / BUSINESS DEVELOPMENT */
+
+        {
+            value: "BUSINESS_DEVELOPMENT_EXECUTIVE",
+            label: "Business Development Executive"
+        },
+
+        {
+            value: "SALES_EXECUTIVE",
+            label: "Sales Executive"
+        },
+
+        {
+            value: "SALES_MANAGER",
+            label: "Sales Manager"
+        },
+
+        {
+            value: "ACCOUNT_MANAGER",
+            label: "Account Manager"
+        },
+
+        {
+            value: "CLIENT_RELATIONSHIP_EXECUTIVE",
+            label: "Client Relationship Executive"
+        },
+
+        {
+            value: "CUSTOMER_SUCCESS_EXECUTIVE",
+            label: "Customer Success Executive"
+        },
+
+        {
+            value: "CUSTOMER_SUPPORT",
+            label: "Customer Support"
+        },
+
+
+        /* FINANCE / ACCOUNTS */
+
+        {
+            value: "FINANCE",
+            label: "Finance"
+        },
+
+        {
+            value: "ACCOUNTANT",
+            label: "Accountant"
+        },
+
+        {
+            value: "ACCOUNTS_EXECUTIVE",
+            label: "Accounts Executive"
+        },
+
+        {
+            value: "FINANCE_ANALYST",
+            label: "Finance Analyst"
+        },
+
+        {
+            value: "ACCOUNTS_MANAGER",
+            label: "Accounts Manager"
+        },
+
+        {
+            value: "PAYROLL_SPECIALIST",
+            label: "Payroll Specialist"
+        },
+
+
+        /* OPERATIONS / ADMIN */
+
+        {
+            value: "OPERATIONS",
+            label: "Operations"
+        },
+
+        {
+            value: "OPERATIONS_EXECUTIVE",
+            label: "Operations Executive"
+        },
+
+        {
+            value: "ADMIN",
+            label: "Admin"
+        },
+
+        {
+            value: "ADMIN_EXECUTIVE",
+            label: "Admin Executive"
+        },
+
+        {
+            value: "FRONT_OFFICE_EXECUTIVE",
+            label: "Front Office Executive"
+        },
+
+        {
+            value: "OFFICE_ADMINISTRATOR",
+            label: "Office Administrator"
+        },
+
+        {
+            value: "PROCUREMENT_EXECUTIVE",
+            label: "Procurement Executive"
+        },
+
+        {
+            value: "PURCHASE_EXECUTIVE",
+            label: "Purchase Executive"
+        },
+
+        {
+            value: "FACILITY_EXECUTIVE",
+            label: "Facility Executive"
+        },
+
+
+        /* OTHER BUSINESS FUNCTIONS */
+
+        {
+            value: "LEGAL_COMPLIANCE",
+            label: "Legal & Compliance"
+        },
+
+        {
+            value: "QUALITY_EXECUTIVE",
+            label: "Quality Executive"
+        },
+
+        {
+            value: "DOCUMENTATION_EXECUTIVE",
+            label: "Documentation Executive"
+        }
+
+    ];
+
+
+    /* =================================================
+       TECHNOLOGY / TOOL OPTIONS
+    ================================================= */
+
+    const employeeTechnologyOptions = {
+
+        SOFTWARE_DEVELOPER: [
+            "Java",
+            "Python",
+            "PHP",
+            "C#",
+            "C++",
+            "JavaScript",
+            "TypeScript",
+            "Go"
+        ],
+
+        BACKEND_DEVELOPER: [
+            "Java",
+            "Python",
+            "PHP",
+            "Node.js",
+            "C#",
+            "Go",
+            "Ruby"
+        ],
+
+        FRONTEND_DEVELOPER: [
+            "HTML/CSS/JavaScript",
+            "React",
+            "Angular",
+            "Vue.js",
+            "TypeScript"
+        ],
+
+        FULL_STACK_DEVELOPER: [
+            "Java + React",
+            "Java + Angular",
+            "Node.js + React",
+            "Node.js + Angular",
+            "Python + React",
+            "PHP + React",
+            "C# + Angular"
+        ],
+
+        MOBILE_APP_DEVELOPER: [
+            "Android",
+            "iOS",
+            "Flutter",
+            "React Native"
+        ],
+
+        DEVOPS_ENGINEER: [
+            "Docker",
+            "Kubernetes",
+            "Jenkins",
+            "GitHub Actions",
+            "GitLab CI/CD",
+            "Terraform"
+        ],
+
+        CLOUD_ENGINEER: [
+            "AWS",
+            "Azure",
+            "Google Cloud",
+            "Oracle Cloud"
+        ],
+
+        CLOUD_ARCHITECT: [
+            "AWS",
+            "Azure",
+            "Google Cloud",
+            "Multi-Cloud"
+        ],
+
+        DATABASE_ADMINISTRATOR: [
+            "MySQL",
+            "PostgreSQL",
+            "SQL Server",
+            "Oracle",
+            "MongoDB"
+        ],
+
+        SYSTEM_ADMINISTRATOR: [
+            "Windows Server",
+            "Linux",
+            "Active Directory",
+            "VMware",
+            "System Administration"
+        ],
+
+        NETWORK_ENGINEER: [
+            "Cisco",
+            "Networking",
+            "Firewall",
+            "Routing & Switching",
+            "Network Security"
+        ],
+
+        DATA_ENGINEER: [
+            "Python",
+            "SQL",
+            "Apache Spark",
+            "Databricks",
+            "AWS",
+            "Azure"
+        ],
+
+        DATA_ANALYST: [
+            "SQL",
+            "Excel",
+            "Power BI",
+            "Tableau",
+            "Python"
+        ],
+
+        DATA_SCIENTIST: [
+            "Python",
+            "R",
+            "SQL",
+            "Machine Learning",
+            "Deep Learning"
+        ],
+
+        DATA_ENTRY_OPERATOR: [
+            "MS Excel",
+            "Google Sheets",
+            "MS Word",
+            "Data Entry",
+            "ERP"
+        ],
+
+        MACHINE_LEARNING_ENGINEER: [
+            "Python",
+            "TensorFlow",
+            "PyTorch",
+            "Scikit-learn",
+            "MLflow"
+        ],
+
+        AI_ENGINEER: [
+            "Python",
+            "Generative AI",
+            "Machine Learning",
+            "Deep Learning",
+            "NLP",
+            "Computer Vision"
+        ],
+
+        QA_ENGINEER: [
+            "Manual Testing",
+            "Selenium",
+            "Playwright",
+            "Cypress",
+            "API Testing",
+            "Performance Testing"
+        ],
+
+        SECURITY_ENGINEER: [
+            "Network Security",
+            "Cloud Security",
+            "Application Security",
+            "Cyber Security",
+            "SIEM"
+        ],
+
+        IT_SUPPORT: [
+            "Windows",
+            "Linux",
+            "Hardware Support",
+            "Networking",
+            "Microsoft 365"
+        ],
+
+        TECHNICAL_SUPPORT: [
+            "Technical Support",
+            "CRM",
+            "Help Desk",
+            "Ticketing System",
+            "Remote Support"
+        ],
+
+
+        UI_UX_DESIGNER: [
+            "Figma",
+            "Adobe XD",
+            "Sketch",
+            "Photoshop"
+        ],
+
+        PRODUCT_DESIGNER: [
+            "Figma",
+            "Adobe XD",
+            "Sketch",
+            "Design Systems"
+        ],
+
+        GRAPHIC_DESIGNER: [
+            "Adobe Photoshop",
+            "Adobe Illustrator",
+            "Figma",
+            "Canva",
+            "CorelDRAW",
+            "Adobe InDesign"
+        ],
+
+        VIDEO_EDITOR: [
+            "Adobe Premiere Pro",
+            "DaVinci Resolve",
+            "Adobe After Effects",
+            "Final Cut Pro",
+            "CapCut"
+        ],
+
+        MOTION_GRAPHICS_DESIGNER: [
+            "Adobe After Effects",
+            "Blender",
+            "Cinema 4D",
+            "Adobe Premiere Pro",
+            "DaVinci Resolve"
+        ],
+
+        PHOTOGRAPHER: [
+            "Camera",
+            "Adobe Lightroom",
+            "Adobe Photoshop",
+            "Studio Photography",
+            "Photo Editing"
+        ],
+
+        CONTENT_CREATOR: [
+            "Canva",
+            "CapCut",
+            "Adobe Premiere Pro",
+            "Photoshop",
+            "Social Media"
+        ],
+
+        PRODUCT_ANALYST: [
+            "SQL",
+            "Excel",
+            "Power BI",
+            "Tableau",
+            "Product Analytics"
+        ],
+
+
+        BUSINESS_ANALYST: [
+            "Excel",
+            "SQL",
+            "Power BI",
+            "Tableau",
+            "Business Process",
+            "Requirements Analysis"
+        ],
+
+        PROJECT_MANAGER: [
+            "Agile",
+            "Scrum",
+            "Jira",
+            "Project Management"
+        ],
+
+        PRODUCT_MANAGER: [
+            "Product Management",
+            "Agile",
+            "Scrum",
+            "Jira",
+            "Product Analytics"
+        ],
+
+        SCRUM_MASTER: [
+            "Scrum",
+            "Agile",
+            "Jira",
+            "Kanban"
+        ],
+
+        TECHNICAL_LEAD: [
+            "Java",
+            "Python",
+            "JavaScript",
+            "Cloud",
+            "Software Architecture"
+        ],
+
+        TEAM_LEAD: [
+            "Software Development",
+            "QA",
+            "DevOps",
+            "Project Management"
+        ],
+
+        ENGINEERING_MANAGER: [
+            "Software Engineering",
+            "Cloud",
+            "DevOps",
+            "Engineering Management"
+        ],
+
+        ENGINEERING_HEAD: [
+            "Software Engineering",
+            "Cloud Architecture",
+            "Engineering Management",
+            "Technology Strategy"
+        ],
+
+        GENERAL_MANAGER: [
+            "Business Management",
+            "Operations Management",
+            "Leadership",
+            "MS Office"
+        ],
+
+        OPERATIONS_MANAGER: [
+            "Operations Management",
+            "Process Management",
+            "Excel",
+            "ERP"
+        ],
+
+
+        HR: [
+            "HR Operations",
+            "Recruitment",
+            "Payroll",
+            "Employee Relations",
+            "HRMS"
+        ],
+
+        HR_EXECUTIVE: [
+            "HR Operations",
+            "Recruitment",
+            "HRMS",
+            "Payroll",
+            "Employee Relations"
+        ],
+
+        RECRUITMENT_EXECUTIVE: [
+            "Recruitment",
+            "LinkedIn",
+            "Applicant Tracking System",
+            "HRMS",
+            "Interview Coordination"
+        ],
+
+        TALENT_ACQUISITION: [
+            "LinkedIn Recruiter",
+            "Recruitment",
+            "ATS",
+            "HRMS",
+            "Talent Acquisition"
+        ],
+
+        TRAINING_COORDINATOR: [
+            "LMS",
+            "MS Excel",
+            "Training Management",
+            "Google Workspace",
+            "Communication"
+        ],
+
+        PAYROLL_EXECUTIVE: [
+            "Payroll",
+            "Excel",
+            "HRMS",
+            "Tally",
+            "Attendance Management"
+        ],
+
+
+        DIGITAL_MARKETING: [
+            "Google Ads",
+            "Meta Ads",
+            "Content Marketing",
+            "Email Marketing",
+            "Analytics"
+        ],
+
+        MARKETING_EXECUTIVE: [
+            "Digital Marketing",
+            "Google Ads",
+            "Meta Ads",
+            "Excel",
+            "Marketing Analytics"
+        ],
+
+        SEO_SPECIALIST: [
+            "Technical SEO",
+            "On-Page SEO",
+            "Off-Page SEO",
+            "Google Search Console",
+            "Google Analytics"
+        ],
+
+        CONTENT_WRITER: [
+            "Technical Writing",
+            "Content Writing",
+            "Copywriting",
+            "SEO Content"
+        ],
+
+        CONTENT_MARKETING: [
+            "Content Strategy",
+            "SEO",
+            "WordPress",
+            "Google Analytics",
+            "Social Media"
+        ],
+
+        SOCIAL_MEDIA_EXECUTIVE: [
+            "Instagram",
+            "Facebook",
+            "LinkedIn",
+            "YouTube",
+            "Social Media Marketing"
+        ],
+
+        BRAND_EXECUTIVE: [
+            "Brand Management",
+            "Canva",
+            "Social Media",
+            "Marketing",
+            "Analytics"
+        ],
+
+
+        BUSINESS_DEVELOPMENT_EXECUTIVE: [
+            "B2B Sales",
+            "Lead Generation",
+            "CRM",
+            "Client Relationship"
+        ],
+
+        SALES_EXECUTIVE: [
+            "Inside Sales",
+            "Field Sales",
+            "B2B Sales",
+            "CRM"
+        ],
+
+        SALES_MANAGER: [
+            "CRM",
+            "Sales Management",
+            "Lead Management",
+            "Excel"
+        ],
+
+        ACCOUNT_MANAGER: [
+            "CRM",
+            "Client Management",
+            "Account Management",
+            "Excel"
+        ],
+
+        CLIENT_RELATIONSHIP_EXECUTIVE: [
+            "CRM",
+            "Client Relationship",
+            "Communication",
+            "Customer Management"
+        ],
+
+        CUSTOMER_SUCCESS_EXECUTIVE: [
+            "CRM",
+            "Customer Success",
+            "Customer Relationship",
+            "Help Desk"
+        ],
+
+        CUSTOMER_SUPPORT: [
+            "Technical Support",
+            "Customer Service",
+            "CRM",
+            "Help Desk"
+        ],
+
+
+        FINANCE: [
+            "Accounting",
+            "Tally",
+            "Excel",
+            "Financial Analysis",
+            "Payroll"
+        ],
+
+        ACCOUNTANT: [
+            "Tally",
+            "Accounting",
+            "GST",
+            "Excel",
+            "Bank Reconciliation"
+        ],
+
+        ACCOUNTS_EXECUTIVE: [
+            "Tally",
+            "Accounting",
+            "GST",
+            "Excel",
+            "Accounts Payable"
+        ],
+
+        FINANCE_ANALYST: [
+            "Excel",
+            "Power BI",
+            "Financial Analysis",
+            "Accounting",
+            "Financial Reporting"
+        ],
+
+        ACCOUNTS_MANAGER: [
+            "Accounting",
+            "Tally",
+            "GST",
+            "Financial Reporting",
+            "Team Management"
+        ],
+
+        PAYROLL_SPECIALIST: [
+            "Payroll",
+            "Excel",
+            "HRMS",
+            "Tally",
+            "Salary Processing"
+        ],
+
+
+        OPERATIONS: [
+            "Operations Management",
+            "Process Management",
+            "Office Administration",
+            "Inventory Management"
+        ],
+
+        OPERATIONS_EXECUTIVE: [
+            "MS Excel",
+            "ERP",
+            "Operations Management",
+            "Process Management",
+            "Documentation"
+        ],
+
+        ADMIN: [
+            "Administration",
+            "Office Management",
+            "HR Administration",
+            "Operations"
+        ],
+
+        ADMIN_EXECUTIVE: [
+            "MS Office",
+            "Office Administration",
+            "Documentation",
+            "Excel",
+            "Email Management"
+        ],
+
+        FRONT_OFFICE_EXECUTIVE: [
+            "MS Office",
+            "CRM",
+            "Email Management",
+            "Visitor Management",
+            "Communication"
+        ],
+
+        OFFICE_ADMINISTRATOR: [
+            "MS Office",
+            "Office Administration",
+            "Excel",
+            "Documentation",
+            "Google Workspace"
+        ],
+
+        PROCUREMENT_EXECUTIVE: [
+            "Procurement",
+            "Vendor Management",
+            "ERP",
+            "Excel",
+            "Purchase Management"
+        ],
+
+        PURCHASE_EXECUTIVE: [
+            "Purchase Management",
+            "Vendor Management",
+            "ERP",
+            "Excel",
+            "Procurement"
+        ],
+
+        FACILITY_EXECUTIVE: [
+            "Facility Management",
+            "Vendor Management",
+            "MS Excel",
+            "Inventory Management",
+            "Office Administration"
+        ],
+
+
+        LEGAL_COMPLIANCE: [
+            "Legal Documentation",
+            "Compliance",
+            "Contract Management",
+            "MS Office"
+        ],
+
+        QUALITY_EXECUTIVE: [
+            "Quality Management",
+            "Process Audit",
+            "Documentation",
+            "Excel",
+            "Quality Control"
+        ],
+
+        DOCUMENTATION_EXECUTIVE: [
+            "MS Word",
+            "MS Excel",
+            "Documentation",
+            "Google Workspace",
+            "Technical Documentation"
+        ]
+
+    };
+
+
+    /* =================================================
+       DESIGNATION OPTIONS
+    ================================================= */
+
+    const employeeDesignationOptions = {
+
+        SOFTWARE_DEVELOPER: [
+            "Junior Software Developer",
+            "Software Developer",
+            "Senior Software Developer",
+            "Lead Software Developer"
+        ],
+
+        BACKEND_DEVELOPER: [
+            "Junior Backend Developer",
+            "Backend Developer",
+            "Senior Backend Developer",
+            "Lead Backend Developer"
+        ],
+
+        FRONTEND_DEVELOPER: [
+            "Junior Frontend Developer",
+            "Frontend Developer",
+            "Senior Frontend Developer",
+            "Lead Frontend Developer"
+        ],
+
+        FULL_STACK_DEVELOPER: [
+            "Junior Full Stack Developer",
+            "Full Stack Developer",
+            "Senior Full Stack Developer",
+            "Lead Full Stack Developer"
+        ],
+
+        MOBILE_APP_DEVELOPER: [
+            "Junior Mobile App Developer",
+            "Mobile App Developer",
+            "Senior Mobile App Developer",
+            "Lead Mobile App Developer"
+        ],
+
+        DEVOPS_ENGINEER: [
+            "Junior DevOps Engineer",
+            "DevOps Engineer",
+            "Senior DevOps Engineer",
+            "Lead DevOps Engineer"
+        ],
+
+        CLOUD_ENGINEER: [
+            "Junior Cloud Engineer",
+            "Cloud Engineer",
+            "Senior Cloud Engineer",
+            "Lead Cloud Engineer"
+        ],
+
+        CLOUD_ARCHITECT: [
+            "Cloud Architect",
+            "Senior Cloud Architect",
+            "Lead Cloud Architect"
+        ],
+
+        DATABASE_ADMINISTRATOR: [
+            "Junior Database Administrator",
+            "Database Administrator",
+            "Senior Database Administrator",
+            "Database Manager"
+        ],
+
+        SYSTEM_ADMINISTRATOR: [
+            "Junior System Administrator",
+            "System Administrator",
+            "Senior System Administrator",
+            "System Administration Lead"
+        ],
+
+        NETWORK_ENGINEER: [
+            "Junior Network Engineer",
+            "Network Engineer",
+            "Senior Network Engineer",
+            "Network Lead"
+        ],
+
+        DATA_ENGINEER: [
+            "Junior Data Engineer",
+            "Data Engineer",
+            "Senior Data Engineer",
+            "Lead Data Engineer"
+        ],
+
+        DATA_ANALYST: [
+            "Junior Data Analyst",
+            "Data Analyst",
+            "Senior Data Analyst",
+            "Lead Data Analyst"
+        ],
+
+        DATA_SCIENTIST: [
+            "Junior Data Scientist",
+            "Data Scientist",
+            "Senior Data Scientist",
+            "Lead Data Scientist"
+        ],
+
+        DATA_ENTRY_OPERATOR: [
+            "Data Entry Operator",
+            "Senior Data Entry Operator",
+            "Data Entry Specialist",
+            "Data Entry Supervisor"
+        ],
+
+        MACHINE_LEARNING_ENGINEER: [
+            "Junior Machine Learning Engineer",
+            "Machine Learning Engineer",
+            "Senior Machine Learning Engineer",
+            "Lead Machine Learning Engineer"
+        ],
+
+        AI_ENGINEER: [
+            "Junior AI Engineer",
+            "AI Engineer",
+            "Senior AI Engineer",
+            "Lead AI Engineer"
+        ],
+
+        QA_ENGINEER: [
+            "Junior QA Engineer",
+            "QA Engineer",
+            "Senior QA Engineer",
+            "Lead QA Engineer"
+        ],
+
+        SECURITY_ENGINEER: [
+            "Junior Security Engineer",
+            "Security Engineer",
+            "Senior Security Engineer",
+            "Lead Security Engineer"
+        ],
+
+        IT_SUPPORT: [
+            "IT Support Executive",
+            "IT Support Engineer",
+            "Senior IT Support Engineer",
+            "IT Support Lead"
+        ],
+
+        TECHNICAL_SUPPORT: [
+            "Technical Support Executive",
+            "Technical Support Engineer",
+            "Senior Technical Support Engineer",
+            "Technical Support Lead"
+        ],
+
+
+        UI_UX_DESIGNER: [
+            "Junior UI/UX Designer",
+            "UI/UX Designer",
+            "Senior UI/UX Designer",
+            "Lead UI/UX Designer"
+        ],
+
+        PRODUCT_DESIGNER: [
+            "Junior Product Designer",
+            "Product Designer",
+            "Senior Product Designer",
+            "Lead Product Designer"
+        ],
+
+        GRAPHIC_DESIGNER: [
+            "Junior Graphic Designer",
+            "Graphic Designer",
+            "Senior Graphic Designer",
+            "Lead Graphic Designer"
+        ],
+
+        VIDEO_EDITOR: [
+            "Junior Video Editor",
+            "Video Editor",
+            "Senior Video Editor",
+            "Lead Video Editor"
+        ],
+
+        MOTION_GRAPHICS_DESIGNER: [
+            "Junior Motion Graphics Designer",
+            "Motion Graphics Designer",
+            "Senior Motion Graphics Designer",
+            "Lead Motion Graphics Designer"
+        ],
+
+        PHOTOGRAPHER: [
+            "Junior Photographer",
+            "Photographer",
+            "Senior Photographer",
+            "Lead Photographer"
+        ],
+
+        CONTENT_CREATOR: [
+            "Junior Content Creator",
+            "Content Creator",
+            "Senior Content Creator",
+            "Content Creator Lead"
+        ],
+
+        PRODUCT_ANALYST: [
+            "Junior Product Analyst",
+            "Product Analyst",
+            "Senior Product Analyst",
+            "Lead Product Analyst"
+        ],
+
+
+        BUSINESS_ANALYST: [
+            "Junior Business Analyst",
+            "Business Analyst",
+            "Senior Business Analyst",
+            "Lead Business Analyst"
+        ],
+
+        PROJECT_MANAGER: [
+            "Project Manager",
+            "Senior Project Manager",
+            "Project Management Lead"
+        ],
+
+        PRODUCT_MANAGER: [
+            "Product Manager",
+            "Senior Product Manager",
+            "Product Lead"
+        ],
+
+        SCRUM_MASTER: [
+            "Scrum Master",
+            "Senior Scrum Master",
+            "Agile Lead"
+        ],
+
+        TECHNICAL_LEAD: [
+            "Technical Lead",
+            "Senior Technical Lead",
+            "Lead Technical Architect"
+        ],
+
+        TEAM_LEAD: [
+            "Team Lead",
+            "Senior Team Lead",
+            "Technical Team Lead"
+        ],
+
+        ENGINEERING_MANAGER: [
+            "Engineering Manager",
+            "Senior Engineering Manager",
+            "Engineering Lead"
+        ],
+
+        ENGINEERING_HEAD: [
+            "Engineering Head",
+            "Head of Engineering",
+            "Director of Engineering"
+        ],
+
+        GENERAL_MANAGER: [
+            "General Manager",
+            "Senior General Manager",
+            "Business Manager"
+        ],
+
+        OPERATIONS_MANAGER: [
+            "Operations Manager",
+            "Senior Operations Manager",
+            "Operations Head"
+        ],
+
+
+        HR: [
+            "HR Intern",
+            "HR Executive",
+            "HR Specialist",
+            "HR Manager",
+            "Senior HR Manager"
+        ],
+
+        HR_EXECUTIVE: [
+            "HR Executive",
+            "Senior HR Executive",
+            "HR Specialist",
+            "HR Manager"
+        ],
+
+        RECRUITMENT_EXECUTIVE: [
+            "Recruitment Executive",
+            "Senior Recruitment Executive",
+            "Recruitment Specialist",
+            "Recruitment Manager"
+        ],
+
+        TALENT_ACQUISITION: [
+            "Talent Acquisition Executive",
+            "Talent Acquisition Specialist",
+            "Senior Talent Acquisition Specialist",
+            "Talent Acquisition Manager"
+        ],
+
+        TRAINING_COORDINATOR: [
+            "Training Coordinator",
+            "Senior Training Coordinator",
+            "Training Specialist",
+            "Training Manager"
+        ],
+
+        PAYROLL_EXECUTIVE: [
+            "Payroll Executive",
+            "Senior Payroll Executive",
+            "Payroll Specialist",
+            "Payroll Manager"
+        ],
+
+
+        DIGITAL_MARKETING: [
+            "Digital Marketing Executive",
+            "Digital Marketing Specialist",
+            "Digital Marketing Manager",
+            "Senior Digital Marketing Manager"
+        ],
+
+        MARKETING_EXECUTIVE: [
+            "Marketing Executive",
+            "Senior Marketing Executive",
+            "Marketing Specialist",
+            "Marketing Manager"
+        ],
+
+        SEO_SPECIALIST: [
+            "SEO Executive",
+            "SEO Specialist",
+            "Senior SEO Specialist",
+            "SEO Manager"
+        ],
+
+        CONTENT_WRITER: [
+            "Content Writer",
+            "Senior Content Writer",
+            "Content Specialist",
+            "Content Manager"
+        ],
+
+        CONTENT_MARKETING: [
+            "Content Marketing Executive",
+            "Content Marketing Specialist",
+            "Content Marketing Manager",
+            "Senior Content Marketing Manager"
+        ],
+
+        SOCIAL_MEDIA_EXECUTIVE: [
+            "Social Media Executive",
+            "Social Media Specialist",
+            "Social Media Manager",
+            "Senior Social Media Manager"
+        ],
+
+        BRAND_EXECUTIVE: [
+            "Brand Executive",
+            "Brand Specialist",
+            "Brand Manager",
+            "Senior Brand Manager"
+        ],
+
+
+        BUSINESS_DEVELOPMENT_EXECUTIVE: [
+            "Business Development Executive",
+            "Business Development Associate",
+            "Business Development Manager",
+            "Senior Business Development Manager"
+        ],
+
+        SALES_EXECUTIVE: [
+            "Sales Executive",
+            "Sales Associate",
+            "Sales Manager",
+            "Senior Sales Manager"
+        ],
+
+        SALES_MANAGER: [
+            "Sales Manager",
+            "Senior Sales Manager",
+            "Regional Sales Manager",
+            "Sales Head"
+        ],
+
+        ACCOUNT_MANAGER: [
+            "Account Executive",
+            "Account Manager",
+            "Senior Account Manager",
+            "Key Account Manager"
+        ],
+
+        CLIENT_RELATIONSHIP_EXECUTIVE: [
+            "Client Relationship Executive",
+            "Client Relationship Specialist",
+            "Client Relationship Manager",
+            "Senior Client Relationship Manager"
+        ],
+
+        CUSTOMER_SUCCESS_EXECUTIVE: [
+            "Customer Success Executive",
+            "Customer Success Specialist",
+            "Customer Success Manager",
+            "Senior Customer Success Manager"
+        ],
+
+        CUSTOMER_SUPPORT: [
+            "Customer Support Executive",
+            "Customer Support Specialist",
+            "Senior Customer Support Executive",
+            "Customer Support Manager"
+        ],
+
+
+        FINANCE: [
+            "Finance Executive",
+            "Finance Specialist",
+            "Finance Analyst",
+            "Finance Manager"
+        ],
+
+        ACCOUNTANT: [
+            "Junior Accountant",
+            "Accountant",
+            "Senior Accountant",
+            "Accounts Manager"
+        ],
+
+        ACCOUNTS_EXECUTIVE: [
+            "Accounts Executive",
+            "Senior Accounts Executive",
+            "Accounts Specialist",
+            "Accounts Manager"
+        ],
+
+        FINANCE_ANALYST: [
+            "Junior Finance Analyst",
+            "Finance Analyst",
+            "Senior Finance Analyst",
+            "Finance Manager"
+        ],
+
+        ACCOUNTS_MANAGER: [
+            "Accounts Manager",
+            "Senior Accounts Manager",
+            "Accounts Head",
+            "Finance Head"
+        ],
+
+        PAYROLL_SPECIALIST: [
+            "Payroll Executive",
+            "Payroll Specialist",
+            "Senior Payroll Specialist",
+            "Payroll Manager"
+        ],
+
+
+        OPERATIONS: [
+            "Operations Executive",
+            "Operations Specialist",
+            "Operations Manager",
+            "Senior Operations Manager"
+        ],
+
+        OPERATIONS_EXECUTIVE: [
+            "Operations Executive",
+            "Senior Operations Executive",
+            "Operations Specialist",
+            "Operations Manager"
+        ],
+
+        ADMIN: [
+            "Admin Executive",
+            "Administrative Officer",
+            "Admin Manager",
+            "Senior Admin Manager"
+        ],
+
+        ADMIN_EXECUTIVE: [
+            "Admin Executive",
+            "Senior Admin Executive",
+            "Administrative Officer",
+            "Admin Manager"
+        ],
+
+        FRONT_OFFICE_EXECUTIVE: [
+            "Front Office Executive",
+            "Senior Front Office Executive",
+            "Front Office Supervisor",
+            "Front Office Manager"
+        ],
+
+        OFFICE_ADMINISTRATOR: [
+            "Office Administrator",
+            "Senior Office Administrator",
+            "Office Administration Executive",
+            "Office Manager"
+        ],
+
+        PROCUREMENT_EXECUTIVE: [
+            "Procurement Executive",
+            "Senior Procurement Executive",
+            "Procurement Specialist",
+            "Procurement Manager"
+        ],
+
+        PURCHASE_EXECUTIVE: [
+            "Purchase Executive",
+            "Senior Purchase Executive",
+            "Purchase Specialist",
+            "Purchase Manager"
+        ],
+
+        FACILITY_EXECUTIVE: [
+            "Facility Executive",
+            "Senior Facility Executive",
+            "Facility Supervisor",
+            "Facility Manager"
+        ],
+
+
+        LEGAL_COMPLIANCE: [
+            "Legal Executive",
+            "Compliance Executive",
+            "Legal & Compliance Specialist",
+            "Compliance Manager"
+        ],
+
+        QUALITY_EXECUTIVE: [
+            "Quality Executive",
+            "Quality Analyst",
+            "Quality Specialist",
+            "Quality Manager"
+        ],
+
+        DOCUMENTATION_EXECUTIVE: [
+            "Documentation Executive",
+            "Documentation Specialist",
+            "Senior Documentation Specialist",
+            "Documentation Manager"
+        ]
+
+    };
+
+
+    /* =================================================
+       AUTOMATIC INTERN DESIGNATION
+    ================================================= */
+
+    employeeRoleOptions.forEach(
+        function(role) {
+
+            const internTitle =
+                role.label + " Intern";
+
+
+            const list =
+                employeeDesignationOptions[
+                    role.value
+                ] || [];
+
+
+            if (
+                list.indexOf(
+                    internTitle
+                ) === -1
+            ) {
+
+                list.unshift(
+                    internTitle
+                );
+
+            }
+
+
+            employeeDesignationOptions[
+                role.value
+            ] = list;
+
+        }
+    );
+
+
+    /* =================================================
+       LOAD ROLE DROPDOWN
+    ================================================= */
+
+    function loadEmployeeRoles() {
+
+        const roleSelect =
+            document.getElementById(
+                "employeeRole"
+            );
+
+        const technologySelect =
+            document.getElementById(
+                "employeeTechnology"
+            );
+
+        const designationSelect =
+            document.getElementById(
+                "employeeDesignation"
+            );
+
+
+        if (!roleSelect) {
+            return;
+        }
+
+
+        roleSelect.innerHTML = `
+            <option value="">
+                Select Role
+            </option>
+        `;
+
+
+        if (technologySelect) {
+
+            technologySelect.innerHTML = `
+                <option value="">
+                    Select Technology / Tool
+                </option>
+            `;
+
+        }
+
+
+        if (designationSelect) {
+
+            designationSelect.innerHTML = `
+                <option value="">
+                    Select Designation
+                </option>
+            `;
+
+        }
+
+
+        employeeRoleOptions.forEach(
+            function(role) {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                option.value =
+                    role.value;
+
+
+                option.textContent =
+                    role.label;
+
+
+                roleSelect.appendChild(
+                    option
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =================================================
+       ROLE -> TECHNOLOGY
+    ================================================= */
+
+    function handleEmployeeRoleChange() {
+
+        const roleSelect =
+            document.getElementById(
+                "employeeRole"
+            );
+
+        const technologySelect =
+            document.getElementById(
+                "employeeTechnology"
+            );
+
+        const designationSelect =
+            document.getElementById(
+                "employeeDesignation"
+            );
+
+
+        if (!roleSelect) {
+            return;
+        }
+
+
+        const role =
+            roleSelect.value;
+
+
+        if (technologySelect) {
+
+            technologySelect.innerHTML = `
+                <option value="">
+                    Select Technology / Tool
+                </option>
+            `;
+
+        }
+
+
+        if (designationSelect) {
+
+            designationSelect.innerHTML = `
+                <option value="">
+                    Select Designation
+                </option>
+            `;
+
+        }
+
+
+        if (!role) {
+            return;
+        }
+
+
+        const technologies =
+            employeeTechnologyOptions[
+                role
+            ] || [];
+
+
+        if (technologySelect) {
+
+            technologies.forEach(
+                function(technology) {
+
+                    const option =
+                        document.createElement(
+                            "option"
+                        );
+
+
+                    option.value =
+                        technology;
+
+
+                    option.textContent =
+                        technology;
+
+
+                    technologySelect.appendChild(
+                        option
+                    );
+
+                }
+            );
+
+        }
+
+    }
+
+
+    /* =================================================
+       TECHNOLOGY -> DESIGNATION
+    ================================================= */
+
+    function handleEmployeeTechnologyChange() {
+
+        const roleSelect =
+            document.getElementById(
+                "employeeRole"
+            );
+
+        const technologySelect =
+            document.getElementById(
+                "employeeTechnology"
+            );
+
+        const designationSelect =
+            document.getElementById(
+                "employeeDesignation"
+            );
+
+
+        if (
+            !roleSelect ||
+            !technologySelect ||
+            !designationSelect
+        ) {
+            return;
+        }
+
+
+        const role =
+            roleSelect.value;
+
+
+        const technology =
+            technologySelect.value;
+
+
+        designationSelect.innerHTML = `
+            <option value="">
+                Select Designation
+            </option>
+        `;
+
+
+        if (!role || !technology) {
+            return;
+        }
+
+
+        const designations =
+            employeeDesignationOptions[
+                role
+            ] || [];
+
+
+        designations.forEach(
+            function(designation) {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                option.value =
+                    designation;
+
+
+                option.textContent =
+                    designation;
+
+
+                designationSelect.appendChild(
+                    option
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =================================================
+       MODAL OUTSIDE CLICK
+    ================================================= */
+
+    document.querySelectorAll(
+        ".modal"
+    ).forEach(
+        function(modal) {
+
+            modal.addEventListener(
+                "click",
+                function(event) {
+
+                    if (
+                        event.target ===
+                        modal
+                    ) {
+
+                        modal.classList.remove(
+                            "show"
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+
+    loadEmployeeRoles();
+
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function() {
+
+            if (
+                typeof lucide !==
+                "undefined"
+            ) {
+
+                lucide.createIcons();
+
+            }
+
+
+            loadAdminInfo();
+
+            loadBranches();
+
+            loadEmployees();
+
+        }
+    );
+
+</script>
+
+</body>
+
+</html>

@@ -18,15 +18,18 @@ public class AdminEmployeeController {
     private final EmployeeRepository employeeRepository;
     private final AdminRepository adminRepository;
     private final AdminActionHistoryRepository historyRepository;
+    private final BranchRepository branchRepository;
 
     public AdminEmployeeController(
             EmployeeRepository employeeRepository,
             AdminRepository adminRepository,
-            AdminActionHistoryRepository historyRepository) {
+            AdminActionHistoryRepository historyRepository,
+            BranchRepository branchRepository) {
 
         this.employeeRepository = employeeRepository;
         this.adminRepository = adminRepository;
         this.historyRepository = historyRepository;
+        this.branchRepository = branchRepository;
     }
 
     // =====================================================
@@ -136,6 +139,22 @@ public class AdminEmployeeController {
         employee.setDesignation(
                 designation
         );
+
+        // =================================================
+        // BRANCH ASSIGNMENT
+        // =================================================
+
+        if (request.getBranchId() != null) {
+
+            Branch branch =
+                    findActiveBranch(
+                            request.getBranchId()
+                    );
+
+            employee.setBranch(
+                    branch
+            );
+        }
 
         if (request.getSalary() != null) {
 
@@ -293,6 +312,22 @@ public class AdminEmployeeController {
                 designation
         );
 
+        // =================================================
+        // BRANCH ASSIGNMENT
+        // =================================================
+
+        if (request.getBranchId() != null) {
+
+            Branch branch =
+                    findActiveBranch(
+                            request.getBranchId()
+                    );
+
+            employee.setBranch(
+                    branch
+            );
+        }
+
         employee.setJoiningDate(
                 request.getJoiningDate()
         );
@@ -437,6 +472,33 @@ public class AdminEmployeeController {
         validateReason(
                 request.getReason()
         );
+    }
+
+    // =====================================================
+    // FIND ACTIVE BRANCH
+    // =====================================================
+
+    private Branch findActiveBranch(
+            Long branchId) {
+
+        if (branchId == null) {
+
+            return null;
+        }
+
+        return branchRepository
+                .findById(branchId)
+                .filter(branch ->
+                        Boolean.TRUE.equals(
+                                branch.getActive()
+                        )
+                )
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Active branch not found"
+                        )
+                );
     }
 
     // =====================================================
@@ -732,6 +794,20 @@ public class AdminEmployeeController {
     private AdminEmployeeResponse convertToResponse(
             Employee employee) {
 
+        Long branchId = null;
+        String branchName = null;
+
+        if (employee.getBranch() != null) {
+
+            branchId =
+                    employee.getBranch()
+                            .getId();
+
+            branchName =
+                    employee.getBranch()
+                            .getBranchName();
+        }
+
         return new AdminEmployeeResponse(
                 employee.getId(),
                 employee.getEmployeeCode(),
@@ -742,7 +818,9 @@ public class AdminEmployeeController {
                 employee.getTechnology(),
                 employee.getDesignation(),
                 employee.getSalary(),
-                employee.getJoiningDate()
+                employee.getJoiningDate(),
+                branchId,
+                branchName
         );
     }
 

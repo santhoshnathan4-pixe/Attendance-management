@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/leave")
@@ -27,6 +28,17 @@ public class LeaveRequestController {
         this.employeeRepository = employeeRepository;
         this.settingRepository = settingRepository;
         this.balanceRepository = balanceRepository;
+    }
+
+    // =====================================================
+    // INACTIVE STATUS (REJECTED / CANCELLED)
+    // These rows do not block a new request for same date.
+    // =====================================================
+
+    private boolean isInactive(String status) {
+        return status != null &&
+                (status.equalsIgnoreCase("REJECTED")
+                        || status.equalsIgnoreCase("CANCELLED"));
     }
 
     // =====================================================
@@ -182,9 +194,7 @@ public class LeaveRequestController {
                     continue;
                 }
 
-                if (existing.getStatus() != null &&
-                        existing.getStatus()
-                                .equalsIgnoreCase("REJECTED")) {
+                if (isInactive(existing.getStatus())) {
                     continue;
                 }
 
@@ -194,6 +204,13 @@ public class LeaveRequestController {
 
             checkDate = checkDate.plusDays(1);
         }
+
+        // =================================================
+        // ONE GROUP ID FOR THE WHOLE REQUEST
+        // =================================================
+
+        String groupId =
+                UUID.randomUUID().toString();
 
         // =================================================
         // PROCESS EACH DATE
@@ -279,6 +296,8 @@ public class LeaveRequestController {
                                 reason
                         );
 
+                sickRequest.setRequestGroupId(groupId);
+
                 leaveRequestRepository.save(
                         sickRequest
                 );
@@ -307,6 +326,8 @@ public class LeaveRequestController {
                                 reason
                         );
 
+                casualRequest.setRequestGroupId(groupId);
+
                 leaveRequestRepository.save(
                         casualRequest
                 );
@@ -334,6 +355,8 @@ public class LeaveRequestController {
                                 lop,
                                 reason
                         );
+
+                lopRequest.setRequestGroupId(groupId);
 
                 leaveRequestRepository.save(
                         lopRequest
@@ -380,6 +403,12 @@ public class LeaveRequestController {
 
         request.setReason(reason);
         request.setStatus("PENDING");
+
+        // Default group id (single-date requests).
+        // Multi-day leave overrides this with a shared id.
+        request.setRequestGroupId(
+                UUID.randomUUID().toString()
+        );
 
         request.setCreatedAt(
                 LocalDateTime.now()
@@ -428,9 +457,7 @@ public class LeaveRequestController {
                 continue;
             }
 
-            if (existing.getStatus() != null &&
-                    existing.getStatus()
-                            .equalsIgnoreCase("REJECTED")) {
+            if (isInactive(existing.getStatus())) {
                 continue;
             }
 
@@ -703,8 +730,7 @@ public class LeaveRequestController {
                     existing.getLeaveType()
                             .equalsIgnoreCase("PERMISSION") &&
                     existing.getStatus() != null &&
-                    !existing.getStatus()
-                            .equalsIgnoreCase("REJECTED")) {
+                    !isInactive(existing.getStatus())) {
 
                 return "Permission Already Applied For This Date";
             }

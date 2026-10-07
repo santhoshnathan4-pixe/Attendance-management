@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -9,6 +10,9 @@
           content="width=device-width, initial-scale=1.0">
 
     <title>Growbytee - Admin Login</title>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
 
@@ -86,6 +90,12 @@
             font-weight: bold;
         }
 
+        .input-wrapper {
+            position: relative;
+
+            width: 100%;
+        }
+
         .input-group input {
             width: 100%;
 
@@ -102,6 +112,49 @@
 
         .input-group input:focus {
             border-color: #4f46e5;
+        }
+
+        /* Password input */
+        .password-input {
+            padding-right: 45px !important;
+        }
+
+        /* Eye button */
+        .password-toggle {
+            position: absolute;
+
+            right: 10px;
+            top: 50%;
+
+            transform: translateY(-50%);
+
+            width: 32px;
+            height: 32px;
+
+            border: none;
+
+            background: transparent;
+
+            color: #666;
+
+            cursor: pointer;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 6px;
+        }
+
+        .password-toggle:hover {
+            background: #f1f1f1;
+
+            color: #4f46e5;
+        }
+
+        .password-toggle svg {
+            width: 19px;
+            height: 19px;
         }
 
         .login-btn {
@@ -161,33 +214,72 @@
         </h2>
 
 
+        <!-- =========================
+             EMAIL
+        ========================== -->
+
         <div class="input-group">
 
-            <label>Email</label>
+            <label for="email">
+                Email
+            </label>
 
             <input
                 type="email"
                 id="email"
                 placeholder="Enter admin email"
+                autocomplete="username"
             >
 
         </div>
 
+
+        <!-- =========================
+             PASSWORD
+        ========================== -->
 
         <div class="input-group">
 
-            <label>Password</label>
+            <label for="password">
+                Password
+            </label>
 
-            <input
-                type="password"
-                id="password"
-                placeholder="Enter admin password"
-            >
+            <div class="input-wrapper">
+
+                <input
+                    type="password"
+                    id="password"
+                    class="password-input"
+                    placeholder="Enter admin password"
+                    autocomplete="current-password"
+                >
+
+                <button
+                    type="button"
+                    class="password-toggle"
+                    id="passwordToggle"
+                    onclick="togglePassword()"
+                    aria-label="Show password"
+                    title="Show password">
+
+                    <i
+                        data-lucide="eye"
+                        id="passwordIcon">
+                    </i>
+
+                </button>
+
+            </div>
 
         </div>
 
 
+        <!-- =========================
+             LOGIN BUTTON
+        ========================== -->
+
         <button
+            type="button"
             class="login-btn"
             onclick="adminLogin()">
 
@@ -204,17 +296,87 @@
 
     <script>
 
+        // =========================
+        // INITIALIZE LUCIDE
+        // =========================
+
+        lucide.createIcons();
+
+
+        // =========================
+        // SHOW / HIDE PASSWORD
+        // =========================
+
+        function togglePassword() {
+
+            const password =
+                document.getElementById("password");
+
+            const passwordToggle =
+                document.getElementById("passwordToggle");
+
+
+            if (password.type === "password") {
+
+                password.type = "text";
+
+                passwordToggle.innerHTML =
+                    '<i data-lucide="eye-off"></i>';
+
+                passwordToggle.setAttribute(
+                    "aria-label",
+                    "Hide password"
+                );
+
+                passwordToggle.setAttribute(
+                    "title",
+                    "Hide password"
+                );
+
+            } else {
+
+                password.type = "password";
+
+                passwordToggle.innerHTML =
+                    '<i data-lucide="eye"></i>';
+
+                passwordToggle.setAttribute(
+                    "aria-label",
+                    "Show password"
+                );
+
+                passwordToggle.setAttribute(
+                    "title",
+                    "Show password"
+                );
+            }
+
+            lucide.createIcons();
+        }
+
+
+        // =========================
+        // ADMIN LOGIN
+        // =========================
+
         function adminLogin() {
 
             const email =
-                document.getElementById("email").value.trim();
+                document.getElementById("email")
+                    .value
+                    .trim();
 
             const password =
-                document.getElementById("password").value;
+                document.getElementById("password")
+                    .value;
 
             const message =
                 document.getElementById("message");
 
+
+            // =========================
+            // VALIDATION
+            // =========================
 
             if (email === "" || password === "") {
 
@@ -227,17 +389,30 @@
             }
 
 
-            fetch(
-                `/admin/login?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
-                {
-                    method: "POST"
-                }
-            )
+            // =========================
+            // ADMIN LOGIN API
+            // =========================
+
+            const backendUrl =
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1"
+        ? ""
+        : "https://attendance-management-d5h6.onrender.com";
+
+fetch(
+    `${backendUrl}/admin/login?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
+    {
+        method: "POST"
+    }
+)
 
             .then(response => {
 
                 if (!response.ok) {
-                    throw new Error("Login request failed");
+
+                    throw new Error(
+                        "Login request failed"
+                    );
                 }
 
                 return response.json();
@@ -248,15 +423,30 @@
 
                 if (data.success) {
 
+                    console.log(
+                        "ADMIN LOGIN RESPONSE:",
+                        data
+                    );
+
+
+                    // =========================
+                    // SAVE ADMIN LOGIN DETAILS
+                    // =========================
+
                     localStorage.setItem(
                         "adminEmail",
-                        data.email
+                        email
                     );
 
                     localStorage.setItem(
                         "adminName",
                         data.adminName
                     );
+
+
+                    // =========================
+                    // OPEN ADMIN DASHBOARD
+                    // =========================
 
                     window.location.href =
                         "admin-dashboard.html";
@@ -269,7 +459,6 @@
                         data.message;
 
                     message.style.color = "red";
-
                 }
 
             })
@@ -288,17 +477,24 @@
         }
 
 
+        // =========================
+        // ENTER KEY LOGIN
+        // =========================
+
         document
             .getElementById("password")
-            .addEventListener("keypress", function(event) {
+            .addEventListener(
+                "keypress",
+                function(event) {
 
-                if (event.key === "Enter") {
+                    if (event.key === "Enter") {
 
-                    adminLogin();
+                        adminLogin();
+
+                    }
 
                 }
-
-            });
+            );
 
     </script>
 
@@ -306,3 +502,4 @@
 </body>
 
 </html>
+

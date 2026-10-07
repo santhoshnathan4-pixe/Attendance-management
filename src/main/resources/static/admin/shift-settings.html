@@ -1,0 +1,2354 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GROWBYTEE - Shift Settings</title>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+        background: #f4f7fb;
+        color: #1f2937;
+    }
+
+    .container {
+        display: flex;
+        min-height: 100vh;
+    }
+
+    .sidebar {
+        width: 250px;
+        background: #334155;
+        color: white;
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        padding: 25px 15px;
+        overflow-y: auto;
+    }
+
+    .logo {
+        text-align: center;
+        font-size: 25px;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+
+    .admin-title {
+        text-align: center;
+        color: #cbd5e1;
+        font-size: 13px;
+        margin-bottom: 30px;
+    }
+
+    .menu {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .menu button {
+        border: none;
+        background: transparent;
+        color: #e5e7eb;
+        text-align: left;
+        padding: 14px 15px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 15px;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .menu button svg {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+    }
+
+    .menu button:hover,
+    .menu button.active {
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
+    }
+
+    .logout-btn {
+        margin-top: 25px;
+        background: #dc2626 !important;
+        color: white !important;
+        text-align: center !important;
+    }
+
+    .logout-btn:hover {
+        background: #b91c1c !important;
+    }
+
+    .main {
+        margin-left: 250px;
+        width: calc(100% - 250px);
+        min-height: 100vh;
+    }
+
+    .header {
+        height: 75px;
+        background: white;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 30px;
+        position: sticky;
+        top: 0;
+        z-index: 20;
+    }
+
+    .header h1 {
+        font-size: 23px;
+        color: #111827;
+    }
+
+    .admin-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #475569;
+        font-size: 14px;
+    }
+
+    .admin-badge {
+        background: #2563eb;
+        color: white;
+        padding: 8px 13px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .content {
+        padding: 30px;
+    }
+
+    .section {
+        display: none;
+        padding: 24px;
+        border-radius: 16px;
+        min-height: calc(100vh - 135px);
+        border: 1px solid #e5e7eb;
+    }
+
+    .section.active {
+        display: block;
+    }
+
+    #dashboard {
+        background: #f8fafc;
+    }
+
+    #leave {
+        background: #fbfaf8;
+    }
+
+    #salary {
+        background: #f8fbfa;
+    }
+
+    #history {
+        background: #f8fafb;
+    }
+
+    .section-title {
+        font-size: 25px;
+        margin-bottom: 8px;
+        color: #111827;
+    }
+
+    .section-subtitle {
+        color: #64748b;
+        margin-bottom: 25px;
+        font-size: 14px;
+    }
+
+    .top-bar {
+        background: white;
+        padding: 18px;
+        border-radius: 13px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
+    }
+
+    .top-bar-left,
+    .top-bar-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn {
+        border: none;
+        border-radius: 8px;
+        padding: 10px 16px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+    .btn-primary {
+        background: #2563eb;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #1d4ed8;
+    }
+
+    .btn-success {
+        background: #16a34a;
+        color: white;
+    }
+
+    .btn-success:hover {
+        background: #15803d;
+    }
+
+    .btn-danger {
+        background: #dc2626;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background: #b91c1c;
+    }
+
+    .btn-warning {
+        background: #f59e0b;
+        color: white;
+    }
+
+    .btn-warning:hover {
+        background: #d97706;
+    }
+
+    .btn-secondary {
+        background: #64748b;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background: #475569;
+    }
+
+    .btn-small {
+        padding: 7px 11px;
+        font-size: 12px;
+    }
+
+    .table-card {
+        background: white;
+        border-radius: 14px;
+        box-shadow: 0 5px 20px rgba(15, 23, 42, 0.06);
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 900px;
+    }
+
+    th {
+        background: #eff6ff;
+        color: #1e3a8a;
+        font-size: 13px;
+        text-align: left;
+        padding: 14px;
+        white-space: nowrap;
+    }
+
+    td {
+        padding: 13px 14px;
+        border-top: 1px solid #e5e7eb;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+    tr:hover td {
+        background: #f8fafc;
+    }
+
+    .empty-row {
+        text-align: center;
+        color: #64748b;
+        padding: 30px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .form-group label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #374151;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 11px 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        outline: none;
+        font-size: 14px;
+        background: white;
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 90px;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    /*
+     * Automatic fields
+     *
+     * Admin can see these values,
+     * but cannot manually change them.
+     */
+    .form-group input[readonly] {
+        background: #f8fafc;
+        color: #475569;
+        cursor: not-allowed;
+    }
+
+    .priority-box {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        color: #1e40af;
+        border-radius: 10px;
+        padding: 13px 15px;
+        font-size: 13px;
+        line-height: 1.7;
+        margin-bottom: 20px;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.65);
+        z-index: 100;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .modal.show {
+        display: flex;
+    }
+
+    .modal-box {
+        width: 100%;
+        max-width: 650px;
+        background: white;
+        border-radius: 16px;
+        padding: 25px;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 22px;
+    }
+
+    .modal-header h2 {
+        font-size: 20px;
+        color: #111827;
+    }
+
+    .close-btn {
+        border: none;
+        background: #f1f5f9;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 18px;
+    }
+
+    .close-btn:hover {
+        background: #e2e8f0;
+    }
+
+    .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 25px;
+    }
+
+    .message {
+        display: none;
+        margin-bottom: 18px;
+        padding: 12px 15px;
+        border-radius: 9px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .message.show {
+        display: block;
+    }
+
+    .message.success {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .message.error {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    @media (max-width: 800px) {
+        .sidebar {
+            width: 210px;
+        }
+
+        .main {
+            margin-left: 210px;
+            width: calc(100% - 210px);
+        }
+
+        .header {
+            padding: 0 15px;
+        }
+
+        .content {
+            padding: 20px 15px;
+        }
+
+        .section {
+            padding: 18px;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .sidebar {
+            position: relative;
+            width: 100%;
+            min-height: auto;
+        }
+
+        .container {
+            display: block;
+        }
+
+        .main {
+            margin-left: 0;
+            width: 100%;
+        }
+
+        .header {
+            position: relative;
+        }
+
+        .top-bar {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .admin-info {
+            display: none;
+        }
+    }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            GROWBYTEE
+        </div>
+
+        <div class="admin-title">
+            Admin / CEO Dashboard
+        </div>
+
+        <div class="menu">
+
+         <button class="menu-btn"
+        onclick="window.location.href='/admin-dashboard.html'">
+    <i data-lucide="layout-dashboard"></i>
+    Dashboard
+</button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='employees.html'">
+                <i data-lucide="users"></i>
+                Employees
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='leave.html'">
+                <i data-lucide="clipboard-list"></i>
+                Leave
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='ai-assistant.html'">
+                <i data-lucide="sparkles"></i>
+                AI Assistant
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='working-day-settings.html'">
+                <i data-lucide="calendar-days"></i>
+                Working Day Settings
+            </button>
+
+            <button class="menu-btn active"
+                    onclick="window.location.href='shift-settings.html'">
+                <i data-lucide="clock-3"></i>
+                Shift Settings
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='branch-management.html'">
+                <i data-lucide="building-2"></i>
+                Branch Management
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='leave-permission-settings.html'">
+                <i data-lucide="settings"></i>
+                Leave & Permission Settings
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='salary.html'">
+                <i data-lucide="wallet"></i>
+                Salary
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='monthly-report.html'">
+                <i data-lucide="calendar-days"></i>
+                Monthly Report
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='history.html'">
+                <i data-lucide="history"></i>
+                History
+            </button>
+
+            <button class="menu-btn logout-btn"
+                    onclick="logout()">
+                <i data-lucide="log-out"></i>
+                Logout
+            </button>
+
+        </div>
+
+    </aside>
+
+    <main class="main">
+
+        <header class="header">
+
+            <h1>
+                GROWBYTEE - Admin Dashboard
+            </h1>
+
+            <div class="admin-info" id="adminInfo" style="display: none;">
+
+                <span id="loggedAdminName">
+                    Welcome, Admin
+                </span>
+
+                <span class="admin-badge">
+                    ADMIN
+                </span>
+
+            </div>
+
+        </header>
+
+        <div class="content">
+
+<section id="shiftSettings" class="section active">
+
+    <h2 class="section-title">
+        Shift Settings
+    </h2>
+
+    <p class="section-subtitle">
+        Admin can control shift timings, attendance rules,
+        salary deduction rules and working hours.
+    </p>
+
+    <div id="shiftSettingsMessage"
+         class="message">
+    </div>
+
+    <div class="priority-box">
+
+        <strong>Available Shifts:</strong>
+
+        General Shift →
+        Shift 1 →
+        Shift 2 →
+        Shift 3
+
+        <br>
+
+        Admin can configure each shift separately.
+
+        <br>
+
+        Employee-specific shift →
+        Role-specific shift →
+        General shift
+
+    </div>
+
+    <div class="top-bar">
+
+        <div class="top-bar-left">
+
+            <button class="btn btn-primary"
+                    onclick="openShiftSettingModal('GENERAL')">
+                + General Shift
+            </button>
+
+            <button class="btn btn-success"
+                    onclick="openShiftSettingModal('SHIFT_1')">
+                + Shift 1
+            </button>
+
+            <button class="btn btn-warning"
+                    onclick="openShiftSettingModal('SHIFT_2')">
+                + Shift 2
+            </button>
+
+            <button class="btn btn-secondary"
+                    onclick="openShiftSettingModal('SHIFT_3')">
+                + Shift 3
+            </button>
+
+        </div>
+
+        <div class="top-bar-right">
+
+            <button class="btn btn-secondary"
+                    onclick="loadShiftSettings()">
+                Refresh
+            </button>
+
+        </div>
+
+    </div>
+
+    <div class="table-card">
+
+        <div class="table-wrapper">
+
+            <table>
+
+                <thead>
+
+                <tr>
+                    <th>Shift</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Late After</th>
+                    <th>Salary Deduction After</th>
+                    <th>Early Deduction Before</th>
+                    <th>Half-Day Boundary</th>
+                    <th>Grace</th>
+                    <th>Working Hours</th>
+                    <th>Action</th>
+                </tr>
+
+                </thead>
+
+                <tbody id="shiftSettingsTableBody">
+
+                <tr>
+                    <td colspan="10"
+                        class="empty-row">
+                        Loading shift settings...
+                    </td>
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ================= SHIFT SETTINGS MODAL ================= -->
+
+<div
+    id="shiftSettingModal"
+    class="modal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h3>
+                Shift Settings
+            </h3>
+
+            <button
+                type="button"
+                class="close-btn"
+                onclick="closeShiftSettingModal()">
+                <i data-lucide="x"></i>
+            </button>
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="shiftSettingType">
+                Shift
+            </label>
+
+            <select
+                id="shiftSettingType"
+                required>
+
+                <option value="GENERAL">
+                    General Shift
+                </option>
+
+                <option value="SHIFT_1">
+                    Shift 1
+                </option>
+
+                <option value="SHIFT_2">
+                    Shift 2
+                </option>
+
+                <option value="SHIFT_3">
+                    Shift 3
+                </option>
+
+            </select>
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="shiftStartTime">
+                Start Time
+            </label>
+
+            <input
+                type="time"
+                id="shiftStartTime"
+                required>
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="shiftEndTime">
+                End Time
+            </label>
+
+            <input
+                type="time"
+                id="shiftEndTime"
+                required>
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="shiftLateAfter">
+                Late After
+            </label>
+
+            <input
+                type="time"
+                id="shiftLateAfter"
+                readonly>
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="shiftSalaryDeductionAfter">
+                Salary Deduction After
+            </label>
+
+            <input
+                type="time"
+                id="shiftSalaryDeductionAfter"
+                readonly>
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="shiftEarlyDeductionBefore">
+                Early Deduction Before
+            </label>
+
+            <input
+                type="time"
+                id="shiftEarlyDeductionBefore"
+                readonly>
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="shiftHalfDayBoundary">
+                Half-Day Boundary
+            </label>
+
+            <input
+                type="time"
+                id="shiftHalfDayBoundary"
+                readonly>
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="shiftGraceMinutes">
+                Grace Period (Minutes)
+            </label>
+
+            <input
+                type="number"
+                id="shiftGraceMinutes"
+                min="0"
+                value="5">
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="shiftWorkingHours">
+                Working Hours
+            </label>
+
+            <input
+                type="number"
+                id="shiftWorkingHours"
+                min="0.1"
+                step="0.5"
+                readonly
+                required>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="closeShiftSettingModal()">
+                Cancel
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-primary"
+                onclick="saveShiftSetting()">
+                Save Shift
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+        </div>
+
+    </main>
+
+</div>
+
+<script>
+
+    const API_BASE_URL =
+        window.location.hostname === "localhost" ||
+            window.location.hostname === "127.0.0.1"
+            ? "http://localhost:8080"
+            : "https://attendance-management-d5h6.onrender.com";
+
+    async function apiFetch(
+        url,
+        options = {}
+    ) {
+
+        return fetch(
+            API_BASE_URL + url,
+            options
+        );
+
+    }
+
+    function loadAdminInfo() {
+
+        const adminEmail =
+            localStorage.getItem(
+                "adminEmail"
+            );
+
+        const adminName =
+            localStorage.getItem(
+                "adminName"
+            );
+
+        if (adminName) {
+
+            const adminNameElement =
+                document.getElementById(
+                    "loggedAdminName"
+                );
+
+            if (adminNameElement) {
+
+                adminNameElement.textContent =
+                    "Welcome, " + adminName;
+
+            }
+
+        }
+
+        if (adminEmail) {
+
+            const emailField =
+                document.getElementById(
+                    "verifyAdminEmail"
+                );
+
+            if (emailField) {
+
+                emailField.value =
+                    adminEmail;
+
+            }
+
+        }
+
+    }
+
+    async function getErrorMessage(
+        response
+    ) {
+
+        try {
+
+            const text =
+                await response.text();
+
+            if (!text) {
+
+                return (
+                    "Request failed. HTTP " +
+                    response.status
+                );
+
+            }
+
+            try {
+
+                const json =
+                    JSON.parse(
+                        text
+                    );
+
+                return (
+                    json.message ||
+                    json.error ||
+                    text
+                );
+
+            }
+            catch {
+
+                return text;
+
+            }
+
+        }
+        catch {
+
+            return (
+                "Request failed. HTTP " +
+                response.status
+            );
+
+        }
+
+    }
+
+    function showMessage(
+        elementId,
+        message,
+        type
+    ) {
+
+        const element =
+            document.getElementById(
+                elementId
+            );
+
+        if (!element) {
+            return;
+        }
+
+        element.textContent =
+            message;
+
+        element.className =
+            "message show " +
+            (
+                type === "success"
+                    ? "success"
+                    : "error"
+            );
+
+        setTimeout(
+            function() {
+
+                element.classList.remove(
+                    "show"
+                );
+
+            },
+            5000
+        );
+
+    }
+
+    function escapeHtml(
+        value
+    ) {
+
+        if (
+            value === null ||
+            value === undefined
+        ) {
+
+            return "";
+
+        }
+
+        return String(value)
+            .replaceAll(
+                "&",
+                "&amp;"
+            )
+            .replaceAll(
+                "<",
+                "&lt;"
+            )
+            .replaceAll(
+                ">",
+                "&gt;"
+            )
+            .replaceAll(
+                '"',
+                "&quot;"
+            )
+            .replaceAll(
+                "'",
+                "&#039;"
+            );
+
+    }
+
+    function logout() {
+
+        const confirmed =
+            confirm(
+                "Are you sure you want to logout?"
+            );
+
+        if (!confirmed) {
+            return;
+        }
+
+        localStorage.removeItem(
+            "adminEmail"
+        );
+
+        localStorage.removeItem(
+            "adminName"
+        );
+
+        window.location.href =
+            "admin-login.html";
+
+    }
+
+    function openShiftSettingModal(
+        shiftType = "GENERAL"
+    ) {
+
+        const modal =
+            document.getElementById(
+                "shiftSettingModal"
+            );
+
+        if (!modal) {
+            return;
+        }
+
+        const shiftTypeField =
+            document.getElementById(
+                "shiftSettingType"
+            );
+
+        const startTime =
+            document.getElementById(
+                "shiftStartTime"
+            );
+
+        const endTime =
+            document.getElementById(
+                "shiftEndTime"
+            );
+
+        const lateAfter =
+            document.getElementById(
+                "shiftLateAfter"
+            );
+
+        const salaryDeductionAfter =
+            document.getElementById(
+                "shiftSalaryDeductionAfter"
+            );
+
+        const earlyDeductionBefore =
+            document.getElementById(
+                "shiftEarlyDeductionBefore"
+            );
+
+        const halfDayBoundary =
+            document.getElementById(
+                "shiftHalfDayBoundary"
+            );
+
+        const graceMinutes =
+            document.getElementById(
+                "shiftGraceMinutes"
+            );
+
+        const workingHours =
+            document.getElementById(
+                "shiftWorkingHours"
+            );
+
+        shiftTypeField.value =
+            shiftType;
+
+        /*
+         * Default shift timings.
+         *
+         * Admin can change only:
+         * Start Time
+         * End Time
+         * Grace Period
+         */
+        startTime.value =
+            "09:00";
+
+        endTime.value =
+            "18:00";
+
+        lateAfter.value =
+            "";
+
+        salaryDeductionAfter.value =
+            "";
+
+        earlyDeductionBefore.value =
+            "";
+
+        halfDayBoundary.value =
+            "";
+
+        graceMinutes.value =
+            "5";
+
+        workingHours.value =
+            "";
+
+        const existingSetting =
+            shiftSettings.find(
+                function(setting) {
+
+                    return String(
+                        setting.shiftType ||
+                        ""
+                    ).toUpperCase() ===
+                        String(
+                            shiftType
+                        ).toUpperCase();
+
+                }
+            );
+
+        if (existingSetting) {
+
+            startTime.value =
+                existingSetting.startTime ||
+                "09:00";
+
+            endTime.value =
+                existingSetting.endTime ||
+                "18:00";
+
+            /*
+             * These values are recalculated
+             * automatically below.
+             *
+             * Do not load them as editable values.
+             */
+            graceMinutes.value =
+                existingSetting.graceMinutes ??
+                5;
+
+        }
+
+        setupShiftTimeAutoCalculation();
+
+        /*
+         * Calculate all automatic values
+         * immediately when the modal opens.
+         */
+        const startEvent =
+            new Event("change");
+
+        startTime.dispatchEvent(
+            startEvent
+        );
+
+        modal.classList.add(
+            "show"
+        );
+
+    }
+
+    function closeShiftSettingModal() {
+
+        const modal =
+            document.getElementById(
+                "shiftSettingModal"
+            );
+
+        if (modal) {
+
+            modal.classList.remove(
+                "show"
+            );
+
+        }
+
+    }
+
+    function setupShiftTimeAutoCalculation() {
+
+        const startTime =
+            document.getElementById(
+                "shiftStartTime"
+            );
+
+        const endTime =
+            document.getElementById(
+                "shiftEndTime"
+            );
+
+        const lateAfter =
+            document.getElementById(
+                "shiftLateAfter"
+            );
+
+        const salaryDeductionAfter =
+            document.getElementById(
+                "shiftSalaryDeductionAfter"
+            );
+
+        const earlyDeductionBefore =
+            document.getElementById(
+                "shiftEarlyDeductionBefore"
+            );
+
+        const halfDayBoundary =
+            document.getElementById(
+                "shiftHalfDayBoundary"
+            );
+
+        const graceMinutes =
+            document.getElementById(
+                "shiftGraceMinutes"
+            );
+
+        const workingHours =
+            document.getElementById(
+                "shiftWorkingHours"
+            );
+
+        if (
+            !startTime ||
+            !endTime ||
+            !lateAfter ||
+            !salaryDeductionAfter ||
+            !earlyDeductionBefore ||
+            !halfDayBoundary ||
+            !graceMinutes ||
+            !workingHours
+        ) {
+            return;
+        }
+
+        function timeToMinutes(
+            time
+        ) {
+
+            if (!time) {
+                return null;
+            }
+
+            const parts =
+                time.split(":");
+
+            if (parts.length < 2) {
+                return null;
+            }
+
+            const hours =
+                Number(
+                    parts[0]
+                );
+
+            const minutes =
+                Number(
+                    parts[1]
+                );
+
+            if (
+                Number.isNaN(hours) ||
+                Number.isNaN(minutes)
+            ) {
+                return null;
+            }
+
+            return (
+                hours * 60 +
+                minutes
+            );
+
+        }
+
+        function minutesToTime(
+            totalMinutes
+        ) {
+
+            totalMinutes =
+                Math.max(
+                    0,
+                    Math.min(
+                        1439,
+                        totalMinutes
+                    )
+                );
+
+            const hours =
+                Math.floor(
+                    totalMinutes / 60
+                );
+
+            const minutes =
+                totalMinutes % 60;
+
+            return (
+                String(
+                    hours
+                ).padStart(
+                    2,
+                    "0"
+                ) +
+                ":" +
+                String(
+                    minutes
+                ).padStart(
+                    2,
+                    "0"
+                )
+            );
+
+        }
+
+        function updateAutomaticTimes() {
+
+            const start =
+                timeToMinutes(
+                    startTime.value
+                );
+
+            const end =
+                timeToMinutes(
+                    endTime.value
+                );
+
+            /*
+             * Wait until both Start Time
+             * and End Time are available.
+             */
+            if (
+                start === null ||
+                end === null
+            ) {
+
+                lateAfter.value = "";
+                salaryDeductionAfter.value = "";
+                earlyDeductionBefore.value = "";
+                halfDayBoundary.value = "";
+                workingHours.value = "";
+
+                return;
+
+            }
+
+            /*
+             * End Time must be after
+             * Start Time.
+             */
+            if (
+                end <= start
+            ) {
+
+                lateAfter.value = "";
+                salaryDeductionAfter.value = "";
+                earlyDeductionBefore.value = "";
+                halfDayBoundary.value = "";
+                workingHours.value = "";
+
+                return;
+
+            }
+
+            let grace =
+                Number(
+                    graceMinutes.value
+                );
+
+            if (
+                Number.isNaN(grace) ||
+                grace < 0
+            ) {
+
+                grace = 5;
+
+            }
+
+            /*
+             * =====================================
+             * LATE AFTER
+             * =====================================
+             *
+             * Start Time + Grace Period
+             *
+             * Default:
+             * 09:00 + 5 = 09:05
+             */
+            lateAfter.value =
+                minutesToTime(
+                    start + grace
+                );
+
+            /*
+             * =====================================
+             * SALARY DEDUCTION AFTER
+             * =====================================
+             *
+             * Start Time + 30 minutes
+             *
+             * Default:
+             * 09:00 + 30 = 09:30
+             */
+            salaryDeductionAfter.value =
+                minutesToTime(
+                    start + 30
+                );
+
+            /*
+             * =====================================
+             * EARLY DEDUCTION BEFORE
+             * =====================================
+             *
+             * End Time - 30 minutes
+             *
+             * Default:
+             * 18:00 - 30 = 17:30
+             */
+            earlyDeductionBefore.value =
+                minutesToTime(
+                    end - 30
+                );
+
+            /*
+             * =====================================
+             * HALF-DAY BOUNDARY
+             * =====================================
+             *
+             * Exact midpoint between
+             * Start Time and End Time.
+             *
+             * Default:
+             * 09:00 -> 18:00
+             * midpoint = 13:30
+             */
+            const midpoint =
+                start +
+                Math.floor(
+                    (end - start) / 2
+                );
+
+            halfDayBoundary.value =
+                minutesToTime(
+                    midpoint
+                );
+
+            /*
+             * =====================================
+             * WORKING HOURS
+             * =====================================
+             *
+             * End Time - Start Time
+             *
+             * Default:
+             * 09:00 -> 18:00 = 9 hours
+             *
+             * Break time is not deducted.
+             */
+            const totalMinutes =
+                end - start;
+
+            const calculatedWorkingHours =
+                totalMinutes / 60;
+
+            workingHours.value =
+                calculatedWorkingHours
+                    .toFixed(2)
+                    .replace(
+                        /\.00$/,
+                        ""
+                    );
+
+        }
+
+        /*
+         * Start Time
+         */
+        startTime.oninput =
+            updateAutomaticTimes;
+
+        startTime.onchange =
+            updateAutomaticTimes;
+
+        /*
+         * End Time
+         */
+        endTime.oninput =
+            updateAutomaticTimes;
+
+        endTime.onchange =
+            updateAutomaticTimes;
+
+        /*
+         * Grace Period
+         */
+        graceMinutes.oninput =
+            updateAutomaticTimes;
+
+        graceMinutes.onchange =
+            updateAutomaticTimes;
+
+        /*
+         * Calculate immediately.
+         */
+        updateAutomaticTimes();
+
+    }
+
+    async function loadShiftSettings() {
+
+        const tbody =
+            document.getElementById(
+                "shiftSettingsTableBody"
+            );
+
+        if (!tbody) {
+            return;
+        }
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="10"
+                    class="empty-row">
+                    Loading shift settings...
+                </td>
+            </tr>
+        `;
+
+        try {
+
+            const response =
+                await apiFetch(
+                    "/admin/shift-settings"
+                );
+
+            if (!response.ok) {
+
+                throw new Error(
+                    await getErrorMessage(
+                        response
+                    )
+                );
+
+            }
+
+            shiftSettings =
+                await response.json();
+
+            renderShiftSettings();
+
+        }
+        catch (error) {
+
+            console.error(
+                "Load shift settings error:",
+                error
+            );
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="10"
+                        class="empty-row">
+                        Unable to load shift settings.
+                    </td>
+                </tr>
+            `;
+
+            showMessage(
+                "shiftSettingsMessage",
+                error.message ||
+                "Unable to load shift settings.",
+                "error"
+            );
+
+        }
+
+    }
+
+    function renderShiftSettings() {
+
+        const tbody =
+            document.getElementById(
+                "shiftSettingsTableBody"
+            );
+
+        if (!tbody) {
+            return;
+        }
+
+        if (
+            !shiftSettings ||
+            shiftSettings.length === 0
+        ) {
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="10"
+                        class="empty-row">
+                        No shift settings found. Admin can add a shift setting.
+                    </td>
+                </tr>
+            `;
+
+            return;
+
+        }
+
+        const shiftOrder = {
+
+            GENERAL: 1,
+
+            SHIFT_1: 2,
+
+            SHIFT_2: 3,
+
+            SHIFT_3: 4
+
+        };
+
+        const sortedSettings =
+            [...shiftSettings].sort(
+                function(a, b) {
+
+                    return (
+                        (
+                            shiftOrder[
+                            String(
+                                a.shiftType ||
+                                ""
+                            ).toUpperCase()
+                            ] || 99
+                        )
+                        -
+                        (
+                            shiftOrder[
+                            String(
+                                b.shiftType ||
+                                ""
+                            ).toUpperCase()
+                            ] || 99
+                        )
+                    );
+
+                }
+            );
+
+        tbody.innerHTML =
+            sortedSettings.map(
+                function(setting) {
+
+                    const shiftType =
+                        String(
+                            setting.shiftType ||
+                            ""
+                        ).toUpperCase();
+
+                    const shiftName =
+                        shiftType === "GENERAL"
+                            ? "General Shift"
+                            : shiftType === "SHIFT_1"
+                                ? "Shift 1"
+                                : shiftType === "SHIFT_2"
+                                    ? "Shift 2"
+                                    : shiftType === "SHIFT_3"
+                                        ? "Shift 3"
+                                        : shiftType;
+
+                    return `
+                        <tr>
+
+                            <td>
+                                <strong>
+                                    ${escapeHtml(
+                                        shiftName
+                                    )}
+                                </strong>
+                            </td>
+
+                            <td>
+                                ${escapeHtml(
+                                    formatShiftTime(
+                                        setting.startTime
+                                    )
+                                )}
+                            </td>
+
+                            <td>
+                                ${escapeHtml(
+                                    formatShiftTime(
+                                        setting.endTime
+                                    )
+                                )}
+                            </td>
+
+                            <td>
+                                ${escapeHtml(
+                                    formatShiftTime(
+                                        setting.lateAfter
+                                    )
+                                )}
+                            </td>
+
+                            <td>
+                                ${escapeHtml(
+                                    formatShiftTime(
+                                        setting.salaryDeductionAfter
+                                    )
+                                )}
+                            </td>
+
+                            <td>
+                                ${escapeHtml(
+                                    formatShiftTime(
+                                        setting.earlyDeductionBefore
+                                    )
+                                )}
+                            </td>
+
+                            <td>
+                                ${escapeHtml(
+                                    formatShiftTime(
+                                        setting.halfDayBoundary
+                                    )
+                                )}
+                            </td>
+
+                            <td>
+                                ${escapeHtml(
+                                    String(
+                                        setting.graceMinutes ??
+                                        5
+                                    )
+                                )} min
+                            </td>
+
+                            <td>
+                                ${escapeHtml(
+                                    String(
+                                        setting.workingHours ??
+                                        "-"
+                                    )
+                                )} hrs
+                            </td>
+
+                            <td>
+
+                                <button
+                                    type="button"
+                                    class="btn btn-primary btn-small"
+                                    onclick="openShiftSettingModal('${escapeHtml(
+                                        shiftType
+                                    )}')">
+                                    Edit
+                                </button>
+
+                                <button
+                                    type="button"
+                                    class="btn btn-danger btn-small"
+                                    onclick="deleteShiftSetting('${escapeHtml(
+                                        shiftType
+                                    )}')">
+                                    Delete
+                                </button>
+
+                            </td>
+
+                        </tr>
+                    `;
+
+                }
+            ).join("");
+
+        if (
+            typeof lucide !== "undefined"
+        ) {
+
+            lucide.createIcons();
+
+        }
+
+    }
+
+    function formatShiftTime(
+        value
+    ) {
+
+        if (!value) {
+            return "-";
+        }
+
+        return String(
+            value
+        ).substring(
+            0,
+            5
+        );
+
+    }
+
+    async function saveShiftSetting() {
+
+        const shiftType =
+            document.getElementById(
+                "shiftSettingType"
+            ).value;
+
+        const startTime =
+            document.getElementById(
+                "shiftStartTime"
+            ).value;
+
+        const endTime =
+            document.getElementById(
+                "shiftEndTime"
+            ).value;
+
+        const lateAfter =
+            document.getElementById(
+                "shiftLateAfter"
+            ).value;
+
+        const salaryDeductionAfter =
+            document.getElementById(
+                "shiftSalaryDeductionAfter"
+            ).value;
+
+        const earlyDeductionBefore =
+            document.getElementById(
+                "shiftEarlyDeductionBefore"
+            ).value;
+
+        const halfDayBoundary =
+            document.getElementById(
+                "shiftHalfDayBoundary"
+            ).value;
+
+        const graceMinutes =
+            document.getElementById(
+                "shiftGraceMinutes"
+            ).value;
+
+        const workingHours =
+            document.getElementById(
+                "shiftWorkingHours"
+            ).value;
+
+        if (!shiftType) {
+
+            alert(
+                "Please select a shift."
+            );
+
+            return;
+
+        }
+
+        if (!startTime) {
+
+            alert(
+                "Please select Start Time."
+            );
+
+            document.getElementById(
+                "shiftStartTime"
+            ).focus();
+
+            return;
+
+        }
+
+        if (!endTime) {
+
+            alert(
+                "Please select End Time."
+            );
+
+            document.getElementById(
+                "shiftEndTime"
+            ).focus();
+
+            return;
+
+        }
+
+        /*
+         * Convert HH:mm time into minutes
+         * so that time comparison is numeric.
+         */
+        const timeToMinutes = (
+            time
+        ) => {
+
+            if (!time) {
+                return null;
+            }
+
+            const parts =
+                time.split(":");
+
+            const hours =
+                Number(
+                    parts[0]
+                );
+
+            const minutes =
+                Number(
+                    parts[1]
+                );
+
+            if (
+                Number.isNaN(hours) ||
+                Number.isNaN(minutes)
+            ) {
+                return null;
+            }
+
+            return (
+                hours * 60 +
+                minutes
+            );
+
+        };
+
+        const startMinutes =
+            timeToMinutes(
+                startTime
+            );
+
+        const endMinutes =
+            timeToMinutes(
+                endTime
+            );
+
+        if (
+            startMinutes === null ||
+            endMinutes === null
+        ) {
+
+            alert(
+                "Please enter valid Start Time and End Time."
+            );
+
+            return;
+
+        }
+
+        if (
+            endMinutes <=
+            startMinutes
+        ) {
+
+            alert(
+                "End Time must be after Start Time."
+            );
+
+            return;
+
+        }
+
+        if (
+            !workingHours ||
+            Number(
+                workingHours
+            ) <= 0
+        ) {
+
+            alert(
+                "Please enter valid Working Hours."
+            );
+
+            document.getElementById(
+                "shiftWorkingHours"
+            ).focus();
+
+            return;
+
+        }
+
+        if (
+            graceMinutes !== "" &&
+            Number(
+                graceMinutes
+            ) < 0
+        ) {
+
+            alert(
+                "Grace Period cannot be negative."
+            );
+
+            return;
+
+        }
+
+        /*
+         * Recalculate automatic values one final time
+         * before sending data to the backend.
+         */
+        const effectiveGrace =
+            graceMinutes === ""
+                ? 5
+                : Number(
+                    graceMinutes
+                );
+
+        const calculatedLateAfter =
+            new Date(
+                1970,
+                0,
+                1,
+                Math.floor(
+                    (startMinutes + effectiveGrace) / 60
+                ),
+                (
+                    startMinutes +
+                    effectiveGrace
+                ) % 60
+            );
+
+        const lateAfterValue =
+            String(
+                calculatedLateAfter.getHours()
+            ).padStart(2, "0") +
+            ":" +
+            String(
+                calculatedLateAfter.getMinutes()
+            ).padStart(2, "0");
+
+        const salaryDeductionMinutes =
+            startMinutes + 30;
+
+        const salaryDeductionAfterValue =
+            String(
+                Math.floor(
+                    salaryDeductionMinutes / 60
+                )
+            ).padStart(2, "0") +
+            ":" +
+            String(
+                salaryDeductionMinutes % 60
+            ).padStart(2, "0");
+
+        const earlyDeductionMinutes =
+            endMinutes - 30;
+
+        const earlyDeductionBeforeValue =
+            String(
+                Math.floor(
+                    earlyDeductionMinutes / 60
+                )
+            ).padStart(2, "0") +
+            ":" +
+            String(
+                earlyDeductionMinutes % 60
+            ).padStart(2, "0");
+
+        const midpointMinutes =
+            startMinutes +
+            Math.floor(
+                (
+                    endMinutes -
+                    startMinutes
+                ) / 2
+            );
+
+        const halfDayBoundaryValue =
+            String(
+                Math.floor(
+                    midpointMinutes / 60
+                )
+            ).padStart(2, "0") +
+            ":" +
+            String(
+                midpointMinutes % 60
+            ).padStart(2, "0");
+
+        const calculatedWorkingHours =
+            (
+                endMinutes -
+                startMinutes
+            ) / 60;
+
+        const calculatedWorkingHoursValue =
+            Number(
+                calculatedWorkingHours.toFixed(2)
+            );
+
+        const requestData = {
+
+            shiftType:
+                shiftType,
+
+            startTime:
+                startTime,
+
+            endTime:
+                endTime,
+
+            lateAfter:
+                lateAfterValue,
+
+            salaryDeductionAfter:
+                salaryDeductionAfterValue,
+
+            earlyDeductionBefore:
+                earlyDeductionBeforeValue,
+
+            halfDayBoundary:
+                halfDayBoundaryValue,
+
+            graceMinutes:
+                effectiveGrace,
+
+            workingHours:
+                calculatedWorkingHoursValue
+
+        };
+
+        try {
+
+            const response =
+                await apiFetch(
+                    "/admin/shift-settings",
+                    {
+                        method:
+                            "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify(
+                                requestData
+                            )
+                    }
+                );
+
+            if (!response.ok) {
+
+                throw new Error(
+                    await getErrorMessage(
+                        response
+                    )
+                );
+
+            }
+
+            closeShiftSettingModal();
+
+            await loadShiftSettings();
+
+            showMessage(
+                "shiftSettingsMessage",
+                "Shift setting saved successfully.",
+                "success"
+            );
+
+        }
+        catch (error) {
+
+            console.error(
+                "Save shift setting error:",
+                error
+            );
+
+            showMessage(
+                "shiftSettingsMessage",
+                error.message ||
+                "Unable to save shift setting.",
+                "error"
+            );
+
+        }
+
+    }
+
+    let shiftSettings = [];
+
+    document.querySelectorAll(
+        ".modal"
+    ).forEach(
+        function(modal) {
+
+            modal.addEventListener(
+                "click",
+                function(event) {
+
+                    if (
+                        event.target ===
+                        modal
+                    ) {
+
+                        modal.classList.remove(
+                            "show"
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function() {
+
+            if (typeof lucide !== "undefined") {
+                lucide.createIcons();
+            }
+
+            loadAdminInfo();
+
+            loadShiftSettings();
+
+        }
+    );
+
+</script>
+
+</body>
+
+</html>
+

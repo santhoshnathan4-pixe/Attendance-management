@@ -45,6 +45,18 @@ public class LeaveRequest {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "request_group_id")
+    private String requestGroupId;
+
+    @Column(name = "decision_reason")
+    private String decisionReason;
+
+    @Column(name = "decided_by")
+    private Integer decidedBy;
+
+    @Column(name = "decided_at")
+    private LocalDateTime decidedAt;
+
 
     // =========================
     // GETTERS
@@ -96,6 +108,22 @@ public class LeaveRequest {
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
+    }
+
+    public String getRequestGroupId() {
+        return requestGroupId;
+    }
+
+    public String getDecisionReason() {
+        return decisionReason;
+    }
+
+    public Integer getDecidedBy() {
+        return decidedBy;
+    }
+
+    public LocalDateTime getDecidedAt() {
+        return decidedAt;
     }
 
 
@@ -150,5 +178,20 @@ public class LeaveRequest {
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
-}
 
+    public void setRequestGroupId(String requestGroupId) {
+        this.requestGroupId = requestGroupId;
+    }
+
+    public void setDecisionReason(String decisionReason) {
+        this.decisionReason = decisionReason;
+    }
+
+    public void setDecidedBy(Integer decidedBy) {
+        this.decidedBy = decidedBy;
+    }
+
+    public void setDecidedAt(LocalDateTime decidedAt) {
+        this.decidedAt = decidedAt;
+    }
+}

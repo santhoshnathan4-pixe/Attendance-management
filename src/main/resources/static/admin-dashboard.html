@@ -1,0 +1,2547 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>GROWBYTEE - Admin Dashboard</title>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+
+    /* =========================
+       GLOBAL
+    ========================= */
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+        background: #f4f7fb;
+        color: #1f2937;
+        min-height: 100vh;
+    }
+
+
+    /* =========================
+       LAYOUT
+    ========================= */
+
+    .app {
+        display: flex;
+        min-height: 100vh;
+    }
+
+
+    /* =========================
+       SIDEBAR
+    ========================= */
+
+    .sidebar {
+        width: 250px;
+        background: #334155;
+        color: white;
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        padding: 25px 15px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+    }
+
+
+    /* =========================
+       BRAND
+    ========================= */
+
+    .brand {
+        text-align: center;
+        padding: 0;
+        margin-bottom: 30px;
+        border-bottom: none;
+    }
+
+    .brand h1 {
+        font-size: 25px;
+        font-weight: bold;
+        letter-spacing: 0;
+        color: white;
+    }
+
+    .brand p {
+        text-align: center;
+        color: #cbd5e1;
+        font-size: 13px;
+        margin-top: 8px;
+        margin-bottom: 0;
+    }
+
+
+    /* =========================
+       MENU
+       NO MAIN MENU
+    ========================= */
+
+    .menu {
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        flex: 1;
+    }
+
+    .menu a {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 15px;
+        color: #e5e7eb;
+        text-decoration: none;
+        border-radius: 10px;
+        font-size: 15px;
+        transition: 0.2s;
+    }
+
+    .menu a:hover,
+    .menu a.active {
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
+    }
+
+    .menu a i,
+    .menu a svg {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+    }
+
+
+    /* =========================
+       LOGOUT
+    ========================= */
+
+    .logout {
+        margin-top: 25px;
+        padding: 0;
+        border-top: none;
+    }
+
+    .logout button {
+        width: 100%;
+        border: none;
+        background: #dc2626;
+        color: white;
+        padding: 14px 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        border-radius: 10px;
+        font-size: 15px;
+        transition: 0.2s;
+    }
+
+    .logout button:hover {
+        background: #b91c1c;
+        color: white;
+    }
+
+    .logout button i,
+    .logout button svg {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+    }
+
+
+    /* =========================
+       MAIN
+    ========================= */
+
+    .main {
+        margin-left: 250px;
+        width: calc(100% - 250px);
+        min-height: 100vh;
+    }
+
+
+    /* =========================
+       TOP BAR
+    ========================= */
+
+    .topbar {
+        height: 75px;
+        background: white;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 30px;
+        position: sticky;
+        top: 0;
+        z-index: 20;
+    }
+
+    .topbar h2 {
+        font-size: 19px;
+        color: #111827;
+    }
+
+    .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .admin-badge {
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: #eef2ff;
+        color: #4f46e5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .admin-badge i,
+    .admin-badge svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .admin-info strong {
+        display: block;
+        font-size: 13px;
+        color: #1f2937;
+    }
+
+    .admin-info span {
+        color: #6b7280;
+        font-size: 11px;
+    }
+
+
+    /* =========================
+       CONTENT
+    ========================= */
+
+    .content {
+        padding: 30px;
+    }
+
+    .welcome {
+        margin-bottom: 25px;
+    }
+
+    .welcome h1 {
+        font-size: 27px;
+        color: #111827;
+    }
+
+    .welcome p {
+        margin-top: 7px;
+        color: #6b7280;
+        font-size: 14px;
+    }
+
+
+    /* =========================
+       DASHBOARD SECTION
+    ========================= */
+
+    .section {
+        background: #f4f7fb;
+        border: 1px solid #e5e7eb;
+        border-radius: 16px;
+        padding: 24px;
+        min-height: calc(100vh - 135px);
+        overflow: hidden;
+    }
+
+    .section.active {
+        display: block;
+    }
+
+    #dashboard {
+        background: #f4f7fb;
+    }
+
+
+    /* =========================
+       SUMMARY CARDS
+    ========================= */
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin-bottom: 10px;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 23px;
+        border-radius: 15px;
+        box-shadow:
+            0 5px 20px rgba(15, 23, 42, 0.06);
+        border: 1px solid #e5e7eb;
+        cursor: pointer;
+        transition: 0.2s;
+        user-select: none;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow:
+            0 8px 24px rgba(15, 23, 42, 0.11);
+    }
+
+    .stat-card:focus {
+        outline: 2px solid #2563eb;
+        outline-offset: 2px;
+    }
+
+    .stat-card h4 {
+        color: #64748b;
+        font-size: 14px;
+        margin-bottom: 12px;
+    }
+
+    .stat-card h2 {
+        font-size: 30px;
+        color: #111827;
+    }
+
+    .stat-blue {
+        border-left: 5px solid #2563eb;
+    }
+
+    .stat-green {
+        border-left: 5px solid #16a34a;
+    }
+
+    .stat-orange {
+        border-left: 5px solid #f97316;
+    }
+
+    .stat-yellow {
+        border-left: 5px solid #eab308;
+    }
+
+    .stat-red {
+        border-left: 5px solid #dc2626;
+    }
+
+    .stat-purple {
+        border-left: 5px solid #7c3aed;
+    }
+
+
+    /* =========================
+       MESSAGE
+    ========================= */
+
+    .message {
+        display: none;
+        margin-bottom: 18px;
+        padding: 12px 15px;
+        border-radius: 9px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .message.show {
+        display: block;
+    }
+
+    .message.success {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .message.error {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+
+    /* =========================
+       COMPACT ATTENDANCE MODAL
+    ========================= */
+
+    .modal-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.60);
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+        padding: 15px;
+    }
+
+    .modal-overlay.show {
+        display: flex;
+    }
+
+    .modal-box {
+        width: min(850px, 100%);
+        max-height: 80vh;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.18);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .modal-header {
+        padding: 14px 18px;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    .modal-header h3 {
+        color: #111827;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .modal-header p {
+        margin-top: 3px;
+        color: #6b7280;
+        font-size: 11px;
+    }
+
+    .close-btn {
+        width: 30px;
+        height: 30px;
+        min-width: 30px;
+        border: none;
+        background: #f1f5f9;
+        color: #475569;
+        border-radius: 7px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    .close-btn:hover {
+        background: #e2e8f0;
+    }
+
+    .close-btn svg {
+        width: 15px;
+        height: 15px;
+    }
+
+    .modal-body {
+        padding: 14px 18px;
+        overflow-y: auto;
+    }
+
+    .modal-footer {
+        padding: 10px 18px;
+        border-top: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .secondary-btn {
+        border: 1px solid #cbd5e1;
+        background: white;
+        color: #334155;
+        padding: 7px 13px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .secondary-btn:hover {
+        background: #f8fafc;
+    }
+
+
+    /* =========================
+       DETAILS TABLE
+       COMPACT
+    ========================= */
+
+    .details-table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    .details-table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 600px;
+    }
+
+    .details-table th {
+        text-align: left;
+        background: #eff6ff;
+        color: #1e3a8a;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 9px 10px;
+        border-bottom: 1px solid #e2e8f0;
+        white-space: nowrap;
+    }
+
+    .details-table td {
+        padding: 9px 10px;
+        border-bottom: 1px solid #e5e7eb;
+        color: #334155;
+        font-size: 11px;
+        vertical-align: middle;
+    }
+
+    .details-table tbody tr:hover {
+        background: #f8fafc;
+    }
+
+    .employee-name {
+        font-weight: 600;
+        color: #111827;
+        font-size: 11px;
+    }
+
+    .employee-code {
+        color: #64748b;
+        font-size: 9px;
+        margin-top: 2px;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 3px 6px;
+        border-radius: 999px;
+        font-size: 9px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .status-present {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .status-late {
+        background: #ffedd5;
+        color: #9a3412;
+    }
+
+    .status-early {
+        background: #fef9c3;
+        color: #854d0e;
+    }
+
+    .status-approved {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .status-pending {
+        background: #fef3c7;
+        color: #92400e;
+    }
+
+    .status-rejected {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .status-none {
+        background: #f1f5f9;
+        color: #475569;
+    }
+
+    .leave-action-btn {
+        border: none;
+        background: #eef2ff;
+        color: #4338ca;
+        padding: 5px 8px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 10px;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        white-space: nowrap;
+    }
+
+    .leave-action-btn:hover {
+        background: #e0e7ff;
+    }
+
+    .leave-action-btn svg {
+        width: 11px;
+        height: 11px;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 25px 15px;
+        color: #64748b;
+        font-size: 12px;
+    }
+
+    .loading-state {
+        text-align: center;
+        padding: 25px 15px;
+        color: #64748b;
+        font-size: 12px;
+    }
+
+
+    /* =========================
+       RESPONSIVE
+    ========================= */
+
+    @media (max-width: 1100px) {
+
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+    }
+
+
+    @media (max-width: 800px) {
+
+        .sidebar {
+            width: 210px;
+        }
+
+        .main {
+            margin-left: 210px;
+            width: calc(100% - 210px);
+        }
+
+        .topbar {
+            padding: 0 15px;
+        }
+
+        .content {
+            padding: 20px 15px;
+        }
+
+        .section {
+            padding: 18px;
+        }
+
+        .modal-box {
+            width: min(760px, 100%);
+            max-height: 82vh;
+        }
+
+    }
+
+
+    @media (max-width: 600px) {
+
+        .sidebar {
+            position: relative;
+            width: 100%;
+            min-height: auto;
+        }
+
+        .app {
+            display: block;
+        }
+
+        .main {
+            margin-left: 0;
+            width: 100%;
+        }
+
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .topbar {
+            position: relative;
+        }
+
+        .admin-info {
+            display: none;
+        }
+
+        .modal-overlay {
+            padding: 8px;
+        }
+
+        .modal-box {
+            max-height: 85vh;
+            border-radius: 10px;
+        }
+
+        .modal-header,
+        .modal-body,
+        .modal-footer {
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+
+        .details-table {
+            min-width: 560px;
+        }
+
+    }
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="app">
+
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+
+    <aside class="sidebar">
+
+
+        <div class="brand">
+
+            <h1>
+                GROWBYTEE
+            </h1>
+
+            <p>
+                Admin / CEO Dashboard
+            </p>
+
+        </div>
+
+
+        <nav class="menu">
+
+
+            <a
+                href="/admin-dashboard.html"
+                class="active">
+
+                <i data-lucide="layout-dashboard"></i>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <a
+                href="/admin/employees.html">
+
+                <i data-lucide="users"></i>
+
+                <span>
+                    Employees
+                </span>
+
+            </a>
+
+
+            <a
+                href="/admin/leave.html">
+
+                <i data-lucide="calendar-days"></i>
+
+                <span>
+                    Leave
+                </span>
+
+            </a>
+
+
+            <a
+                href="/admin/ai-assistant.html">
+
+                <i data-lucide="bot"></i>
+
+                <span>
+                    AI Assistant
+                </span>
+
+            </a>
+
+
+            <a
+                href="/admin/working-day-settings.html">
+
+                <i data-lucide="calendar-cog"></i>
+
+                <span>
+                    Working Day Settings
+                </span>
+
+            </a>
+
+
+            <a
+                href="/admin/shift-settings.html">
+
+                <i data-lucide="clock-3"></i>
+
+                <span>
+                    Shift Settings
+                </span>
+
+            </a>
+
+
+            <a
+                href="/admin/branch-management.html">
+
+                <i data-lucide="map-pin"></i>
+
+                <span>
+                    Branch Management
+                </span>
+
+            </a>
+
+
+            <a
+                href="/admin/leave-permission-settings.html">
+
+                <i data-lucide="settings-2"></i>
+
+                <span>
+                    Leave & Permission Settings
+                </span>
+
+            </a>
+
+
+            <a
+                href="/admin/salary.html">
+
+                <i data-lucide="wallet"></i>
+
+                <span>
+                    Salary
+                </span>
+
+            </a>
+
+
+            <a
+                href="/admin/monthly-report.html">
+
+                <i data-lucide="file-chart-column"></i>
+
+                <span>
+                    Monthly Report
+                </span>
+
+            </a>
+
+
+            <a
+                href="/admin/history.html">
+
+                <i data-lucide="history"></i>
+
+                <span>
+                    History
+                </span>
+
+            </a>
+
+
+        </nav>
+
+
+        <div class="logout">
+
+            <button
+                type="button"
+                onclick="logout()">
+
+                <i data-lucide="log-out"></i>
+
+                <span>
+                    Logout
+                </span>
+
+            </button>
+
+        </div>
+
+
+    </aside>
+
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+
+    <main class="main">
+
+
+        <header class="topbar">
+
+
+            <h2>
+                Admin / CEO Dashboard
+            </h2>
+
+
+            <div class="topbar-right">
+
+
+                <div class="admin-info">
+
+                    <strong id="adminName">
+                        Admin
+                    </strong>
+
+                    <span>
+                        Administrator
+                    </span>
+
+                </div>
+
+
+                <div class="admin-badge">
+
+                    <i data-lucide="user"></i>
+
+                </div>
+
+
+            </div>
+
+
+        </header>
+
+
+        <section class="content">
+
+
+            <div class="welcome">
+
+                <h1>
+                    GROWBYTEE - Admin Dashboard
+                </h1>
+
+                <p>
+                    Manage employees, attendance, leave and company settings.
+                </p>
+
+            </div>
+
+
+            <section
+                id="dashboard"
+                class="section active">
+
+
+                <div
+                    style="
+                        padding: 0 0 24px 0;
+                        border-bottom: 1px solid #e5e7eb;
+                    ">
+
+                    <h2
+                        style="
+                            font-size: 19px;
+                            color: #111827;
+                        ">
+
+                        Dashboard Overview
+
+                    </h2>
+
+                    <p
+                        style="
+                            color: #6b7280;
+                            font-size: 13px;
+                            margin-top: 5px;
+                        ">
+
+                        Employee and attendance management overview
+
+                    </p>
+
+                </div>
+
+
+                <div style="padding-top: 24px;">
+
+
+                    <div
+                        id="dashboardMessage"
+                        class="message">
+                    </div>
+
+
+                    <div class="stats-grid">
+
+
+                        <div
+                            class="stat-card stat-blue"
+                            tabindex="0"
+                            role="button"
+                            onclick="openAttendanceDetails('TOTAL')"
+                            onkeydown="handleCardKeydown(event, 'TOTAL')">
+
+                            <h4>
+                                Total Employees
+                            </h4>
+
+                            <h2 id="totalEmployees">
+                                0
+                            </h2>
+
+                        </div>
+
+
+                        <div
+                            class="stat-card stat-green"
+                            tabindex="0"
+                            role="button"
+                            onclick="openAttendanceDetails('PRESENT')"
+                            onkeydown="handleCardKeydown(event, 'PRESENT')">
+
+                            <h4>
+                                Present Today
+                            </h4>
+
+                            <h2 id="presentToday">
+                                0
+                            </h2>
+
+                        </div>
+
+
+                        <div
+                            class="stat-card stat-orange"
+                            tabindex="0"
+                            role="button"
+                            onclick="openAttendanceDetails('LATE')"
+                            onkeydown="handleCardKeydown(event, 'LATE')">
+
+                            <h4>
+                                Late Today
+                            </h4>
+
+                            <h2 id="lateToday">
+                                0
+                            </h2>
+
+                        </div>
+
+
+                        <div
+                            class="stat-card stat-yellow"
+                            tabindex="0"
+                            role="button"
+                            onclick="openAttendanceDetails('EARLY')"
+                            onkeydown="handleCardKeydown(event, 'EARLY')">
+
+                            <h4>
+                                Early Check-Out
+                            </h4>
+
+                            <h2 id="earlyCheckoutToday">
+                                0
+                            </h2>
+
+                        </div>
+
+
+                        <div
+                            class="stat-card stat-red"
+                            tabindex="0"
+                            role="button"
+                            onclick="openAttendanceDetails('ABSENT')"
+                            onkeydown="handleCardKeydown(event, 'ABSENT')">
+
+                            <h4>
+                                Absent Today
+                            </h4>
+
+                            <h2 id="absentToday">
+                                0
+                            </h2>
+
+                        </div>
+
+
+                        <div
+                            class="stat-card stat-purple"
+                            tabindex="0"
+                            role="button"
+                            onclick="openAttendanceDetails('LEAVE')"
+                            onkeydown="handleCardKeydown(event, 'LEAVE')">
+
+                            <h4>
+                                Pending Leaves
+                            </h4>
+
+                            <h2 id="pendingLeaves">
+                                0
+                            </h2>
+
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </section>
+
+
+        </section>
+
+
+    </main>
+
+
+</div>
+
+
+<!-- =========================
+     ATTENDANCE DETAILS MODAL
+========================== -->
+
+<div
+    id="attendanceDetailsModal"
+    class="modal-overlay"
+    onclick="handleModalOverlayClick(event)">
+
+    <div
+        class="modal-box"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="attendanceDetailsTitle">
+
+
+        <div class="modal-header">
+
+
+            <div>
+
+                <h3 id="attendanceDetailsTitle">
+                    Attendance Details
+                </h3>
+
+                <p id="attendanceDetailsSubtitle">
+                    Today's attendance information
+                </p>
+
+            </div>
+
+
+            <button
+                type="button"
+                class="close-btn"
+                onclick="closeAttendanceDetails()"
+                aria-label="Close">
+
+                <i data-lucide="x"></i>
+
+            </button>
+
+
+        </div>
+
+
+        <div
+            id="attendanceDetailsBody"
+            class="modal-body">
+
+            <div class="loading-state">
+                Loading...
+            </div>
+
+        </div>
+
+
+        <div class="modal-footer">
+
+            <button
+                type="button"
+                class="secondary-btn"
+                onclick="closeAttendanceDetails()">
+
+                Close
+
+            </button>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+<script>
+
+
+    // =====================================================
+    // API BASE URL
+    // =====================================================
+
+    const API_BASE_URL =
+        window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1"
+
+            ? "http://localhost:8080"
+
+            : "https://attendance-management-d5h6.onrender.com";
+
+
+    // =====================================================
+    // API FETCH
+    // =====================================================
+
+    async function apiFetch(
+        url,
+        options = {}
+    ) {
+
+        return fetch(
+            API_BASE_URL + url,
+            options
+        );
+
+    }
+
+
+    // =====================================================
+    // LOAD ADMIN INFORMATION
+    // =====================================================
+
+    function loadAdminInfo() {
+
+        const adminEmail =
+            localStorage.getItem(
+                "adminEmail"
+            );
+
+        const adminName =
+            localStorage.getItem(
+                "adminName"
+            );
+
+
+        if (adminName) {
+
+            const adminNameElement =
+                document.getElementById(
+                    "adminName"
+                );
+
+            if (adminNameElement) {
+
+                adminNameElement.textContent =
+                    adminName;
+
+            }
+
+        }
+
+
+        if (adminEmail) {
+
+            const emailField =
+                document.getElementById(
+                    "verifyAdminEmail"
+                );
+
+            if (emailField) {
+
+                emailField.value =
+                    adminEmail;
+
+            }
+
+        }
+
+    }
+
+
+    // =====================================================
+    // ERROR MESSAGE
+    // =====================================================
+
+    async function getErrorMessage(
+        response
+    ) {
+
+        try {
+
+            const text =
+                await response.text();
+
+
+            if (!text) {
+
+                return (
+                    "Request failed. HTTP " +
+                    response.status
+                );
+
+            }
+
+
+            try {
+
+                const json =
+                    JSON.parse(
+                        text
+                    );
+
+
+                return (
+                    json.message ||
+                    json.error ||
+                    text
+                );
+
+            }
+
+            catch {
+
+                return text;
+
+            }
+
+        }
+
+        catch {
+
+            return (
+                "Request failed. HTTP " +
+                response.status
+            );
+
+        }
+
+    }
+
+
+    // =====================================================
+    // SHOW MESSAGE
+    // =====================================================
+
+    function showMessage(
+        elementId,
+        message,
+        type
+    ) {
+
+        const element =
+            document.getElementById(
+                elementId
+            );
+
+
+        if (!element) {
+            return;
+        }
+
+
+        element.textContent =
+            message;
+
+
+        element.className =
+            "message show " +
+            (
+                type === "success"
+                    ? "success"
+                    : "error"
+            );
+
+
+        setTimeout(
+            function() {
+
+                element.classList.remove(
+                    "show"
+                );
+
+            },
+            5000
+        );
+
+    }
+
+
+    // =====================================================
+    // LOGOUT
+    // =====================================================
+
+    function logout() {
+
+        const confirmed =
+            confirm(
+                "Are you sure you want to logout?"
+            );
+
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        localStorage.removeItem(
+            "adminEmail"
+        );
+
+        localStorage.removeItem(
+            "adminName"
+        );
+
+
+        window.location.href =
+            "/admin/admin-login.html";
+
+    }
+
+
+    // =====================================================
+    // EMPLOYEES
+    // =====================================================
+
+    let employees = [];
+
+
+    async function loadEmployees() {
+
+        try {
+
+            const response =
+                await apiFetch(
+                    "/admin/employees"
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    await getErrorMessage(
+                        response
+                    )
+                );
+
+            }
+
+
+            employees =
+                await response.json();
+
+
+            await updateDashboardStats();
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Load employees error:",
+                error
+            );
+
+
+            showMessage(
+                "dashboardMessage",
+                error.message ||
+                "Unable to load employees.",
+                "error"
+            );
+
+        }
+
+    }
+
+
+    // =====================================================
+    // LEAVES
+    // =====================================================
+
+    async function loadLeaves() {
+
+        try {
+
+            const response =
+                await apiFetch(
+                    "/admin/leaves"
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    await getErrorMessage(
+                        response
+                    )
+                );
+
+            }
+
+
+            const leaves =
+                await response.json();
+
+
+            updatePendingLeaveCount(
+                leaves
+            );
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Load leaves error:",
+                error
+            );
+
+
+            showMessage(
+                "dashboardMessage",
+                error.message ||
+                "Unable to load leaves.",
+                "error"
+            );
+
+        }
+
+    }
+
+
+    // =====================================================
+    // UPDATE PENDING LEAVE COUNT
+    // =====================================================
+
+    function updatePendingLeaveCount(
+        leaves
+    ) {
+
+        const count =
+            (leaves || []).filter(
+                function(leave) {
+
+                    return String(
+                        leave.status ||
+                        ""
+                    ).toUpperCase() ===
+                        "PENDING";
+
+                }
+            ).length;
+
+
+        const pendingElement =
+            document.getElementById(
+                "pendingLeaves"
+            );
+
+
+        if (pendingElement) {
+
+            pendingElement.textContent =
+                count;
+
+        }
+
+    }
+
+
+    // =====================================================
+    // UPDATE DASHBOARD STATISTICS
+    // =====================================================
+
+    async function updateDashboardStats() {
+
+        const total =
+            employees.length;
+
+
+        const totalElement =
+            document.getElementById(
+                "totalEmployees"
+            );
+
+
+        if (totalElement) {
+
+            totalElement.textContent =
+                total;
+
+        }
+
+
+        try {
+
+            const response =
+                await apiFetch(
+                    "/admin/dashboard/stats"
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    await getErrorMessage(
+                        response
+                    )
+                );
+
+            }
+
+
+            const stats =
+                await response.json();
+
+
+            const presentElement =
+                document.getElementById(
+                    "presentToday"
+                );
+
+            const lateElement =
+                document.getElementById(
+                    "lateToday"
+                );
+
+            const earlyElement =
+                document.getElementById(
+                    "earlyCheckoutToday"
+                );
+
+            const absentElement =
+                document.getElementById(
+                    "absentToday"
+                );
+
+            const pendingElement =
+                document.getElementById(
+                    "pendingLeaves"
+                );
+
+
+            if (presentElement) {
+
+                presentElement.textContent =
+                    Number(
+                        stats.presentToday || 0
+                    );
+
+            }
+
+
+            if (lateElement) {
+
+                lateElement.textContent =
+                    Number(
+                        stats.lateToday || 0
+                    );
+
+            }
+
+
+            if (earlyElement) {
+
+                earlyElement.textContent =
+                    Number(
+                        stats.earlyCheckoutToday || 0
+                    );
+
+            }
+
+
+            if (absentElement) {
+
+                absentElement.textContent =
+                    Number(
+                        stats.absentToday || 0
+                    );
+
+            }
+
+
+            if (pendingElement) {
+
+                pendingElement.textContent =
+                    Number(
+                        stats.pendingLeaves || 0
+                    );
+
+            }
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Dashboard statistics error:",
+                error
+            );
+
+
+            const presentElement =
+                document.getElementById(
+                    "presentToday"
+                );
+
+            const lateElement =
+                document.getElementById(
+                    "lateToday"
+                );
+
+            const earlyElement =
+                document.getElementById(
+                    "earlyCheckoutToday"
+                );
+
+            const absentElement =
+                document.getElementById(
+                    "absentToday"
+                );
+
+
+            if (presentElement) {
+                presentElement.textContent = "0";
+            }
+
+            if (lateElement) {
+                lateElement.textContent = "0";
+            }
+
+            if (earlyElement) {
+                earlyElement.textContent = "0";
+            }
+
+            if (absentElement) {
+                absentElement.textContent =
+                    employees.length;
+            }
+
+        }
+
+    }
+
+
+    // =====================================================
+    // OPEN ATTENDANCE DETAILS
+    // =====================================================
+
+    async function openAttendanceDetails(
+        type
+    ) {
+
+        if (type === "TOTAL") {
+
+            window.location.href =
+                "/admin/employees.html";
+
+            return;
+
+        }
+
+
+        if (type === "LEAVE") {
+
+            window.location.href =
+                "/admin/leave.html";
+
+            return;
+
+        }
+
+
+        const modal =
+            document.getElementById(
+                "attendanceDetailsModal"
+            );
+
+        const title =
+            document.getElementById(
+                "attendanceDetailsTitle"
+            );
+
+        const subtitle =
+            document.getElementById(
+                "attendanceDetailsSubtitle"
+            );
+
+        const body =
+            document.getElementById(
+                "attendanceDetailsBody"
+            );
+
+
+        if (!modal || !title || !subtitle || !body) {
+            return;
+        }
+
+
+        const titles = {
+
+            PRESENT:
+                "Present Employees",
+
+            LATE:
+                "Late Employees",
+
+            EARLY:
+                "Early Check-Out Employees",
+
+            ABSENT:
+                "Absent Employees"
+
+        };
+
+
+        const subtitles = {
+
+            PRESENT:
+                "Employees who have attendance recorded today.",
+
+            LATE:
+                "Employees who checked in late today.",
+
+            EARLY:
+                "Employees who checked out before the configured shift time.",
+
+            ABSENT:
+                "Employees without attendance recorded today."
+
+        };
+
+
+        title.textContent =
+            titles[type] ||
+            "Attendance Details";
+
+
+        subtitle.textContent =
+            subtitles[type] ||
+            "Today's attendance information";
+
+
+        body.innerHTML =
+            '<div class="loading-state">Loading...</div>';
+
+
+        modal.classList.add(
+            "show"
+        );
+
+
+        refreshIcons();
+
+
+        try {
+
+            const response =
+                await apiFetch(
+                    "/admin/dashboard/details?type=" +
+                    encodeURIComponent(type)
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    await getErrorMessage(
+                        response
+                    )
+                );
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            renderAttendanceDetails(
+                type,
+                data
+            );
+
+        }
+
+        catch (error) {
+
+            console.error(
+                "Attendance details error:",
+                error
+            );
+
+
+            body.innerHTML =
+                '<div class="empty-state">' +
+                escapeHtml(
+                    error.message ||
+                    "Unable to load attendance details."
+                ) +
+                '</div>';
+
+        }
+
+
+        refreshIcons();
+
+    }
+
+
+    // =====================================================
+    // RENDER ATTENDANCE DETAILS
+    // =====================================================
+
+    function renderAttendanceDetails(
+        type,
+        data
+    ) {
+
+        const body =
+            document.getElementById(
+                "attendanceDetailsBody"
+            );
+
+
+        if (!body) {
+            return;
+        }
+
+
+        if (
+            !Array.isArray(data) ||
+            data.length === 0
+        ) {
+
+            body.innerHTML =
+                '<div class="empty-state">' +
+                'No records found for today.' +
+                '</div>';
+
+            return;
+
+        }
+
+
+        if (
+            type === "PRESENT" ||
+            type === "LATE" ||
+            type === "EARLY"
+        ) {
+
+            let html = '';
+
+            html +=
+                '<div class="details-table-wrapper">';
+
+            html +=
+                '<table class="details-table">';
+
+            html += '<thead><tr>';
+
+            html += '<th>Employee</th>';
+            html += '<th>Check-In</th>';
+            html += '<th>Check-Out</th>';
+            html += '<th>Status</th>';
+
+            html += '</tr></thead>';
+
+            html += '<tbody>';
+
+
+            data.forEach(
+                function(item) {
+
+                    const status =
+                        String(
+                            item.status ||
+                            "PRESENT"
+                        );
+
+
+                    let badgeClass =
+                        "status-present";
+
+
+                    if (
+                        status.toUpperCase()
+                            .startsWith("LATE")
+                    ) {
+
+                        badgeClass =
+                            "status-late";
+
+                    }
+
+                    else if (
+                        status.toUpperCase()
+                            .startsWith("EARLY")
+                    ) {
+
+                        badgeClass =
+                            "status-early";
+
+                    }
+
+
+                    html += '<tr>';
+
+
+                    html +=
+                        '<td>' +
+                        '<div class="employee-name">' +
+                        escapeHtml(
+                            item.employeeName ||
+                            "-"
+                        ) +
+                        '</div>' +
+                        '<div class="employee-code">' +
+                        'Code: ' +
+                        escapeHtml(
+                            item.employeeCode ||
+                            "-"
+                        ) +
+                        '</div>' +
+                        '</td>';
+
+
+                    html +=
+                        '<td>' +
+                        escapeHtml(
+                            formatTime(
+                                item.checkIn
+                            )
+                        ) +
+                        '</td>';
+
+
+                    html +=
+                        '<td>' +
+                        escapeHtml(
+                            formatTime(
+                                item.checkOut
+                            )
+                        ) +
+                        '</td>';
+
+
+                    html +=
+                        '<td>' +
+                        '<span class="status-badge ' +
+                        badgeClass +
+                        '">' +
+                        escapeHtml(
+                            status
+                        ) +
+                        '</span>' +
+                        '</td>';
+
+
+                    html += '</tr>';
+
+                }
+            );
+
+
+            html += '</tbody>';
+            html += '</table>';
+            html += '</div>';
+
+
+            body.innerHTML =
+                html;
+
+
+            return;
+
+        }
+
+
+        if (type === "ABSENT") {
+
+            let html = '';
+
+            html +=
+                '<div class="details-table-wrapper">';
+
+            html +=
+                '<table class="details-table">';
+
+            html += '<thead><tr>';
+
+            html += '<th>Employee</th>';
+            html += '<th>Attendance</th>';
+            html += '<th>Leave Status</th>';
+            html += '<th>Leave Type</th>';
+            html += '<th>Reason</th>';
+            html += '<th>Action</th>';
+
+            html += '</tr></thead>';
+
+            html += '<tbody>';
+
+
+            data.forEach(
+                function(item) {
+
+                    const leaveStatus =
+                        String(
+                            item.leaveStatus ||
+                            "NO_LEAVE_REQUEST"
+                        ).toUpperCase();
+
+
+                    let badgeClass =
+                        "status-none";
+
+
+                    if (
+                        leaveStatus ===
+                        "APPROVED"
+                    ) {
+
+                        badgeClass =
+                            "status-approved";
+
+                    }
+
+                    else if (
+                        leaveStatus ===
+                        "PENDING"
+                    ) {
+
+                        badgeClass =
+                            "status-pending";
+
+                    }
+
+                    else if (
+                        leaveStatus ===
+                        "REJECTED"
+                    ) {
+
+                        badgeClass =
+                            "status-rejected";
+
+                    }
+
+
+                    const showAction =
+                        leaveStatus === "APPROVED" ||
+                        leaveStatus === "PENDING" ||
+                        leaveStatus === "REJECTED" ||
+                        leaveStatus === "NO_LEAVE_REQUEST";
+
+
+                    html += '<tr>';
+
+
+                    html +=
+                        '<td>' +
+                        '<div class="employee-name">' +
+                        escapeHtml(
+                            item.employeeName ||
+                            "-"
+                        ) +
+                        '</div>' +
+                        '<div class="employee-code">' +
+                        'Code: ' +
+                        escapeHtml(
+                            item.employeeCode ||
+                            "-"
+                        ) +
+                        '</div>' +
+                        '</td>';
+
+
+                    html +=
+                        '<td>' +
+                        '<span class="status-badge status-none">' +
+                        'Absent' +
+                        '</span>' +
+                        '</td>';
+
+
+                    html +=
+                        '<td>' +
+                        '<span class="status-badge ' +
+                        badgeClass +
+                        '">' +
+                        escapeHtml(
+                            formatLeaveStatus(
+                                leaveStatus
+                            )
+                        ) +
+                        '</span>' +
+                        '</td>';
+
+
+                    html +=
+                        '<td>' +
+                        escapeHtml(
+                            item.leaveType ||
+                            "-"
+                        ) +
+                        '</td>';
+
+
+                    html +=
+                        '<td>' +
+                        escapeHtml(
+                            item.leaveReason ||
+                            "-"
+                        ) +
+                        '</td>';
+
+
+                    html += '<td>';
+
+
+                    if (showAction) {
+
+                        html +=
+                            '<button ' +
+                            'type="button" ' +
+                            'class="leave-action-btn" ' +
+                            'onclick="openLeaveManagement()">' +
+
+                            '<i data-lucide="external-link"></i>' +
+
+                            'Leave Management' +
+
+                            '</button>';
+
+                    }
+
+                    else {
+
+                        html += '-';
+
+                    }
+
+
+                    html += '</td>';
+
+
+                    html += '</tr>';
+
+                }
+            );
+
+
+            html += '</tbody>';
+            html += '</table>';
+            html += '</div>';
+
+
+            body.innerHTML =
+                html;
+
+
+            refreshIcons();
+
+        }
+
+    }
+
+
+    // =====================================================
+    // FORMAT LEAVE STATUS
+    // =====================================================
+
+    function formatLeaveStatus(
+        status
+    ) {
+
+        if (
+            status ===
+            "NO_LEAVE_REQUEST"
+        ) {
+
+            return "No Leave Request";
+
+        }
+
+
+        return status;
+
+    }
+
+
+    // =====================================================
+    // OPEN LEAVE MANAGEMENT
+    // =====================================================
+
+    function openLeaveManagement() {
+
+        window.location.href =
+            "/admin/leave.html";
+
+    }
+
+
+    // =====================================================
+    // CLOSE DETAILS MODAL
+    // =====================================================
+
+    function closeAttendanceDetails() {
+
+        const modal =
+            document.getElementById(
+                "attendanceDetailsModal"
+            );
+
+
+        if (modal) {
+
+            modal.classList.remove(
+                "show"
+            );
+
+        }
+
+    }
+
+
+    // =====================================================
+    // MODAL OVERLAY CLICK
+    // =====================================================
+
+    function handleModalOverlayClick(
+        event
+    ) {
+
+        if (
+            event.target &&
+            event.target.id ===
+                "attendanceDetailsModal"
+        ) {
+
+            closeAttendanceDetails();
+
+        }
+
+    }
+
+
+    // =====================================================
+    // CARD KEYBOARD SUPPORT
+    // =====================================================
+
+    function handleCardKeydown(
+        event,
+        type
+    ) {
+
+        if (
+            event.key === "Enter" ||
+            event.key === " "
+        ) {
+
+            event.preventDefault();
+
+            openAttendanceDetails(
+                type
+            );
+
+        }
+
+    }
+
+
+    // =====================================================
+    // FORMAT TIME
+    // =====================================================
+
+    function formatTime(
+        value
+    ) {
+
+        if (!value) {
+            return "-";
+        }
+
+
+        const text =
+            String(value);
+
+
+        if (
+            text.includes("T")
+        ) {
+
+            const timePart =
+                text.split("T")[1];
+
+
+            if (timePart) {
+
+                return timePart
+                    .substring(0, 5);
+
+            }
+
+        }
+
+
+        if (
+            /^\d{2}:\d{2}/.test(
+                text
+            )
+        ) {
+
+            return text.substring(
+                0,
+                5
+            );
+
+        }
+
+
+        return text;
+
+    }
+
+
+    // =====================================================
+    // ESCAPE HTML
+    // =====================================================
+
+    function escapeHtml(
+        value
+    ) {
+
+        if (
+            value === null ||
+            value === undefined
+        ) {
+
+            return "";
+
+        }
+
+
+        return String(value)
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+            .replace(
+                /</g,
+                "&lt;"
+            )
+            .replace(
+                />/g,
+                "&gt;"
+            )
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+            .replace(
+                /'/g,
+                "&#039;"
+            );
+
+    }
+
+
+    // =====================================================
+    // REFRESH LUCIDE ICONS
+    // =====================================================
+
+    function refreshIcons() {
+
+        if (
+            typeof lucide !==
+            "undefined"
+        ) {
+
+            lucide.createIcons();
+
+        }
+
+    }
+
+
+    // =====================================================
+    // ESC KEY
+    // =====================================================
+
+    document.addEventListener(
+        "keydown",
+        function(event) {
+
+            if (
+                event.key === "Escape"
+            ) {
+
+                closeAttendanceDetails();
+
+            }
+
+        }
+    );
+
+
+    // =====================================================
+    // INITIAL LOAD
+    // =====================================================
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function() {
+
+            refreshIcons();
+
+            loadAdminInfo();
+
+            loadEmployees();
+
+            loadLeaves();
+
+        }
+    );
+
+
+</script>
+
+
+</body>
+
+</html>

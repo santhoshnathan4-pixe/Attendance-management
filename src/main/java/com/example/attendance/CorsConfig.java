@@ -14,6 +14,8 @@ public class CorsConfig implements WebMvcConfigurer {
                                 .allowedOrigins(
                                                 "http://localhost:3000",
                                                 "http://127.0.0.1:3000",
+                                                "http://localhost:8080",
+                                                "http://127.0.0.1:8080",
                                                 "https://attendance-management-3d-webinar.vercel.app",
                                                 "https://attendance-management-git-main-3d-webinar.vercel.app",
                                                 "https://attendance-management-lhsosyu8t-3d-webinar.vercel.app",

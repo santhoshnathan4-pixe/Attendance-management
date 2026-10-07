@@ -1,6 +1,6 @@
-
 package com.example.attendance;
 
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -67,7 +67,9 @@ public class AdminLeaveController {
                             leave.getPermissionEnd(),
                             leave.getReason(),
                             leave.getStatus(),
-                            leave.getCreatedAt()
+                            leave.getCreatedAt(),
+                            leave.getRequestGroupId(),
+                            leave.getDecisionReason()
                     );
                 })
                 .filter(response -> response != null)
@@ -76,6 +78,7 @@ public class AdminLeaveController {
 
     // =========================================
     // APPROVE / REJECT USING ADMIN PASSWORD
+    // (SINGLE ROW)
     // =========================================
 
     @PutMapping("/{id}/status")
@@ -140,6 +143,21 @@ public class AdminLeaveController {
         status = status.toUpperCase();
 
         // -----------------------------------------
+        // REASON (REQUIRED WHEN REJECTING)
+        // -----------------------------------------
+
+        String reason =
+                request.getReason() != null
+                        ? request.getReason().trim()
+                        : "";
+
+        if (status.equals("REJECTED") &&
+                reason.length() < 3) {
+
+            return "Reason Is Required To Reject";
+        }
+
+        // -----------------------------------------
         // RESTORE BALANCE WHEN REJECTED
         // -----------------------------------------
 
@@ -152,6 +170,12 @@ public class AdminLeaveController {
         // -----------------------------------------
 
         leave.setStatus(status);
+
+        leave.setDecisionReason(
+                reason.isEmpty() ? null : reason
+        );
+
+        leave.setDecidedAt(LocalDateTime.now());
 
         leaveRequestRepository.save(leave);
 
@@ -195,6 +219,8 @@ public class AdminLeaveController {
                     employee.getName()
             );
 
+            history.setReason(reason);
+
             // =========================================
             // INDIA STANDARD TIME (IST)
             // =========================================
@@ -222,6 +248,168 @@ public class AdminLeaveController {
         }
 
         return "Leave Rejected Successfully";
+    }
+
+    // =========================================
+    // GROUP DECISION
+    // PARTIAL APPROVE / CANCEL SOME DATES
+    // =========================================
+
+    @PutMapping("/group/{groupId}/decision")
+    @Transactional
+    public String decideGroup(
+            @PathVariable String groupId,
+            @RequestBody AdminLeaveGroupDecisionRequest request) {
+
+        if (request == null ||
+                request.adminEmail() == null ||
+                request.adminPassword() == null ||
+                request.adminEmail().isBlank() ||
+                request.adminPassword().isBlank()) {
+
+            return "Admin Email and Password Required";
+        }
+
+        Admin admin =
+                adminRepository
+                        .findByEmailAndPassword(
+                                request.adminEmail(),
+                                request.adminPassword()
+                        )
+                        .orElse(null);
+
+        if (admin == null) {
+            return "Invalid Admin Email or Password";
+        }
+
+        List<LocalDate> approved =
+                request.approvedDates() != null
+                        ? request.approvedDates()
+                        : List.of();
+
+        List<LocalDate> cancelled =
+                request.cancelledDates() != null
+                        ? request.cancelledDates()
+                        : List.of();
+
+        if (approved.isEmpty() && cancelled.isEmpty()) {
+            return "Select At Least One Date";
+        }
+
+        String reason =
+                request.reason() != null
+                        ? request.reason().trim()
+                        : "";
+
+        if (!cancelled.isEmpty() && reason.length() < 3) {
+            return "Reason Is Required To Cancel Dates";
+        }
+
+        List<LeaveRequest> rows =
+                leaveRequestRepository
+                        .findByRequestGroupId(groupId);
+
+        if (rows.isEmpty()) {
+            return "Leave Request Not Found";
+        }
+
+        ZoneId indiaZone =
+                ZoneId.of("Asia/Kolkata");
+
+        LocalDateTime now =
+                LocalDateTime.now(indiaZone);
+
+        int approvedCount = 0;
+        int cancelledCount = 0;
+
+        for (LeaveRequest row : rows) {
+
+            if (!"PENDING".equalsIgnoreCase(row.getStatus())) {
+                continue;
+            }
+
+            LocalDate date = row.getLeaveDate();
+
+            if (cancelled.contains(date)) {
+
+                restoreLeaveBalance(row);
+
+                row.setStatus("CANCELLED");
+                row.setDecisionReason(reason);
+                row.setDecidedAt(now);
+
+                leaveRequestRepository.save(row);
+                cancelledCount++;
+
+            } else if (approved.contains(date)) {
+
+                row.setStatus("APPROVED");
+                row.setDecisionReason(
+                        reason.isEmpty() ? null : reason
+                );
+                row.setDecidedAt(now);
+
+                leaveRequestRepository.save(row);
+                approvedCount++;
+            }
+        }
+
+        if (approvedCount == 0 && cancelledCount == 0) {
+            return "No Pending Rows Found For Selected Dates";
+        }
+
+        // -----------------------------------------
+        // SAVE ADMIN HISTORY (ONE ROW PER DECISION)
+        // -----------------------------------------
+
+        Employee employee =
+                employeeRepository
+                        .findById(rows.get(0).getEmployeeId())
+                        .orElse(null);
+
+        if (employee != null) {
+
+            AdminActionHistory history =
+                    new AdminActionHistory();
+
+            history.setAdminName(
+                    admin.getAdminName()
+            );
+
+            history.setAction(
+                    cancelledCount == 0
+                            ? "LEAVE APPROVED"
+                            : approvedCount == 0
+                                    ? "LEAVE CANCELLED"
+                                    : "LEAVE PARTIALLY APPROVED"
+            );
+
+            history.setEmployeeId(
+                    employee.getId()
+            );
+
+            history.setEmployeeCode(
+                    employee.getEmployeeCode()
+            );
+
+            history.setEmployeeName(
+                    employee.getName()
+            );
+
+            history.setReason(reason);
+
+            history.setActionDate(
+                    LocalDate.now(indiaZone)
+            );
+
+            history.setActionTime(
+                    LocalTime.now(indiaZone)
+            );
+
+            historyRepository.save(history);
+        }
+
+        return "Leave Decision Saved Successfully";
     }
 
     // =========================================
@@ -376,4 +564,3 @@ public class AdminLeaveController {
         return "Leave Rejected Successfully";
     }
 }
-

@@ -23,6 +23,11 @@ public class AdminEmployeeResponse {
 
     private String joiningDate;
 
+    // Employee branch
+    private Long branchId;
+
+    private String branchName;
+
 
     public AdminEmployeeResponse() {
     }
@@ -38,7 +43,9 @@ public class AdminEmployeeResponse {
             String technology,
             String designation,
             Double salary,
-            String joiningDate) {
+            String joiningDate,
+            Long branchId,
+            String branchName) {
 
         this.id = id;
         this.employeeCode = employeeCode;
@@ -50,6 +57,8 @@ public class AdminEmployeeResponse {
         this.designation = designation;
         this.salary = salary;
         this.joiningDate = joiningDate;
+        this.branchId = branchId;
+        this.branchName = branchName;
     }
 
 
@@ -97,6 +106,14 @@ public class AdminEmployeeResponse {
         return joiningDate;
     }
 
+    public Long getBranchId() {
+        return branchId;
+    }
+
+    public String getBranchName() {
+        return branchName;
+    }
+
 
     // =========================
     // SETTERS
@@ -142,4 +159,13 @@ public class AdminEmployeeResponse {
         this.joiningDate = joiningDate;
     }
 
+    public void setBranchId(Long branchId) {
+        this.branchId = branchId;
+    }
+
+    public void setBranchName(String branchName) {
+        this.branchName = branchName;
+    }
+
 }
+

@@ -12,6 +12,8 @@ public class MonthlyAttendanceResponse {
     private double halfDay;
     private int permission;
     private double absent;
+    private double lopLeave;
+    private double balanceCovered;
     private int workingDays;
 
     public MonthlyAttendanceResponse(
@@ -24,6 +26,8 @@ public class MonthlyAttendanceResponse {
             double halfDay,
             int permission,
             double absent,
+            double lopLeave,
+            double balanceCovered,
             int workingDays) {
 
         this.employeeId = employeeId;
@@ -35,46 +39,21 @@ public class MonthlyAttendanceResponse {
         this.halfDay = halfDay;
         this.permission = permission;
         this.absent = absent;
+        this.lopLeave = lopLeave;
+        this.balanceCovered = balanceCovered;
         this.workingDays = workingDays;
     }
 
-    public Integer getEmployeeId() {
-        return employeeId;
-    }
-
-    public String getEmployeeCode() {
-        return employeeCode;
-    }
-
-    public String getEmployeeName() {
-        return employeeName;
-    }
-
-    public int getPresentDays() {
-        return presentDays;
-    }
-
-    public double getSickLeave() {
-        return sickLeave;
-    }
-
-    public double getCasualLeave() {
-        return casualLeave;
-    }
-
-    public double getHalfDay() {
-        return halfDay;
-    }
-
-    public int getPermission() {
-        return permission;
-    }
-
-    public double getAbsent() {
-        return absent;
-    }
-
-    public int getWorkingDays() {
-        return workingDays;
-    }
+    public Integer getEmployeeId() { return employeeId; }
+    public String getEmployeeCode() { return employeeCode; }
+    public String getEmployeeName() { return employeeName; }
+    public int getPresentDays() { return presentDays; }
+    public double getSickLeave() { return sickLeave; }
+    public double getCasualLeave() { return casualLeave; }
+    public double getHalfDay() { return halfDay; }
+    public int getPermission() { return permission; }
+    public double getAbsent() { return absent; }
+    public double getLopLeave() { return lopLeave; }
+    public double getBalanceCovered() { return balanceCovered; }
+    public int getWorkingDays() { return workingDays; }
 }

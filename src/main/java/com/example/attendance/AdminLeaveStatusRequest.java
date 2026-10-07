@@ -5,6 +5,7 @@ public class AdminLeaveStatusRequest {
     private String status;
     private String adminEmail;
     private String adminPassword;
+    private String reason;
 
     public String getStatus() {
         return status;
@@ -28,5 +29,13 @@ public class AdminLeaveStatusRequest {
 
     public void setAdminPassword(String adminPassword) {
         this.adminPassword = adminPassword;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
     }
 }

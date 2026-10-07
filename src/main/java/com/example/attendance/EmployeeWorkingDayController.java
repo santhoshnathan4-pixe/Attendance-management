@@ -1,3 +1,4 @@
+
 package com.example.attendance;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +23,9 @@ import java.util.Optional;
 public class EmployeeWorkingDayController {
 
     private final WorkingDaySettingRepository workingDaySettingRepository;
+
+    private static final ZoneId INDIA_ZONE =
+            ZoneId.of("Asia/Kolkata");
 
     public EmployeeWorkingDayController(
             WorkingDaySettingRepository workingDaySettingRepository) {
@@ -40,14 +45,21 @@ public class EmployeeWorkingDayController {
         LocalDate targetDate;
 
         if (date == null || date.trim().isEmpty()) {
-            targetDate = LocalDate.now();
+
+            targetDate =
+                    LocalDate.now(INDIA_ZONE);
+
         } else {
-            targetDate = LocalDate.parse(date);
+
+            targetDate =
+                    LocalDate.parse(date);
         }
 
         Optional<WorkingDaySetting> setting =
                 workingDaySettingRepository
-                        .findBySettingDate(targetDate);
+                        .findBySettingDateAndActiveTrue(
+                                targetDate
+                        );
 
         return setting.orElse(null);
     }
@@ -56,22 +68,22 @@ public class EmployeeWorkingDayController {
     // GET UPCOMING WORKING DAY SETTINGS
     // =========================================
     //
-    // Employee should see a setting from the day
-    // admin creates it until the setting date ends.
+    // Employee Dashboard receives only ACTIVE
+    // working-day settings.
+    //
+    // Settings are returned from the requested
+    // date up to one month ahead.
     //
     // Example:
-    // Admin adds 29-09-2026 on 25-09-2026
     //
-    // Employee will receive the alert from:
-    // 25-09-2026
+    // Today       : 07-10-2026
+    // Announcement: 09-10-2026
+    // Holiday     : 10-10-2026
     //
-    // Alert remains until:
-    // 29-09-2026 night
+    // Both active settings can be returned to
+    // Employee Dashboard.
     //
-    // From:
-    // 30-09-2026
-    //
-    // It will automatically disappear.
+    // Inactive / deleted settings are NOT returned.
     // =========================================
 
     @GetMapping("/upcoming")
@@ -81,18 +93,24 @@ public class EmployeeWorkingDayController {
         LocalDate fromDate;
 
         if (date == null || date.trim().isEmpty()) {
-            fromDate = LocalDate.now();
+
+            fromDate =
+                    LocalDate.now(INDIA_ZONE);
+
         } else {
-            fromDate = LocalDate.parse(date);
+
+            fromDate =
+                    LocalDate.parse(date);
         }
 
         LocalDate endDate =
                 fromDate.plusMonths(1);
 
         return workingDaySettingRepository
-                .findBySettingDateBetweenOrderBySettingDateAsc(
+                .findBySettingDateBetweenAndActiveTrueOrderBySettingDateAsc(
                         fromDate,
                         endDate
                 );
     }
 }
+

@@ -1,0 +1,3140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GROWBYTEE - Leave & Permission Settings</title>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+        background: #f4f7fb;
+        color: #1f2937;
+    }
+
+    .container {
+        display: flex;
+        min-height: 100vh;
+    }
+
+    .sidebar {
+        width: 250px;
+        background: #334155;
+        color: white;
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        padding: 25px 15px;
+        overflow-y: auto;
+    }
+
+    .logo {
+        text-align: center;
+        font-size: 25px;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+
+    .admin-title {
+        text-align: center;
+        color: #cbd5e1;
+        font-size: 13px;
+        margin-bottom: 30px;
+    }
+
+    .menu {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .menu button {
+        border: none;
+        background: transparent;
+        color: #e5e7eb;
+        text-align: left;
+        padding: 14px 15px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 15px;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .menu button svg {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+    }
+
+    .menu button:hover,
+.menu button.active {
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
+    }
+
+    .logout-btn {
+        margin-top: 25px;
+        background: #dc2626 !important;
+        color: white !important;
+        text-align: center !important;
+    }
+
+    .logout-btn:hover {
+        background: #b91c1c !important;
+    }
+
+    .main {
+        margin-left: 250px;
+        width: calc(100% - 250px);
+        min-height: 100vh;
+    }
+
+    .header {
+        height: 75px;
+        background: white;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 30px;
+        position: sticky;
+        top: 0;
+        z-index: 20;
+    }
+
+    .header h1 {
+        font-size: 23px;
+        color: #111827;
+    }
+
+    .admin-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #475569;
+        font-size: 14px;
+    }
+
+    .admin-badge {
+        background: #2563eb;
+        color: white;
+        padding: 8px 13px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .content {
+        padding: 30px;
+    }
+
+    .section {
+        display: none;
+        padding: 24px;
+        border-radius: 16px;
+        min-height: calc(100vh - 135px);
+        border: 1px solid #e5e7eb;
+    }
+
+    .section.active {
+        display: block;
+    }
+
+    #dashboard {
+        background: #f8fafc;
+    }
+
+    #employees {
+        background: #f8fbff;
+    }
+
+    #leave {
+        background: #fbfaf8;
+    }
+
+    #leaveSettings {
+        background: #f7fbff;
+    }
+
+    #salary {
+        background: #f8fbfa;
+    }
+
+    #monthly {
+        background: #faf9fc;
+    }
+
+    #history {
+        background: #f8fafb;
+    }
+
+    .section-title {
+        font-size: 25px;
+        margin-bottom: 8px;
+        color: #111827;
+    }
+
+    .section-subtitle {
+        color: #64748b;
+        margin-bottom: 25px;
+        font-size: 14px;
+    }
+
+    .top-bar {
+        background: white;
+        padding: 18px;
+        border-radius: 13px;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+        box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
+    }
+
+    .top-bar-left,
+.top-bar-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .btn {
+        border: none;
+        border-radius: 8px;
+        padding: 10px 16px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+    .btn-primary {
+        background: #2563eb;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #1d4ed8;
+    }
+
+    .btn-success {
+        background: #16a34a;
+        color: white;
+    }
+
+    .btn-success:hover {
+        background: #15803d;
+    }
+
+    .btn-danger {
+        background: #dc2626;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background: #b91c1c;
+    }
+
+    .btn-warning {
+        background: #f59e0b;
+        color: white;
+    }
+
+    .btn-warning:hover {
+        background: #d97706;
+    }
+
+    .btn-secondary {
+        background: #64748b;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background: #475569;
+    }
+
+    .btn-small {
+        padding: 7px 11px;
+        font-size: 12px;
+    }
+
+    .table-card {
+        background: white;
+        border-radius: 14px;
+        box-shadow: 0 5px 20px rgba(15, 23, 42, 0.06);
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 900px;
+    }
+
+    th {
+        background: #eff6ff;
+        color: #1e3a8a;
+        font-size: 13px;
+        text-align: left;
+        padding: 14px;
+        white-space: nowrap;
+    }
+
+    td {
+        padding: 13px 14px;
+        border-top: 1px solid #e5e7eb;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+    tr:hover td {
+        background: #f8fafc;
+    }
+
+    .empty-row {
+        text-align: center;
+        color: #64748b;
+        padding: 30px;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 5px 9px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: bold;
+    }
+
+    .badge-green {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .badge-blue {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+
+    .badge-orange {
+        background: #ffedd5;
+        color: #9a3412;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 17px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .form-group label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #374151;
+    }
+
+    .form-group input,
+.form-group select,
+.form-group textarea {
+        width: 100%;
+        padding: 11px 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        outline: none;
+        font-size: 14px;
+        background: white;
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 90px;
+    }
+
+    .form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .priority-box {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        color: #1e40af;
+        border-radius: 10px;
+        padding: 13px 15px;
+        font-size: 13px;
+        line-height: 1.7;
+        margin-bottom: 20px;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.65);
+        z-index: 100;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .modal.show {
+        display: flex;
+    }
+
+    .modal-box {
+        width: 100%;
+        max-width: 650px;
+        background: white;
+        border-radius: 16px;
+        padding: 25px;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-box.small {
+        max-width: 450px;
+    }
+
+    .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 22px;
+    }
+
+    .modal-header h2 {
+        font-size: 20px;
+        color: #111827;
+    }
+
+    .close-btn {
+        border: none;
+        background: #f1f5f9;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 18px;
+    }
+
+    .close-btn:hover {
+        background: #e2e8f0;
+    }
+
+    .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 25px;
+    }
+
+    .info-box {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        color: #1e40af;
+        border-radius: 10px;
+        padding: 13px 15px;
+        font-size: 13px;
+        line-height: 1.6;
+        margin-bottom: 18px;
+    }
+
+    .message {
+        display: none;
+        margin-bottom: 18px;
+        padding: 12px 15px;
+        border-radius: 9px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .message.show {
+        display: block;
+    }
+
+    .message.success {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .message.error {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    @media (max-width: 800px) {
+        .sidebar {
+            width: 210px;
+        }
+
+        .main {
+            margin-left: 210px;
+            width: calc(100% - 210px);
+        }
+
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .header {
+            padding: 0 15px;
+        }
+
+        .content {
+            padding: 20px 15px;
+        }
+
+        .section {
+            padding: 18px;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .sidebar {
+            position: relative;
+            width: 100%;
+            min-height: auto;
+        }
+
+        .container {
+            display: block;
+        }
+
+        .main {
+            margin-left: 0;
+            width: 100%;
+        }
+
+        .header {
+            position: relative;
+        }
+
+        .top-bar {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .admin-info {
+            display: none;
+        }
+    }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            GROWBYTEE
+        </div>
+
+        <div class="admin-title">
+            Admin / CEO Dashboard
+        </div>
+
+        <div class="menu">
+
+
+    <button class="menu-btn"
+        onclick="window.location.href = window.location.origin + '/admin-dashboard.html'">
+    <i data-lucide="layout-dashboard"></i>
+    Dashboard
+</button>
+
+    <button class="menu-btn"
+            onclick="window.location.href='employees.html'">
+        <i data-lucide="users"></i>
+        Employees
+    </button>
+
+    <button class="menu-btn"
+            onclick="window.location.href='leave.html'">
+        <i data-lucide="clipboard-list"></i>
+        Leave
+    </button>
+
+    
+<button class="menu-btn"
+        onclick="window.location.href='ai-assistant.html'">
+    <i data-lucide="sparkles"></i>
+    AI Assistant
+</button>
+
+
+
+    <button class="menu-btn"
+            onclick="window.location.href='working-day-settings.html'">
+        <i data-lucide="calendar-days"></i>
+        Working Day Settings
+    </button>
+
+    <button class="menu-btn"
+            onclick="window.location.href='shift-settings.html'">
+        <i data-lucide="clock-3"></i>
+        Shift Settings
+    </button>
+
+    <button class="menu-btn"
+        onclick="window.location.href='branch-management.html'">
+    <i data-lucide="building-2"></i>
+    Branch Management
+</button>
+
+    <button class="menu-btn active"
+            onclick="window.location.href='leave-permission-settings.html'">
+        <i data-lucide="settings"></i>
+        Leave & Permission Settings
+    </button>
+
+    <button class="menu-btn"
+            onclick="window.location.href='salary.html'">
+        <i data-lucide="wallet"></i>
+        Salary
+    </button>
+
+    <button class="menu-btn"
+            onclick="window.location.href='monthly-report.html'">
+        <i data-lucide="calendar-days"></i>
+        Monthly Report
+    </button>
+
+    <button class="menu-btn"
+            onclick="window.location.href='history.html'">
+        <i data-lucide="history"></i>
+        History
+    </button>
+
+    <button class="menu-btn logout-btn"
+            onclick="logout()">
+        <i data-lucide="log-out"></i>
+        Logout
+    </button>
+
+
+        </div>
+
+    </aside>
+
+    <main class="main">
+
+        <header class="header">
+
+            <h1>
+                GROWBYTEE - Admin Dashboard
+            </h1>
+
+            <div class="admin-info" id="adminInfo" style="display: none;">
+
+                <span id="loggedAdminName">
+                    Welcome, Admin
+                </span>
+
+                <span class="admin-badge">
+                    ADMIN
+                </span>
+
+            </div>
+
+        </header>
+
+        <div class="content">
+
+<section id="leaveSettings" class="section active"> 
+ 
+    <h2 class="section-title"> 
+        Leave & Permission Settings 
+    </h2> 
+ 
+    <p class="section-subtitle"> 
+        Admin can control leave and permission allowances for all employees. 
+    </p> 
+ 
+    <div id="settingsMessage" 
+         class="message"> 
+    </div> 
+ 
+    <div class="priority-box"> 
+ 
+        <strong>Setting priority:</strong> 
+ 
+        Employee setting → 
+        Role setting → 
+        Default setting 
+ 
+        <br> 
+ 
+        Employee-specific settings override role settings. 
+        Role settings override the default settings. 
+ 
+        <br> 
+ 
+        Sick Leave, Casual Leave and Permission are controlled separately. 
+ 
+    </div> 
+ 
+    <div class="top-bar"> 
+ 
+        <div class="top-bar-left"> 
+ 
+            <button class="btn btn-primary" 
+                    onclick="openLeaveSettingModal('DEFAULT')"> 
+                + Default Settings 
+            </button> 
+ 
+            <button class="btn btn-success" 
+                    onclick="openLeaveSettingModal('ROLE')"> 
+                + Role Settings 
+            </button> 
+ 
+            <button class="btn btn-warning" 
+                    onclick="openLeaveSettingModal('EMPLOYEE')"> 
+                + Employee Settings 
+            </button> 
+ 
+        </div> 
+ 
+        <div class="top-bar-right"> 
+ 
+            <button class="btn btn-secondary" 
+                    onclick="loadLeaveSettings()"> 
+                Refresh 
+            </button>
+                <button class="btn btn-secondary"
+                        onclick="openSettingHistoryModal()">
+                    History
+                </button> 
+ 
+        </div> 
+ 
+    </div> 
+ 
+    <div class="table-card"> 
+ 
+        <div class="table-wrapper"> 
+ 
+            <table> 
+ 
+                <thead> 
+ 
+                    <tr> 
+                        <th>Setting Type</th> 
+                        <th>Role</th> 
+                        <th>Employee</th> 
+                        <th>Sick Leave</th> 
+                        <th>Casual Leave</th> 
+                        <th>Permission</th> 
+                        <th>Shift</th> 
+                        <th>Updated</th>
+                    <th>Action</th> 
+                    </tr> 
+ 
+                </thead> 
+ 
+                <tbody id="settingsTableBody"> 
+ 
+                    <tr> 
+                        <td colspan="9" 
+                            class="empty-row"> 
+                            Loading settings... 
+                        </td> 
+                    </tr> 
+ 
+                </tbody> 
+ 
+            </table> 
+ 
+        </div> 
+ 
+    </div> 
+ 
+</section> 
+
+<!-- LEAVE SETTINGS MODAL -->
+
+<div id="leaveSettingModal"
+     class="modal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h2 id="leaveSettingModalTitle">
+                Leave & Permission Settings
+            </h2>
+
+            <button class="close-btn"
+                    onclick="closeLeaveSettingModal()">
+                ×
+            </button>
+
+        </div>
+
+        <div class="info-box">
+
+            Configure monthly Sick Leave, Casual Leave and Permission.
+
+            <br>
+
+            Employee settings override role settings.
+
+            Role settings override default settings.
+
+            <br>
+
+            Sick/Casual unused balance will carry forward according to the backend balance logic.
+
+        </div>
+
+        <div class="form-grid">
+
+            <div class="form-group"
+                 id="settingRoleGroup"
+                 style="display:none;">
+
+                <label>
+                    Role
+                </label>
+
+                <select id="settingRole">
+
+                    <option value="">
+                        Select Role
+                    </option>
+
+                    <option value="EMPLOYEE">
+                        EMPLOYEE
+                    </option>
+
+                    <option value="DEVELOPER">
+                        DEVELOPER
+                    </option>
+
+                    <option value="HR">
+                        HR
+                    </option>
+
+                    <option value="TEAM_LEAD">
+                        TEAM_LEAD
+                    </option>
+
+                    <option value="MANAGER">
+                        MANAGER
+                    </option>
+
+                    <option value="ADMIN">
+                        ADMIN
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="form-group"
+                 id="settingEmployeeGroup"
+                 style="display:none;">
+
+                <label>
+                    Employee
+                </label>
+
+                <select id="settingEmployee">
+
+                    <option value="">
+                        Select Employee
+                    </option>
+
+                </select>
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    Sick Leave / Month
+                </label>
+
+                <input type="number"
+                       id="settingSickLeave"
+                       min="0"
+                       step="0.5"
+                       value="1">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    Casual Leave / Month
+                </label>
+
+                <input type="number"
+                       id="settingCasualLeave"
+                       min="0"
+                       step="0.5"
+                       value="1">
+
+            </div>
+
+            <div class="form-group">
+
+                <label>
+                    Permission / Month
+                </label>
+
+                <input type="number"
+                       id="settingPermissionCount"
+                       min="0"
+                       step="1"
+                       value="2">
+
+            </div>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button class="btn btn-secondary"
+                    onclick="closeLeaveSettingModal()">
+                Cancel
+            </button>
+
+            <button class="btn btn-primary"
+                    onclick="saveLeaveSetting()">
+                Save Settings
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- LEAVE SETTING EDIT / DELETE MODAL -->
+<div id="settingChangeModal" class="modal">
+    <div class="modal-box small">
+        <div class="modal-header">
+            <h2 id="settingChangeTitle">Edit Setting</h2>
+            <button class="close-btn" onclick="closeSettingChangeModal()">×</button>
+        </div>
+
+        <div id="settingChangeInfo" class="info-box"></div>
+
+        <div id="settingChangeFields">
+            <div class="form-group">
+                <label>Sick Leave / Month</label>
+                <input type="number" id="changeSickLeave" min="0" step="0.5">
+            </div>
+            <div class="form-group">
+                <label>Casual Leave / Month</label>
+                <input type="number" id="changeCasualLeave" min="0" step="0.5">
+            </div>
+            <div class="form-group">
+                <label>Permission / Month</label>
+                <input type="number" id="changePermissionCount" min="0" step="1">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Reason <span style="color:#dc2626;">*</span></label>
+            <textarea id="settingChangeReason" rows="3" placeholder="Enter the reason..."></textarea>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeSettingChangeModal()">Cancel</button>
+            <button class="btn btn-primary" id="settingChangeSubmit" onclick="submitSettingChange()">Save</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- LEAVE SETTING HISTORY MODAL -->
+<div id="settingHistoryModal" class="modal">
+    <div class="modal-box" style="max-width:1100px;width:95%;">
+        <div class="modal-header">
+            <h2>Leave & Permission Setting History</h2>
+            <button class="close-btn" onclick="closeSettingHistoryModal()">×</button>
+        </div>
+
+        <div class="table-wrapper" style="max-height:60vh;overflow:auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date & Time</th>
+                        <th>Action</th>
+                        <th>Setting</th>
+                        <th>Old Values</th>
+                        <th>New Values</th>
+                        <th>Reason</th>
+                        <th>Admin</th>
+                    </tr>
+                </thead>
+                <tbody id="settingHistoryBody">
+                    <tr><td colspan="7" class="empty-row">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeSettingHistoryModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+
+        </div>
+
+    </main>
+
+</div>
+
+<script>
+
+    const API_BASE_URL =
+        window.location.hostname === "localhost" ||
+            window.location.hostname === "127.0.0.1"
+            ? "http://localhost:8080"
+            : "https://attendance-management-d5h6.onrender.com";
+
+    async function apiFetch(
+        url,
+        options = {}
+    ) {
+
+        return fetch(
+            API_BASE_URL + url,
+            options
+        );
+
+    }
+
+    function loadAdminInfo() {
+
+        const adminEmail =
+            localStorage.getItem(
+                "adminEmail"
+            );
+
+        const adminName =
+            localStorage.getItem(
+                "adminName"
+            );
+
+
+        if (adminName) {
+
+            const adminNameElement =
+                document.getElementById(
+                    "loggedAdminName"
+                );
+
+            if (adminNameElement) {
+
+                adminNameElement.textContent =
+                    "Welcome, " + adminName;
+
+            }
+
+        }
+
+
+        if (adminEmail) {
+
+            const emailField =
+                document.getElementById(
+                    "verifyAdminEmail"
+                );
+
+            if (emailField) {
+
+                emailField.value =
+                    adminEmail;
+
+            }
+
+        }
+
+    }
+
+    async function getErrorMessage(
+        response
+    ) {
+
+        try {
+
+            const text =
+                await response.text();
+
+
+            if (!text) {
+
+                return (
+                    "Request failed. HTTP " +
+                    response.status
+                );
+
+            }
+
+
+            try {
+
+                const json =
+                    JSON.parse(
+                        text
+                    );
+
+
+                return (
+                    json.message ||
+                    json.error ||
+                    text
+                );
+
+            }
+            catch {
+
+                return text;
+
+            }
+
+        }
+        catch {
+
+            return (
+                "Request failed. HTTP " +
+                response.status
+            );
+
+        }
+
+    }
+
+    function showMessage(
+        elementId,
+        message,
+        type
+    ) {
+
+        const element =
+            document.getElementById(
+                elementId
+            );
+
+
+        if (!element) {
+            return;
+        }
+
+
+        element.textContent =
+            message;
+
+
+        element.className =
+            "message show " +
+            (
+                type === "success"
+                    ? "success"
+                    : "error"
+            );
+
+
+        setTimeout(
+            function() {
+
+                element.classList.remove(
+                    "show"
+                );
+
+            },
+            5000
+        );
+
+    }
+
+    function formatNumber(
+        value
+    ) {
+
+        if (
+            value === null ||
+            value === undefined ||
+            value === ""
+        ) {
+
+            return "0.00";
+
+        }
+
+
+        const number =
+            Number(value);
+
+
+        if (
+            Number.isNaN(number)
+        ) {
+
+            return "0.00";
+
+        }
+
+
+        return number.toLocaleString(
+            "en-IN",
+            {
+                minimumFractionDigits:
+                    2,
+
+                maximumFractionDigits:
+                    2
+
+            }
+        );
+
+    }
+
+    function formatDate(
+        value
+    ) {
+
+        if (!value) {
+            return "-";
+        }
+
+
+        const date =
+            new Date(value);
+
+
+        if (
+            Number.isNaN(
+                date.getTime()
+            )
+        ) {
+
+            return escapeHtml(
+                String(value)
+            );
+
+        }
+
+
+        const day =
+            String(
+                date.getDate()
+            ).padStart(
+                2,
+                "0"
+            );
+
+
+        const month =
+            String(
+                date.getMonth() + 1
+            ).padStart(
+                2,
+                "0"
+            );
+
+
+        const year =
+            date.getFullYear();
+
+
+        return (
+            day +
+            "-" +
+            month +
+            "-" +
+            year
+        );
+
+    }
+
+    function formatDateTime(
+        value
+    ) {
+
+        if (!value) {
+            return "-";
+        }
+
+
+        const text =
+            String(value);
+
+
+        if (
+            text.includes("T")
+        ) {
+
+            const parts =
+                text.split("T");
+
+
+            return (
+                formatDate(
+                    parts[0]
+                ) +
+                " " +
+                formatTime(
+                    parts[1]
+                )
+            );
+
+        }
+
+
+        return escapeHtml(
+            text
+        );
+
+    }
+
+    function formatTime(
+        value
+    ) {
+
+        if (!value) {
+            return "-";
+        }
+
+
+        const text =
+            String(value);
+
+
+        if (
+            text.includes(":")
+        ) {
+
+            const parts =
+                text.split(":");
+
+
+            if (
+                parts.length >= 2
+            ) {
+
+                let hour =
+                    Number(
+                        parts[0]
+                    );
+
+
+                const minute =
+                    parts[1];
+
+
+                const second =
+                    parts[2]
+                        ? parts[2]
+                            .split(".")[0]
+                        : "00";
+
+
+                const ampm =
+                    hour >= 12
+                        ? "PM"
+                        : "AM";
+
+
+                hour =
+                    hour % 12 ||
+                    12;
+
+
+                return (
+                    String(
+                        hour
+                    ).padStart(
+                        2,
+                        "0"
+                    ) +
+                    ":" +
+                    minute +
+                    ":" +
+                    second +
+                    " " +
+                    ampm
+                );
+
+            }
+
+        }
+
+
+        return escapeHtml(
+            text
+        );
+
+    }
+
+    function escapeHtml(
+        value
+    ) {
+
+        if (
+            value === null ||
+            value === undefined
+        ) {
+
+            return "";
+
+        }
+
+
+        return String(value)
+            .replaceAll(
+                "&",
+                "&amp;"
+            )
+            .replaceAll(
+                "<",
+                "&lt;"
+            )
+            .replaceAll(
+                ">",
+                "&gt;"
+            )
+            .replaceAll(
+                '"',
+                "&quot;"
+            )
+            .replaceAll(
+                "'",
+                "&#039;"
+            );
+
+    }
+
+    function escapeJs(
+        value
+    ) {
+
+        if (
+            value === null ||
+            value === undefined
+        ) {
+
+            return "";
+
+        }
+
+
+        return String(value)
+            .replaceAll(
+                "\\",
+                "\\\\"
+            )
+            .replaceAll(
+                "'",
+                "\\'"
+            )
+            .replaceAll(
+                "\n",
+                "\\n"
+            )
+            .replaceAll(
+                "\r",
+                "\\r"
+            );
+
+    }
+
+    function logout() {
+
+        const confirmed =
+            confirm(
+                "Are you sure you want to logout?"
+            );
+
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        localStorage.removeItem(
+            "adminEmail"
+        );
+
+
+        localStorage.removeItem(
+            "adminName"
+        );
+
+
+        window.location.href =
+            "admin-login.html";
+
+    }
+
+    let employees = [];
+
+    let currentLeaveSettingType = null;
+
+    async function loadEmployees() {
+
+        try {
+
+            const response =
+                await apiFetch(
+                    "/admin/employees"
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    await getErrorMessage(
+                        response
+                    )
+                );
+
+            }
+
+
+            employees =
+                await response.json();
+
+
+
+
+            populateSettingEmployees();
+
+
+
+        }
+        catch (error) {
+
+            console.error(
+                "Load employees error:",
+                error
+            );
+
+
+            showMessage(
+                "settingsMessage",
+                error.message,
+                "error"
+            );
+
+        }
+
+    }
+
+    let shiftSettings = [];
+
+    async function loadLeaveSettings() {
+
+        try {
+
+            const response =
+                await apiFetch(
+                    "/admin/leave-settings"
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    await getErrorMessage(
+                        response
+                    )
+                );
+
+            }
+
+
+            const settings =
+                await response.json();
+
+
+            renderLeaveSettings(
+                settings
+            );
+
+        }
+        catch (error) {
+
+            console.error(
+                "Load leave settings error:",
+                error
+            );
+
+
+            showMessage(
+                "settingsMessage",
+                error.message ||
+                "Unable to load leave settings.",
+                "error"
+            );
+
+        }
+
+    }
+
+    function formatSettingTime(time) {
+
+        if (!time) {
+            return "-";
+        }
+
+        const parts =
+            String(time).split(":");
+
+        if (parts.length < 2) {
+            return String(time);
+        }
+
+        const hour =
+            Number(parts[0]);
+
+        const minute =
+            parts[1];
+
+        if (Number.isNaN(hour)) {
+            return String(time);
+        }
+
+        const suffix =
+            hour >= 12
+                ? "PM"
+                : "AM";
+
+        const displayHour =
+            hour % 12 === 0
+                ? 12
+                : hour % 12;
+
+        return (
+            String(displayHour).padStart(2, "0") +
+            ":" +
+            minute +
+            " " +
+            suffix
+        );
+
+    }
+
+    function getGeneralShiftTiming() {
+
+        let generalShift = null;
+
+
+        if (
+            typeof shiftSettings !== "undefined" &&
+            Array.isArray(shiftSettings)
+        ) {
+
+            generalShift =
+                shiftSettings.find(
+                    function(setting) {
+
+                        return String(
+                            setting.shiftType || ""
+                        ).toUpperCase() ===
+                            "GENERAL";
+
+                    }
+                );
+
+        }
+
+
+        return {
+
+            startTime:
+                generalShift &&
+                    generalShift.startTime
+                    ? generalShift.startTime
+                    : "",
+
+            endTime:
+                generalShift &&
+                    generalShift.endTime
+                    ? generalShift.endTime
+                    : ""
+
+        };
+
+    }
+
+    async function getEffectiveLeaveSettingTiming(
+        settingType,
+        role,
+        employeeId
+    ) {
+
+        /*
+         * DEFAULT
+         * → General Shift
+         */
+        if (
+            String(settingType || "").toUpperCase() ===
+            "DEFAULT"
+        ) {
+
+            return getGeneralShiftTiming();
+
+        }
+
+
+        /*
+         * Employee selected
+         * → Employee Shift
+         */
+        if (
+            String(settingType || "").toUpperCase() ===
+            "EMPLOYEE" &&
+            employeeId
+        ) {
+
+            try {
+
+                const response =
+                    await apiFetch(
+                        "/admin/shift-assignments/employee/" +
+                        employeeId
+                    );
+
+                if (response.ok) {
+
+                    const assignment =
+                        await response.json();
+
+                    const shiftType =
+                        String(
+                            assignment.shiftType || ""
+                        ).toUpperCase();
+
+                    const employeeShift =
+                        shiftSettings.find(
+                            function(setting) {
+
+                                return String(
+                                    setting.shiftType || ""
+                                ).toUpperCase() ===
+                                    shiftType;
+
+                            }
+                        );
+
+                    if (employeeShift) {
+
+                        return {
+
+                            startTime:
+                                employeeShift.startTime || "",
+
+                            endTime:
+                                employeeShift.endTime || ""
+
+                        };
+
+                    }
+
+                }
+
+            }
+            catch (error) {
+
+                console.error(
+                    "Employee shift timing error:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        /*
+         * Role selected
+         * → Role Shift
+         */
+        if (
+            String(settingType || "").toUpperCase() ===
+            "ROLE" &&
+            role
+        ) {
+
+            try {
+
+                const normalizedRole =
+                    String(role)
+                        .trim()
+                        .toUpperCase()
+                        .replace(/-/g, "_")
+                        .replace(/ /g, "_");
+
+                const response =
+                    await apiFetch(
+                        "/admin/shift-assignments/role/" +
+                        encodeURIComponent(
+                            normalizedRole
+                        )
+                    );
+
+                if (response.ok) {
+
+                    const assignment =
+                        await response.json();
+
+                    const shiftType =
+                        String(
+                            assignment.shiftType || ""
+                        ).toUpperCase();
+
+                    const roleShift =
+                        shiftSettings.find(
+                            function(setting) {
+
+                                return String(
+                                    setting.shiftType || ""
+                                ).toUpperCase() ===
+                                    shiftType;
+
+                            }
+                        );
+
+                    if (roleShift) {
+
+                        return {
+
+                            startTime:
+                                roleShift.startTime || "",
+
+                            endTime:
+                                roleShift.endTime || ""
+
+                        };
+
+                    }
+
+                }
+
+            }
+            catch (error) {
+
+                console.error(
+                    "Role shift timing error:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        /*
+         * Fallback
+         * → General Shift
+         */
+        return getGeneralShiftTiming();
+
+    }
+
+    function ensureLeaveSettingTimingFields() {
+
+        const modal =
+            document.getElementById(
+                "leaveSettingModal"
+            );
+
+        if (!modal) {
+            return;
+        }
+
+
+        let shiftWrapper =
+            document.getElementById(
+                "settingShiftFields"
+            );
+
+
+        if (!shiftWrapper) {
+
+            shiftWrapper =
+                document.createElement(
+                    "div"
+                );
+
+            shiftWrapper.id =
+                "settingShiftFields";
+
+            shiftWrapper.style.width =
+                "100%";
+
+            shiftWrapper.style.marginTop =
+                "16px";
+
+            shiftWrapper.style.boxSizing =
+                "border-box";
+
+
+            shiftWrapper.innerHTML = `
+
+                <div
+                    style="
+                        width:100%;
+                        max-width:320px;
+                    "
+                >
+
+                    <label
+                        for="settingShiftType"
+                        style="
+                            display:block;
+                            margin-bottom:6px;
+                            font-weight:600;
+                        "
+                    >
+                        Shift
+                    </label>
+
+                    <select
+                        id="settingShiftType"
+                        style="
+                            width:100%;
+                            max-width:320px;
+                            padding:10px 12px;
+                            border:1px solid #2563eb;
+                            border-radius:8px;
+                            background:#eff6ff;
+                            color:#1e3a8a;
+                            font-size:14px;
+                            font-weight:500;
+                            outline:none;
+                            box-sizing:border-box;
+                            cursor:pointer;
+                        "
+                    >
+
+                        <option value="GENERAL">
+                            General Shift
+                        </option>
+
+                        <option value="SHIFT_1">
+                            Shift 1
+                        </option>
+
+                        <option value="SHIFT_2">
+                            Shift 2
+                        </option>
+
+                        <option value="SHIFT_3">
+                            Shift 3
+                        </option>
+
+                    </select>
+
+                </div>
+
+            `;
+
+
+            const modalBox =
+                modal.querySelector(
+                    ".modal-box"
+                );
+
+
+            if (!modalBox) {
+
+                modal.appendChild(
+                    shiftWrapper
+                );
+
+                return;
+            }
+
+
+            const footer =
+                modalBox.querySelector(
+                    ".modal-footer"
+                );
+
+
+            if (footer) {
+
+                modalBox.insertBefore(
+                    shiftWrapper,
+                    footer
+                );
+
+            }
+            else {
+
+                const buttons =
+                    modalBox.querySelectorAll(
+                        "button"
+                    );
+
+
+                if (
+                    buttons.length > 0
+                ) {
+
+                    modalBox.insertBefore(
+                        shiftWrapper,
+                        buttons[0]
+                    );
+
+                }
+                else {
+
+                    modalBox.appendChild(
+                        shiftWrapper
+                    );
+
+                }
+
+            }
+
+        }
+
+
+        const shiftSelect =
+            document.getElementById(
+                "settingShiftType"
+            );
+
+
+        if (shiftSelect) {
+
+            shiftSelect.style.width =
+                "100%";
+
+            shiftSelect.style.maxWidth =
+                "320px";
+
+            shiftSelect.style.padding =
+                "10px 12px";
+
+            shiftSelect.style.border =
+                "1px solid #2563eb";
+
+            shiftSelect.style.borderRadius =
+                "8px";
+
+            shiftSelect.style.background =
+                "#eff6ff";
+
+            shiftSelect.style.color =
+                "#1e3a8a";
+
+            shiftSelect.style.fontSize =
+                "14px";
+
+            shiftSelect.style.fontWeight =
+                "500";
+
+            shiftSelect.style.outline =
+                "none";
+
+            shiftSelect.style.boxSizing =
+                "border-box";
+
+            shiftSelect.style.cursor =
+                "pointer";
+
+        }
+
+    }
+
+    function renderLeaveSettings(
+        settings
+    ) {
+
+        const tbody =
+            document.getElementById(
+                "settingsTableBody"
+            );
+
+
+        if (
+            !settings ||
+            settings.length === 0
+        ) {
+
+            tbody.innerHTML = `
+                <tr>
+                    <td
+                        colspan="9"
+                        class="empty-row"
+                    >
+                        No leave settings found.
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+
+        tbody.innerHTML =
+            settings.map(
+                function(setting) {
+
+                    const type =
+                        String(
+                            setting.settingType ||
+                            "-"
+                        ).toUpperCase();
+
+
+                    let employeeName =
+                        "-";
+
+
+                    if (
+                        setting.employeeId !== null &&
+                        setting.employeeId !== undefined
+                    ) {
+
+                        const employee =
+                            employees.find(
+                                function(item) {
+
+                                    return Number(
+                                        item.id
+                                    ) === Number(
+                                        setting.employeeId
+                                    );
+
+                                }
+                            );
+
+
+                        if (employee) {
+
+                            employeeName =
+                                employee.name +
+                                " (" +
+                                (
+                                    employee.employeeCode ||
+                                    setting.employeeId
+                                ) +
+                                ")";
+
+                        }
+                        else {
+
+                            employeeName =
+                                "Employee #" +
+                                setting.employeeId;
+
+                        }
+
+                    }
+
+
+                    // =========================
+                    // SHIFT DISPLAY
+                    // =========================
+
+                    const shiftType =
+                        String(
+                            setting.shiftType ||
+                            "GENERAL"
+                        ).toUpperCase();
+
+
+                    let shiftName =
+                        "General Shift";
+
+
+                    if (
+                        shiftType ===
+                        "SHIFT_1"
+                    ) {
+
+                        shiftName =
+                            "Shift 1";
+
+                    }
+                    else if (
+                        shiftType ===
+                        "SHIFT_2"
+                    ) {
+
+                        shiftName =
+                            "Shift 2";
+
+                    }
+                    else if (
+                        shiftType ===
+                        "SHIFT_3"
+                    ) {
+
+                        shiftName =
+                            "Shift 3";
+
+                    }
+
+
+                    return `
+                        <tr>
+
+                            <td>
+                                <span
+                                    class="badge ${type === "DEFAULT"
+                            ? "badge-blue"
+                            : type === "ROLE"
+                                ? "badge-orange"
+                                : "badge-green"
+                        }"
+                                >
+                                    ${escapeHtml(type)}
+                                </span>
+                            </td>
+
+
+                            <td>
+                                ${escapeHtml(
+                            setting.role ||
+                            "-"
+                        )}
+                            </td>
+
+
+                            <td>
+                                ${escapeHtml(
+                            employeeName
+                        )}
+                            </td>
+
+
+                            <td>
+                                ${formatNumber(
+                            setting.sickLeave
+                        )}
+                            </td>
+
+
+                            <td>
+                                ${formatNumber(
+                            setting.casualLeave
+                        )}
+                            </td>
+
+
+                            <td>
+                                ${Number(
+                            setting.permissionCount ||
+                            0
+                        )}
+                            </td>
+
+
+                            <td>
+                                ${escapeHtml(
+                            shiftName
+                        )}
+                            </td>
+
+
+                            <td>
+                                ${formatDateTime(
+                            setting.updatedAt
+                        )}
+                            </td>
+                        <td>${settingActionButtons(setting, type, employeeName)}</td>
+
+                        </tr>
+                    `;
+
+                }
+            ).join("");
+
+    }
+
+    function populateSettingEmployees() {
+
+        const select =
+            document.getElementById(
+                "settingEmployee"
+            );
+
+
+        if (!select) {
+            return;
+        }
+
+
+        const currentValue =
+            select.value;
+
+
+        select.innerHTML = ` 
+            <option value=""> 
+                Select Employee 
+            </option> 
+        `;
+
+
+        employees.forEach(
+            function(employee) {
+
+                const option =
+                    document.createElement(
+                        "option"
+                    );
+
+
+                option.value =
+                    employee.id;
+
+
+                option.textContent =
+                    (
+                        employee.employeeCode ||
+                        "EMP-" + employee.id
+                    ) +
+                    " - " +
+                    (
+                        employee.name ||
+                        "Unnamed"
+                    ) +
+                    (
+                        employee.role
+                            ? " (" +
+                            employee.role +
+                            ")"
+                            : ""
+                    );
+
+
+                select.appendChild(
+                    option
+                );
+
+            }
+        );
+
+
+        if (currentValue) {
+
+            select.value =
+                currentValue;
+
+        }
+
+    }
+
+    function openLeaveSettingModal(
+        settingType
+    ) {
+
+        currentLeaveSettingType =
+            String(
+                settingType || ""
+            ).toUpperCase();
+
+
+        if (
+            currentLeaveSettingType !== "DEFAULT" &&
+            currentLeaveSettingType !== "ROLE" &&
+            currentLeaveSettingType !== "EMPLOYEE"
+        ) {
+
+            alert(
+                "Invalid setting type."
+            );
+
+            return;
+
+        }
+
+
+        const title =
+            document.getElementById(
+                "leaveSettingModalTitle"
+            );
+
+
+        const roleGroup =
+            document.getElementById(
+                "settingRoleGroup"
+            );
+
+
+        const employeeGroup =
+            document.getElementById(
+                "settingEmployeeGroup"
+            );
+
+
+        roleGroup.style.display =
+            "none";
+
+
+        employeeGroup.style.display =
+            "none";
+
+
+        document.getElementById(
+            "settingRole"
+        ).value =
+            "";
+
+
+        document.getElementById(
+            "settingEmployee"
+        ).value =
+            "";
+
+
+        document.getElementById(
+            "settingSickLeave"
+        ).value =
+            "1";
+
+
+        document.getElementById(
+            "settingCasualLeave"
+        ).value =
+            "1";
+
+
+        document.getElementById(
+            "settingPermissionCount"
+        ).value =
+            "2";
+
+
+        if (
+            currentLeaveSettingType ===
+            "DEFAULT"
+        ) {
+
+            title.textContent =
+                "Default Leave & Permission Settings";
+
+        }
+        else if (
+            currentLeaveSettingType ===
+            "ROLE"
+        ) {
+
+            title.textContent =
+                "Role-wise Leave & Permission Settings";
+
+
+            roleGroup.style.display =
+                "flex";
+
+        }
+        else {
+
+            title.textContent =
+                "Employee-wise Leave & Permission Settings";
+
+
+            employeeGroup.style.display =
+                "flex";
+
+        }
+
+
+        /*
+         * Create Shift field.
+         */
+        ensureLeaveSettingTimingFields();
+
+
+        const shiftSelect =
+            document.getElementById(
+                "settingShiftType"
+            );
+
+
+        if (shiftSelect) {
+
+            /*
+             * Default setting:
+             * Show General Shift only.
+             */
+            if (
+                currentLeaveSettingType ===
+                "DEFAULT"
+            ) {
+
+                shiftSelect.innerHTML = `
+                    <option value="GENERAL">
+                        General Shift
+                    </option>
+                `;
+
+                shiftSelect.value =
+                    "GENERAL";
+
+                shiftSelect.disabled =
+                    true;
+
+                shiftSelect.style.color =
+                    "#000000";
+
+            }
+            else {
+
+                /*
+                 * Role / Employee:
+                 * Show all shift options.
+                 */
+                shiftSelect.innerHTML = `
+                    <option value="GENERAL">
+                        General Shift
+                    </option>
+
+                    <option value="SHIFT_1">
+                        Shift 1
+                    </option>
+
+                    <option value="SHIFT_2">
+                        Shift 2
+                    </option>
+
+                    <option value="SHIFT_3">
+                        Shift 3
+                    </option>
+                `;
+
+                shiftSelect.value =
+                    "GENERAL";
+
+                shiftSelect.disabled =
+                    false;
+
+                shiftSelect.style.color =
+                    "#000000";
+
+            }
+
+        }
+
+
+        /*
+         * Populate employee list.
+         */
+        populateSettingEmployees();
+
+
+        /*
+         * Show modal.
+         */
+        document.getElementById(
+            "leaveSettingModal"
+        ).classList.add(
+            "show"
+        );
+
+    }
+
+    function closeLeaveSettingModal() {
+
+        document.getElementById(
+            "leaveSettingModal"
+        ).classList.remove(
+            "show"
+        );
+
+
+        currentLeaveSettingType =
+            null;
+
+    }
+
+    async function saveLeaveSetting() {
+
+        if (!currentLeaveSettingType) {
+
+            alert(
+                "Setting type not selected."
+            );
+
+            return;
+        }
+
+
+        const sickValue =
+            document.getElementById(
+                "settingSickLeave"
+            ).value;
+
+
+        const casualValue =
+            document.getElementById(
+                "settingCasualLeave"
+            ).value;
+
+
+        const permissionValue =
+            document.getElementById(
+                "settingPermissionCount"
+            ).value;
+
+
+        if (
+            sickValue === "" ||
+            Number(sickValue) < 0
+        ) {
+
+            alert(
+                "Please enter a valid Sick Leave allowance."
+            );
+
+            return;
+        }
+
+
+        if (
+            casualValue === "" ||
+            Number(casualValue) < 0
+        ) {
+
+            alert(
+                "Please enter a valid Casual Leave allowance."
+            );
+
+            return;
+        }
+
+
+        if (
+            permissionValue === "" ||
+            Number(permissionValue) < 0
+        ) {
+
+            alert(
+                "Please enter a valid Permission allowance."
+            );
+
+            return;
+        }
+
+
+        // =========================
+        // SHIFT
+        // =========================
+
+        const shiftElement =
+            document.getElementById(
+                "settingShiftType"
+            );
+
+
+        const shiftType =
+            shiftElement &&
+                shiftElement.value
+                ? shiftElement.value
+                : "GENERAL";
+
+
+        const normalizedShiftType =
+            String(
+                shiftType
+            )
+                .trim()
+                .toUpperCase();
+
+
+        if (
+            normalizedShiftType !== "GENERAL" &&
+            normalizedShiftType !== "SHIFT_1" &&
+            normalizedShiftType !== "SHIFT_2" &&
+            normalizedShiftType !== "SHIFT_3"
+        ) {
+
+            alert(
+                "Please select a valid shift."
+            );
+
+            return;
+        }
+
+
+        // =========================
+        // REQUEST DATA
+        // =========================
+
+        const requestData = {
+
+            settingType:
+                currentLeaveSettingType,
+
+            shiftType:
+                normalizedShiftType,
+
+            sickLeave:
+                Number(sickValue),
+
+            casualLeave:
+                Number(casualValue),
+
+            permissionCount:
+                Number(permissionValue)
+
+        };
+
+
+        // =========================
+        // ROLE SETTING
+        // =========================
+
+        if (
+            currentLeaveSettingType ===
+            "ROLE"
+        ) {
+
+            const role =
+                document.getElementById(
+                    "settingRole"
+                ).value;
+
+
+            if (!role) {
+
+                alert(
+                    "Please select a role."
+                );
+
+                return;
+            }
+
+
+            requestData.role =
+                role;
+        }
+
+
+        // =========================
+        // EMPLOYEE SETTING
+        // =========================
+
+        if (
+            currentLeaveSettingType ===
+            "EMPLOYEE"
+        ) {
+
+            const employeeId =
+                document.getElementById(
+                    "settingEmployee"
+                ).value;
+
+
+            if (!employeeId) {
+
+                alert(
+                    "Please select an employee."
+                );
+
+                return;
+            }
+
+
+            requestData.employeeId =
+                Number(employeeId);
+        }
+
+
+        // =========================
+        // SAVE
+        // =========================
+
+        try {
+
+            const response =
+                await apiFetch(
+                    "/admin/leave-settings",
+                    {
+                        method:
+                            "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify(
+                                requestData
+                            )
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    await getErrorMessage(
+                        response
+                    )
+                );
+            }
+
+
+            closeLeaveSettingModal();
+
+
+            await loadLeaveSettings();
+
+
+            showMessage(
+                "settingsMessage",
+                "Leave & Permission settings saved successfully.",
+                "success"
+            );
+
+        }
+        catch (error) {
+
+            console.error(
+                "Save leave setting error:",
+                error
+            );
+
+
+            showMessage(
+                "settingsMessage",
+                error.message ||
+                "Unable to save leave settings.",
+                "error"
+            );
+
+        }
+
+    }
+
+    document.querySelectorAll(
+        ".modal"
+    ).forEach(
+        function(modal) {
+
+            modal.addEventListener(
+                "click",
+                function(event) {
+
+                    if (
+                        event.target ===
+                        modal
+                    ) {
+
+                        modal.classList.remove(
+                            "show"
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+    let settingChangeContext = null;
+
+    function settingActionButtons(setting, type, employeeName) {
+
+        const label =
+            type +
+            (setting.role ? " - " + setting.role : "") +
+            (employeeName && employeeName !== "-" ? " - " + employeeName : "");
+
+        const args =
+            setting.id + ", " +
+            Number(setting.sickLeave || 0) + ", " +
+            Number(setting.casualLeave || 0) + ", " +
+            Number(setting.permissionCount || 0) + ", '" +
+            escapeJs(label) + "'";
+
+        let html =
+            "<button class='btn btn-primary btn-small' " +
+            "onclick=\"openSettingChangeModal('edit', " + args + ")\">Edit</button> ";
+
+        if (type !== "DEFAULT") {
+            html +=
+                "<button class='btn btn-danger btn-small' " +
+                "onclick=\"openSettingChangeModal('delete', " + args + ")\">Delete</button>";
+        }
+
+        return html;
+    }
+
+    function openSettingChangeModal(mode, id, sick, casual, permissionCount, label) {
+
+        settingChangeContext = { mode: mode, id: id };
+
+        const isEdit = mode === "edit";
+
+        document.getElementById("settingChangeTitle").textContent =
+            isEdit ? "Edit Setting" : "Delete Setting";
+
+        document.getElementById("settingChangeInfo").textContent =
+            (isEdit ? "Editing: " : "Delete this setting? ") + label;
+
+        document.getElementById("settingChangeFields").style.display =
+            isEdit ? "block" : "none";
+
+        document.getElementById("changeSickLeave").value = sick;
+        document.getElementById("changeCasualLeave").value = casual;
+        document.getElementById("changePermissionCount").value = permissionCount;
+        document.getElementById("settingChangeReason").value = "";
+
+        const submit = document.getElementById("settingChangeSubmit");
+
+        submit.textContent = isEdit ? "Save Changes" : "Delete";
+        submit.className = isEdit ? "btn btn-primary" : "btn btn-danger";
+
+        document.getElementById("settingChangeModal").classList.add("show");
+    }
+
+    function closeSettingChangeModal() {
+
+        document.getElementById("settingChangeModal").classList.remove("show");
+
+        settingChangeContext = null;
+    }
+
+    async function submitSettingChange() {
+
+        if (!settingChangeContext) {
+            return;
+        }
+
+        const adminEmail = localStorage.getItem("adminEmail");
+
+        if (!adminEmail) {
+            alert("Admin login information not found. Please login again.");
+            logout();
+            return;
+        }
+
+        const reason =
+            document.getElementById("settingChangeReason").value.trim();
+
+        if (reason.length < 3) {
+            alert("Please enter a reason (minimum 3 characters).");
+            return;
+        }
+
+        const isEdit = settingChangeContext.mode === "edit";
+        const id = settingChangeContext.id;
+
+        try {
+
+            let response;
+
+            if (isEdit) {
+
+                const sick = document.getElementById("changeSickLeave").value;
+                const casual = document.getElementById("changeCasualLeave").value;
+                const permission = document.getElementById("changePermissionCount").value;
+
+                if (sick === "" || Number(sick) < 0 ||
+                    casual === "" || Number(casual) < 0 ||
+                    permission === "" || Number(permission) < 0) {
+
+                    alert("Please enter valid values.");
+                    return;
+                }
+
+                response = await apiFetch(
+                    "/admin/leave-settings/" + id,
+                    {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            sickLeave: Number(sick),
+                            casualLeave: Number(casual),
+                            permissionCount: Number(permission),
+                            adminEmail: adminEmail,
+                            reason: reason
+                        })
+                    }
+                );
+
+            } else {
+
+                response = await apiFetch(
+                    "/admin/leave-settings/" + id +
+                    "?adminEmail=" + encodeURIComponent(adminEmail) +
+                    "&reason=" + encodeURIComponent(reason),
+                    { method: "DELETE" }
+                );
+            }
+
+            if (!response.ok) {
+                throw new Error(await getErrorMessage(response));
+            }
+
+            closeSettingChangeModal();
+
+            await loadLeaveSettings();
+
+            showMessage(
+                "settingsMessage",
+                isEdit ? "Setting updated successfully." : "Setting deleted successfully.",
+                "success"
+            );
+
+        } catch (error) {
+
+            console.error("Setting change error:", error);
+
+            alert(error.message || "Unable to complete the action.");
+        }
+    }
+
+    async function openSettingHistoryModal() {
+
+        document.getElementById("settingHistoryModal").classList.add("show");
+
+        const tbody = document.getElementById("settingHistoryBody");
+
+        tbody.innerHTML =
+            '<tr><td colspan="7" class="empty-row">Loading...</td></tr>';
+
+        try {
+
+            const response = await apiFetch("/admin/leave-settings/history");
+
+            if (!response.ok) {
+                throw new Error(await getErrorMessage(response));
+            }
+
+            const list = await response.json();
+
+            if (!list || list.length === 0) {
+
+                tbody.innerHTML =
+                    '<tr><td colspan="7" class="empty-row">No history found.</td></tr>';
+
+                return;
+            }
+
+            tbody.innerHTML = list.map(function(item) {
+
+                let target = String(item.settingType || "-");
+
+                if (item.role) {
+                    target += " - " + item.role;
+                }
+
+                if (item.employeeId !== null && item.employeeId !== undefined) {
+
+                    const employee = (typeof employees !== "undefined" ? employees : [])
+                        .find(function(e) { return Number(e.id) === Number(item.employeeId); });
+
+                    target += " - " + (employee
+                        ? employee.name + " (" + (employee.employeeCode || item.employeeId) + ")"
+                        : "Employee #" + item.employeeId);
+                }
+
+                return "<tr>" +
+                    "<td>" + escapeHtml(formatDateTime(item.createdAt)) + "</td>" +
+                    "<td>" + escapeHtml(item.action || "-") + "</td>" +
+                    "<td>" + escapeHtml(target) + "</td>" +
+                    "<td>" + escapeHtml(item.oldValues || "-") + "</td>" +
+                    "<td>" + escapeHtml(item.newValues || "-") + "</td>" +
+                    "<td>" + escapeHtml(item.reason || "-") + "</td>" +
+                    "<td>" + escapeHtml(item.adminEmail || "-") + "</td>" +
+                    "</tr>";
+
+            }).join("");
+
+        } catch (error) {
+
+            console.error("Setting history error:", error);
+
+            tbody.innerHTML =
+                '<tr><td colspan="7" class="empty-row">' +
+                escapeHtml(error.message || "Unable to load history.") + '</td></tr>';
+        }
+    }
+
+    function closeSettingHistoryModal() {
+
+        document.getElementById("settingHistoryModal").classList.remove("show");
+    }
+
+    async function loadShiftSettingsData() {
+
+        try {
+
+            const response = await apiFetch("/admin/shift-settings");
+
+            if (response.ok) {
+                shiftSettings = await response.json();
+            }
+
+        }
+        catch (error) {
+
+            console.error("Load shift settings error:", error);
+
+        }
+
+    }
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function() {
+
+            if (typeof lucide !== "undefined") {
+                lucide.createIcons();
+            }
+
+            loadAdminInfo();
+
+            Promise.all([loadEmployees(), loadShiftSettingsData()]).then(function() {
+                loadLeaveSettings();
+            });
+
+        }
+    );
+
+</script>
+
+</body>
+
+</html>

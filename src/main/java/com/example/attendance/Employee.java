@@ -1,3 +1,4 @@
+
 package com.example.attendance;
 
 import jakarta.persistence.*;
@@ -28,6 +29,8 @@ public class Employee {
 
     private String designation;
 
+    private String course;
+
     private Double salary;
 
     @Column(name = "joining_date")
@@ -38,6 +41,14 @@ public class Employee {
 
     @Column(name = "active", nullable = false)
     private Boolean active = true;
+
+    // =========================
+    // BRANCH
+    // =========================
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "branch_id")
+    private Branch branch;
 
 
     // =========================
@@ -80,6 +91,10 @@ public class Employee {
         return designation;
     }
 
+    public String getCourse() {
+        return course;
+    }
+
     public Double getSalary() {
         return salary;
     }
@@ -94,6 +109,10 @@ public class Employee {
 
     public Boolean getActive() {
         return active;
+    }
+
+    public Branch getBranch() {
+        return branch;
     }
 
 
@@ -137,6 +156,10 @@ public class Employee {
         this.designation = designation;
     }
 
+    public void setCourse(String course) {
+        this.course = course;
+    }
+
     public void setSalary(Double salary) {
         this.salary = salary;
     }
@@ -153,4 +176,8 @@ public class Employee {
         this.active = active;
     }
 
+    public void setBranch(Branch branch) {
+        this.branch = branch;
+    }
 }
+

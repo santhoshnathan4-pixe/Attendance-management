@@ -1,538 +1,1232 @@
+
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
 
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
-    <title>Growbytee - Employee Login</title>
+<title>Growbytee - Employee Login</title>
 
-    <style>
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Arial, sans-serif;
-        }
+<!-- =========================
+     HUMAN FACE LIBRARY
+========================== -->
 
-        body {
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #f4f7fb;
-        }
+<script
+    src="https://cdn.jsdelivr.net/npm/@vladmandic/human/dist/human.js">
+</script>
 
-        .login-container {
-            width: 380px;
-            background: white;
-            padding: 35px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
-        }
 
-        .logo {
-            text-align: center;
-            margin-bottom: 10px;
-        }
+<style>
 
-        .logo h1 {
-            color: #2563eb;
-            font-size: 30px;
-        }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
 
-        .logo p {
-            color: #777;
-            margin-top: 5px;
-            font-size: 14px;
-        }
 
-        .login-title {
-            text-align: center;
-            margin: 25px 0;
-            color: #333;
-        }
+    body {
+        min-height: 100vh;
 
-        .input-group {
-            margin-bottom: 18px;
-        }
+        display: flex;
+        justify-content: center;
+        align-items: center;
 
-        .input-group label {
-            display: block;
-            margin-bottom: 7px;
-            color: #444;
-            font-size: 14px;
-            font-weight: bold;
-        }
+        background: #f4f7fb;
+    }
 
-        .password-wrapper {
-            position: relative;
-        }
 
-        .input-group input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            outline: none;
-            font-size: 15px;
-        }
+    .login-container {
+        width: 380px;
+        max-width: 95%;
 
-        .password-wrapper input {
-            padding-right: 45px;
-        }
+        background: white;
 
-        .input-group input:focus {
-            border-color: #2563eb;
-        }
+        padding: 35px;
 
-        .eye-btn {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            border: none;
-            background: transparent;
-            cursor: pointer;
-            font-size: 18px;
-            padding: 5px;
-        }
+        border-radius: 15px;
 
-        .login-btn {
-            width: 100%;
-            padding: 13px;
-            border: none;
-            border-radius: 8px;
-            background: #2563eb;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+        box-shadow:
+            0 10px 30px rgba(0, 0, 0, 0.12);
+    }
 
-        .login-btn:hover {
-            background: #1d4ed8;
-        }
 
-        #message {
-            text-align: center;
-            margin-top: 15px;
-            font-size: 14px;
-        }
+    .logo {
+        text-align: center;
 
-        /* =========================
-           FIRST TIME PASSWORD SETUP
-        ========================= */
+        margin-bottom: 10px;
+    }
 
-        .password-setup {
-            display: none;
-        }
 
-        .password-info {
-            background: #eff6ff;
-            border: 1px solid #bfdbfe;
-            color: #1e40af;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 18px;
-            font-size: 13px;
-            line-height: 1.5;
-        }
+    .logo h1 {
+        color: #2563eb;
 
-        .continue-btn {
-            width: 100%;
-            padding: 13px;
-            border: none;
-            border-radius: 8px;
-            background: #16a34a;
-            color: white;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+        font-size: 30px;
+    }
 
-        .continue-btn:hover {
-            background: #15803d;
-        }
 
-        .continue-btn:disabled {
-            background: #9ca3af;
-            cursor: not-allowed;
-        }
+    .logo p {
+        color: #777;
 
-        .back-btn {
-            width: 100%;
-            padding: 11px;
-            margin-top: 10px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background: white;
-            color: #555;
-            font-size: 14px;
-            cursor: pointer;
-        }
+        margin-top: 5px;
 
-        .back-btn:hover {
-            background: #f5f5f5;
-        }
+        font-size: 14px;
+    }
 
-        #setupMessage {
-            text-align: center;
-            margin-top: 15px;
-            font-size: 14px;
-        }
 
-        #passwordMatchMessage {
-            font-size: 13px;
-            margin-top: -8px;
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
+    .login-title {
+        text-align: center;
 
-    </style>
+        margin: 25px 0;
+
+        color: #333;
+    }
+
+
+    .input-group {
+        margin-bottom: 18px;
+    }
+
+
+    .input-group label {
+        display: block;
+
+        margin-bottom: 7px;
+
+        color: #444;
+
+        font-size: 14px;
+
+        font-weight: bold;
+    }
+
+
+    .password-wrapper {
+        position: relative;
+    }
+
+
+    .input-group input {
+        width: 100%;
+
+        padding: 12px;
+
+        border: 1px solid #ddd;
+
+        border-radius: 8px;
+
+        outline: none;
+
+        font-size: 15px;
+    }
+
+
+    .password-wrapper input {
+        padding-right: 65px;
+    }
+
+
+    .input-group input:focus {
+        border-color: #2563eb;
+    }
+
+
+    .eye-btn {
+        position: absolute;
+
+        right: 8px;
+        top: 50%;
+
+        transform: translateY(-50%);
+
+        border: none;
+
+        background: transparent;
+
+        cursor: pointer;
+
+        font-size: 12px;
+
+        color: #2563eb;
+
+        padding: 5px 7px;
+    }
+
+
+    .login-btn,
+    .continue-btn,
+    .face-btn {
+        width: 100%;
+
+        padding: 13px;
+
+        border: none;
+
+        border-radius: 8px;
+
+        color: white;
+
+        font-size: 16px;
+
+        font-weight: bold;
+
+        cursor: pointer;
+    }
+
+
+    .login-btn {
+        background: #2563eb;
+    }
+
+
+    .login-btn:hover {
+        background: #1d4ed8;
+    }
+
+
+    #message,
+    #setupMessage,
+    #faceMessage {
+        text-align: center;
+
+        margin-top: 15px;
+
+        font-size: 14px;
+    }
+
+
+    /* =========================
+       FIRST TIME PASSWORD SETUP
+    ========================== */
+
+    .password-setup,
+    .face-registration {
+        display: none;
+    }
+
+
+    .password-info,
+    .face-info {
+        background: #eff6ff;
+
+        border: 1px solid #bfdbfe;
+
+        color: #1e40af;
+
+        padding: 12px;
+
+        border-radius: 8px;
+
+        margin-bottom: 18px;
+
+        font-size: 13px;
+
+        line-height: 1.5;
+    }
+
+
+    .continue-btn {
+        background: #16a34a;
+    }
+
+
+    .continue-btn:hover {
+        background: #15803d;
+    }
+
+
+    .continue-btn:disabled {
+        background: #9ca3af;
+
+        cursor: not-allowed;
+    }
+
+
+    .back-btn {
+        width: 100%;
+
+        padding: 11px;
+
+        margin-top: 10px;
+
+        border: 1px solid #ddd;
+
+        border-radius: 8px;
+
+        background: white;
+
+        color: #555;
+
+        font-size: 14px;
+
+        cursor: pointer;
+    }
+
+
+    .back-btn:hover {
+        background: #f5f5f5;
+    }
+
+
+    #passwordMatchMessage {
+        font-size: 13px;
+
+        margin-top: -8px;
+
+        margin-bottom: 15px;
+
+        font-weight: bold;
+    }
+
+
+    /* =========================
+       FACE REGISTRATION
+    ========================== */
+
+    .face-title {
+        text-align: center;
+
+        margin: 25px 0 15px;
+
+        color: #333;
+    }
+
+
+    .camera-wrapper {
+        width: 100%;
+
+        aspect-ratio: 4 / 3;
+
+        background: #111827;
+
+        border-radius: 12px;
+
+        overflow: hidden;
+
+        position: relative;
+
+        margin-bottom: 15px;
+    }
+
+
+    #faceVideo {
+        width: 100%;
+
+        height: 100%;
+
+        object-fit: cover;
+
+        transform: scaleX(-1);
+    }
+
+
+    #faceCanvas {
+        display: none;
+    }
+
+
+    .camera-status {
+        text-align: center;
+
+        font-size: 13px;
+
+        color: #555;
+
+        margin-bottom: 12px;
+
+        min-height: 18px;
+    }
+
+
+    .face-btn {
+        background: #2563eb;
+    }
+
+
+    .face-btn:hover {
+        background: #1d4ed8;
+    }
+
+
+    .face-btn:disabled {
+        background: #9ca3af;
+
+        cursor: not-allowed;
+    }
+
+
+    .skip-face-btn {
+        width: 100%;
+
+        padding: 11px;
+
+        margin-top: 10px;
+
+        border: 1px solid #ddd;
+
+        border-radius: 8px;
+
+        background: white;
+
+        color: #555;
+
+        font-size: 14px;
+
+        cursor: pointer;
+    }
+
+</style>
 
 </head>
 
 
 <body>
 
-    <div class="login-container">
+
+<div class="login-container">
 
 
-        <!-- =================================
-             EMPLOYEE LOGIN
-        ================================== -->
+    <!-- =================================
+         EMPLOYEE LOGIN
+    ================================== -->
 
-        <div id="loginSection">
-
-            <div class="logo">
-
-                <h1>GROWBYTEE</h1>
-
-                <p>
-                    Attendance Management System
-                </p>
-
-            </div>
+    <div id="loginSection">
 
 
-            <h2 class="login-title">
-                Employee Login
-            </h2>
+        <div class="logo">
 
+            <h1>GROWBYTEE</h1>
 
-            <!-- EMAIL -->
-
-            <div class="input-group">
-
-                <label>
-                    Email
-                </label>
-
-                <input
-                    type="email"
-                    id="email"
-                    placeholder="Enter your email"
-                    autocomplete="off">
-
-            </div>
-
-
-            <!-- PASSWORD -->
-
-            <div class="input-group">
-
-                <label>
-                    Password
-                </label>
-
-                <div class="password-wrapper">
-
-                    <input
-                        type="password"
-                        id="password"
-                        placeholder="Enter your password"
-                        autocomplete="off">
-
-                    <button
-                        type="button"
-                        class="eye-btn"
-                        onclick="togglePassword('password', this)">
-
-                        👁
-
-                    </button>
-
-                </div>
-
-            </div>
-
-
-            <button
-                class="login-btn"
-                onclick="login()">
-
-                Login
-
-            </button>
-
-
-            <p id="message"></p>
+            <p>
+                Attendance Management System
+            </p>
 
         </div>
 
 
-
-        <!-- =================================
-             FIRST TIME PASSWORD SETUP
-        ================================== -->
-
-        <div
-            id="passwordSetupSection"
-            class="password-setup">
+        <h2 class="login-title">
+            Employee Login
+        </h2>
 
 
-            <div class="logo">
+        <div class="input-group">
 
-                <h1>GROWBYTEE</h1>
+            <label>
+                Email
+            </label>
 
-                <p>
-                    Attendance Management System
-                </p>
-
-            </div>
-
-
-            <h2 class="login-title">
-                Set Employee Password
-            </h2>
-
-
-            <div class="password-info">
-
-                This is your first login.<br>
-
-                Enter the same email registered
-                by Admin and create your password.
-
-            </div>
-
-
-            <!-- EMAIL -->
-
-            <div class="input-group">
-
-                <label>
-                    Employee Email
-                </label>
-
-                <input
-                    type="email"
-                    id="setupEmail"
-                    placeholder="Enter your employee email"
-                    autocomplete="off">
-
-            </div>
-
-
-            <!-- NEW PASSWORD -->
-
-            <div class="input-group">
-
-                <label>
-                    New Password
-                </label>
-
-                <div class="password-wrapper">
-
-                    <input
-                        type="password"
-                        id="newPassword"
-                        placeholder="Enter new password"
-                        autocomplete="new-password"
-                        oninput="checkPasswordMatch()">
-
-                    <button
-                        type="button"
-                        class="eye-btn"
-                        onclick="togglePassword('newPassword', this)">
-
-                        👁
-
-                    </button>
-
-                </div>
-
-            </div>
-
-
-            <!-- CONFIRM PASSWORD -->
-
-            <div class="input-group">
-
-                <label>
-                    Confirm Password
-                </label>
-
-                <div class="password-wrapper">
-
-                    <input
-                        type="password"
-                        id="confirmPassword"
-                        placeholder="Confirm your password"
-                        autocomplete="new-password"
-                        oninput="checkPasswordMatch()">
-
-                    <button
-                        type="button"
-                        class="eye-btn"
-                        onclick="togglePassword('confirmPassword', this)">
-
-                        👁
-
-                    </button>
-
-                </div>
-
-            </div>
-
-
-            <!-- PASSWORD MATCH -->
-
-            <p id="passwordMatchMessage"></p>
-
-
-            <!-- CONTINUE -->
-
-            <button
-                id="continueBtn"
-                class="continue-btn"
-                onclick="setEmployeePassword()"
-                disabled>
-
-                Continue
-
-            </button>
-
-
-            <!-- BACK -->
-
-            <button
-                class="back-btn"
-                onclick="backToLogin()">
-
-                Back to Login
-
-            </button>
-
-
-            <p id="setupMessage"></p>
+            <input
+                type="email"
+                id="email"
+                placeholder="Enter your email"
+                autocomplete="off">
 
         </div>
+
+
+        <div class="input-group">
+
+            <label>
+                Password
+            </label>
+
+
+            <div class="password-wrapper">
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Enter your password"
+                    autocomplete="off">
+
+
+                <button
+                    type="button"
+                    class="eye-btn"
+                    onclick="togglePassword('password', this)">
+
+                    Show
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="login-btn"
+            onclick="login()">
+
+            Login
+
+        </button>
+
+
+        <p id="message"></p>
 
     </div>
 
 
 
-    <script>
+    <!-- =================================
+         FIRST TIME PASSWORD SETUP
+    ================================== -->
 
-        // ==========================================
-        // RENDER BACKEND URL
-        // ==========================================
-
-        const API_BASE_URL =
-            "https://attendance-management-d5h6.onrender.com";
+    <div
+        id="passwordSetupSection"
+        class="password-setup">
 
 
-        // ==========================================
-        // PASSWORD SHOW / HIDE
-        // ==========================================
+        <div class="logo">
 
-        function togglePassword(
-            inputId,
-            button
-        ) {
+            <h1>GROWBYTEE</h1>
 
-            const input =
-                document.getElementById(
-                    inputId
+            <p>
+                Attendance Management System
+            </p>
+
+        </div>
+
+
+        <h2 class="login-title">
+            Set Employee Password
+        </h2>
+
+
+        <div class="password-info">
+
+            This is your first login.<br>
+
+            Enter the same email registered
+            by Admin and create your password.
+
+        </div>
+
+
+        <div class="input-group">
+
+            <label>
+                Employee Email
+            </label>
+
+            <input
+                type="email"
+                id="setupEmail"
+                placeholder="Enter your employee email"
+                autocomplete="off">
+
+        </div>
+
+
+        <div class="input-group">
+
+            <label>
+                New Password
+            </label>
+
+
+            <div class="password-wrapper">
+
+                <input
+                    type="password"
+                    id="newPassword"
+                    placeholder="Enter new password"
+                    autocomplete="new-password"
+                    oninput="checkPasswordMatch()">
+
+
+                <button
+                    type="button"
+                    class="eye-btn"
+                    onclick="togglePassword('newPassword', this)">
+
+                    Show
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="input-group">
+
+            <label>
+                Confirm Password
+            </label>
+
+
+            <div class="password-wrapper">
+
+                <input
+                    type="password"
+                    id="confirmPassword"
+                    placeholder="Confirm your password"
+                    autocomplete="new-password"
+                    oninput="checkPasswordMatch()">
+
+
+                <button
+                    type="button"
+                    class="eye-btn"
+                    onclick="togglePassword('confirmPassword', this)">
+
+                    Show
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <p id="passwordMatchMessage"></p>
+
+
+        <button
+            id="continueBtn"
+            class="continue-btn"
+            onclick="setEmployeePassword()"
+            disabled>
+
+            Continue
+
+        </button>
+
+
+        <button
+            class="back-btn"
+            onclick="backToLogin()">
+
+            Back to Login
+
+        </button>
+
+
+        <p id="setupMessage"></p>
+
+    </div>
+
+
+
+    <!-- =================================
+         FIRST TIME FACE REGISTRATION
+    ================================== -->
+
+    <div
+        id="faceRegistrationSection"
+        class="face-registration">
+
+
+        <div class="logo">
+
+            <h1>GROWBYTEE</h1>
+
+            <p>
+                Attendance Management System
+            </p>
+
+        </div>
+
+
+        <h2 class="face-title">
+            Face Registration
+        </h2>
+
+
+        <div class="face-info">
+
+            Your first-time setup is almost complete.<br><br>
+
+            Allow camera access and keep your face
+            clearly visible inside the camera frame.
+
+            <br><br>
+
+            Your face descriptor will be registered
+            for attendance verification.
+
+        </div>
+
+
+        <div class="camera-wrapper">
+
+            <video
+                id="faceVideo"
+                autoplay
+                muted
+                playsinline>
+            </video>
+
+
+            <canvas
+                id="faceCanvas">
+            </canvas>
+
+        </div>
+
+
+        <p
+            id="cameraStatus"
+            class="camera-status">
+
+            Starting camera...
+
+        </p>
+
+
+        <button
+            id="captureFaceBtn"
+            class="face-btn"
+            onclick="registerFace()"
+            disabled>
+
+            Register Face
+
+        </button>
+
+
+        <button
+            id="faceContinueBtn"
+            class="continue-btn"
+            onclick="openDashboard()"
+            style="display:none;">
+
+            Continue to Dashboard
+
+        </button>
+
+
+        <p id="faceMessage"></p>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+
+    // ==========================================
+    // API BASE URL
+    // ==========================================
+
+    const API_BASE_URL =
+        (window.location.hostname === "localhost" ||
+         window.location.hostname === "127.0.0.1")
+            ? "http://localhost:8080"
+            : "https://attendance-management-d5h6.onrender.com";
+
+
+    // ==========================================
+    // HUMAN FACE CONFIGURATION
+    // ==========================================
+
+    let human;
+
+    let cameraStream = null;
+
+    let faceRegistered = false;
+
+
+    const humanConfig = {
+
+        backend: "webgl",
+
+        modelBasePath:
+            "https://vladmandic.github.io/human-models/models/",
+
+
+        face: {
+
+            enabled: true,
+
+            detector: {
+                rotation: true
+            },
+
+            mesh: {
+                enabled: true
+            },
+
+            description: {
+                enabled: true
+            },
+
+            iris: {
+                enabled: false
+            },
+
+            emotion: {
+                enabled: false
+            },
+
+            antispoof: {
+                enabled: false
+            },
+
+            liveness: {
+                enabled: false
+            }
+
+        },
+
+
+        body: {
+            enabled: false
+        },
+
+
+        hand: {
+            enabled: false
+        },
+
+
+        object: {
+            enabled: false
+        }
+
+    };
+
+
+    // ==========================================
+    // INITIALIZE HUMAN
+    // ==========================================
+
+    async function initializeHuman() {
+
+        try {
+
+            if (
+                typeof Human === "undefined"
+            ) {
+
+                throw new Error(
+                    "Face recognition library could not be loaded."
+                );
+
+            }
+
+
+            human =
+                new Human.Human(
+                    humanConfig
                 );
 
 
-            if (
-                input.type === "password"
-            ) {
+            await human.load();
 
-                input.type = "text";
+            await human.warmup();
 
-                button.innerText = "🙈";
 
-            }
+            console.log(
+                "Human face library initialized."
+            );
 
-            else {
 
-                input.type = "password";
+        } catch (error) {
 
-                button.innerText = "👁";
+            console.error(
+                "Human initialization error:",
+                error
+            );
 
-            }
+        }
+
+    }
+
+
+    // ==========================================
+    // PASSWORD SHOW / HIDE
+    // ==========================================
+
+    function togglePassword(
+        inputId,
+        button
+    ) {
+
+        const input =
+            document.getElementById(
+                inputId
+            );
+
+
+        if (
+            input.type === "password"
+        ) {
+
+            input.type = "text";
+
+            button.innerText =
+                "Hide";
+
+        } else {
+
+            input.type = "password";
+
+            button.innerText =
+                "Show";
+
+        }
+
+    }
+
+
+    // ==========================================
+    // CHECK FACE STATUS
+    // ==========================================
+
+    async function checkFaceStatus(
+        email
+    ) {
+
+        if (
+            !email ||
+            email.trim() === ""
+        ) {
+
+            throw new Error(
+                "Employee email is required."
+            );
 
         }
 
 
-
-        // ==========================================
-        // EMPLOYEE LOGIN
-        // ==========================================
-
-        function login() {
-
-            const email =
-                document.getElementById(
-                    "email"
-                ).value.trim();
+        const response =
+            await fetch(
+                `${API_BASE_URL}/employee-face/status?email=${encodeURIComponent(email.trim())}`,
+                {
+                    method: "GET"
+                }
+            );
 
 
-            const password =
-                document.getElementById(
-                    "password"
-                ).value;
+        const data =
+            await response.text();
 
 
-            const message =
-                document.getElementById(
-                    "message"
+        if (!response.ok) {
+
+            throw new Error(
+                data ||
+                "Unable to check face registration status."
+            );
+
+        }
+
+
+        return data.trim();
+
+    }
+
+
+    // ==========================================
+    // CONTINUE AFTER LOGIN
+    // ==========================================
+
+    async function continueAfterLogin(
+        email,
+        messageElement
+    ) {
+
+        try {
+
+            if (messageElement) {
+
+                messageElement.innerText =
+                    "Checking face verification...";
+
+                messageElement.style.color =
+                    "#2563eb";
+
+            }
+
+
+            const faceStatus =
+                await checkFaceStatus(
+                    email
                 );
 
 
-            // EMAIL
+            console.log(
+                "FACE STATUS:",
+                faceStatus
+            );
 
-            if (email === "") {
 
-                message.innerText =
-                    "Please enter your employee email.";
+            // ==================================
+            // FACE VERIFICATION NOT REQUIRED
+            // ==================================
 
-                message.style.color =
-                    "red";
+            if (
+                faceStatus ===
+                "FACE_NOT_REQUIRED"
+            ) {
+
+                localStorage.setItem(
+                    "employeeEmail",
+                    email
+                );
+
+
+                window.location.href =
+                    "dashboard.html";
+
 
                 return;
 
             }
 
 
-            // PASSWORD
+            // ==================================
+            // FACE ALREADY REGISTERED
+            // ==================================
 
-            if (password === "") {
+            if (
+                faceStatus ===
+                "FACE_REGISTERED"
+            ) {
 
-                message.innerText =
-                    "Please enter your password.";
+                localStorage.setItem(
+                    "employeeEmail",
+                    email
+                );
 
-                message.style.color =
+
+                window.location.href =
+                    "dashboard.html";
+
+
+                return;
+
+            }
+
+
+            // ==================================
+            // FACE REGISTRATION REQUIRED
+            // ==================================
+
+            if (
+                faceStatus ===
+                "FACE_NOT_REGISTERED"
+            ) {
+
+                localStorage.setItem(
+                    "employeeEmail",
+                    email
+                );
+
+
+                openFaceRegistration();
+
+                return;
+
+            }
+
+
+            throw new Error(
+                "Unknown face verification status."
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Face status check error:",
+                error
+            );
+
+
+            if (messageElement) {
+
+                messageElement.innerText =
+                    error.message ||
+                    "Unable to check face verification status.";
+
+                messageElement.style.color =
                     "red";
+
+            }
+
+        }
+
+    }
+
+
+    // ==========================================
+    // EMPLOYEE LOGIN
+    // ==========================================
+
+    function login() {
+
+        const email =
+            document.getElementById(
+                "email"
+            ).value.trim();
+
+
+        const password =
+            document.getElementById(
+                "password"
+            ).value;
+
+
+        const message =
+            document.getElementById(
+                "message"
+            );
+
+
+        if (email === "") {
+
+            message.innerText =
+                "Please enter your employee email.";
+
+            message.style.color =
+                "red";
+
+            return;
+
+        }
+
+
+        if (password === "") {
+
+            message.innerText =
+                "Please enter your password.";
+
+            message.style.color =
+                "red";
+
+            return;
+
+        }
+
+
+        message.innerText =
+            "Checking login...";
+
+        message.style.color =
+            "#2563eb";
+
+
+        fetch(
+            `${API_BASE_URL}/employee/login?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
+            {
+                method: "POST"
+            }
+        )
+
+        .then(response => {
+
+            return response.text()
+                .then(data => {
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            data
+                        );
+
+                    }
+
+                    return data;
+
+                });
+
+        })
+
+
+        .then(data => {
+
+
+            // ==================================
+            // FIRST LOGIN
+            // ==================================
+
+            if (
+                data ===
+                "FIRST_LOGIN_REQUIRED"
+            ) {
+
+                document.getElementById(
+                    "loginSection"
+                ).style.display =
+                    "none";
+
+
+                document.getElementById(
+                    "passwordSetupSection"
+                ).style.display =
+                    "block";
+
+
+                document.getElementById(
+                    "setupEmail"
+                ).value =
+                    email;
+
+
+                document.getElementById(
+                    "newPassword"
+                ).value = "";
+
+
+                document.getElementById(
+                    "confirmPassword"
+                ).value = "";
+
+
+                document.getElementById(
+                    "passwordMatchMessage"
+                ).innerText = "";
+
+
+                document.getElementById(
+                    "setupMessage"
+                ).innerText = "";
+
+
+                document.getElementById(
+                    "continueBtn"
+                ).disabled =
+                    true;
+
+
+                return;
+
+            }
+
+
+            // ==================================
+            // NORMAL LOGIN
+            // ==================================
+
+            if (
+                data ===
+                "Login Successful"
+            ) {
+
+                localStorage.setItem(
+                    "employeeEmail",
+                    email
+                );
+
+
+                continueAfterLogin(
+                    email,
+                    message
+                );
+
 
                 return;
 
@@ -540,574 +1234,926 @@
 
 
             message.innerText =
-                "Checking login...";
+                data ||
+                "Invalid Email or Password";
 
             message.style.color =
-                "#2563eb";
+                "red";
+
+        })
 
 
-            // ==================================
-            // LOGIN API
-            // ==================================
+        .catch(error => {
 
-            fetch(
-                `${API_BASE_URL}/employee/login?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
-                {
-                    method: "POST"
-                }
-            )
+            console.error(error);
 
-            .then(response => {
+            message.innerText =
+                error.message ||
+                "Server connection failed.";
 
-                return response.text()
-                    .then(data => {
+            message.style.color =
+                "red";
 
-                        if (!response.ok) {
+        });
 
-                            throw new Error(
-                                data
-                            );
-
-                        }
-
-                        return data;
-
-                    });
-
-            })
+    }
 
 
-            .then(data => {
+    // ==========================================
+    // PASSWORD MATCH
+    // ==========================================
+
+    function checkPasswordMatch() {
+
+        const email =
+            document.getElementById(
+                "setupEmail"
+            ).value.trim();
 
 
-                // ==================================
-                // FIRST LOGIN
-                // ==================================
-
-                if (
-                    data ===
-                    "FIRST_LOGIN_REQUIRED"
-                ) {
+        const newPassword =
+            document.getElementById(
+                "newPassword"
+            ).value;
 
 
-                    document.getElementById(
-                        "loginSection"
-                    ).style.display =
-                        "none";
+        const confirmPassword =
+            document.getElementById(
+                "confirmPassword"
+            ).value;
 
 
-                    document.getElementById(
-                        "passwordSetupSection"
-                    ).style.display =
-                        "block";
+        const matchMessage =
+            document.getElementById(
+                "passwordMatchMessage"
+            );
 
 
-                    document.getElementById(
-                        "setupEmail"
-                    ).value =
-                        "";
+        const continueBtn =
+            document.getElementById(
+                "continueBtn"
+            );
 
 
-                    document.getElementById(
-                        "newPassword"
-                    ).value =
-                        "";
+        continueBtn.disabled =
+            true;
 
 
-                    document.getElementById(
-                        "confirmPassword"
-                    ).value =
-                        "";
+        if (
+            newPassword === "" &&
+            confirmPassword === ""
+        ) {
+
+            matchMessage.innerText =
+                "";
+
+            return;
+
+        }
 
 
-                    document.getElementById(
-                        "passwordMatchMessage"
-                    ).innerText =
-                        "";
+        if (
+            newPassword.length > 0 &&
+            newPassword.length < 6
+        ) {
+
+            matchMessage.innerText =
+                "Password must contain at least 6 characters.";
+
+            matchMessage.style.color =
+                "red";
+
+            return;
+
+        }
 
 
-                    document.getElementById(
-                        "setupMessage"
-                    ).innerText =
-                        "";
+        if (
+            confirmPassword === ""
+        ) {
+
+            matchMessage.innerText =
+                "";
+
+            return;
+
+        }
 
 
-                    document.getElementById(
-                        "continueBtn"
-                    ).disabled =
-                        true;
+        if (
+            newPassword ===
+            confirmPassword
+        ) {
+
+            matchMessage.innerText =
+                "Passwords match";
+
+            matchMessage.style.color =
+                "#16a34a";
 
 
-                    return;
+            if (
+                email !== "" &&
+                newPassword.length >= 6
+            ) {
 
-                }
+                continueBtn.disabled =
+                    false;
 
+            }
 
+        } else {
 
-                // ==================================
-                // NORMAL LOGIN
-                // ==================================
+            matchMessage.innerText =
+                "Passwords do not match";
 
-                if (
-                    data ===
-                    "Login Successful"
-                ) {
+            matchMessage.style.color =
+                "red";
 
+        }
 
-                    localStorage.setItem(
-                        "employeeEmail",
-                        email
-                    );
-
-
-                    window.location.href =
-                        "dashboard.html";
+    }
 
 
-                    return;
+    // ==========================================
+    // FIRST PASSWORD SETUP
+    // ==========================================
 
-                }
+    async function setEmployeePassword() {
+
+        const email =
+            document.getElementById(
+                "setupEmail"
+            ).value.trim();
 
 
+        const newPassword =
+            document.getElementById(
+                "newPassword"
+            ).value;
 
-                // ==================================
-                // LOGIN FAILED
-                // ==================================
 
-                message.innerText =
+        const confirmPassword =
+            document.getElementById(
+                "confirmPassword"
+            ).value;
+
+
+        const setupMessage =
+            document.getElementById(
+                "setupMessage"
+            );
+
+
+        if (email === "") {
+
+            setupMessage.innerText =
+                "Please enter your employee email.";
+
+            setupMessage.style.color =
+                "red";
+
+            return;
+
+        }
+
+
+        if (newPassword === "") {
+
+            setupMessage.innerText =
+                "Please enter a password.";
+
+            setupMessage.style.color =
+                "red";
+
+            return;
+
+        }
+
+
+        if (
+            newPassword.length < 6
+        ) {
+
+            setupMessage.innerText =
+                "Password must contain at least 6 characters.";
+
+            setupMessage.style.color =
+                "red";
+
+            return;
+
+        }
+
+
+        if (confirmPassword === "") {
+
+            setupMessage.innerText =
+                "Please confirm your password.";
+
+            setupMessage.style.color =
+                "red";
+
+            return;
+
+        }
+
+
+        if (
+            newPassword !==
+            confirmPassword
+        ) {
+
+            setupMessage.innerText =
+                "Password and Confirm Password do not match.";
+
+            setupMessage.style.color =
+                "red";
+
+            return;
+
+        }
+
+
+        setupMessage.innerText =
+            "Saving password...";
+
+        setupMessage.style.color =
+            "#2563eb";
+
+
+        try {
+
+            const response =
+                await fetch(
+                    `${API_BASE_URL}/employee/first-password`,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+
+                            email:
+                                email,
+
+                            newPassword:
+                                newPassword,
+
+                            confirmPassword:
+                                confirmPassword
+
+                        })
+
+                    }
+                );
+
+
+            const data =
+                await response.text();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data
+                );
+
+            }
+
+
+            if (
+                data !==
+                "Password set successfully"
+            ) {
+
+                throw new Error(
                     data ||
-                    "Invalid Email or Password";
-
-                message.style.color =
-                    "red";
-
-            })
-
-
-            .catch(error => {
-
-                console.error(error);
-
-                message.innerText =
-                    error.message ||
-                    "Server connection failed.";
-
-                message.style.color =
-                    "red";
-
-            });
-
-        }
-
-
-
-        // ==========================================
-        // PASSWORD MATCH
-        // ==========================================
-
-        function checkPasswordMatch() {
-
-            const email =
-                document.getElementById(
-                    "setupEmail"
-                ).value.trim();
-
-
-            const newPassword =
-                document.getElementById(
-                    "newPassword"
-                ).value;
-
-
-            const confirmPassword =
-                document.getElementById(
-                    "confirmPassword"
-                ).value;
-
-
-            const matchMessage =
-                document.getElementById(
-                    "passwordMatchMessage"
+                    "Password setup failed."
                 );
 
-
-            const continueBtn =
-                document.getElementById(
-                    "continueBtn"
-                );
-
-
-            continueBtn.disabled =
-                true;
-
-
-            // NOTHING ENTERED
-
-            if (
-                newPassword === "" &&
-                confirmPassword === ""
-            ) {
-
-                matchMessage.innerText =
-                    "";
-
-                return;
-
             }
 
 
-            // PASSWORD LENGTH
-
-            if (
-                newPassword.length > 0 &&
-                newPassword.length < 6
-            ) {
-
-                matchMessage.innerText =
-                    "❌ Password must contain at least 6 characters.";
-
-                matchMessage.style.color =
-                    "red";
-
-                return;
-
-            }
-
-
-            // CONFIRM PASSWORD EMPTY
-
-            if (
-                confirmPassword === ""
-            ) {
-
-                matchMessage.innerText =
-                    "";
-
-                return;
-
-            }
-
-
-            // PASSWORD MATCH
-
-            if (
-                newPassword ===
-                confirmPassword
-            ) {
-
-                matchMessage.innerText =
-                    "✅ Passwords match";
-
-                matchMessage.style.color =
-                    "#16a34a";
-
-
-                if (
-                    email !== "" &&
-                    newPassword.length >= 6
-                ) {
-
-                    continueBtn.disabled =
-                        false;
-
-                }
-
-            }
-
-            else {
-
-                matchMessage.innerText =
-                    "❌ Passwords do not match";
-
-                matchMessage.style.color =
-                    "red";
-
-            }
-
-        }
-
-
-
-        // ==========================================
-        // FIRST PASSWORD SETUP
-        // ==========================================
-
-        function setEmployeePassword() {
-
-            const email =
-                document.getElementById(
-                    "setupEmail"
-                ).value.trim();
-
-
-            const newPassword =
-                document.getElementById(
-                    "newPassword"
-                ).value;
-
-
-            const confirmPassword =
-                document.getElementById(
-                    "confirmPassword"
-                ).value;
-
-
-            const setupMessage =
-                document.getElementById(
-                    "setupMessage"
-                );
-
-
-            // EMAIL
-
-            if (email === "") {
-
-                setupMessage.innerText =
-                    "Please enter your employee email.";
-
-                setupMessage.style.color =
-                    "red";
-
-                return;
-
-            }
-
-
-            // PASSWORD
-
-            if (newPassword === "") {
-
-                setupMessage.innerText =
-                    "Please enter a password.";
-
-                setupMessage.style.color =
-                    "red";
-
-                return;
-
-            }
-
-
-            if (
-                newPassword.length < 6
-            ) {
-
-                setupMessage.innerText =
-                    "Password must contain at least 6 characters.";
-
-                setupMessage.style.color =
-                    "red";
-
-                return;
-
-            }
-
-
-            // CONFIRM
-
-            if (confirmPassword === "") {
-
-                setupMessage.innerText =
-                    "Please confirm your password.";
-
-                setupMessage.style.color =
-                    "red";
-
-                return;
-
-            }
-
-
-            // MATCH
-
-            if (
-                newPassword !==
-                confirmPassword
-            ) {
-
-                setupMessage.innerText =
-                    "Password and Confirm Password do not match.";
-
-                setupMessage.style.color =
-                    "red";
-
-                return;
-
-            }
+            localStorage.setItem(
+                "employeeEmail",
+                email
+            );
 
 
             setupMessage.innerText =
-                "Saving password...";
+                "Password saved. Checking face verification...";
 
             setupMessage.style.color =
-                "#2563eb";
+                "#16a34a";
 
 
             // ==================================
-            // FIRST PASSWORD API
+            // CHECK BRANCH FACE SETTING
             // ==================================
 
-            fetch(
-                `${API_BASE_URL}/employee/first-password`,
-                {
+            const faceStatus =
+                await checkFaceStatus(
+                    email
+                );
 
-                    method: "POST",
 
-                    headers: {
+            console.log(
+                "FACE STATUS AFTER PASSWORD SETUP:",
+                faceStatus
+            );
 
-                        "Content-Type":
-                            "application/json"
+
+            // ==================================
+            // FACE NOT REQUIRED
+            // ==================================
+
+            if (
+                faceStatus ===
+                "FACE_NOT_REQUIRED"
+            ) {
+
+                window.location.href =
+                    "dashboard.html";
+
+                return;
+
+            }
+
+
+            // ==================================
+            // FACE ALREADY REGISTERED
+            // ==================================
+
+            if (
+                faceStatus ===
+                "FACE_REGISTERED"
+            ) {
+
+                window.location.href =
+                    "dashboard.html";
+
+                return;
+
+            }
+
+
+            // ==================================
+            // FACE REGISTRATION REQUIRED
+            // ==================================
+
+            if (
+                faceStatus ===
+                "FACE_NOT_REGISTERED"
+            ) {
+
+                setupMessage.innerText =
+                    "Password saved. Face registration is required.";
+
+                setupMessage.style.color =
+                    "#16a34a";
+
+
+                setTimeout(() => {
+
+                    openFaceRegistration();
+
+                }, 500);
+
+
+                return;
+
+            }
+
+
+            throw new Error(
+                "Unknown face verification status."
+            );
+
+
+        } catch (error) {
+
+            console.error(
+                "Password setup / face status error:",
+                error
+            );
+
+
+            setupMessage.innerText =
+                error.message ||
+                "Unable to complete password setup.";
+
+            setupMessage.style.color =
+                "red";
+
+        }
+
+    }
+
+
+    // ==========================================
+    // OPEN FACE REGISTRATION
+    // ==========================================
+
+    async function openFaceRegistration() {
+
+        document.getElementById(
+            "loginSection"
+        ).style.display =
+            "none";
+
+
+        document.getElementById(
+            "passwordSetupSection"
+        ).style.display =
+            "none";
+
+
+        document.getElementById(
+            "faceRegistrationSection"
+        ).style.display =
+            "block";
+
+
+        const faceMessage =
+            document.getElementById(
+                "faceMessage"
+            );
+
+
+        faceMessage.innerText =
+            "";
+
+
+        document.getElementById(
+            "captureFaceBtn"
+        ).disabled =
+            true;
+
+
+        document.getElementById(
+            "captureFaceBtn"
+        ).style.display =
+            "block";
+
+
+        document.getElementById(
+            "faceContinueBtn"
+        ).style.display =
+            "none";
+
+
+        document.getElementById(
+            "cameraStatus"
+        ).innerText =
+            "Starting camera...";
+
+
+        await startCamera();
+
+    }
+
+
+    // ==========================================
+    // START CAMERA
+    // ==========================================
+
+    async function startCamera() {
+
+        const video =
+            document.getElementById(
+                "faceVideo"
+            );
+
+
+        try {
+
+            cameraStream =
+                await navigator.mediaDevices.getUserMedia({
+
+                    video: {
+
+                        facingMode: "user",
+
+                        width: {
+                            ideal: 640
+                        },
+
+                        height: {
+                            ideal: 480
+                        }
 
                     },
 
-                    body: JSON.stringify({
+                    audio: false
 
-                        email:
-                            email,
-
-                        newPassword:
-                            newPassword,
-
-                        confirmPassword:
-                            confirmPassword
-
-                    })
-
-                }
-            )
+                });
 
 
-            .then(response => {
-
-                return response.text()
-                    .then(data => {
-
-                        if (!response.ok) {
-
-                            throw new Error(
-                                data
-                            );
-
-                        }
-
-                        return data;
-
-                    });
-
-            })
+            video.srcObject =
+                cameraStream;
 
 
-            .then(data => {
+            await video.play();
 
 
-                // ==================================
-                // SUCCESS
-                // ==================================
-
-                if (
-                    data ===
-                    "Password set successfully"
-                ) {
+            document.getElementById(
+                "cameraStatus"
+            ).innerText =
+                "Camera ready. Keep one face clearly visible.";
 
 
-                    localStorage.setItem(
-                        "employeeEmail",
-                        email
-                    );
+            document.getElementById(
+                "captureFaceBtn"
+            ).disabled =
+                false;
 
 
-                    setupMessage.innerText =
-                        "Password set successfully. Opening dashboard...";
+        } catch (error) {
 
-                    setupMessage.style.color =
-                        "#16a34a";
-
-
-                    setTimeout(() => {
-
-                        window.location.href =
-                            "dashboard.html";
-
-                    }, 800);
+            console.error(
+                "Camera error:",
+                error
+            );
 
 
-                    return;
-
-                }
-
-
-                setupMessage.innerText =
-                    data;
-
-                setupMessage.style.color =
-                    "red";
-
-            })
+            document.getElementById(
+                "cameraStatus"
+            ).innerText =
+                "Camera access is required for face registration.";
 
 
-            .catch(error => {
+            document.getElementById(
+                "faceMessage"
+            ).innerText =
+                "Please allow camera permission and try again.";
 
-                console.error(error);
 
-                setupMessage.innerText =
-                    error.message ||
-                    "Password setup failed.";
+            document.getElementById(
+                "faceMessage"
+            ).style.color =
+                "red";
 
-                setupMessage.style.color =
-                    "red";
+        }
 
-            });
+    }
+
+
+    // ==========================================
+    // REGISTER FACE
+    // ==========================================
+
+    async function registerFace() {
+
+        const email =
+            localStorage.getItem(
+                "employeeEmail"
+            );
+
+
+        const video =
+            document.getElementById(
+                "faceVideo"
+            );
+
+
+        const faceMessage =
+            document.getElementById(
+                "faceMessage"
+            );
+
+
+        const cameraStatus =
+            document.getElementById(
+                "cameraStatus"
+            );
+
+
+        const captureButton =
+            document.getElementById(
+                "captureFaceBtn"
+            );
+
+
+        if (!email) {
+
+            faceMessage.innerText =
+                "Employee email not found.";
+
+            faceMessage.style.color =
+                "red";
+
+            return;
 
         }
 
 
+        if (!human) {
 
-        // ==========================================
-        // EMAIL CHANGE
-        // ==========================================
+            faceMessage.innerText =
+                "Face recognition is still loading. Please try again.";
 
-        document.getElementById(
-            "setupEmail"
-        ).addEventListener(
-            "input",
-            checkPasswordMatch
-        );
+            faceMessage.style.color =
+                "red";
 
+            return;
+
+        }
 
 
-        // ==========================================
-        // BACK TO LOGIN
-        // ==========================================
+        captureButton.disabled =
+            true;
 
-        function backToLogin() {
 
-            document.getElementById(
-                "passwordSetupSection"
-            ).style.display =
+        faceMessage.innerText =
+            "";
+
+
+        cameraStatus.innerText =
+            "Detecting face...";
+
+
+        try {
+
+            const result =
+                await human.detect(video);
+
+
+            if (
+                !result ||
+                !result.face ||
+                result.face.length === 0
+            ) {
+
+                throw new Error(
+                    "No face detected. Please position your face clearly inside the camera."
+                );
+
+            }
+
+
+            if (
+                result.face.length > 1
+            ) {
+
+                throw new Error(
+                    "Only one face should be visible during registration."
+                );
+
+            }
+
+
+            const face =
+                result.face[0];
+
+
+            if (
+                !face.embedding ||
+                face.embedding.length === 0
+            ) {
+
+                throw new Error(
+                    "Unable to create face descriptor. Please try again."
+                );
+
+            }
+
+
+            const faceData =
+                JSON.stringify(
+                    face.embedding
+                );
+
+
+            cameraStatus.innerText =
+                "Saving face registration...";
+
+
+            const response =
+                await fetch(
+                    `${API_BASE_URL}/employee-face/register`,
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+
+                            email:
+                                email,
+
+                            faceData:
+                                faceData
+
+                        })
+
+                    }
+                );
+
+
+            const data =
+                await response.text();
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    data ||
+                    "Face registration failed."
+                );
+
+            }
+
+
+            if (
+                data !==
+                "Face registered successfully"
+            ) {
+
+                throw new Error(
+                    data ||
+                    "Face registration failed."
+                );
+
+            }
+
+
+            faceRegistered =
+                true;
+
+
+            cameraStatus.innerText =
+                "Face registered successfully.";
+
+
+            faceMessage.innerText =
+                "Face registration completed.";
+
+            faceMessage.style.color =
+                "#16a34a";
+
+
+            captureButton.style.display =
                 "none";
 
 
             document.getElementById(
-                "loginSection"
+                "faceContinueBtn"
             ).style.display =
                 "block";
 
 
-            document.getElementById(
-                "password"
-            ).value =
-                "";
+            stopCamera();
 
 
-            document.getElementById(
-                "message"
-            ).innerText =
-                "";
+        } catch (error) {
+
+            console.error(
+                "Face registration error:",
+                error
+            );
+
+
+            faceMessage.innerText =
+                error.message ||
+                "Face registration failed.";
+
+
+            faceMessage.style.color =
+                "red";
+
+
+            cameraStatus.innerText =
+                "Please adjust your position and try again.";
+
+
+            captureButton.disabled =
+                false;
 
         }
 
-    </script>
+    }
+
+
+    // ==========================================
+    // STOP CAMERA
+    // ==========================================
+
+    function stopCamera() {
+
+        if (!cameraStream) {
+
+            return;
+
+        }
+
+
+        cameraStream
+            .getTracks()
+            .forEach(track => {
+
+                track.stop();
+
+            });
+
+
+        cameraStream =
+            null;
+
+    }
+
+
+    // ==========================================
+    // OPEN DASHBOARD
+    // ==========================================
+
+    function openDashboard() {
+
+        if (!faceRegistered) {
+
+            return;
+
+        }
+
+
+        stopCamera();
+
+
+        window.location.href =
+            "dashboard.html";
+
+    }
+
+
+    // ==========================================
+    // EMAIL CHANGE
+    // ==========================================
+
+    document.getElementById(
+        "setupEmail"
+    ).addEventListener(
+        "input",
+        checkPasswordMatch
+    );
+
+
+    // ==========================================
+    // BACK TO LOGIN
+    // ==========================================
+
+    function backToLogin() {
+
+        stopCamera();
+
+
+        document.getElementById(
+            "passwordSetupSection"
+        ).style.display =
+            "none";
+
+
+        document.getElementById(
+            "faceRegistrationSection"
+        ).style.display =
+            "none";
+
+
+        document.getElementById(
+            "loginSection"
+        ).style.display =
+            "block";
+
+
+        document.getElementById(
+            "password"
+        ).value =
+            "";
+
+
+        document.getElementById(
+            "message"
+        ).innerText =
+            "";
+
+    }
+
+
+    // ==========================================
+    // INITIALIZE FACE LIBRARY
+    // ==========================================
+
+    initializeHuman();
+
+</script>
+
 
 </body>
 
 </html>
+

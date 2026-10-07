@@ -1,3 +1,4 @@
+
 package com.example.attendance;
 
 public class AdminEmployeeActionRequest {
@@ -15,6 +16,9 @@ public class AdminEmployeeActionRequest {
 
     // Employee designation
     private String designation;
+
+    // Employee branch
+    private Long branchId;
 
     private Double salary;
     private String joiningDate;
@@ -119,6 +123,19 @@ public class AdminEmployeeActionRequest {
 
 
     // =========================================
+    // BRANCH ID
+    // =========================================
+
+    public Long getBranchId() {
+        return branchId;
+    }
+
+    public void setBranchId(Long branchId) {
+        this.branchId = branchId;
+    }
+
+
+    // =========================================
     // SALARY
     // =========================================
 
@@ -183,3 +200,4 @@ public class AdminEmployeeActionRequest {
     }
 
 }
+

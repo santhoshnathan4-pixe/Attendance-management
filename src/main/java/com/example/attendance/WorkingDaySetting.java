@@ -22,6 +22,9 @@ public class WorkingDaySetting {
     @Column(name = "reason")
     private String reason;
 
+    @Column(name = "active", nullable = false)
+    private Boolean active = true;
+
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
@@ -47,6 +50,10 @@ public class WorkingDaySetting {
 
     public String getReason() {
         return reason;
+    }
+
+    public Boolean getActive() {
+        return active;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -78,6 +85,10 @@ public class WorkingDaySetting {
         this.reason = reason;
     }
 
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
+
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
@@ -86,4 +97,3 @@ public class WorkingDaySetting {
         this.updatedAt = updatedAt;
     }
 }
-

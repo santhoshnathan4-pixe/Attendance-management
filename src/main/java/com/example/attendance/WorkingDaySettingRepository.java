@@ -14,7 +14,16 @@ public interface WorkingDaySettingRepository
             LocalDate settingDate
     );
 
+    Optional<WorkingDaySetting> findBySettingDateAndActiveTrue(
+            LocalDate settingDate
+    );
+
     List<WorkingDaySetting> findBySettingDateBetweenOrderBySettingDateAsc(
+            LocalDate startDate,
+            LocalDate endDate
+    );
+
+    List<WorkingDaySetting> findBySettingDateBetweenAndActiveTrueOrderBySettingDateAsc(
             LocalDate startDate,
             LocalDate endDate
     );
@@ -22,5 +31,8 @@ public interface WorkingDaySettingRepository
     boolean existsBySettingDate(
             LocalDate settingDate
     );
-}
 
+    boolean existsBySettingDateAndActiveTrue(
+            LocalDate settingDate
+    );
+}

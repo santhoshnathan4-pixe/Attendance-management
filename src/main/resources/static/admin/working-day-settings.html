@@ -1,0 +1,4016 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>GROWBYTEE - Working Day Settings</title>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: #f4f7fb;
+    color: #1f2937;
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 250px;
+    background: #334155;
+    color: white;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    padding: 25px 15px;
+    overflow-y: auto;
+}
+
+.logo {
+    text-align: center;
+    font-size: 25px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.admin-title {
+    text-align: center;
+    color: #cbd5e1;
+    font-size: 13px;
+    margin-bottom: 30px;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.menu button {
+    border: none;
+    background: transparent;
+    color: #e5e7eb;
+    text-align: left;
+    padding: 14px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.menu button svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.menu button:hover,
+.menu button.active {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+}
+
+.logout-btn {
+    margin-top: 25px;
+    background: #dc2626 !important;
+    color: white !important;
+    text-align: center !important;
+}
+
+.logout-btn:hover {
+    background: #b91c1c !important;
+}
+
+.main {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+    min-height: 100vh;
+}
+
+.header {
+    height: 75px;
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+}
+
+.header h1 {
+    font-size: 23px;
+    color: #111827;
+}
+
+.admin-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #475569;
+    font-size: 14px;
+}
+
+.admin-badge {
+    background: #2563eb;
+    color: white;
+    padding: 8px 13px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.content {
+    padding: 30px;
+}
+
+.section {
+    display: none;
+    padding: 24px;
+    border-radius: 16px;
+    min-height: calc(100vh - 135px);
+    border: 1px solid #e5e7eb;
+    background: #f8fafc;
+}
+
+.section.active {
+    display: block;
+}
+
+.section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.section-title h2 {
+    font-size: 25px;
+    color: #111827;
+    margin-bottom: 8px;
+}
+
+.section-subtitle {
+    color: #64748b;
+    margin-bottom: 0;
+    font-size: 14px;
+}
+
+.top-bar {
+    background: white;
+    padding: 16px 18px;
+    border-radius: 13px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: flex-end;
+    gap: 15px;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
+    border: 1px solid #e5e7eb;
+    flex-wrap: wrap;
+}
+
+.filter-item {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.filter-item label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.filter-item select {
+    min-width: 150px;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    outline: none;
+    background: white;
+    font-size: 14px;
+}
+
+.filter-item select:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.btn {
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+}
+
+.btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.btn-primary {
+    background: #2563eb;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #1d4ed8;
+}
+
+.btn-danger {
+    background: #dc2626;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #b91c1c;
+}
+
+.btn-secondary {
+    background: #64748b;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #475569;
+}
+
+.btn-small {
+    padding: 7px 11px;
+    font-size: 12px;
+}
+
+.btn-weekly {
+    background: #7c3aed;
+    color: white;
+}
+
+.btn-weekly:hover {
+    background: #6d28d9;
+}
+
+.table-card {
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 5px 20px rgba(15, 23, 42, 0.06);
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 900px;
+}
+
+th {
+    background: #eff6ff;
+    color: #1e3a8a;
+    font-size: 13px;
+    text-align: left;
+    padding: 14px;
+    white-space: nowrap;
+}
+
+td {
+    padding: 13px 14px;
+    border-top: 1px solid #e5e7eb;
+    font-size: 13px;
+    vertical-align: middle;
+}
+
+tr:hover td {
+    background: #f8fafc;
+}
+
+.empty-row {
+    text-align: center;
+    color: #64748b;
+    padding: 30px;
+}
+
+.setting-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.setting-badge.working {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.setting-badge.weekly-off {
+    background: #ede9fe;
+    color: #6d28d9;
+}
+
+.setting-badge.government {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.setting-badge.company {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.setting-badge.announcement {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.announcement-title {
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 3px;
+}
+
+.announcement-message {
+    color: #475569;
+    white-space: pre-wrap;
+    line-height: 1.5;
+    max-width: 450px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 11px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+    background: white;
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 90px;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.setting-help {
+    margin-top: -8px;
+    margin-bottom: 16px;
+    padding: 11px 13px;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    color: #475569;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.announcement-fields {
+    display: none;
+}
+
+.announcement-fields.show {
+    display: block;
+}
+
+.reason-fields {
+    display: block;
+}
+
+.weekly-off-summary {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 13px;
+    padding: 18px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.04);
+}
+
+.weekly-off-summary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 12px;
+}
+
+.weekly-off-summary-title {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.weekly-off-summary-title svg {
+    width: 19px;
+    height: 19px;
+    color: #7c3aed;
+}
+
+.weekly-off-summary-text {
+    color: #64748b;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.weekly-off-days {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.weekly-off-day-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 11px;
+    border-radius: 20px;
+    background: #ede9fe;
+    color: #6d28d9;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.weekly-off-none {
+    color: #64748b;
+    font-size: 13px;
+    padding: 7px 0;
+}
+
+.weekday-list {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+    margin-top: 5px;
+}
+
+.weekday-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 13px;
+    border: 1px solid #e2e8f0;
+    border-radius: 9px;
+    cursor: pointer;
+    background: #f8fafc;
+    transition: 0.2s;
+}
+
+.weekday-option:hover {
+    border-color: #c4b5fd;
+    background: #faf5ff;
+}
+
+.weekday-option input {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #7c3aed;
+}
+
+.weekday-option span {
+    font-size: 14px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.weekly-off-modal-help {
+    background: #f5f3ff;
+    border: 1px solid #ddd6fe;
+    color: #5b21b6;
+    border-radius: 9px;
+    padding: 12px 13px;
+    font-size: 12px;
+    line-height: 1.5;
+    margin-bottom: 18px;
+}
+
+.weekly-off-reason {
+    margin-top: 18px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.65);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-box {
+    width: 100%;
+    max-width: 650px;
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+}
+
+.weekly-off-modal-box {
+    max-width: 520px;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 22px;
+}
+
+.modal-header h2,
+.modal-header h3 {
+    font-size: 20px;
+    color: #111827;
+}
+
+.close-btn {
+    border: none;
+    background: #f1f5f9;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-btn:hover {
+    background: #e2e8f0;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+.message {
+    display: none;
+    margin-bottom: 18px;
+    padding: 12px 15px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.message.show {
+    display: block;
+}
+
+.message.success {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.message.error {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+@media (max-width: 800px) {
+
+    .sidebar {
+        width: 210px;
+    }
+
+    .main {
+        margin-left: 210px;
+        width: calc(100% - 210px);
+    }
+
+    .header {
+        padding: 0 15px;
+    }
+
+    .content {
+        padding: 20px 15px;
+    }
+
+    .section {
+        padding: 18px;
+    }
+
+    .top-bar {
+        flex-wrap: wrap;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .sidebar {
+        position: relative;
+        width: 100%;
+        min-height: auto;
+    }
+
+    .container {
+        display: block;
+    }
+
+    .main {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .header {
+        position: relative;
+    }
+
+    .section-title {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .top-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-item select {
+        width: 100%;
+    }
+
+    .admin-info {
+        display: none;
+    }
+
+    .weekly-off-summary-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<aside class="sidebar">
+
+    <div class="logo">
+        GROWBYTEE
+    </div>
+
+    <div class="admin-title">
+        Admin / CEO Dashboard
+    </div>
+
+    <div class="menu">
+
+        <button class="menu-btn"
+                onclick="window.location.href='/admin-dashboard.html'">
+            <i data-lucide="layout-dashboard"></i>
+            Dashboard
+        </button>
+
+        <button class="menu-btn"
+                onclick="window.location.href='employees.html'">
+            <i data-lucide="users"></i>
+            Employees
+        </button>
+
+        <button class="menu-btn"
+                onclick="window.location.href='leave.html'">
+            <i data-lucide="clipboard-list"></i>
+            Leave
+        </button>
+
+        <button class="menu-btn"
+                onclick="window.location.href='ai-assistant.html'">
+            <i data-lucide="sparkles"></i>
+            AI Assistant
+        </button>
+
+        <button class="menu-btn active"
+                onclick="window.location.href='working-day-settings.html'">
+            <i data-lucide="calendar-days"></i>
+            Working Day Settings
+        </button>
+
+        <button class="menu-btn"
+                onclick="window.location.href='shift-settings.html'">
+            <i data-lucide="clock-3"></i>
+            Shift Settings
+        </button>
+
+        <button class="menu-btn"
+                onclick="window.location.href='branch-management.html'">
+            <i data-lucide="building-2"></i>
+            Branch Management
+        </button>
+
+        <button class="menu-btn"
+                onclick="window.location.href='leave-permission-settings.html'">
+            <i data-lucide="settings"></i>
+            Leave & Permission Settings
+        </button>
+
+        <button class="menu-btn"
+                onclick="window.location.href='salary.html'">
+            <i data-lucide="wallet"></i>
+            Salary
+        </button>
+
+        <button class="menu-btn"
+                onclick="window.location.href='monthly-report.html'">
+            <i data-lucide="calendar-days"></i>
+            Monthly Report
+        </button>
+
+        <button class="menu-btn"
+                onclick="window.location.href='history.html'">
+            <i data-lucide="history"></i>
+            History
+        </button>
+
+        <button class="menu-btn logout-btn"
+                onclick="logout()">
+            <i data-lucide="log-out"></i>
+            Logout
+        </button>
+
+    </div>
+
+</aside>
+
+<main class="main">
+
+    <header class="header">
+
+        <h1>
+            GROWBYTEE - Admin Dashboard
+        </h1>
+
+        <div class="admin-info" id="adminInfo">
+
+            <span id="loggedAdminName">
+                Welcome, Admin
+            </span>
+
+            <span class="admin-badge">
+                ADMIN
+            </span>
+
+        </div>
+
+    </header>
+
+    <div class="content">
+
+        <section id="workingDaySection" class="section active">
+
+            <div class="section-title">
+
+                <div>
+
+                    <h2>
+                        Working Day Settings
+                    </h2>
+
+                    <p class="section-subtitle">
+                        Manage working days, recurring weekly offs, holidays and employee announcements.
+                    </p>
+
+                </div>
+
+                <div style="display:flex; gap:10px; flex-wrap:wrap;">
+
+                    <button
+                        class="btn btn-weekly"
+                        type="button"
+                        onclick="openWeeklyOffModal()">
+
+                        <i data-lucide="calendar-check-2"></i>
+
+                        Weekly Off
+
+                    </button>
+
+                    <button
+                        class="btn btn-primary"
+                        type="button"
+                        onclick="openWorkingDayModal()">
+
+                        <i data-lucide="plus"></i>
+
+                        Add Setting
+
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div
+                id="workingDayMessage"
+                class="message">
+            </div>
+
+
+            <!-- ================= RECURRING WEEKLY OFF SUMMARY ================= -->
+
+            <div class="weekly-off-summary">
+
+                <div class="weekly-off-summary-header">
+
+                    <div>
+
+                        <div class="weekly-off-summary-title">
+
+                            <i data-lucide="repeat"></i>
+
+                            Recurring Weekly Off
+
+                        </div>
+
+                        <div class="weekly-off-summary-text">
+                            Selected weekdays are automatically treated as Weekly Off in every month and every year.
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div
+                    id="weeklyOffDays"
+                    class="weekly-off-days">
+
+                    <span class="weekly-off-none">
+                        Loading...
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="top-bar">
+
+                <div class="filter-item">
+
+                    <label for="workingDayYear">
+                        Year
+                    </label>
+
+                    <select
+                        id="workingDayYear"
+                        onchange="loadWorkingDaySettings()">
+                    </select>
+
+                </div>
+
+                <div class="filter-item">
+
+                    <label for="workingDayMonth">
+                        Month
+                    </label>
+
+                    <select
+                        id="workingDayMonth"
+                        onchange="loadWorkingDaySettings()">
+
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <div class="table-card">
+
+                <div class="table-wrapper">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>Date</th>
+                                <th>Setting Type</th>
+                                <th>Title</th>
+                                <th>Reason / Message</th>
+                                <th>Action</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="workingDayTableBody">
+
+                            <tr>
+
+                                <td
+                                    colspan="5"
+                                    class="empty-row">
+
+                                    Loading...
+
+                                </td>
+
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+
+</div>
+
+
+<!-- ================= WORKING DAY / ANNOUNCEMENT MODAL ================= -->
+
+<div
+    id="workingDayModal"
+    class="modal">
+
+<div class="modal-box">
+
+    <div class="modal-header">
+
+        <h3 id="workingDayModalTitle">
+            Add Setting
+        </h3>
+
+        <button
+            type="button"
+            class="close-btn"
+            onclick="closeWorkingDayModal()">
+
+            <i data-lucide="x"></i>
+
+        </button>
+
+    </div>
+
+
+    <div class="form-group">
+
+        <label for="workingDayDate">
+            Date
+        </label>
+
+        <input
+            type="date"
+            id="workingDayDate"
+            required>
+
+    </div>
+
+
+    <div class="form-group">
+
+        <label for="workingDayType">
+            Setting Type
+        </label>
+
+        <select
+            id="workingDayType"
+            onchange="handleSettingTypeChange()"
+            required>
+
+            <option value="">
+                Select Type
+            </option>
+
+            <option value="WEEKLY_OFF">
+                Weekly Off
+            </option>
+
+            <option value="GOVERNMENT_HOLIDAY">
+                Government Holiday
+            </option>
+
+            <option value="COMPANY_HOLIDAY">
+                Company Holiday
+            </option>
+
+            <option value="WORKING_DAY">
+                Working Day
+            </option>
+
+            <option value="ANNOUNCEMENT">
+                Announcement
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <div
+        id="weeklyOffHelp"
+        class="setting-help"
+        style="display: none;">
+
+        This option is for a specific date only.
+        For a recurring Weekly Off such as every Saturday or every Sunday,
+        use the Weekly Off button on the main page.
+
+    </div>
+
+
+    <!-- ================= NORMAL SETTING FIELDS ================= -->
+
+    <div
+        id="normalSettingFields"
+        class="reason-fields">
+
+        <div class="form-group">
+
+            <label for="workingDayReason">
+                Reason
+            </label>
+
+            <textarea
+                id="workingDayReason"
+                rows="3"
+                placeholder="Enter reason"
+                required></textarea>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= ANNOUNCEMENT FIELDS ================= -->
+
+    <div
+        id="announcementFields"
+        class="announcement-fields">
+
+        <div class="form-group">
+
+            <label for="announcementTitle">
+                Title
+            </label>
+
+            <input
+                type="text"
+                id="announcementTitle"
+                maxlength="150"
+                placeholder="Enter announcement title">
+
+        </div>
+
+
+        <div class="form-group">
+
+            <label for="announcementText">
+                Message
+            </label>
+
+            <textarea
+                id="announcementText"
+                rows="5"
+                maxlength="2000"
+                placeholder="Enter announcement message">
+            </textarea>
+
+        </div>
+
+    </div>
+
+
+    <div class="modal-footer">
+
+        <button
+            type="button"
+            class="btn btn-secondary"
+            onclick="closeWorkingDayModal()">
+
+            Cancel
+
+        </button>
+
+        <button
+            type="button"
+            class="btn btn-primary"
+            id="workingDaySaveButton"
+            onclick="saveSetting()">
+
+            Save Setting
+
+        </button>
+
+    </div>
+
+</div>
+
+</div>
+
+
+<!-- ================= RECURRING WEEKLY OFF MODAL ================= -->
+
+<div
+    id="weeklyOffModal"
+    class="modal">
+
+    <div class="modal-box weekly-off-modal-box">
+
+        <div class="modal-header">
+
+            <h3>
+                Recurring Weekly Off
+            </h3>
+
+            <button
+                type="button"
+                class="close-btn"
+                onclick="closeWeeklyOffModal()">
+
+                <i data-lucide="x"></i>
+
+            </button>
+
+        </div>
+
+
+        <div class="weekly-off-modal-help">
+
+            Select one or more weekdays.
+            Every selected weekday will automatically be treated as
+            Weekly Off in every month and every year.
+
+        </div>
+
+
+        <div class="weekday-list">
+
+            <label class="weekday-option">
+
+                <input
+                    type="checkbox"
+                    class="weekly-day-checkbox"
+                    value="MONDAY">
+
+                <span>Monday</span>
+
+            </label>
+
+
+            <label class="weekday-option">
+
+                <input
+                    type="checkbox"
+                    class="weekly-day-checkbox"
+                    value="TUESDAY">
+
+                <span>Tuesday</span>
+
+            </label>
+
+
+            <label class="weekday-option">
+
+                <input
+                    type="checkbox"
+                    class="weekly-day-checkbox"
+                    value="WEDNESDAY">
+
+                <span>Wednesday</span>
+
+            </label>
+
+
+            <label class="weekday-option">
+
+                <input
+                    type="checkbox"
+                    class="weekly-day-checkbox"
+                    value="THURSDAY">
+
+                <span>Thursday</span>
+
+            </label>
+
+
+            <label class="weekday-option">
+
+                <input
+                    type="checkbox"
+                    class="weekly-day-checkbox"
+                    value="FRIDAY">
+
+                <span>Friday</span>
+
+            </label>
+
+
+            <label class="weekday-option">
+
+                <input
+                    type="checkbox"
+                    class="weekly-day-checkbox"
+                    value="SATURDAY">
+
+                <span>Saturday</span>
+
+            </label>
+
+
+            <label class="weekday-option">
+
+                <input
+                    type="checkbox"
+                    class="weekly-day-checkbox"
+                    value="SUNDAY">
+
+                <span>Sunday</span>
+
+            </label>
+
+        </div>
+
+
+        <div class="form-group weekly-off-reason">
+
+            <label for="weeklyOffReason">
+                Reason
+            </label>
+
+            <textarea
+                id="weeklyOffReason"
+                rows="3"
+                placeholder="Enter reason for adding or removing Weekly Off days"
+                required></textarea>
+
+        </div>
+
+
+        <div class="modal-footer">
+
+            <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="closeWeeklyOffModal()">
+
+                Cancel
+
+            </button>
+
+            <button
+                type="button"
+                class="btn btn-weekly"
+                id="weeklyOffSaveButton"
+                onclick="saveWeeklyOffSettings()">
+
+                <i data-lucide="save"></i>
+
+                Save Weekly Off
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const API_BASE_URL =
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1"
+        ? "http://localhost:8080"
+        : "https://attendance-management-d5h6.onrender.com";
+
+
+async function apiFetch(
+    url,
+    options = {}
+) {
+
+    return fetch(
+        API_BASE_URL + url,
+        options
+    );
+
+}
+
+
+function loadAdminInfo() {
+
+    const adminName =
+        localStorage.getItem("adminName");
+
+
+    if (adminName) {
+
+        const adminNameElement =
+            document.getElementById("loggedAdminName");
+
+        if (adminNameElement) {
+
+            adminNameElement.textContent =
+                "Welcome, " + adminName;
+
+        }
+
+    }
+
+}
+
+
+async function getErrorMessage(
+    response
+) {
+
+    try {
+
+        const text =
+            await response.text();
+
+
+        if (!text) {
+
+            return (
+                "Request failed. HTTP " +
+                response.status
+            );
+
+        }
+
+
+        try {
+
+            const json =
+                JSON.parse(text);
+
+            return (
+                json.message ||
+                json.error ||
+                text
+            );
+
+        }
+        catch {
+
+            return text;
+
+        }
+
+    }
+    catch {
+
+        return (
+            "Request failed. HTTP " +
+            response.status
+        );
+
+    }
+
+}
+
+
+function showMessage(
+    elementId,
+    message,
+    type
+) {
+
+    const element =
+        document.getElementById(elementId);
+
+
+    if (!element) {
+        return;
+    }
+
+
+    element.textContent =
+        message;
+
+
+    element.className =
+        "message show " +
+        (
+            type === "success"
+                ? "success"
+                : "error"
+        );
+
+
+    setTimeout(
+        function() {
+
+            element.classList.remove(
+                "show"
+            );
+
+        },
+        5000
+    );
+
+}
+
+
+function formatDate(
+    value
+) {
+
+    if (!value) {
+        return "-";
+    }
+
+
+    const date =
+        new Date(value);
+
+
+    if (
+        Number.isNaN(
+            date.getTime()
+        )
+    ) {
+
+        return escapeHtml(
+            String(value)
+        );
+
+    }
+
+
+    const day =
+        String(
+            date.getDate()
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    const month =
+        String(
+            date.getMonth() + 1
+        ).padStart(
+            2,
+            "0"
+        );
+
+
+    const year =
+        date.getFullYear();
+
+
+    return (
+        day +
+        "-" +
+        month +
+        "-" +
+        year
+    );
+
+}
+
+
+function escapeHtml(
+    value
+) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+}
+
+
+function escapeJs(
+    value
+) {
+
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
+        return "";
+
+    }
+
+
+    return String(value)
+        .replaceAll("\\", "\\\\")
+        .replaceAll("'", "\\'")
+        .replaceAll("\n", "\\n")
+        .replaceAll("\r", "\\r");
+
+}
+
+
+function logout() {
+
+    const confirmed =
+        confirm(
+            "Are you sure you want to logout?"
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    localStorage.removeItem(
+        "adminEmail"
+    );
+
+    localStorage.removeItem(
+        "adminName"
+    );
+
+
+    window.location.href =
+        "admin-login.html";
+
+}
+
+
+let workingDaySettings = [];
+
+let announcementList = [];
+
+let weeklyOffSettings = [];
+
+let editingAnnouncementId = null;
+
+
+const WEEKDAY_ORDER = [
+    "MONDAY",
+    "TUESDAY",
+    "WEDNESDAY",
+    "THURSDAY",
+    "FRIDAY",
+    "SATURDAY",
+    "SUNDAY"
+];
+
+
+const WEEKDAY_LABELS = {
+    MONDAY: "Monday",
+    TUESDAY: "Tuesday",
+    WEDNESDAY: "Wednesday",
+    THURSDAY: "Thursday",
+    FRIDAY: "Friday",
+    SATURDAY: "Saturday",
+    SUNDAY: "Sunday"
+};
+
+
+function initializeWorkingDayControls() {
+
+    const yearSelect =
+        document.getElementById(
+            "workingDayYear"
+        );
+
+    const monthSelect =
+        document.getElementById(
+            "workingDayMonth"
+        );
+
+
+    if (!yearSelect || !monthSelect) {
+        return;
+    }
+
+
+    const currentYear =
+        new Date().getFullYear();
+
+    const currentMonth =
+        new Date().getMonth() + 1;
+
+
+    yearSelect.innerHTML = "";
+
+
+    for (
+        let year = currentYear - 2;
+        year <= currentYear + 1;
+        year++
+    ) {
+
+        const option =
+            document.createElement(
+                "option"
+            );
+
+
+        option.value =
+            year;
+
+        option.textContent =
+            year;
+
+
+        if (
+            year === currentYear
+        ) {
+
+            option.selected =
+                true;
+
+        }
+
+
+        yearSelect.appendChild(
+            option
+        );
+
+    }
+
+
+    monthSelect.value =
+        currentMonth;
+
+
+    loadWorkingDaySettings();
+
+    loadWeeklyOffSettings();
+
+}
+
+
+async function loadWorkingDaySettings() {
+
+    const yearElement =
+        document.getElementById(
+            "workingDayYear"
+        );
+
+    const monthElement =
+        document.getElementById(
+            "workingDayMonth"
+        );
+
+
+    if (!yearElement || !monthElement) {
+        return;
+    }
+
+
+    const year =
+        yearElement.value;
+
+    const month =
+        monthElement.value;
+
+
+    try {
+
+        const response =
+            await apiFetch(
+                `/admin/working-days?year=${encodeURIComponent(
+                    year
+                )}&month=${encodeURIComponent(
+                    month
+                )}`
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                await getErrorMessage(
+                    response
+                )
+            );
+
+        }
+
+
+        workingDaySettings =
+            await response.json();
+
+
+        await loadAnnouncements();
+
+
+        renderCombinedSettings();
+
+    }
+    catch (error) {
+
+        console.error(
+            "Working day settings load error:",
+            error
+        );
+
+
+        workingDaySettings = [];
+
+        announcementList = [];
+
+        renderCombinedSettings();
+
+
+        showMessage(
+            "workingDayMessage",
+            error.message ||
+            "Failed to load settings.",
+            "error"
+        );
+
+    }
+
+}
+
+
+async function loadAnnouncements() {
+
+    const yearElement =
+        document.getElementById(
+            "workingDayYear"
+        );
+
+    const monthElement =
+        document.getElementById(
+            "workingDayMonth"
+        );
+
+
+    if (!yearElement || !monthElement) {
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await apiFetch(
+                "/admin/announcements?year=" +
+                encodeURIComponent(
+                    yearElement.value
+                ) +
+                "&month=" +
+                encodeURIComponent(
+                    monthElement.value
+                )
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                await getErrorMessage(
+                    response
+                )
+            );
+
+        }
+
+
+        announcementList =
+            await response.json();
+
+    }
+    catch (error) {
+
+        console.error(
+            "Announcement load error:",
+            error
+        );
+
+
+        announcementList = [];
+
+    }
+
+}
+
+
+/* =========================================================
+   RECURRING WEEKLY OFF
+   ========================================================= */
+
+
+async function loadWeeklyOffSettings() {
+
+    const weeklyOffContainer =
+        document.getElementById(
+            "weeklyOffDays"
+        );
+
+
+    if (weeklyOffContainer) {
+
+        weeklyOffContainer.innerHTML =
+            `
+                <span class="weekly-off-none">
+                    Loading...
+                </span>
+            `;
+
+    }
+
+
+    try {
+
+        const response =
+            await apiFetch(
+                "/admin/working-days/weekly-offs"
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                await getErrorMessage(
+                    response
+                )
+            );
+
+        }
+
+
+        weeklyOffSettings =
+            await response.json();
+
+
+        renderWeeklyOffSummary();
+
+    }
+    catch (error) {
+
+        console.error(
+            "Weekly off load error:",
+            error
+        );
+
+
+        weeklyOffSettings = [];
+
+
+        if (weeklyOffContainer) {
+
+            weeklyOffContainer.innerHTML =
+                `
+                    <span class="weekly-off-none">
+                        Unable to load recurring Weekly Off settings.
+                    </span>
+                `;
+
+        }
+
+    }
+
+}
+
+
+function getActiveWeeklyOffDays() {
+
+    if (
+        !Array.isArray(
+            weeklyOffSettings
+        )
+    ) {
+
+        return [];
+
+    }
+
+
+    return weeklyOffSettings
+        .filter(
+            function(item) {
+
+                return (
+                    item &&
+                    item.active === true &&
+                    item.dayOfWeek
+                );
+
+            }
+        )
+        .map(
+            function(item) {
+
+                return String(
+                    item.dayOfWeek
+                ).toUpperCase();
+
+            }
+        )
+        .filter(
+            function(day) {
+
+                return WEEKDAY_ORDER.includes(
+                    day
+                );
+
+            }
+        )
+        .sort(
+            function(a, b) {
+
+                return (
+                    WEEKDAY_ORDER.indexOf(a) -
+                    WEEKDAY_ORDER.indexOf(b)
+                );
+
+            }
+        );
+
+}
+
+
+function renderWeeklyOffSummary() {
+
+    const container =
+        document.getElementById(
+            "weeklyOffDays"
+        );
+
+
+    if (!container) {
+        return;
+    }
+
+
+    const activeDays =
+        getActiveWeeklyOffDays();
+
+
+    if (
+        activeDays.length === 0
+    ) {
+
+        container.innerHTML =
+            `
+                <span class="weekly-off-none">
+                    No recurring Weekly Off configured.
+                </span>
+            `;
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        activeDays
+            .map(
+                function(day) {
+
+                    return `
+                        <span class="weekly-off-day-badge">
+                            <i data-lucide="calendar-check-2"></i>
+                            ${escapeHtml(
+                                WEEKDAY_LABELS[day]
+                            )}
+                        </span>
+                    `;
+
+                }
+            )
+            .join("");
+
+
+    if (
+        typeof lucide !==
+        "undefined"
+    ) {
+
+        lucide.createIcons();
+
+    }
+
+}
+
+
+function openWeeklyOffModal() {
+
+    const modal =
+        document.getElementById(
+            "weeklyOffModal"
+        );
+
+
+    if (!modal) {
+        return;
+    }
+
+
+    const activeDays =
+        getActiveWeeklyOffDays();
+
+
+    document
+        .querySelectorAll(
+            ".weekly-day-checkbox"
+        )
+        .forEach(
+            function(checkbox) {
+
+                checkbox.checked =
+                    activeDays.includes(
+                        String(
+                            checkbox.value
+                        ).toUpperCase()
+                    );
+
+            }
+        );
+
+
+    const reasonInput =
+        document.getElementById(
+            "weeklyOffReason"
+        );
+
+
+    if (reasonInput) {
+
+        reasonInput.value = "";
+
+    }
+
+
+    modal.classList.add(
+        "show"
+    );
+
+
+    if (
+        typeof lucide !==
+        "undefined"
+    ) {
+
+        lucide.createIcons();
+
+    }
+
+}
+
+
+function closeWeeklyOffModal() {
+
+    const modal =
+        document.getElementById(
+            "weeklyOffModal"
+        );
+
+
+    if (modal) {
+
+        modal.classList.remove(
+            "show"
+        );
+
+    }
+
+}
+
+
+async function saveWeeklyOffSettings() {
+
+    const reasonInput =
+        document.getElementById(
+            "weeklyOffReason"
+        );
+
+    const saveButton =
+        document.getElementById(
+            "weeklyOffSaveButton"
+        );
+
+
+    if (!reasonInput) {
+        return;
+    }
+
+
+    const reason =
+        reasonInput.value.trim();
+
+
+    if (!reason) {
+
+        alert(
+            "Please enter a reason."
+        );
+
+        reasonInput.focus();
+
+        return;
+
+    }
+
+
+    const selectedDays =
+        Array.from(
+            document.querySelectorAll(
+                ".weekly-day-checkbox:checked"
+            )
+        )
+        .map(
+            function(checkbox) {
+
+                return String(
+                    checkbox.value
+                ).toUpperCase();
+
+            }
+        )
+        .filter(
+            function(day) {
+
+                return WEEKDAY_ORDER.includes(
+                    day
+                );
+
+            }
+        );
+
+
+    const existingDays =
+        getActiveWeeklyOffDays();
+
+
+    const daysToAdd =
+        selectedDays.filter(
+            function(day) {
+
+                return !existingDays.includes(
+                    day
+                );
+
+            }
+        );
+
+
+    const daysToRemove =
+        existingDays.filter(
+            function(day) {
+
+                return !selectedDays.includes(
+                    day
+                );
+
+            }
+        );
+
+
+    if (
+        daysToAdd.length === 0 &&
+        daysToRemove.length === 0
+    ) {
+
+        closeWeeklyOffModal();
+
+        showMessage(
+            "workingDayMessage",
+            "No Weekly Off changes were made.",
+            "success"
+        );
+
+        return;
+
+    }
+
+
+    const adminName =
+        sessionStorage.getItem("adminName") ||
+        localStorage.getItem("adminName") ||
+        sessionStorage.getItem("adminEmail") ||
+        localStorage.getItem("adminEmail") ||
+        "Admin";
+
+
+    if (saveButton) {
+
+        if (saveButton.disabled) {
+            return;
+        }
+
+
+        saveButton.disabled =
+            true;
+
+
+        saveButton.dataset.originalText =
+            saveButton.innerHTML;
+
+
+        saveButton.innerHTML =
+            '<i data-lucide="loader-circle"></i> Saving...';
+
+
+        if (
+            typeof lucide !==
+            "undefined"
+        ) {
+
+            lucide.createIcons();
+
+        }
+
+    }
+
+
+    try {
+
+        /*
+         * Add newly selected days.
+         */
+
+        for (
+            const day of daysToAdd
+        ) {
+
+            const params =
+                new URLSearchParams();
+
+
+            params.append(
+                "dayOfWeek",
+                day
+            );
+
+
+            params.append(
+                "reason",
+                reason
+            );
+
+
+            params.append(
+                "adminName",
+                adminName
+            );
+
+
+            const response =
+                await apiFetch(
+                    "/admin/working-days/weekly-offs",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/x-www-form-urlencoded"
+                        },
+
+                        body:
+                            params.toString()
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    await getErrorMessage(
+                        response
+                    )
+                );
+
+            }
+
+        }
+
+
+        /*
+         * Remove unchecked days.
+         */
+
+        for (
+            const day of daysToRemove
+        ) {
+
+            const params =
+                new URLSearchParams();
+
+
+            params.append(
+                "reason",
+                reason
+            );
+
+
+            params.append(
+                "adminName",
+                adminName
+            );
+
+
+            const response =
+                await apiFetch(
+                    "/admin/working-days/weekly-offs/" +
+                    encodeURIComponent(day) +
+                    "?" +
+                    params.toString(),
+                    {
+                        method: "DELETE"
+                    }
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    await getErrorMessage(
+                        response
+                    )
+                );
+
+            }
+
+        }
+
+
+        await loadWeeklyOffSettings();
+
+
+        closeWeeklyOffModal();
+
+
+        showMessage(
+            "workingDayMessage",
+            "Recurring Weekly Off settings updated successfully.",
+            "success"
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            "Weekly off save error:",
+            error
+        );
+
+
+        showMessage(
+            "workingDayMessage",
+            error.message ||
+            "Failed to update Weekly Off settings.",
+            "error"
+        );
+
+    }
+    finally {
+
+        if (saveButton) {
+
+            saveButton.disabled =
+                false;
+
+
+            if (
+                saveButton.dataset.originalText
+            ) {
+
+                saveButton.innerHTML =
+                    saveButton.dataset.originalText;
+
+
+                delete saveButton.dataset.originalText;
+
+
+                if (
+                    typeof lucide !==
+                    "undefined"
+                ) {
+
+                    lucide.createIcons();
+
+                }
+
+            }
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   DATE-SPECIFIC SETTINGS
+   ========================================================= */
+
+
+function renderCombinedSettings() {
+
+    const tbody =
+        document.getElementById(
+            "workingDayTableBody"
+        );
+
+
+    if (!tbody) {
+        return;
+    }
+
+
+    const combined = [];
+
+
+    if (
+        Array.isArray(
+            workingDaySettings
+        )
+    ) {
+
+        workingDaySettings.forEach(
+            function(setting) {
+
+                combined.push({
+
+                    id: null,
+
+                    date:
+                        setting.settingDate,
+
+                    type:
+                        setting.settingType,
+
+                    title:
+                        "",
+
+                    reason:
+                        setting.reason || "",
+
+                    source:
+                        "working-day"
+
+                });
+
+            }
+        );
+
+    }
+
+
+    if (
+        Array.isArray(
+            announcementList
+        )
+    ) {
+
+        announcementList.forEach(
+            function(item) {
+
+                combined.push({
+
+                    id:
+                        item.id,
+
+                    date:
+                        item.announcementDate,
+
+                    type:
+                        "ANNOUNCEMENT",
+
+                    title:
+                        item.title || "",
+
+                    reason:
+                        item.message || "",
+
+                    source:
+                        "announcement"
+
+                });
+
+            }
+        );
+
+    }
+
+
+    combined.sort(
+        function(a, b) {
+
+            return new Date(a.date) -
+                new Date(b.date);
+
+        }
+    );
+
+
+    tbody.innerHTML = "";
+
+
+    if (
+        combined.length === 0
+    ) {
+
+        tbody.innerHTML = `
+            <tr>
+                <td
+                    colspan="5"
+                    class="empty-row">
+                    No settings found
+                </td>
+            </tr>
+        `;
+
+        return;
+
+    }
+
+
+    combined.forEach(
+        function(item) {
+
+            const row =
+                document.createElement(
+                    "tr"
+                );
+
+
+            let typeText =
+                item.type;
+
+
+            let badgeClass =
+                "working";
+
+
+            if (
+                item.type ===
+                "WEEKLY_OFF"
+            ) {
+
+                typeText =
+                    "Weekly Off";
+
+                badgeClass =
+                    "weekly-off";
+
+            }
+            else if (
+                item.type ===
+                "GOVERNMENT_HOLIDAY"
+            ) {
+
+                typeText =
+                    "Government Holiday";
+
+                badgeClass =
+                    "government";
+
+            }
+            else if (
+                item.type ===
+                "COMPANY_HOLIDAY"
+            ) {
+
+                typeText =
+                    "Company Holiday";
+
+                badgeClass =
+                    "company";
+
+            }
+            else if (
+                item.type ===
+                "WORKING_DAY"
+            ) {
+
+                typeText =
+                    "Working Day";
+
+                badgeClass =
+                    "working";
+
+            }
+            else if (
+                item.type ===
+                "ANNOUNCEMENT"
+            ) {
+
+                typeText =
+                    "Announcement";
+
+                badgeClass =
+                    "announcement";
+
+            }
+
+
+            const titleHtml =
+                item.type ===
+                "ANNOUNCEMENT"
+                    ? `
+                        <div class="announcement-title">
+                            ${escapeHtml(
+                                item.title || "-"
+                            )}
+                        </div>
+                      `
+                    : "-";
+
+
+            const reasonHtml =
+                item.type ===
+                "ANNOUNCEMENT"
+                    ? `
+                        <div class="announcement-message">
+                            ${escapeHtml(
+                                item.reason || "-"
+                            )}
+                        </div>
+                      `
+                    : escapeHtml(
+                        item.reason || "-"
+                    );
+
+
+            let actionHtml = "";
+
+
+            if (
+                item.source ===
+                "announcement"
+            ) {
+
+                actionHtml = `
+                    <button
+                        class="btn btn-primary btn-small"
+                        onclick="openAnnouncementForEdit(${Number(
+                            item.id
+                        )})">
+
+                        <i data-lucide="pencil"></i>
+                        Edit
+
+                    </button>
+
+                    <button
+                        class="btn btn-danger btn-small"
+                        onclick="deleteAnnouncement(${Number(
+                            item.id
+                        )})">
+
+                        <i data-lucide="trash-2"></i>
+                        Delete
+
+                    </button>
+                `;
+
+            }
+            else {
+
+                actionHtml = `
+                    <button
+                        class="btn btn-primary btn-small"
+                        onclick="openWorkingDayForEdit('${escapeJs(
+                            item.date
+                        )}')">
+
+                        <i data-lucide="pencil"></i>
+                        Edit
+
+                    </button>
+
+                    <button
+                        class="btn btn-danger btn-small"
+                        onclick="deleteWorkingDaySetting('${escapeJs(
+                            item.date
+                        )}')">
+
+                        <i data-lucide="trash-2"></i>
+                        Delete
+
+                    </button>
+                `;
+
+            }
+
+
+            row.innerHTML = `
+
+                <td>
+                    ${escapeHtml(
+                        formatDate(item.date)
+                    )}
+                </td>
+
+                <td>
+                    <span
+                        class="setting-badge ${badgeClass}">
+                        ${escapeHtml(typeText)}
+                    </span>
+                </td>
+
+                <td>
+                    ${titleHtml}
+                </td>
+
+                <td>
+                    ${reasonHtml}
+                </td>
+
+                <td>
+                    ${actionHtml}
+                </td>
+
+            `;
+
+
+            tbody.appendChild(
+                row
+            );
+
+        }
+    );
+
+
+    if (
+        typeof lucide !==
+        "undefined"
+    ) {
+
+        lucide.createIcons();
+
+    }
+
+}
+
+
+function handleSettingTypeChange() {
+
+    const typeInput =
+        document.getElementById(
+            "workingDayType"
+        );
+
+    const normalFields =
+        document.getElementById(
+            "normalSettingFields"
+        );
+
+    const announcementFields =
+        document.getElementById(
+            "announcementFields"
+        );
+
+    const weeklyOffHelp =
+        document.getElementById(
+            "weeklyOffHelp"
+        );
+
+
+    if (
+        !typeInput ||
+        !normalFields ||
+        !announcementFields
+    ) {
+
+        return;
+
+    }
+
+
+    if (
+        typeInput.value ===
+        "ANNOUNCEMENT"
+    ) {
+
+        normalFields.style.display =
+            "none";
+
+        announcementFields.classList.add(
+            "show"
+        );
+
+        if (weeklyOffHelp) {
+
+            weeklyOffHelp.style.display =
+                "none";
+
+        }
+
+    }
+    else {
+
+        normalFields.style.display =
+            "block";
+
+        announcementFields.classList.remove(
+            "show"
+        );
+
+
+        if (
+            weeklyOffHelp
+        ) {
+
+            weeklyOffHelp.style.display =
+                typeInput.value === "WEEKLY_OFF"
+                    ? "block"
+                    : "none";
+
+        }
+
+    }
+
+}
+
+
+function openWorkingDayModal() {
+
+    editingAnnouncementId =
+        null;
+
+
+    const modal =
+        document.getElementById(
+            "workingDayModal"
+        );
+
+    const title =
+        document.getElementById(
+            "workingDayModalTitle"
+        );
+
+    const dateInput =
+        document.getElementById(
+            "workingDayDate"
+        );
+
+    const typeInput =
+        document.getElementById(
+            "workingDayType"
+        );
+
+    const reasonInput =
+        document.getElementById(
+            "workingDayReason"
+        );
+
+    const announcementTitle =
+        document.getElementById(
+            "announcementTitle"
+        );
+
+    const announcementText =
+        document.getElementById(
+            "announcementText"
+        );
+
+
+    if (!modal) {
+        return;
+    }
+
+
+    if (title) {
+
+        title.textContent =
+            "Add Setting";
+
+    }
+
+
+    if (dateInput) {
+
+        dateInput.value = "";
+
+    }
+
+
+    if (typeInput) {
+
+        typeInput.value = "";
+
+    }
+
+
+    if (reasonInput) {
+
+        reasonInput.value = "";
+
+    }
+
+
+    if (announcementTitle) {
+
+        announcementTitle.value = "";
+
+    }
+
+
+    if (announcementText) {
+
+        announcementText.value = "";
+
+    }
+
+
+    handleSettingTypeChange();
+
+
+    modal.classList.add(
+        "show"
+    );
+
+
+    if (
+        typeof lucide !==
+        "undefined"
+    ) {
+
+        lucide.createIcons();
+
+    }
+
+}
+
+
+function openWorkingDayForEdit(
+    settingDate
+) {
+
+    if (!settingDate) {
+        return;
+    }
+
+
+    const setting =
+        workingDaySettings.find(
+            function(item) {
+
+                return String(
+                    item.settingDate
+                ) === String(
+                    settingDate
+                );
+
+            }
+        );
+
+
+    if (!setting) {
+
+        showMessage(
+            "workingDayMessage",
+            "Working day setting not found.",
+            "error"
+        );
+
+        return;
+
+    }
+
+
+    editingAnnouncementId =
+        null;
+
+
+    const modal =
+        document.getElementById(
+            "workingDayModal"
+        );
+
+    const title =
+        document.getElementById(
+            "workingDayModalTitle"
+        );
+
+    const dateInput =
+        document.getElementById(
+            "workingDayDate"
+        );
+
+    const typeInput =
+        document.getElementById(
+            "workingDayType"
+        );
+
+    const reasonInput =
+        document.getElementById(
+            "workingDayReason"
+        );
+
+    const announcementTitle =
+        document.getElementById(
+            "announcementTitle"
+        );
+
+    const announcementText =
+        document.getElementById(
+            "announcementText"
+        );
+
+
+    if (title) {
+
+        title.textContent =
+            "Edit Setting";
+
+    }
+
+
+    if (dateInput) {
+
+        dateInput.value =
+            setting.settingDate || "";
+
+    }
+
+
+    if (typeInput) {
+
+        typeInput.value =
+            setting.settingType || "";
+
+    }
+
+
+    if (reasonInput) {
+
+        reasonInput.value =
+            setting.reason || "";
+
+    }
+
+
+    if (announcementTitle) {
+
+        announcementTitle.value =
+            "";
+
+    }
+
+
+    if (announcementText) {
+
+        announcementText.value =
+            "";
+
+    }
+
+
+    handleSettingTypeChange();
+
+
+    if (modal) {
+
+        modal.classList.add(
+            "show"
+        );
+
+    }
+
+
+    if (
+        typeof lucide !==
+        "undefined"
+    ) {
+
+        lucide.createIcons();
+
+    }
+
+}
+
+
+function closeWorkingDayModal() {
+
+    const modal =
+        document.getElementById(
+            "workingDayModal"
+        );
+
+
+    if (modal) {
+
+        modal.classList.remove(
+            "show"
+        );
+
+    }
+
+
+    editingAnnouncementId =
+        null;
+
+}
+
+
+async function saveSetting() {
+
+    const dateInput =
+        document.getElementById(
+            "workingDayDate"
+        );
+
+    const typeInput =
+        document.getElementById(
+            "workingDayType"
+        );
+
+    const reasonInput =
+        document.getElementById(
+            "workingDayReason"
+        );
+
+    const announcementTitle =
+        document.getElementById(
+            "announcementTitle"
+        );
+
+    const announcementText =
+        document.getElementById(
+            "announcementText"
+        );
+
+    const saveButton =
+        document.getElementById(
+            "workingDaySaveButton"
+        );
+
+
+    if (
+        !dateInput ||
+        !typeInput
+    ) {
+
+        return;
+
+    }
+
+
+    const settingDate =
+        dateInput.value;
+
+    const settingType =
+        typeInput.value;
+
+
+    if (!settingDate) {
+
+        alert(
+            "Please select a date."
+        );
+
+        dateInput.focus();
+
+        return;
+
+    }
+
+
+    if (!settingType) {
+
+        alert(
+            "Please select setting type."
+        );
+
+        typeInput.focus();
+
+        return;
+
+    }
+
+
+    if (
+        settingType ===
+        "ANNOUNCEMENT"
+    ) {
+
+        const title =
+            announcementTitle.value.trim();
+
+        const message =
+            announcementText.value.trim();
+
+
+        if (title.length < 2) {
+
+            alert(
+                "Please enter the announcement title."
+            );
+
+            announcementTitle.focus();
+
+            return;
+
+        }
+
+
+        if (message.length < 3) {
+
+            alert(
+                "Please enter the announcement message."
+            );
+
+            announcementText.focus();
+
+            return;
+
+        }
+
+
+        await saveAnnouncementFromSetting(
+            settingDate,
+            title,
+            message,
+            saveButton
+        );
+
+
+        return;
+
+    }
+
+
+    const reason =
+        reasonInput.value.trim();
+
+
+    if (!reason) {
+
+        alert(
+            "Please enter a reason."
+        );
+
+        reasonInput.focus();
+
+        return;
+
+    }
+
+
+    const adminName =
+        sessionStorage.getItem("adminName") ||
+        localStorage.getItem("adminName") ||
+        sessionStorage.getItem("adminEmail") ||
+        localStorage.getItem("adminEmail") ||
+        "Admin";
+
+
+    if (saveButton) {
+
+        if (saveButton.disabled) {
+            return;
+        }
+
+
+        saveButton.disabled =
+            true;
+
+
+        saveButton.dataset.originalText =
+            saveButton.innerHTML;
+
+
+        saveButton.innerHTML =
+            '<i data-lucide="loader-circle"></i> Saving...';
+
+
+        if (
+            typeof lucide !==
+            "undefined"
+        ) {
+
+            lucide.createIcons();
+
+        }
+
+    }
+
+
+    try {
+
+        const body =
+            new URLSearchParams();
+
+
+        body.append(
+            "settingDate",
+            settingDate
+        );
+
+
+        body.append(
+            "settingType",
+            settingType
+        );
+
+
+        body.append(
+            "reason",
+            reason
+        );
+
+
+        body.append(
+            "adminName",
+            adminName
+        );
+
+
+        const response =
+            await apiFetch(
+                "/admin/working-days",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/x-www-form-urlencoded"
+                    },
+
+                    body:
+                        body.toString()
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                await getErrorMessage(
+                    response
+                )
+            );
+
+        }
+
+
+        closeWorkingDayModal();
+
+
+        await loadWorkingDaySettings();
+
+
+        showMessage(
+            "workingDayMessage",
+            "Setting saved successfully.",
+            "success"
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            "Save setting error:",
+            error
+        );
+
+
+        showMessage(
+            "workingDayMessage",
+            error.message ||
+            "Failed to save setting.",
+            "error"
+        );
+
+    }
+    finally {
+
+        if (saveButton) {
+
+            saveButton.disabled =
+                false;
+
+
+            if (
+                saveButton.dataset.originalText
+            ) {
+
+                saveButton.innerHTML =
+                    saveButton.dataset.originalText;
+
+
+                delete saveButton.dataset.originalText;
+
+
+                if (
+                    typeof lucide !==
+                    "undefined"
+                ) {
+
+                    lucide.createIcons();
+
+                }
+
+            }
+
+        }
+
+    }
+
+}
+
+
+async function saveAnnouncementFromSetting(
+    date,
+    title,
+    message,
+    button
+) {
+
+    if (button) {
+
+        if (button.disabled) {
+            return;
+        }
+
+
+        button.disabled =
+            true;
+
+
+        button.dataset.originalText =
+            button.innerHTML;
+
+
+        button.innerHTML =
+            '<i data-lucide="loader-circle"></i> Saving...';
+
+
+        if (
+            typeof lucide !==
+            "undefined"
+        ) {
+
+            lucide.createIcons();
+
+        }
+
+    }
+
+
+    try {
+
+        const editing =
+            editingAnnouncementId !== null;
+
+
+        const response =
+            await apiFetch(
+                editing
+                    ? "/admin/announcements/" +
+                      editingAnnouncementId
+                    : "/admin/announcements",
+                {
+                    method:
+                        editing
+                            ? "PUT"
+                            : "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+
+                            announcementDate:
+                                date,
+
+                            title:
+                                title,
+
+                            message:
+                                message
+
+                        })
+
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                await getErrorMessage(
+                    response
+                )
+            );
+
+        }
+
+
+        closeWorkingDayModal();
+
+
+        await loadWorkingDaySettings();
+
+
+        showMessage(
+            "workingDayMessage",
+            editing
+                ? "Announcement updated successfully."
+                : "Announcement added successfully.",
+            "success"
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            "Announcement save error:",
+            error
+        );
+
+
+        showMessage(
+            "workingDayMessage",
+            error.message ||
+            "Unable to save announcement.",
+            "error"
+        );
+
+    }
+    finally {
+
+        if (button) {
+
+            button.disabled =
+                false;
+
+
+            if (
+                button.dataset.originalText
+            ) {
+
+                button.innerHTML =
+                    button.dataset.originalText;
+
+
+                delete button.dataset.originalText;
+
+
+                if (
+                    typeof lucide !==
+                    "undefined"
+                ) {
+
+                    lucide.createIcons();
+
+                }
+
+            }
+
+        }
+
+    }
+
+}
+
+
+function openAnnouncementForEdit(
+    id
+) {
+
+    const item =
+        announcementList.find(
+            function(announcement) {
+
+                return Number(
+                    announcement.id
+                ) === Number(id);
+
+            }
+        );
+
+
+    if (!item) {
+        return;
+    }
+
+
+    editingAnnouncementId =
+        item.id;
+
+
+    document.getElementById(
+        "workingDayModalTitle"
+    ).textContent =
+        "Edit Announcement";
+
+
+    document.getElementById(
+        "workingDayDate"
+    ).value =
+        item.announcementDate || "";
+
+
+    document.getElementById(
+        "workingDayType"
+    ).value =
+        "ANNOUNCEMENT";
+
+
+    document.getElementById(
+        "announcementTitle"
+    ).value =
+        item.title || "";
+
+
+    document.getElementById(
+        "announcementText"
+    ).value =
+        item.message || "";
+
+
+    document.getElementById(
+        "workingDayReason"
+    ).value =
+        "";
+
+
+    handleSettingTypeChange();
+
+
+    document.getElementById(
+        "workingDayModal"
+    ).classList.add(
+        "show"
+    );
+
+
+    if (
+        typeof lucide !==
+        "undefined"
+    ) {
+
+        lucide.createIcons();
+
+    }
+
+}
+
+
+async function deleteAnnouncement(
+    id
+) {
+
+    if (
+        !confirm(
+            "Delete this announcement?"
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await apiFetch(
+                "/admin/announcements/" +
+                id,
+                {
+                    method: "DELETE"
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                await getErrorMessage(
+                    response
+                )
+            );
+
+        }
+
+
+        await loadWorkingDaySettings();
+
+
+        showMessage(
+            "workingDayMessage",
+            "Announcement deleted successfully.",
+            "success"
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            "Announcement delete error:",
+            error
+        );
+
+
+        showMessage(
+            "workingDayMessage",
+            error.message ||
+            "Unable to delete announcement.",
+            "error"
+        );
+
+    }
+
+}
+
+
+async function deleteWorkingDaySetting(
+    settingDate
+) {
+
+    if (!settingDate) {
+        return;
+    }
+
+
+    const confirmed =
+        confirm(
+            "Are you sure you want to remove this setting?"
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    const deleteReason =
+        prompt(
+            "Enter the reason for deleting this setting:"
+        );
+
+
+    if (
+        deleteReason === null
+    ) {
+
+        return;
+
+    }
+
+
+    const cleanReason =
+        deleteReason.trim();
+
+
+    if (!cleanReason) {
+
+        alert(
+            "Delete reason is required."
+        );
+
+        return;
+
+    }
+
+
+    const adminName =
+        sessionStorage.getItem("adminName") ||
+        localStorage.getItem("adminName") ||
+        sessionStorage.getItem("adminEmail") ||
+        localStorage.getItem("adminEmail") ||
+        "Admin";
+
+
+    try {
+
+        const params =
+            new URLSearchParams();
+
+
+        params.append(
+            "settingDate",
+            settingDate
+        );
+
+
+        params.append(
+            "reason",
+            cleanReason
+        );
+
+
+        params.append(
+            "adminName",
+            adminName
+        );
+
+
+        const response =
+            await apiFetch(
+                `/admin/working-days?${params.toString()}`,
+                {
+                    method: "DELETE"
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                await getErrorMessage(
+                    response
+                )
+            );
+
+        }
+
+
+        await loadWorkingDaySettings();
+
+
+        showMessage(
+            "workingDayMessage",
+            "Setting removed successfully.",
+            "success"
+        );
+
+    }
+    catch (error) {
+
+        console.error(
+            "Delete setting error:",
+            error
+        );
+
+
+        showMessage(
+            "workingDayMessage",
+            error.message ||
+            "Failed to delete setting.",
+            "error"
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   MODAL BACKDROP
+   ========================================================= */
+
+document.querySelectorAll(
+    ".modal"
+).forEach(
+    function(modal) {
+
+        modal.addEventListener(
+            "click",
+            function(event) {
+
+                if (
+                    event.target ===
+                    modal
+                ) {
+
+                    modal.classList.remove(
+                        "show"
+                    );
+
+                    editingAnnouncementId =
+                        null;
+
+                }
+
+            }
+        );
+
+    }
+);
+
+
+/* =========================================================
+   INITIALIZATION
+   ========================================================= */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        if (
+            typeof lucide !==
+            "undefined"
+        ) {
+
+            lucide.createIcons();
+
+        }
+
+
+        loadAdminInfo();
+
+
+        initializeWorkingDayControls();
+
+
+        loadWeeklyOffSettings();
+
+    }
+);
+
+</script>
+
+</body>
+
+</html>

@@ -1,3 +1,4 @@
+
 package com.example.attendance;
 
 import org.apache.poi.ss.usermodel.*;
@@ -8,398 +9,342 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayOutputStream;
-import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.List;
 
 @RestController
 @RequestMapping("/admin/monthly-report")
 public class MonthlyReportExcelController {
 
-    private final EmployeeRepository employeeRepository;
-    private final AttendanceRepository attendanceRepository;
-    private final LeaveRequestRepository leaveRequestRepository;
+        private final PayrollService payrollService;
 
-    public MonthlyReportExcelController(
-            EmployeeRepository employeeRepository,
-            AttendanceRepository attendanceRepository,
-            LeaveRequestRepository leaveRequestRepository) {
+        public MonthlyReportExcelController(PayrollService payrollService) {
+                this.payrollService = payrollService;
+        }
 
-        this.employeeRepository = employeeRepository;
-        this.attendanceRepository = attendanceRepository;
-        this.leaveRequestRepository = leaveRequestRepository;
-    }
+        // Same numbers as the Monthly Report and Salary pages.
+        @GetMapping("/excel")
+        public ResponseEntity<byte[]> downloadExcel(
+                        @RequestParam int year,
+                        @RequestParam int month) {
 
-    // =========================================================
-    // DOWNLOAD MONTHLY REPORT AS EXCEL
-    // =========================================================
-    @GetMapping("/excel")
-    public ResponseEntity<byte[]> downloadExcel(
-            @RequestParam int year,
-            @RequestParam int month) {
+                YearMonth yearMonth =
+                                YearMonth.of(year, month);
 
-        YearMonth yearMonth = YearMonth.of(year, month);
+                PayrollService.MonthPayroll payroll =
+                                payrollService.calculate(
+                                                year,
+                                                month);
 
-        LocalDate startDate = yearMonth.atDay(1);
-        LocalDate endDate = yearMonth.atEndOfMonth();
+                try (Workbook workbook = new XSSFWorkbook()) {
 
-        int workingDays = 26;
+                        Sheet sheet = workbook.createSheet(
+                                        "Monthly Attendance Report");
 
-        List<Attendance> attendanceList =
-                attendanceRepository.findByAttendanceDateBetween(
-                        startDate,
-                        endDate
-                );
 
-        try (Workbook workbook = new XSSFWorkbook()) {
+                        // =====================================================
+                        // TITLE
+                        // =====================================================
 
-            Sheet sheet = workbook.createSheet(
-                    "Monthly Attendance Report"
-            );
+                        Row titleRow =
+                                        sheet.createRow(0);
 
-            // =================================================
-            // TITLE
-            // =================================================
+                        Cell titleCell =
+                                        titleRow.createCell(0);
 
-            Row titleRow = sheet.createRow(0);
+                        titleCell.setCellValue(
+                                        "MONTHLY ATTENDANCE & SALARY REPORT - "
+                                                        + yearMonth);
 
-            Cell titleCell = titleRow.createCell(0);
 
-            titleCell.setCellValue(
-                    "MONTHLY ATTENDANCE & SALARY REPORT - "
-                            + yearMonth
-            );
+                        CellStyle titleStyle =
+                                        workbook.createCellStyle();
 
-            CellStyle titleStyle =
-                    workbook.createCellStyle();
+                        Font titleFont =
+                                        workbook.createFont();
 
-            Font titleFont =
-                    workbook.createFont();
+                        titleFont.setBold(true);
 
-            titleFont.setBold(true);
-            titleFont.setFontHeightInPoints((short) 14);
+                        titleFont.setFontHeightInPoints(
+                                        (short) 14);
 
-            titleStyle.setFont(titleFont);
+                        titleStyle.setFont(titleFont);
 
-            titleCell.setCellStyle(titleStyle);
+                        titleCell.setCellStyle(
+                                        titleStyle);
 
-            // =================================================
-            // HEADER
-            // =================================================
 
-            Row headerRow = sheet.createRow(2);
+                        // =====================================================
+                        // HEADERS
+                        // =====================================================
 
-            String[] headers = {
+                        Row headerRow =
+                                        sheet.createRow(2);
 
-                    "Employee Code",
-                    "Employee Name",
-                    "Role",
-                    "Basic Salary",
-                    "Working Days",
-                    "Present Days",
-                    "Sick Leave",
-                    "Casual Leave",
-                    "Leave Days",
-                    "Permission",
-                    "Absent Days",
-                    "Loss Of Pay",
-                    "Final Salary"
-            };
+                        String[] headers = {
 
-            CellStyle headerStyle =
-                    workbook.createCellStyle();
+                                        "Employee Code",
+                                        "Employee Name",
+                                        "Role",
+                                        "Basic Salary",
+                                        "Working Days",
+                                        "Present Days",
+                                        "Absent Days",
+                                        "LOP Leave",
+                                        "Sick Leave",
+                                        "Casual Leave",
+                                        "Permission",
+                                        "Covered By Leave Balance",
+                                        "Loss Of Pay",
+                                        "Final Salary",
 
-            Font headerFont =
-                    workbook.createFont();
+                                        // OT
+                                        "OT Days",
+                                        "OT Benefit",
+                                        "OT Salary",
+                                        "Comp-Off Days",
+                                        "Final Salary With OT"
+                        };
 
-            headerFont.setBold(true);
 
-            headerStyle.setFont(headerFont);
+                        CellStyle headerStyle =
+                                        workbook.createCellStyle();
 
-            for (int i = 0; i < headers.length; i++) {
+                        Font headerFont =
+                                        workbook.createFont();
 
-                Cell cell =
-                        headerRow.createCell(i);
+                        headerFont.setBold(true);
 
-                cell.setCellValue(headers[i]);
+                        headerStyle.setFont(
+                                        headerFont);
 
-                cell.setCellStyle(headerStyle);
-            }
 
-            // =================================================
-            // EMPLOYEE DATA
-            // =================================================
+                        for (int i = 0;
+                             i < headers.length;
+                             i++) {
 
-            List<Employee> employees =
-                    employeeRepository.findAll();
+                                Cell cell =
+                                                headerRow.createCell(i);
 
-            int rowNumber = 3;
+                                cell.setCellValue(
+                                                headers[i]);
 
-            for (Employee employee : employees) {
+                                cell.setCellStyle(
+                                                headerStyle);
+                        }
 
-                // Only employees
-                if (!"EMPLOYEE".equalsIgnoreCase(
-                        employee.getRole())) {
 
-                    continue;
+                        // =====================================================
+                        // DATA
+                        // =====================================================
+
+                        int rowNumber = 3;
+
+
+                        for (PayrollService.EmployeePayroll p :
+                                        payroll.employees()) {
+
+                                Employee employee =
+                                                p.employee();
+
+                                PayrollMath.Result math =
+                                                p.math();
+
+
+                                double monthlySalary =
+                                                employee.getSalary() != null
+                                                                ? employee.getSalary()
+                                                                : 0.0;
+
+
+                                Row row =
+                                                sheet.createRow(
+                                                                rowNumber++);
+
+
+                                // =================================================
+                                // EXISTING PAYROLL DATA
+                                // =================================================
+
+                                row.createCell(0)
+                                                .setCellValue(
+                                                                employee.getEmployeeCode() != null
+                                                                                ? employee.getEmployeeCode()
+                                                                                : "");
+
+
+                                row.createCell(1)
+                                                .setCellValue(
+                                                                employee.getName() != null
+                                                                                ? employee.getName()
+                                                                                : "");
+
+
+                                row.createCell(2)
+                                                .setCellValue(
+                                                                employee.getRole() != null
+                                                                                ? employee.getRole()
+                                                                                : "");
+
+
+                                row.createCell(3)
+                                                .setCellValue(
+                                                                monthlySalary);
+
+
+                                row.createCell(4)
+                                                .setCellValue(
+                                                                math.workingDays());
+
+
+                                row.createCell(5)
+                                                .setCellValue(
+                                                                math.presentDays());
+
+
+                                row.createCell(6)
+                                                .setCellValue(
+                                                                p.absentDays());
+
+
+                                row.createCell(7)
+                                                .setCellValue(
+                                                                p.lopLeave());
+
+
+                                row.createCell(8)
+                                                .setCellValue(
+                                                                p.sickLeave());
+
+
+                                row.createCell(9)
+                                                .setCellValue(
+                                                                p.casualLeave());
+
+
+                                row.createCell(10)
+                                                .setCellValue(
+                                                                p.permission());
+
+
+                                row.createCell(11)
+                                                .setCellValue(
+                                                                math.autoCoveredDays());
+
+
+                                row.createCell(12)
+                                                .setCellValue(
+                                                                math.lossOfPay());
+
+
+                                row.createCell(13)
+                                                .setCellValue(
+                                                                math.finalSalary());
+
+
+                                // =================================================
+                                // OT DATA
+                                // =================================================
+
+                                row.createCell(14)
+                                                .setCellValue(
+                                                                p.overtimeDays());
+
+
+                                /*
+                                 * The benefit type is not stored directly
+                                 * inside EmployeePayroll.
+                                 *
+                                 * Therefore display the effective benefit
+                                 * based on the calculated OT values.
+                                 */
+
+                                String otBenefit = "";
+
+                                if (p.overtimeSalary() > 0) {
+
+                                        otBenefit =
+                                                        "EXTRA_SALARY";
+
+                                } else if (p.compensatoryOffDays() > 0) {
+
+                                        otBenefit =
+                                                        "COMP_OFF";
+                                }
+
+
+                                row.createCell(15)
+                                                .setCellValue(
+                                                                otBenefit);
+
+
+                                row.createCell(16)
+                                                .setCellValue(
+                                                                p.overtimeSalary());
+
+
+                                row.createCell(17)
+                                                .setCellValue(
+                                                                p.compensatoryOffDays());
+
+
+                                row.createCell(18)
+                                                .setCellValue(
+                                                                p.finalSalaryWithOvertime());
+                        }
+
+
+                        // =====================================================
+                        // AUTO SIZE
+                        // =====================================================
+
+                        for (int i = 0;
+                             i < headers.length;
+                             i++) {
+
+                                sheet.autoSizeColumn(i);
+                        }
+
+
+                        // =====================================================
+                        // CREATE EXCEL FILE
+                        // =====================================================
+
+                        ByteArrayOutputStream outputStream =
+                                        new ByteArrayOutputStream();
+
+                        workbook.write(
+                                        outputStream);
+
+
+                        String fileName =
+                                        "Monthly_Report_"
+                                                        + year
+                                                        + "_"
+                                                        + String.format(
+                                                                        "%02d",
+                                                                        month)
+                                                        + ".xlsx";
+
+
+                        return ResponseEntity.ok()
+                                        .header(
+                                                        HttpHeaders.CONTENT_DISPOSITION,
+                                                        "attachment; filename=\""
+                                                                        + fileName
+                                                                        + "\"")
+                                        .contentType(
+                                                        MediaType.parseMediaType(
+                                                                        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                                        .body(
+                                                        outputStream.toByteArray());
                 }
 
-                Integer employeeId =
-                        employee.getId();
+                catch (Exception e) {
 
-                // =============================================
-                // PRESENT DAYS
-                // =============================================
-
-                int presentDays =
-                        (int) attendanceList.stream()
-                                .filter(attendance ->
-                                        employeeId.equals(
-                                                attendance.getEmployeeId()
-                                        )
-                                )
-                                .filter(attendance ->
-                                        "PRESENT".equalsIgnoreCase(
-                                                attendance.getStatus()
-                                        )
-                                )
-                                .count();
-
-                // =============================================
-                // APPROVED LEAVES
-                // =============================================
-
-                List<LeaveRequest> monthlyLeaves =
-                        leaveRequestRepository
-                                .findByEmployeeIdOrderByLeaveDateDesc(
-                                        employeeId
-                                )
-                                .stream()
-                                .filter(leave ->
-                                        !leave.getLeaveDate()
-                                                .isBefore(startDate)
-                                )
-                                .filter(leave ->
-                                        !leave.getLeaveDate()
-                                                .isAfter(endDate)
-                                )
-                                .filter(leave ->
-                                        "APPROVED".equalsIgnoreCase(
-                                                leave.getStatus()
-                                        )
-                                )
-                                .toList();
-
-                // =============================================
-                // SICK LEAVE
-                // =============================================
-
-                double sickLeave =
-                        monthlyLeaves.stream()
-                                .filter(leave ->
-                                        "SICK".equalsIgnoreCase(
-                                                leave.getLeaveType()
-                                        )
-                                )
-                                .mapToDouble(leave ->
-                                        leave.getLeaveDuration() != null
-                                                ? leave.getLeaveDuration()
-                                                : 1.0
-                                )
-                                .sum();
-
-                // =============================================
-                // CASUAL LEAVE
-                // =============================================
-
-                double casualLeave =
-                        monthlyLeaves.stream()
-                                .filter(leave ->
-                                        "CASUAL".equalsIgnoreCase(
-                                                leave.getLeaveType()
-                                        )
-                                )
-                                .mapToDouble(leave ->
-                                        leave.getLeaveDuration() != null
-                                                ? leave.getLeaveDuration()
-                                                : 1.0
-                                )
-                                .sum();
-
-                // =============================================
-                // TOTAL LEAVE
-                // =============================================
-
-                double leaveDays =
-                        sickLeave + casualLeave;
-
-                // =============================================
-                // PERMISSION
-                // =============================================
-
-                int permission =
-                        (int) monthlyLeaves.stream()
-                                .filter(leave ->
-                                        "PERMISSION".equalsIgnoreCase(
-                                                leave.getLeaveType()
-                                        )
-                                )
-                                .count();
-
-                // =============================================
-                // ABSENT DAYS
-                // =============================================
-
-                double absentDays =
-                        Math.max(
-                                0,
-                                workingDays
-                                        - presentDays
-                                        - leaveDays
-                        );
-
-                // =============================================
-                // SALARY
-                // =============================================
-
-                double monthlySalary =
-                        employee.getSalary() != null
-                                ? employee.getSalary()
-                                : 0.0;
-
-                double perDaySalary =
-                        monthlySalary / workingDays;
-
-                double lossOfPay =
-                        absentDays * perDaySalary;
-
-                double finalSalary =
-                        monthlySalary - lossOfPay;
-
-                // =============================================
-                // EXCEL ROW
-                // =============================================
-
-                Row row =
-                        sheet.createRow(rowNumber++);
-
-                row.createCell(0)
-                        .setCellValue(
-                                employee.getEmployeeCode()
-                        );
-
-                row.createCell(1)
-                        .setCellValue(
-                                employee.getName()
-                        );
-
-                row.createCell(2)
-                        .setCellValue(
-                                employee.getRole()
-                        );
-
-                row.createCell(3)
-                        .setCellValue(
-                                monthlySalary
-                        );
-
-                row.createCell(4)
-                        .setCellValue(
-                                workingDays
-                        );
-
-                row.createCell(5)
-                        .setCellValue(
-                                presentDays
-                        );
-
-                row.createCell(6)
-                        .setCellValue(
-                                sickLeave
-                        );
-
-                row.createCell(7)
-                        .setCellValue(
-                                casualLeave
-                        );
-
-                row.createCell(8)
-                        .setCellValue(
-                                leaveDays
-                        );
-
-                row.createCell(9)
-                        .setCellValue(
-                                permission
-                        );
-
-                row.createCell(10)
-                        .setCellValue(
-                                absentDays
-                        );
-
-                row.createCell(11)
-                        .setCellValue(
-                                lossOfPay
-                        );
-
-                row.createCell(12)
-                        .setCellValue(
-                                finalSalary
-                        );
-            }
-
-            // =================================================
-            // AUTO SIZE COLUMNS
-            // =================================================
-
-            for (int i = 0; i < headers.length; i++) {
-
-                sheet.autoSizeColumn(i);
-            }
-
-            // =================================================
-            // CREATE EXCEL FILE
-            // =================================================
-
-            ByteArrayOutputStream outputStream =
-                    new ByteArrayOutputStream();
-
-            workbook.write(outputStream);
-
-            byte[] excelFile =
-                    outputStream.toByteArray();
-
-            // =================================================
-            // RESPONSE
-            // =================================================
-
-            String fileName =
-                    "Monthly_Report_"
-                            + year
-                            + "_"
-                            + String.format("%02d", month)
-                            + ".xlsx";
-
-            return ResponseEntity.ok()
-                    .header(
-                            HttpHeaders.CONTENT_DISPOSITION,
-                            "attachment; filename=\"" +
-                                    fileName +
-                                    "\""
-                    )
-                    .contentType(
-                            MediaType.parseMediaType(
-                                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                            )
-                    )
-                    .body(excelFile);
-
-        } catch (Exception e) {
-
-            return ResponseEntity
-                    .internalServerError()
-                    .build();
+                        return ResponseEntity
+                                        .internalServerError()
+                                        .build();
+                }
         }
-    }
 }
+

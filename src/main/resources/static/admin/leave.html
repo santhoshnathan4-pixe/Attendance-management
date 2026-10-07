@@ -1,0 +1,2230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GROWBYTEE - Leave</title>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+        background: #f4f7fb;
+        color: #1f2937;
+    }
+
+    .container {
+        display: flex;
+        min-height: 100vh;
+    }
+
+    .sidebar {
+        width: 250px;
+        background: #334155;
+        color: white;
+        position: fixed;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        padding: 25px 15px;
+        overflow-y: auto;
+    }
+
+    .logo {
+        text-align: center;
+        font-size: 25px;
+        font-weight: bold;
+        margin-bottom: 8px;
+    }
+
+    .admin-title {
+        text-align: center;
+        color: #cbd5e1;
+        font-size: 13px;
+        margin-bottom: 30px;
+    }
+
+    .menu {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .menu button {
+        border: none;
+        background: transparent;
+        color: #e5e7eb;
+        text-align: left;
+        padding: 14px 15px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 15px;
+        transition: 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .menu button svg {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+    }
+
+    .menu button:hover,
+.menu button.active {
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
+    }
+
+    .logout-btn {
+        margin-top: 25px;
+        background: #dc2626 !important;
+        color: white !important;
+        text-align: center !important;
+    }
+
+    .logout-btn:hover {
+        background: #b91c1c !important;
+    }
+
+    .main {
+        margin-left: 250px;
+        width: calc(100% - 250px);
+        min-height: 100vh;
+    }
+
+    .header {
+        height: 75px;
+        background: white;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 30px;
+        position: sticky;
+        top: 0;
+        z-index: 20;
+    }
+
+    .header h1 {
+        font-size: 23px;
+        color: #111827;
+    }
+
+    .admin-info {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #475569;
+        font-size: 14px;
+    }
+
+    .admin-badge {
+        background: #2563eb;
+        color: white;
+        padding: 8px 13px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+
+    .content {
+        padding: 30px;
+    }
+
+    .section {
+        display: none;
+        padding: 24px;
+        border-radius: 16px;
+        min-height: calc(100vh - 135px);
+        border: 1px solid #e5e7eb;
+    }
+
+    .section.active {
+        display: block;
+    }
+
+    #dashboard {
+        background: #f8fafc;
+    }
+
+    #leave {
+        background: #fbfaf8;
+    }
+
+    #salary {
+        background: #f8fbfa;
+    }
+
+    #history {
+        background: #f8fafb;
+    }
+
+    .section-title {
+        font-size: 25px;
+        margin-bottom: 8px;
+        color: #111827;
+    }
+
+    .section-subtitle {
+        color: #64748b;
+        margin-bottom: 25px;
+        font-size: 14px;
+    }
+
+    .btn {
+        border: none;
+        border-radius: 8px;
+        padding: 10px 16px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+    .btn-primary {
+        background: #2563eb;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #1d4ed8;
+    }
+
+    .btn-success {
+        background: #16a34a;
+        color: white;
+    }
+
+    .btn-success:hover {
+        background: #15803d;
+    }
+
+    .btn-danger {
+        background: #dc2626;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background: #b91c1c;
+    }
+
+    .btn-secondary {
+        background: #64748b;
+        color: white;
+    }
+
+    .btn-secondary:hover {
+        background: #475569;
+    }
+
+    .btn-small {
+        padding: 7px 11px;
+        font-size: 12px;
+    }
+
+    .table-card {
+        background: white;
+        border-radius: 14px;
+        box-shadow: 0 5px 20px rgba(15, 23, 42, 0.06);
+        overflow: hidden;
+        border: 1px solid #e5e7eb;
+    }
+
+    .table-wrapper {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 900px;
+    }
+
+    th {
+        background: #eff6ff;
+        color: #1e3a8a;
+        font-size: 13px;
+        text-align: left;
+        padding: 14px;
+        white-space: nowrap;
+    }
+
+    td {
+        padding: 13px 14px;
+        border-top: 1px solid #e5e7eb;
+        font-size: 13px;
+        white-space: nowrap;
+    }
+
+    tr:hover td {
+        background: #f8fafc;
+    }
+
+    .empty-row {
+        text-align: center;
+        color: #64748b;
+        padding: 30px;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 5px 9px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: bold;
+    }
+
+    .badge-green {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .badge-blue {
+        background: #dbeafe;
+        color: #1e40af;
+    }
+
+    .badge-orange {
+        background: #ffedd5;
+        color: #9a3412;
+    }
+
+    .badge-red {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .badge-gray {
+        background: #e5e7eb;
+        color: #374151;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 7px;
+    }
+
+    .form-group label {
+        font-size: 13px;
+        font-weight: 600;
+        color: #374151;
+    }
+
+    .form-group input,
+.form-group select,
+.form-group textarea {
+        width: 100%;
+        padding: 11px 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        outline: none;
+        font-size: 14px;
+        background: white;
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 90px;
+    }
+
+    .form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+        border-color: #2563eb;
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(15, 23, 42, 0.65);
+        z-index: 100;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .modal.show {
+        display: flex;
+    }
+
+    .modal-box {
+        width: 100%;
+        max-width: 650px;
+        background: white;
+        border-radius: 16px;
+        padding: 25px;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-box.small {
+        max-width: 450px;
+    }
+
+    .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 22px;
+    }
+
+    .modal-header h2 {
+        font-size: 20px;
+        color: #111827;
+    }
+
+    .close-btn {
+        border: none;
+        background: #f1f5f9;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 18px;
+    }
+
+    .close-btn:hover {
+        background: #e2e8f0;
+    }
+
+    .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 25px;
+    }
+
+    .info-box {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        color: #1e40af;
+        border-radius: 10px;
+        padding: 13px 15px;
+        font-size: 13px;
+        line-height: 1.6;
+        margin-bottom: 18px;
+    }
+
+    .message {
+        display: none;
+        margin-bottom: 18px;
+        padding: 12px 15px;
+        border-radius: 9px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .message.show {
+        display: block;
+    }
+
+    .message.success {
+        background: #dcfce7;
+        color: #166534;
+    }
+
+    .message.error {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    @media (max-width: 800px) {
+        .sidebar {
+            width: 210px;
+        }
+
+        .main {
+            margin-left: 210px;
+            width: calc(100% - 210px);
+        }
+
+        .header {
+            padding: 0 15px;
+        }
+
+        .content {
+            padding: 20px 15px;
+        }
+
+        .section {
+            padding: 18px;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .sidebar {
+            position: relative;
+            width: 100%;
+            min-height: auto;
+        }
+
+        .container {
+            display: block;
+        }
+
+        .main {
+            margin-left: 0;
+            width: 100%;
+        }
+
+        .header {
+            position: relative;
+        }
+
+        .admin-info {
+            display: none;
+        }
+    }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            GROWBYTEE
+        </div>
+
+        <div class="admin-title">
+            Admin / CEO Dashboard
+        </div>
+
+        <div class="menu">
+
+            <button class="menu-btn"
+                    onclick="window.location.href='/admin-dashboard.html'">
+                <i data-lucide="layout-dashboard"></i>
+                Dashboard
+            </button>
+
+            <button class="menu-btn active"
+                    onclick="window.location.href='employees.html'">
+                <i data-lucide="users"></i>
+                Employees
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='leave.html'">
+                <i data-lucide="clipboard-list"></i>
+                Leave
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='ai-assistant.html'">
+                <i data-lucide="sparkles"></i>
+                AI Assistant
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='working-day-settings.html'">
+                <i data-lucide="calendar-days"></i>
+                Working Day Settings
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='shift-settings.html'">
+                <i data-lucide="clock-3"></i>
+                Shift Settings
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='branch-management.html'">
+                <i data-lucide="building-2"></i>
+                Branch Management
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='leave-permission-settings.html'">
+                <i data-lucide="settings"></i>
+                Leave & Permission Settings
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='salary.html'">
+                <i data-lucide="wallet"></i>
+                Salary
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='monthly-report.html'">
+                <i data-lucide="calendar-days"></i>
+                Monthly Report
+            </button>
+
+            <button class="menu-btn"
+                    onclick="window.location.href='history.html'">
+                <i data-lucide="history"></i>
+                History
+            </button>
+
+            <button class="menu-btn logout-btn"
+                    onclick="logout()">
+                <i data-lucide="log-out"></i>
+                Logout
+            </button>
+
+        </div>
+
+    </aside>
+
+    <main class="main">
+
+        <header class="header">
+
+            <h1>
+                GROWBYTEE - Admin Dashboard
+            </h1>
+
+            <div class="admin-info" id="adminInfo" style="display: none;">
+
+                <span id="loggedAdminName">
+                    Welcome, Admin
+                </span>
+
+                <span class="admin-badge">
+                    ADMIN
+                </span>
+
+            </div>
+
+        </header>
+
+        <div class="content">
+
+<section id="leave" class="section active"> 
+ 
+    <h2 class="section-title"> 
+        Leave Management 
+    </h2> 
+ 
+    <p class="section-subtitle"> 
+        Review and manage employee leave requests 
+    </p> 
+ 
+    <div id="leaveMessage" 
+         class="message"> 
+    </div> 
+ 
+    <div class="table-card"> 
+ 
+        <div class="table-wrapper"> 
+ 
+            <table> 
+ 
+                <thead> 
+ 
+                <tr> 
+                    <th>Employee</th> 
+                    <th>Leave Type</th> 
+                    <th>Date</th> 
+                    <th>Duration</th> 
+                    <th>LOP Days</th> 
+                    <th>Reason</th> 
+                    <th>Status</th> 
+                    <th>Action</th> 
+                </tr> 
+ 
+                </thead> 
+ 
+                <tbody id="leaveTableBody"> 
+ 
+                <tr> 
+                    <td colspan="8" 
+                        class="empty-row"> 
+                        Loading leave requests... 
+                    </td> 
+                </tr> 
+ 
+                </tbody> 
+ 
+            </table> 
+ 
+        </div> 
+ 
+    </div> 
+ 
+</section> 
+
+<!-- LEAVE REVIEW MODAL -->
+<div id="leaveReviewModal" class="modal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h2 id="leaveReviewTitle">Review Leave</h2>
+            <button class="close-btn" onclick="closeLeaveReview()">×</button>
+        </div>
+
+        <div id="leaveReviewInfo" class="info-box"></div>
+
+        <div style="margin:12px 0;display:flex;gap:8px;flex-wrap:wrap;">
+            <button type="button" class="btn btn-success btn-small" onclick="setAllLeaveDecision('APPROVE')">Approve all</button>
+            <button type="button" class="btn btn-danger btn-small" onclick="setAllLeaveDecision('REJECT')">Reject all</button>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Leave</th>
+                        <th>Days</th>
+                        <th>LOP</th>
+                        <th>Decision</th>
+                    </tr>
+                </thead>
+                <tbody id="leaveReviewBody"></tbody>
+            </table>
+        </div>
+
+        <div class="form-group" style="margin-top:14px;">
+            <label>
+                Reason
+                <span id="leaveReviewReasonMark" style="color:#dc2626;display:none;"> * (required for rejected dates)</span>
+            </label>
+            <textarea id="leaveReviewReason" rows="3" placeholder="This reason is shown to the employee..."></textarea>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-secondary" onclick="closeLeaveReview()">Cancel</button>
+            <button class="btn btn-primary" id="leaveReviewSubmit" onclick="submitLeaveReview()">Save Decision</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- ACTION REASON MODAL -->
+
+<div id="actionReasonModal"
+     class="modal">
+
+    <div class="modal-box small">
+
+        <div class="modal-header">
+
+            <h2 id="actionReasonTitle">
+                Confirm Action
+            </h2>
+
+            <button class="close-btn"
+                    onclick="closeActionReasonModal()">
+
+                <i data-lucide="x"></i>
+
+            </button>
+
+        </div>
+
+        <div class="info-box">
+
+            <strong>
+                No admin password required.
+            </strong>
+
+            <br>
+
+            You are already logged in as an administrator.
+
+            <br>
+
+            Enter the reason for this action.
+
+        </div>
+
+        <div class="form-group">
+
+            <label>
+
+                Reason
+
+                <span id="actionReasonRequired"
+                      style="color:#dc2626;">
+
+                    *
+
+                </span>
+
+            </label>
+
+            <textarea id="actionReason"
+                      rows="4"
+                      placeholder="Enter reason for this action..."></textarea>
+
+        </div>
+
+        <div class="modal-footer">
+
+            <button class="btn btn-secondary"
+                    onclick="closeActionReasonModal()">
+
+                Cancel
+
+            </button>
+
+            <button class="btn btn-primary"
+                    onclick="confirmActionReason()">
+
+                Confirm
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+        </div>
+
+    </main>
+
+</div>
+
+<script>
+
+    const API_BASE_URL =
+        window.location.hostname === "localhost" ||
+            window.location.hostname === "127.0.0.1"
+            ? "http://localhost:8080"
+            : "https://attendance-management-d5h6.onrender.com";
+
+    async function apiFetch(
+        url,
+        options = {}
+    ) {
+
+        return fetch(
+            API_BASE_URL + url,
+            options
+        );
+
+    }
+
+    function loadAdminInfo() {
+
+        const adminEmail =
+            localStorage.getItem(
+                "adminEmail"
+            );
+
+        const adminName =
+            localStorage.getItem(
+                "adminName"
+            );
+
+
+        if (adminName) {
+
+            const adminNameElement =
+                document.getElementById(
+                    "loggedAdminName"
+                );
+
+            if (adminNameElement) {
+
+                adminNameElement.textContent =
+                    "Welcome, " + adminName;
+
+            }
+
+        }
+
+
+        if (adminEmail) {
+
+            const emailField =
+                document.getElementById(
+                    "verifyAdminEmail"
+                );
+
+            if (emailField) {
+
+                emailField.value =
+                    adminEmail;
+
+            }
+
+        }
+
+    }
+
+    async function getErrorMessage(
+        response
+    ) {
+
+        try {
+
+            const text =
+                await response.text();
+
+
+            if (!text) {
+
+                return (
+                    "Request failed. HTTP " +
+                    response.status
+                );
+
+            }
+
+
+            try {
+
+                const json =
+                    JSON.parse(
+                        text
+                    );
+
+
+                return (
+                    json.message ||
+                    json.error ||
+                    text
+                );
+
+            }
+            catch {
+
+                return text;
+
+            }
+
+        }
+        catch {
+
+            return (
+                "Request failed. HTTP " +
+                response.status
+            );
+
+        }
+
+    }
+
+    function showMessage(
+        elementId,
+        message,
+        type
+    ) {
+
+        const element =
+            document.getElementById(
+                elementId
+            );
+
+
+        if (!element) {
+            return;
+        }
+
+
+        element.textContent =
+            message;
+
+
+        element.className =
+            "message show " +
+            (
+                type === "success"
+                    ? "success"
+                    : "error"
+            );
+
+
+        setTimeout(
+            function() {
+
+                element.classList.remove(
+                    "show"
+                );
+
+            },
+            5000
+        );
+
+    }
+
+    function formatNumber(
+        value
+    ) {
+
+        if (
+            value === null ||
+            value === undefined ||
+            value === ""
+        ) {
+
+            return "0.00";
+
+        }
+
+
+        const number =
+            Number(value);
+
+
+        if (
+            Number.isNaN(number)
+        ) {
+
+            return "0.00";
+
+        }
+
+
+        return number.toLocaleString(
+            "en-IN",
+            {
+                minimumFractionDigits:
+                    2,
+
+                maximumFractionDigits:
+                    2
+
+            }
+        );
+
+    }
+
+    function formatDate(
+        value
+    ) {
+
+        if (!value) {
+            return "-";
+        }
+
+
+        const date =
+            new Date(value);
+
+
+        if (
+            Number.isNaN(
+                date.getTime()
+            )
+        ) {
+
+            return escapeHtml(
+                String(value)
+            );
+
+        }
+
+
+        const day =
+            String(
+                date.getDate()
+            ).padStart(
+                2,
+                "0"
+            );
+
+
+        const month =
+            String(
+                date.getMonth() + 1
+            ).padStart(
+                2,
+                "0"
+            );
+
+
+        const year =
+            date.getFullYear();
+
+
+        return (
+            day +
+            "-" +
+            month +
+            "-" +
+            year
+        );
+
+    }
+
+    function escapeHtml(
+        value
+    ) {
+
+        if (
+            value === null ||
+            value === undefined
+        ) {
+
+            return "";
+
+        }
+
+
+        return String(value)
+            .replaceAll(
+                "&",
+                "&amp;"
+            )
+            .replaceAll(
+                "<",
+                "&lt;"
+            )
+            .replaceAll(
+                ">",
+                "&gt;"
+            )
+            .replaceAll(
+                '"',
+                "&quot;"
+            )
+            .replaceAll(
+                "'",
+                "&#039;"
+            );
+
+    }
+
+    function escapeJs(
+        value
+    ) {
+
+        if (
+            value === null ||
+            value === undefined
+        ) {
+
+            return "";
+
+        }
+
+
+        return String(value)
+            .replaceAll(
+                "\\",
+                "\\\\"
+            )
+            .replaceAll(
+                "'",
+                "\\'"
+            )
+            .replaceAll(
+                "\n",
+                "\\n"
+            )
+            .replaceAll(
+                "\r",
+                "\\r"
+            );
+
+    }
+
+    function logout() {
+
+        const confirmed =
+            confirm(
+                "Are you sure you want to logout?"
+            );
+
+
+        if (!confirmed) {
+            return;
+        }
+
+
+        localStorage.removeItem(
+            "adminEmail"
+        );
+
+
+        localStorage.removeItem(
+            "adminName"
+        );
+
+
+        window.location.href =
+            "admin-login.html";
+
+    }
+
+    let pendingAction = null;
+
+    let pendingLeaveData = null;
+
+    let pendingActionReasonRequired = true;
+
+    function openActionReasonModal(
+        action,
+        required = true
+    ) {
+
+        pendingAction =
+            action;
+
+        pendingActionReasonRequired =
+            required;
+
+
+        const title =
+            document.getElementById(
+                "actionReasonTitle"
+            );
+
+
+        const requiredMark =
+            document.getElementById(
+                "actionReasonRequired"
+            );
+
+
+        const textarea =
+            document.getElementById(
+                "actionReason"
+            );
+
+
+        textarea.value =
+            "";
+
+
+        if (action ===
+            "LEAVE_APPROVE") {
+
+            title.textContent =
+                "Approve Leave";
+
+            textarea.placeholder =
+                "Reason is optional for approval.";
+
+        }
+        else if (action ===
+            "LEAVE_REJECT") {
+
+            title.textContent =
+                "Reject Leave";
+
+            textarea.placeholder =
+                "Enter the reason for rejecting this leave...";
+
+        }
+        else {
+
+            title.textContent =
+                "Confirm Action";
+
+        }
+
+
+        requiredMark.style.display =
+            required
+                ? "inline"
+                : "none";
+
+
+        document.getElementById(
+            "actionReasonModal"
+        ).classList.add(
+            "show"
+        );
+
+
+        setTimeout(
+            function() {
+
+                textarea.focus();
+
+            },
+            100
+        );
+
+    }
+
+    function closeActionReasonModal(
+        clearPending = true
+    ) {
+
+        document.getElementById(
+            "actionReasonModal"
+        ).classList.remove(
+            "show"
+        );
+
+
+        document.getElementById(
+            "actionReason"
+        ).value =
+            "";
+
+
+        if (clearPending) {
+
+
+
+
+
+
+
+            if (
+                pendingAction ===
+                "LEAVE_APPROVE" ||
+                pendingAction ===
+                "LEAVE_REJECT"
+            ) {
+
+                pendingLeaveData =
+                    null;
+
+            }
+
+
+            pendingAction =
+                null;
+
+        }
+
+    }
+
+    async function confirmActionReason() {
+
+        const reason =
+            document.getElementById(
+                "actionReason"
+            ).value.trim();
+
+
+        if (
+            pendingActionReasonRequired &&
+            !reason
+        ) {
+
+            alert(
+                "Please enter a reason."
+            );
+
+            return;
+
+        }
+
+
+        if (
+            reason &&
+            reason.length < 3
+        ) {
+
+            alert(
+                "Reason must contain at least 3 characters."
+            );
+
+            return;
+
+        }
+
+
+        const adminEmail =
+            localStorage.getItem(
+                "adminEmail"
+            );
+
+
+        if (!adminEmail) {
+
+            alert(
+                "Admin login information not found. Please login again."
+            );
+
+            logout();
+
+            return;
+
+        }
+
+
+        try {
+
+
+
+
+
+
+
+            if (
+                pendingAction ===
+                "LEAVE_APPROVE" ||
+                pendingAction ===
+                "LEAVE_REJECT"
+            ) {
+
+                await processLeaveAction(
+                    adminEmail,
+                    reason
+                );
+
+                return;
+
+            }
+
+        }
+        catch (error) {
+
+            console.error(
+                "Admin action error:",
+                error
+            );
+
+
+            showMessage(
+                "leaveMessage",
+                error.message || "Unable to process leave.",
+                "error"
+            );
+
+        }
+
+    }
+
+    async function loadLeaves() {
+
+        try {
+
+            const response =
+                await apiFetch(
+                    "/admin/leaves"
+                );
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    await getErrorMessage(
+                        response
+                    )
+                );
+
+            }
+
+
+            const leaves =
+                await response.json();
+
+
+            renderLeaves(
+                leaves
+            );
+
+
+
+
+        }
+        catch (error) {
+
+            console.error(
+                "Load leaves error:",
+                error
+            );
+
+
+            showMessage(
+                "leaveMessage",
+                error.message,
+                "error"
+            );
+
+        }
+
+    }
+
+    let leaveGroupsCache = {};
+
+    function leaveStatusOf(row) {
+        const s = String(row.status || "").toUpperCase();
+        if (s === "PENDING") { return "PENDING"; }
+        if (s === "APPROVED") { return "APPROVED"; }
+        return "REJECTED";   /* REJECTED / CANCELLED */
+    }
+
+    function leaveTypeLabel(row) {
+        let label = String(row.leaveType || "-").toUpperCase();
+        if (row.halfDaySession) {
+            const session = String(row.halfDaySession);
+            label += " (Half - " + session.charAt(0) + session.slice(1).toLowerCase() + ")";
+        }
+        return label;
+    }
+
+    function buildLeaveGroups(leaves) {
+
+        const map = {};
+        const order = [];
+
+        leaves.forEach(function(leave) {
+
+            const key = leave.requestGroupId
+                ? String(leave.requestGroupId)
+                : "row-" + leave.id;
+
+            if (!map[key]) {
+                map[key] = {
+                    key: key,
+                    hasGroupId: !!leave.requestGroupId,
+                    rows: []
+                };
+                order.push(key);
+            }
+
+            map[key].rows.push(leave);
+        });
+
+        return order.map(function(key) {
+
+            const group = map[key];
+            const first = group.rows[0];
+
+            const byDate = {};
+
+            group.rows.forEach(function(row) {
+
+                const date = row.leaveDate;
+
+                if (!byDate[date]) {
+                    byDate[date] = { date: date, rows: [] };
+                }
+
+                byDate[date].rows.push(row);
+            });
+
+            group.days = Object.keys(byDate).sort().map(function(date) {
+
+                const day = byDate[date];
+
+                const statuses = day.rows.map(leaveStatusOf);
+
+                day.status =
+                    statuses.indexOf("PENDING") >= 0 ? "PENDING"
+                        : statuses.indexOf("APPROVED") >= 0 ? "APPROVED"
+                            : "REJECTED";
+
+                day.duration = day.rows.reduce(function(sum, row) {
+                    return sum + Number(row.leaveDuration || 0);
+                }, 0);
+
+                day.lop = day.rows.reduce(function(sum, row) {
+                    return sum + Number(row.lopDays || 0);
+                }, 0);
+
+                day.typeText = day.rows.map(leaveTypeLabel).join(" + ");
+
+                return day;
+            });
+
+            group.employeeName = first.employeeName || first.name || "-";
+            group.employeeId = first.employeeId;
+            group.isPermission =
+                String(first.leaveType || "").toUpperCase() === "PERMISSION";
+            group.firstDate = group.days[0].date;
+            group.lastDate = group.days[group.days.length - 1].date;
+
+            group.totalDuration = group.days.reduce(function(s, d) { return s + d.duration; }, 0);
+            group.totalLop = group.days.reduce(function(s, d) { return s + d.lop; }, 0);
+
+            const types = [];
+            group.rows.forEach(function(row) {
+                const t = String(row.leaveType || "-").toUpperCase();
+                if (types.indexOf(t) < 0) { types.push(t); }
+            });
+            group.typeText = types.join(", ");
+
+            group.pendingCount = group.days.filter(function(d) { return d.status === "PENDING"; }).length;
+            group.approvedCount = group.days.filter(function(d) { return d.status === "APPROVED"; }).length;
+            group.rejectedCount = group.days.filter(function(d) { return d.status === "REJECTED"; }).length;
+
+            group.status =
+                group.pendingCount > 0 ? "PENDING"
+                    : (group.approvedCount > 0 && group.rejectedCount > 0) ? "PARTIAL"
+                        : group.approvedCount > 0 ? "APPROVED"
+                            : "REJECTED";
+
+            group.reason = first.reason || "";
+
+            const decisionReasons = [];
+            group.rows.forEach(function(row) {
+                if (row.decisionReason && decisionReasons.indexOf(row.decisionReason) < 0) {
+                    decisionReasons.push(row.decisionReason);
+                }
+            });
+            group.decisionReason = decisionReasons.join(" | ");
+
+            return group;
+        });
+    }
+
+    function leaveGroupDateText(group) {
+
+        if (group.firstDate === group.lastDate) {
+
+            let text = formatDate(group.firstDate);
+
+            if (group.isPermission && group.rows[0].permissionStart) {
+                text += "<div style='font-size:12px;color:#6b7280;'>" +
+                    escapeHtml(String(group.rows[0].permissionStart).substring(0, 5)) +
+                    " - " +
+                    escapeHtml(String(group.rows[0].permissionEnd || "").substring(0, 5)) +
+                    "</div>";
+            }
+
+            return text;
+        }
+
+        return formatDate(group.firstDate) + " to " + formatDate(group.lastDate) +
+            "<div style='font-size:12px;color:#6b7280;'>(" +
+            group.days.length + " days)</div>";
+    }
+
+    function renderLeaveGroupRow(group) {
+
+        let badgeClass = "badge-gray";
+        let statusText = group.status;
+
+        if (group.status === "APPROVED") { badgeClass = "badge-green"; }
+        else if (group.status === "PENDING") { badgeClass = "badge-orange"; }
+        else if (group.status === "REJECTED") { badgeClass = "badge-red"; }
+        else if (group.status === "PARTIAL") { badgeClass = "badge-blue"; statusText = "PARTIALLY APPROVED"; }
+
+        let statusExtra = "";
+
+        if (group.status === "PARTIAL" || group.status === "REJECTED") {
+
+            const rejectedDates = group.days
+                .filter(function(d) { return d.status === "REJECTED"; })
+                .map(function(d) { return formatDate(d.date); });
+
+            if (rejectedDates.length > 0) {
+                statusExtra = "<div style='font-size:12px;color:#b91c1c;margin-top:4px;'>Rejected: " +
+                    escapeHtml(rejectedDates.join(", ")) + "</div>";
+            }
+        }
+
+        if (group.status === "PARTIAL") {
+            statusExtra = "<div style='font-size:12px;color:#15803d;margin-top:4px;'>Approved: " +
+                group.approvedCount + " day(s)</div>" + statusExtra;
+        }
+
+        const reasonExtra = group.decisionReason
+            ? "<div style='font-size:12px;color:#6b7280;margin-top:4px;'>Admin: " +
+            escapeHtml(group.decisionReason) + "</div>"
+            : "";
+
+        const lopHtml = group.totalLop > 0
+            ? "<span class='badge badge-red'>" + formatNumber(group.totalLop) + "</span>"
+            : "0.00";
+
+        const actionHtml = group.status === "PENDING"
+            ? "<button class='btn btn-primary btn-small' onclick=\"openLeaveReview('" +
+            escapeJs(group.key) + "')\">Review</button>"
+            : "-";
+
+        return `
+            <tr>
+                <td>${escapeHtml(group.employeeName)}</td>
+                <td>${escapeHtml(group.typeText || "-")}</td>
+                <td>${leaveGroupDateText(group)}</td>
+                <td>${formatNumber(group.totalDuration)}</td>
+                <td>${lopHtml}</td>
+                <td>${escapeHtml(group.reason || "-")}${reasonExtra}</td>
+                <td><span class="badge ${badgeClass}">${escapeHtml(statusText)}</span>${statusExtra}</td>
+                <td>${actionHtml}</td>
+            </tr>
+        `;
+    }
+
+    function renderLeaves(leaves) {
+
+        const tbody = document.getElementById("leaveTableBody");
+
+        if (!tbody) {
+            return;
+        }
+
+        if (!leaves || leaves.length === 0) {
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="8" class="empty-row">
+                        No leave requests found.
+                    </td>
+                </tr>
+            `;
+
+            return;
+        }
+
+        const groups = buildLeaveGroups(leaves);
+
+        leaveGroupsCache = {};
+
+        groups.forEach(function(group) {
+            leaveGroupsCache[group.key] = group;
+        });
+
+        const pendingGroups = groups.filter(function(g) { return g.status === "PENDING"; });
+
+        const approvedGroups = groups.filter(function(g) {
+            return g.status === "APPROVED" || g.status === "PARTIAL";
+        });
+
+        const rejectedGroups = groups.filter(function(g) { return g.status === "REJECTED"; });
+
+        let html = "";
+
+        if (pendingGroups.length > 0) {
+
+            html += `
+                <tr>
+                    <td colspan="8" style="background:#fff7ed;font-weight:600;color:#c2410c;">
+                        <span style="display:inline-flex;align-items:center;gap:7px;">
+                            <i data-lucide="clock-3" style="width:18px;height:18px;"></i>
+                            <span>Pending Leave Requests</span>
+                        </span>
+                    </td>
+                </tr>
+            `;
+
+            pendingGroups.forEach(function(group) {
+                html += renderLeaveGroupRow(group);
+            });
+        }
+
+        if (approvedGroups.length > 0) {
+
+            html += `
+                <tr>
+                    <td colspan="8" style="background:#f0fdf4;padding:12px;">
+                        <button type="button" class="btn btn-success btn-small"
+                                onclick="toggleLeaveHistory('approved')">
+                            <i data-lucide="circle-check" style="width:16px;height:16px;vertical-align:middle;"></i>
+                            Approved (${approvedGroups.length})
+                        </button>
+                    </td>
+                </tr>
+                <tr id="approvedLeaveRows" style="display:none;">
+                    <td colspan="8" style="padding:0;">
+                        <table style="width:100%;">
+                            <tbody>
+                                ${approvedGroups.map(renderLeaveGroupRow).join("")}
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            `;
+        }
+
+        if (rejectedGroups.length > 0) {
+
+            html += `
+                <tr>
+                    <td colspan="8" style="background:#fef2f2;padding:12px;">
+                        <button type="button" class="btn btn-danger btn-small"
+                                onclick="toggleLeaveHistory('rejected')">
+                            <i data-lucide="circle-x" style="width:16px;height:16px;vertical-align:middle;"></i>
+                            Rejected (${rejectedGroups.length})
+                        </button>
+                    </td>
+                </tr>
+                <tr id="rejectedLeaveRows" style="display:none;">
+                    <td colspan="8" style="padding:0;">
+                        <table style="width:100%;">
+                            <tbody>
+                                ${rejectedGroups.map(renderLeaveGroupRow).join("")}
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            `;
+        }
+
+        if (html === "") {
+
+            html = `
+                <tr>
+                    <td colspan="8" class="empty-row">
+                        No leave requests found.
+                    </td>
+                </tr>
+            `;
+        }
+
+        tbody.innerHTML = html;
+
+        if (typeof lucide !== "undefined") {
+            lucide.createIcons();
+        }
+    }
+
+    let currentLeaveReview = null;
+
+    function openLeaveReview(key) {
+
+        const group = leaveGroupsCache[key];
+
+        if (!group) {
+            return;
+        }
+
+        currentLeaveReview = group;
+
+        document.getElementById("leaveReviewTitle").textContent =
+            "Review Leave - " + group.employeeName;
+
+        document.getElementById("leaveReviewInfo").innerHTML =
+            "<strong>" + escapeHtml(group.typeText) + "</strong> &nbsp; " +
+            leaveGroupDateText(group).replace(/<div[^>]*>/g, " ").replace(/<\/div>/g, "") +
+            "<br>Employee reason: " + escapeHtml(group.reason || "-");
+
+        document.getElementById("leaveReviewReason").value = "";
+
+        document.getElementById("leaveReviewBody").innerHTML =
+            group.days.map(function(day, index) {
+
+                let decisionHtml;
+
+                if (day.status === "PENDING") {
+
+                    decisionHtml =
+                        "<label style='margin-right:14px;cursor:pointer;'>" +
+                        "<input type='radio' name='leaveDecision_" + index + "' value='APPROVE' checked " +
+                        "onchange='updateLeaveReviewReasonMark()'> Approve</label>" +
+                        "<label style='cursor:pointer;'>" +
+                        "<input type='radio' name='leaveDecision_" + index + "' value='REJECT' " +
+                        "onchange='updateLeaveReviewReasonMark()'> Reject</label>";
+
+                } else {
+
+                    decisionHtml = "<span class='badge " +
+                        (day.status === "APPROVED" ? "badge-green" : "badge-red") + "'>" +
+                        day.status + "</span>";
+                }
+
+                return "<tr>" +
+                    "<td>" + escapeHtml(formatDate(day.date)) + "</td>" +
+                    "<td>" + escapeHtml(day.typeText) + "</td>" +
+                    "<td>" + formatNumber(day.duration) + "</td>" +
+                    "<td>" + formatNumber(day.lop) + "</td>" +
+                    "<td>" + decisionHtml + "</td>" +
+                    "</tr>";
+
+            }).join("");
+
+        updateLeaveReviewReasonMark();
+
+        document.getElementById("leaveReviewModal").classList.add("show");
+    }
+
+    function closeLeaveReview() {
+
+        document.getElementById("leaveReviewModal").classList.remove("show");
+
+        currentLeaveReview = null;
+    }
+
+    function setAllLeaveDecision(value) {
+
+        const radios = document.querySelectorAll(
+            "#leaveReviewBody input[type='radio'][value='" + value + "']"
+        );
+
+        radios.forEach(function(radio) {
+            radio.checked = true;
+        });
+
+        updateLeaveReviewReasonMark();
+    }
+
+    function updateLeaveReviewReasonMark() {
+
+        const rejected = document.querySelectorAll(
+            "#leaveReviewBody input[type='radio'][value='REJECT']:checked"
+        ).length;
+
+        document.getElementById("leaveReviewReasonMark").style.display =
+            rejected > 0 ? "inline" : "none";
+    }
+
+    async function submitLeaveReview() {
+
+        const group = currentLeaveReview;
+
+        if (!group) {
+            return;
+        }
+
+        const adminEmail = localStorage.getItem("adminEmail");
+
+        if (!adminEmail) {
+            alert("Admin login information not found. Please login again.");
+            logout();
+            return;
+        }
+
+        const approvedDates = [];
+        const rejectedDates = [];
+
+        group.days.forEach(function(day, index) {
+
+            if (day.status !== "PENDING") {
+                return;
+            }
+
+            const selected = document.querySelector(
+                "input[name='leaveDecision_" + index + "']:checked"
+            );
+
+            if (selected && selected.value === "REJECT") {
+                rejectedDates.push(day.date);
+            } else {
+                approvedDates.push(day.date);
+            }
+        });
+
+        const reason =
+            document.getElementById("leaveReviewReason").value.trim();
+
+        if (rejectedDates.length > 0 && reason.length < 3) {
+            alert("Please enter a reason (minimum 3 characters) for the rejected date(s).");
+            return;
+        }
+
+        if (reason && reason.length < 3) {
+            alert("Reason must contain at least 3 characters.");
+            return;
+        }
+
+        const button = document.getElementById("leaveReviewSubmit");
+
+        button.disabled = true;
+
+        try {
+
+            if (group.hasGroupId) {
+
+                const response = await apiFetch(
+                    "/admin/leaves/review/group/" + encodeURIComponent(group.key),
+                    {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            adminEmail: adminEmail,
+                            approvedDates: approvedDates,
+                            rejectedDates: rejectedDates,
+                            reason: reason
+                        })
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error(await getErrorMessage(response));
+                }
+
+            } else {
+
+                /* old rows created before request_group_id existed */
+                for (const day of group.days) {
+
+                    if (day.status !== "PENDING") {
+                        continue;
+                    }
+
+                    const status =
+                        rejectedDates.indexOf(day.date) >= 0
+                            ? "REJECTED" : "APPROVED";
+
+                    for (const row of day.rows) {
+
+                        if (leaveStatusOf(row) !== "PENDING") {
+                            continue;
+                        }
+
+                        const response = await apiFetch(
+                            "/admin/leaves/review/row/" + row.id,
+                            {
+                                method: "PUT",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({
+                                    adminEmail: adminEmail,
+                                    status: status,
+                                    reason: reason
+                                })
+                            }
+                        );
+
+                        if (!response.ok) {
+                            throw new Error(await getErrorMessage(response));
+                        }
+                    }
+                }
+            }
+
+            closeLeaveReview();
+
+            await loadLeaves();
+
+            showMessage("leaveMessage", "Leave decision saved successfully.", "success");
+
+            try {
+
+            } catch (ignore) { }
+
+        } catch (error) {
+
+            console.error("Leave review error:", error);
+
+            alert(error.message || "Unable to save leave decision.");
+
+        } finally {
+
+            button.disabled = false;
+        }
+    }
+
+    function toggleLeaveHistory(
+        type
+    ) {
+
+        const elementId =
+            type === "approved"
+                ? "approvedLeaveRows"
+                : "rejectedLeaveRows";
+
+
+        const element =
+            document.getElementById(
+                elementId
+            );
+
+
+        if (!element) {
+            return;
+        }
+
+
+        element.style.display =
+            element.style.display ===
+                "none"
+                ? "table-row"
+                : "none";
+
+    }
+
+    function approveLeave(
+        leaveId
+    ) {
+
+        pendingLeaveData = {
+
+            leaveId:
+                leaveId
+
+        };
+
+
+        openActionReasonModal(
+            "LEAVE_APPROVE",
+            false
+        );
+
+    }
+
+    function rejectLeave(
+        leaveId
+    ) {
+
+        pendingLeaveData = {
+
+            leaveId:
+                leaveId
+
+        };
+
+
+        openActionReasonModal(
+            "LEAVE_REJECT",
+            true
+        );
+
+    }
+
+    async function processLeaveAction(
+        adminEmail,
+        reason
+    ) {
+
+        if (!pendingLeaveData) {
+
+            throw new Error(
+                "Leave data not found."
+            );
+
+        }
+
+
+        const approve =
+            pendingAction ===
+            "LEAVE_APPROVE";
+
+
+        if (
+            !approve &&
+            (
+                !reason ||
+                reason.length < 3
+            )
+        ) {
+
+            throw new Error(
+                "Reject reason is required."
+            );
+
+        }
+
+
+        const body = {
+
+            adminEmail:
+                adminEmail,
+
+            reason:
+                reason || ""
+
+        };
+
+
+        const response =
+            await apiFetch(
+                "/admin/leaves/" +
+                pendingLeaveData.leaveId +
+                "/" +
+                (
+                    approve
+                        ? "approve"
+                        : "reject"
+                ),
+                {
+                    method:
+                        "PUT",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify(
+                            body
+                        )
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                await getErrorMessage(
+                    response
+                )
+            );
+
+        }
+
+
+        closeActionReasonModal(
+            false
+        );
+
+
+        pendingLeaveData =
+            null;
+
+        pendingAction =
+            null;
+
+
+        await loadLeaves();
+
+
+
+
+        showMessage(
+            "leaveMessage",
+
+            approve
+                ? "Leave approved successfully."
+                : "Leave rejected successfully.",
+
+            "success"
+        );
+
+    }
+
+    document.querySelectorAll(
+        ".modal"
+    ).forEach(
+        function(modal) {
+
+            modal.addEventListener(
+                "click",
+                function(event) {
+
+                    if (
+                        event.target ===
+                        modal
+                    ) {
+
+                        modal.classList.remove(
+                            "show"
+                        );
+
+                    }
+
+                }
+            );
+
+        }
+    );
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function() {
+
+            if (typeof lucide !== "undefined") {
+                lucide.createIcons();
+            }
+
+            loadAdminInfo();
+
+            loadLeaves();
+
+        }
+    );
+
+</script>
+
+</body>
+
+</html>

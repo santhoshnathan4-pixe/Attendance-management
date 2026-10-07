@@ -26,6 +26,9 @@ public class AdminLeaveResponse {
     private String status;
     private LocalDateTime createdAt;
 
+    private String requestGroupId;
+    private String decisionReason;
+
     public AdminLeaveResponse(
             Integer id,
             Integer employeeId,
@@ -40,7 +43,9 @@ public class AdminLeaveResponse {
             LocalTime permissionEnd,
             String reason,
             String status,
-            LocalDateTime createdAt) {
+            LocalDateTime createdAt,
+            String requestGroupId,
+            String decisionReason) {
 
         this.id = id;
         this.employeeId = employeeId;
@@ -56,6 +61,8 @@ public class AdminLeaveResponse {
         this.reason = reason;
         this.status = status;
         this.createdAt = createdAt;
+        this.requestGroupId = requestGroupId;
+        this.decisionReason = decisionReason;
     }
 
     public Integer getId() {
@@ -113,5 +120,12 @@ public class AdminLeaveResponse {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
-}
 
+    public String getRequestGroupId() {
+        return requestGroupId;
+    }
+
+    public String getDecisionReason() {
+        return decisionReason;
+    }
+}

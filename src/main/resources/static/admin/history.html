@@ -1,0 +1,1584 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+```
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>GROWBYTEE - History</title>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: #f4f7fb;
+    color: #1f2937;
+}
+
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 250px;
+    background: #334155;
+    color: white;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    padding: 25px 15px;
+    overflow-y: auto;
+}
+
+.logo {
+    text-align: center;
+    font-size: 25px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.admin-title {
+    text-align: center;
+    color: #cbd5e1;
+    font-size: 13px;
+    margin-bottom: 30px;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.menu button {
+    border: none;
+    background: transparent;
+    color: #e5e7eb;
+    text-align: left;
+    padding: 14px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.menu button svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.menu button:hover,
+.menu button.active {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+}
+
+.logout-btn {
+    margin-top: 25px;
+    background: #dc2626 !important;
+    color: white !important;
+    text-align: center !important;
+}
+
+.logout-btn:hover {
+    background: #b91c1c !important;
+}
+
+.main {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+    min-height: 100vh;
+}
+
+.header {
+    height: 75px;
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+}
+
+.header h1 {
+    font-size: 23px;
+    color: #111827;
+}
+
+.admin-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #475569;
+    font-size: 14px;
+}
+
+.admin-badge {
+    background: #2563eb;
+    color: white;
+    padding: 8px 13px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.content {
+    padding: 30px;
+}
+
+.section {
+    display: none;
+    padding: 24px;
+    border-radius: 16px;
+    min-height: calc(100vh - 135px);
+    border: 1px solid #e5e7eb;
+}
+
+.section.active {
+    display: block;
+}
+
+#history {
+    background: #f8fafb;
+}
+
+.section-title {
+    font-size: 25px;
+    margin-bottom: 8px;
+    color: #111827;
+}
+
+.section-subtitle {
+    color: #64748b;
+    margin-bottom: 25px;
+    font-size: 14px;
+}
+
+.top-bar {
+    background: white;
+    padding: 16px;
+    border-radius: 13px;
+    margin-bottom: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
+}
+
+.btn {
+    border: none;
+    border-radius: 8px;
+    padding: 10px 16px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.btn-primary {
+    background: #2563eb;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #1d4ed8;
+}
+
+/*
+ * HISTORY TABLE
+ */
+
+.table-card {
+    background: white;
+    border-radius: 14px;
+    box-shadow: 0 5px 20px rgba(15, 23, 42, 0.06);
+    border: 1px solid #e5e7eb;
+    overflow: hidden;
+    width: 100%;
+}
+
+/*
+ * SINGLE VERTICAL TABLE VIEWING AREA
+ *
+ * This is the only vertical scrolling area.
+ */
+.history-scroll-area {
+    width: 100%;
+    height: 65vh;
+    min-height: 420px;
+    max-height: 760px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    scrollbar-width: thin;
+    scrollbar-color: #94a3b8 #f1f5f9;
+}
+
+.history-scroll-area::-webkit-scrollbar {
+    width: 9px;
+}
+
+.history-scroll-area::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+.history-scroll-area::-webkit-scrollbar-thumb {
+    background: #94a3b8;
+    border-radius: 10px;
+}
+
+.history-scroll-area::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+}
+
+/*
+ * STICKY HEADER AREA
+ *
+ * Heading and horizontal scrollbar stay together
+ * while vertical scrolling happens.
+ */
+.history-sticky-header {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    background: white;
+    width: 100%;
+}
+
+/*
+ * HEADER HORIZONTAL VIEW
+ *
+ * Heading can move left/right together with data.
+ */
+.history-header-scroll {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    background: #eff6ff;
+}
+
+.history-header-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+/*
+ * ACTUAL HORIZONTAL SCROLLBAR
+ *
+ * This stays directly below the heading.
+ */
+.history-horizontal-scroll {
+    width: 100%;
+    height: 14px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    background: #f8fafc;
+    border-top: 1px solid #dbeafe;
+    border-bottom: 1px solid #dbeafe;
+    scrollbar-width: thin;
+    scrollbar-color: #94a3b8 #f1f5f9;
+}
+
+.history-horizontal-scroll::-webkit-scrollbar {
+    height: 8px;
+}
+
+.history-horizontal-scroll::-webkit-scrollbar-track {
+    background: #f1f5f9;
+}
+
+.history-horizontal-scroll::-webkit-scrollbar-thumb {
+    background: #94a3b8;
+    border-radius: 10px;
+}
+
+.history-horizontal-scroll::-webkit-scrollbar-thumb:hover {
+    background: #64748b;
+}
+
+.history-horizontal-scroll-content {
+    height: 1px;
+    width: 1450px;
+}
+
+/*
+ * DATA HORIZONTAL VIEW
+ *
+ * Native scrollbar is hidden.
+ * The visible scrollbar above controls this area.
+ */
+.history-body-scroll {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+}
+
+.history-body-scroll::-webkit-scrollbar {
+    display: none;
+}
+
+/*
+ * TABLES
+ */
+
+table {
+    width: 100%;
+    min-width: 1450px;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+}
+
+th {
+    background: #eff6ff;
+    color: #1e3a8a;
+    font-size: 12px;
+    font-weight: 700;
+    text-align: left;
+    padding: 12px 10px;
+    white-space: nowrap;
+    border-bottom: 1px solid #dbeafe;
+}
+
+td {
+    padding: 11px 10px;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 12px;
+    color: #334155;
+    vertical-align: top;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    line-height: 1.45;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+tbody tr:hover td {
+    background: #f8fafc;
+}
+
+/*
+ * Column widths
+ */
+
+th:nth-child(1),
+td:nth-child(1) {
+    width: 105px;
+}
+
+th:nth-child(2),
+td:nth-child(2) {
+    width: 105px;
+}
+
+th:nth-child(3),
+td:nth-child(3) {
+    width: 125px;
+}
+
+th:nth-child(4),
+td:nth-child(4) {
+    width: 145px;
+}
+
+th:nth-child(5),
+td:nth-child(5) {
+    width: 105px;
+}
+
+th:nth-child(6),
+td:nth-child(6) {
+    width: 125px;
+}
+
+th:nth-child(7),
+td:nth-child(7) {
+    width: 145px;
+}
+
+th:nth-child(8),
+td:nth-child(8) {
+    width: 220px;
+}
+
+th:nth-child(9),
+td:nth-child(9) {
+    width: 220px;
+}
+
+th:nth-child(10),
+td:nth-child(10) {
+    width: 220px;
+}
+
+.history-action {
+    font-weight: 700;
+    color: #1f2937;
+    overflow-wrap: anywhere;
+}
+
+.value-cell {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    line-height: 1.45;
+    color: #475569;
+}
+
+.reason-cell {
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    line-height: 1.45;
+    color: #475569;
+}
+
+.empty-row {
+    text-align: center;
+    color: #64748b;
+    padding: 35px !important;
+    font-size: 13px;
+}
+
+.message {
+    display: none;
+    margin-bottom: 18px;
+    padding: 12px 15px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.message.show {
+    display: block;
+}
+
+.message.success {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.message.error {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.filter-box {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.filter-box input,
+.filter-box select {
+    padding: 9px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    outline: none;
+    background: white;
+    font-size: 13px;
+}
+
+.filter-box select:focus {
+    border-color: #2563eb;
+}
+
+@media (max-width: 1200px) {
+
+    .content {
+        padding: 22px;
+    }
+
+    .section {
+        padding: 20px;
+    }
+
+    table {
+        min-width: 1350px;
+    }
+
+    .history-horizontal-scroll-content {
+        width: 1350px;
+    }
+
+    th {
+        font-size: 11px;
+        padding: 10px 8px;
+    }
+
+    td {
+        font-size: 11px;
+        padding: 9px 8px;
+    }
+
+}
+
+@media (max-width: 800px) {
+
+    .sidebar {
+        width: 210px;
+    }
+
+    .main {
+        margin-left: 210px;
+        width: calc(100% - 210px);
+    }
+
+    .header {
+        padding: 0 15px;
+    }
+
+    .content {
+        padding: 20px 15px;
+    }
+
+    .section {
+        padding: 18px;
+    }
+
+    .history-scroll-area {
+        height: 65vh;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .sidebar {
+        position: relative;
+        width: 100%;
+        min-height: auto;
+    }
+
+    .container {
+        display: block;
+    }
+
+    .main {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .header {
+        position: relative;
+    }
+
+    .top-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .admin-info {
+        display: none;
+    }
+
+    table {
+        min-width: 1350px;
+    }
+
+    .history-horizontal-scroll-content {
+        width: 1350px;
+    }
+
+    .history-scroll-area {
+        height: 60vh;
+        min-height: 360px;
+    }
+
+}
+
+</style>
+```
+
+</head>
+
+<body>
+
+<div class="container">
+
+```
+<aside class="sidebar">
+
+    <div class="logo">
+        GROWBYTEE
+    </div>
+
+    <div class="admin-title">
+        Admin / CEO Dashboard
+    </div>
+
+    <div class="menu">
+
+        <button class="menu-btn"
+                onclick="window.location.href='/admin-dashboard.html'">
+            <i data-lucide="layout-dashboard"></i>
+            Dashboard
+        </button>
+
+        <button class="menu-btn"
+                onclick="window.location.href='employees.html'">
+            <i data-lucide="users"></i>
+            Employees
+        </button>
+
+        <button class="menu-btn"
+                onclick="window.location.href='leave.html'">
+            <i data-lucide="clipboard-list"></i>
+            Leave
+        </button>
+
+        <button class="menu-btn"
+                onclick="window.location.href='ai-assistant.html'">
+            <i data-lucide="sparkles"></i>
+            AI Assistant
+        </button>
+
+        <button class="menu-btn"
+                onclick="window.location.href='working-day-settings.html'">
+            <i data-lucide="calendar-days"></i>
+            Working Day Settings
+        </button>
+
+        <button class="menu-btn"
+                onclick="window.location.href='shift-settings.html'">
+            <i data-lucide="clock-3"></i>
+            Shift Settings
+        </button>
+
+        <button class="menu-btn"
+                onclick="window.location.href='branch-management.html'">
+            <i data-lucide="building-2"></i>
+            Branch Management
+        </button>
+
+        <button class="menu-btn"
+                onclick="window.location.href='leave-permission-settings.html'">
+            <i data-lucide="settings"></i>
+            Leave & Permission Settings
+        </button>
+
+        <button class="menu-btn"
+                onclick="window.location.href='salary.html'">
+            <i data-lucide="wallet"></i>
+            Salary
+        </button>
+
+        <button class="menu-btn"
+                onclick="window.location.href='monthly-report.html'">
+            <i data-lucide="calendar-days"></i>
+            Monthly Report
+        </button>
+
+        <button class="menu-btn active"
+                onclick="window.location.href='history.html'">
+            <i data-lucide="history"></i>
+            History
+        </button>
+
+        <button class="menu-btn logout-btn"
+                onclick="logout()">
+            <i data-lucide="log-out"></i>
+            Logout
+        </button>
+
+    </div>
+
+</aside>
+
+<main class="main">
+
+    <header class="header">
+
+        <h1>
+            GROWBYTEE - Admin Dashboard
+        </h1>
+
+        <div class="admin-info" id="adminInfo">
+
+            <span id="loggedAdminName">
+                Welcome, Admin
+            </span>
+
+            <span class="admin-badge">
+                ADMIN
+            </span>
+
+        </div>
+
+    </header>
+
+    <div class="content">
+
+        <section id="history"
+                 class="section active">
+
+            <h2 class="section-title">
+                History
+            </h2>
+
+            <p class="section-subtitle">
+                Admin action history
+            </p>
+
+            <div id="historyMessage"
+                 class="message">
+            </div>
+
+            <div class="top-bar">
+
+                <div class="filter-box">
+
+                    <select id="historyYear">
+
+                        <option value="">
+                            All Years
+                        </option>
+
+                    </select>
+
+                    <select id="historyMonth">
+
+                        <option value="">
+                            All Months
+                        </option>
+
+                        <option value="1">January</option>
+                        <option value="2">February</option>
+                        <option value="3">March</option>
+                        <option value="4">April</option>
+                        <option value="5">May</option>
+                        <option value="6">June</option>
+                        <option value="7">July</option>
+                        <option value="8">August</option>
+                        <option value="9">September</option>
+                        <option value="10">October</option>
+                        <option value="11">November</option>
+                        <option value="12">December</option>
+
+                    </select>
+
+                </div>
+
+                <button class="btn btn-primary"
+                        type="button"
+                        onclick="loadHistory()">
+
+                    Load History
+
+                </button>
+
+            </div>
+
+            <div class="table-card">
+
+                <div class="history-scroll-area"
+                     id="historyScrollArea">
+
+                    <!--
+                        STICKY HEADER AREA
+
+                        Heading stays at the top.
+                        Horizontal scrollbar stays directly below it.
+                    -->
+                    <div class="history-sticky-header">
+
+                        <!-- Sticky heading -->
+                        <div class="history-header-scroll"
+                             id="historyHeaderScroll">
+
+                            <table id="historyHeaderTable">
+
+                                <thead>
+
+                                <tr>
+
+                                    <th>Action Date</th>
+                                    <th>Action Time</th>
+                                    <th>Admin Name</th>
+                                    <th>Action</th>
+                                    <th>Employee Code</th>
+                                    <th>Employee Name</th>
+                                    <th>Field Name</th>
+                                    <th>Old Value</th>
+                                    <th>New Value</th>
+                                    <th>Reason</th>
+
+                                </tr>
+
+                                </thead>
+
+                            </table>
+
+                        </div>
+
+                        <!--
+                            VISIBLE HORIZONTAL SCROLLBAR
+
+                            This is directly below the heading.
+                        -->
+                        <div class="history-horizontal-scroll"
+                             id="historyHorizontalScroll">
+
+                            <div class="history-horizontal-scroll-content"
+                                 id="historyHorizontalScrollContent">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <!--
+                        DATA AREA
+
+                        Vertical scrolling is controlled by
+                        the parent history-scroll-area.
+                        Horizontal scrollbar is hidden here.
+                    -->
+                    <div class="history-body-scroll"
+                         id="historyBodyScroll">
+
+                        <table id="historyBodyTable">
+
+                            <tbody id="historyTableBody">
+
+                            <tr>
+
+                                <td colspan="10"
+                                    class="empty-row">
+
+                                    Loading history...
+
+                                </td>
+
+                            </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+```
+
+</div>
+
+<script>
+
+    const API_BASE_URL =
+        window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1"
+            ? "http://localhost:8080"
+            : "https://attendance-management-d5h6.onrender.com";
+
+
+    async function apiFetch(
+        url,
+        options = {}
+    ) {
+
+        return fetch(
+            API_BASE_URL + url,
+            options
+        );
+
+    }
+
+
+    function loadAdminInfo() {
+
+        const adminName =
+            localStorage.getItem(
+                "adminName"
+            );
+
+        const adminNameElement =
+            document.getElementById(
+                "loggedAdminName"
+            );
+
+        if (
+            adminName &&
+            adminNameElement
+        ) {
+
+            adminNameElement.textContent =
+                "Welcome, " + adminName;
+
+        }
+
+    }
+
+
+    async function getErrorMessage(
+        response
+    ) {
+
+        try {
+
+            const text =
+                await response.text();
+
+            if (!text) {
+
+                return (
+                    "Request failed. HTTP " +
+                    response.status
+                );
+
+            }
+
+            try {
+
+                const json =
+                    JSON.parse(text);
+
+                return (
+                    json.message ||
+                    json.error ||
+                    text
+                );
+
+            }
+            catch {
+
+                return text;
+
+            }
+
+        }
+        catch {
+
+            return (
+                "Request failed. HTTP " +
+                response.status
+            );
+
+        }
+
+    }
+
+
+    function showMessage(
+        elementId,
+        message,
+        type
+    ) {
+
+        const element =
+            document.getElementById(
+                elementId
+            );
+
+        if (!element) {
+            return;
+        }
+
+        element.textContent =
+            message;
+
+        element.className =
+            "message show " +
+            (
+                type === "success"
+                    ? "success"
+                    : "error"
+            );
+
+        setTimeout(
+            function() {
+
+                element.classList.remove(
+                    "show"
+                );
+
+            },
+            5000
+        );
+
+    }
+
+
+    function escapeHtml(
+        value
+    ) {
+
+        if (
+            value === null ||
+            value === undefined
+        ) {
+
+            return "";
+
+        }
+
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
+
+    }
+
+
+    function logout() {
+
+        const confirmed =
+            confirm(
+                "Are you sure you want to logout?"
+            );
+
+        if (!confirmed) {
+            return;
+        }
+
+        localStorage.removeItem(
+            "adminEmail"
+        );
+
+        localStorage.removeItem(
+            "adminName"
+        );
+
+        window.location.href =
+            "admin-login.html";
+
+    }
+
+
+    function setupYears() {
+
+        const select =
+            document.getElementById(
+                "historyYear"
+            );
+
+        if (!select) {
+            return;
+        }
+
+        const currentYear =
+            new Date().getFullYear();
+
+        select.innerHTML = "";
+
+        const allYearsOption =
+            document.createElement(
+                "option"
+            );
+
+        allYearsOption.value = "";
+
+        allYearsOption.textContent =
+            "All Years";
+
+        select.appendChild(
+            allYearsOption
+        );
+
+        for (
+            let year = currentYear - 2;
+            year <= currentYear + 1;
+            year++
+        ) {
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+            option.value = year;
+
+            option.textContent = year;
+
+            select.appendChild(option);
+
+        }
+
+    }
+
+
+    /*
+     * Synchronize:
+     *
+     * 1. Visible horizontal scrollbar
+     * 2. Header horizontal position
+     * 3. Data horizontal position
+     */
+    function setupHorizontalScroll() {
+
+        const horizontalScroll =
+            document.getElementById(
+                "historyHorizontalScroll"
+            );
+
+        const horizontalContent =
+            document.getElementById(
+                "historyHorizontalScrollContent"
+            );
+
+        const headerScroll =
+            document.getElementById(
+                "historyHeaderScroll"
+            );
+
+        const bodyScroll =
+            document.getElementById(
+                "historyBodyScroll"
+            );
+
+        const headerTable =
+            document.getElementById(
+                "historyHeaderTable"
+            );
+
+        const bodyTable =
+            document.getElementById(
+                "historyBodyTable"
+            );
+
+
+        if (
+            !horizontalScroll ||
+            !horizontalContent ||
+            !headerScroll ||
+            !bodyScroll ||
+            !headerTable ||
+            !bodyTable
+        ) {
+
+            return;
+
+        }
+
+
+        function updateHorizontalWidth() {
+
+            const headerWidth =
+                headerTable.scrollWidth;
+
+            const bodyWidth =
+                bodyTable.scrollWidth;
+
+            const width =
+                Math.max(
+                    headerWidth,
+                    bodyWidth,
+                    headerScroll.clientWidth
+                );
+
+            horizontalContent.style.width =
+                width + "px";
+
+        }
+
+
+        let syncing = false;
+
+
+        horizontalScroll.addEventListener(
+            "scroll",
+            function() {
+
+                if (syncing) {
+                    return;
+                }
+
+                syncing = true;
+
+                headerScroll.scrollLeft =
+                    horizontalScroll.scrollLeft;
+
+                bodyScroll.scrollLeft =
+                    horizontalScroll.scrollLeft;
+
+                syncing = false;
+
+            }
+        );
+
+
+        headerScroll.addEventListener(
+            "scroll",
+            function() {
+
+                if (syncing) {
+                    return;
+                }
+
+                syncing = true;
+
+                horizontalScroll.scrollLeft =
+                    headerScroll.scrollLeft;
+
+                bodyScroll.scrollLeft =
+                    headerScroll.scrollLeft;
+
+                syncing = false;
+
+            }
+        );
+
+
+        bodyScroll.addEventListener(
+            "scroll",
+            function() {
+
+                if (syncing) {
+                    return;
+                }
+
+                syncing = true;
+
+                horizontalScroll.scrollLeft =
+                    bodyScroll.scrollLeft;
+
+                headerScroll.scrollLeft =
+                    bodyScroll.scrollLeft;
+
+                syncing = false;
+
+            }
+        );
+
+
+        window.addEventListener(
+            "resize",
+            updateHorizontalWidth
+        );
+
+
+        updateHorizontalWidth();
+
+    }
+
+
+    async function loadHistory() {
+
+        const year =
+            document.getElementById(
+                "historyYear"
+            ).value;
+
+        const month =
+            document.getElementById(
+                "historyMonth"
+            ).value;
+
+
+        if (
+            month &&
+            !year
+        ) {
+
+            showMessage(
+                "historyMessage",
+                "Please select a year before selecting a month.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        let url =
+            "/admin/audit";
+
+
+        const params =
+            new URLSearchParams();
+
+
+        if (year) {
+
+            params.append(
+                "year",
+                year
+            );
+
+        }
+
+
+        if (month) {
+
+            params.append(
+                "month",
+                month
+            );
+
+        }
+
+
+        if (
+            params.toString()
+        ) {
+
+            url +=
+                "?" +
+                params.toString();
+
+        }
+
+
+        const tbody =
+            document.getElementById(
+                "historyTableBody"
+            );
+
+
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="10"
+                    class="empty-row">
+                    Loading history...
+                </td>
+            </tr>
+        `;
+
+
+        try {
+
+            const response =
+                await apiFetch(url);
+
+
+            if (!response.ok) {
+
+                throw new Error(
+                    await getErrorMessage(
+                        response
+                    )
+                );
+
+            }
+
+
+            const data =
+                await response.json();
+
+
+            renderHistory(data);
+
+
+            setTimeout(
+                function() {
+
+                    setupHorizontalScroll();
+
+                },
+                50
+            );
+
+        }
+        catch (error) {
+
+            console.error(
+                "HISTORY LOAD ERROR:",
+                error
+            );
+
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="10"
+                        class="empty-row">
+                        Unable to load history.
+                    </td>
+                </tr>
+            `;
+
+
+            showMessage(
+                "historyMessage",
+                error.message ||
+                "Unable to load history.",
+                "error"
+            );
+
+        }
+
+    }
+
+
+    function renderHistory(data) {
+
+        const tbody =
+            document.getElementById(
+                "historyTableBody"
+            );
+
+
+        if (
+            !Array.isArray(data) ||
+            data.length === 0
+        ) {
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="10"
+                        class="empty-row">
+                        No history records found.
+                    </td>
+                </tr>
+            `;
+
+            return;
+
+        }
+
+
+        tbody.innerHTML =
+            data.map(
+                function(item) {
+
+                    const actionDate =
+                        item.actionDate ?? "-";
+
+                    const actionTime =
+                        item.actionTime ?? "-";
+
+                    const adminName =
+                        item.adminName ?? "-";
+
+                    const action =
+                        item.action ?? "-";
+
+                    const employeeCode =
+                        item.employeeCode ?? "-";
+
+                    const employeeName =
+                        item.employeeName ?? "-";
+
+                    const fieldName =
+                        item.fieldName ?? "-";
+
+                    const oldValue =
+                        item.oldValue ?? "-";
+
+                    const newValue =
+                        item.newValue ?? "-";
+
+                    const reason =
+                        item.reason ?? "-";
+
+
+                    return `
+                        <tr>
+
+                            <td>
+                                ${escapeHtml(actionDate)}
+                            </td>
+
+                            <td>
+                                ${escapeHtml(actionTime)}
+                            </td>
+
+                            <td>
+                                <strong>
+                                    ${escapeHtml(adminName)}
+                                </strong>
+                            </td>
+
+                            <td class="history-action">
+                                ${escapeHtml(action)}
+                            </td>
+
+                            <td>
+                                ${escapeHtml(employeeCode)}
+                            </td>
+
+                            <td>
+                                ${escapeHtml(employeeName)}
+                            </td>
+
+                            <td>
+                                ${escapeHtml(fieldName)}
+                            </td>
+
+                            <td class="value-cell">
+                                ${escapeHtml(oldValue)}
+                            </td>
+
+                            <td class="value-cell">
+                                ${escapeHtml(newValue)}
+                            </td>
+
+                            <td class="reason-cell">
+                                ${escapeHtml(reason)}
+                            </td>
+
+                        </tr>
+                    `;
+
+                }
+            ).join("");
+
+    }
+
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function() {
+
+            if (
+                typeof lucide !==
+                "undefined"
+            ) {
+
+                lucide.createIcons();
+
+            }
+
+
+            loadAdminInfo();
+
+            setupYears();
+
+            setupHorizontalScroll();
+
+            loadHistory();
+
+        }
+    );
+
+</script>
+
+
+</body>
+
+</html>
