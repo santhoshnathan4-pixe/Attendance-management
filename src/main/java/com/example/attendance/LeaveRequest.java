@@ -57,6 +57,8 @@ public class LeaveRequest {
     @Column(name = "decided_at")
     private LocalDateTime decidedAt;
 
+    @Column(name = "employee_decision_seen", nullable = false)
+    private boolean employeeDecisionSeen = false;
 
     // =========================
     // GETTERS
@@ -126,6 +128,9 @@ public class LeaveRequest {
         return decidedAt;
     }
 
+    public boolean isEmployeeDecisionSeen() {
+        return employeeDecisionSeen;
+    }
 
     // =========================
     // SETTERS
@@ -193,5 +198,9 @@ public class LeaveRequest {
 
     public void setDecidedAt(LocalDateTime decidedAt) {
         this.decidedAt = decidedAt;
+    }
+
+    public void setEmployeeDecisionSeen(boolean employeeDecisionSeen) {
+        this.employeeDecisionSeen = employeeDecisionSeen;
     }
 }

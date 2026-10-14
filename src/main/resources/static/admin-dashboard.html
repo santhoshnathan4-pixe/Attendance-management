@@ -1,2547 +1,1671 @@
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GROWBYTEE - Admin Dashboard</title>
+<script src="https://unpkg.com/lucide@latest"></script>
 
-    <meta charset="UTF-8">
+<style>
+:root {
+    --green: #16803C;
+    --green-dark: #0B2E1A;
+    --green-light: #E8F5EC;
+    --black: #171717;
+    --white: #FFFFFF;
+    --page-bg: #F1F7F2;
+    --border: #D6E4DA;
+    --muted: #647067;
+    --shadow: 0 5px 20px rgba(0,0,0,.07);
+}
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
 
-    <title>GROWBYTEE - Admin Dashboard</title>
+body {
+    background:
+        radial-gradient(ellipse at top left, rgba(22,128,60,.12), transparent 45%),
+        linear-gradient(135deg, #F1F7F2, #FFFFFF 55%, #E8F5EC);
+    color: var(--black);
+    min-height: 100vh;
+}
 
-    <script src="https://unpkg.com/lucide@latest"></script>
+.app {
+    display: flex;
+    min-height: 100vh;
+}
 
-    <style>
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    background: linear-gradient(180deg, #0B2E1A, #111111);
+    color: var(--white);
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    padding: 25px 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    border-right: 3px solid var(--green);
+}
 
-    /* =========================
-       GLOBAL
-    ========================= */
+.brand {
+    text-align: center;
+    margin-bottom: 30px;
+}
 
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        font-family: Arial, Helvetica, sans-serif;
+.brand h1 {
+    font-size: 25px;
+    color: var(--white);
+    letter-spacing: 1px;
+}
+
+.brand p {
+    text-align: center;
+    color: #D7E9DC;
+    font-size: 13px;
+    margin-top: 8px;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+}
+
+.menu a {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 15px;
+    color: #E6EEE8;
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 15px;
+    border: 1px solid transparent;
+    transition: background .2s, color .2s, border-color .2s;
+}
+
+.menu a:hover,
+.menu a.active {
+    background: var(--green);
+    color: var(--white);
+    border-color: #52A66C;
+}
+
+.menu a i,
+.menu a svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+/* Logout remains red */
+.logout {
+    margin-top: 25px;
+}
+
+.logout button {
+    width: 100%;
+    border: none;
+    background: #DC2626;
+    color: white;
+    padding: 14px 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    border-radius: 10px;
+    font-size: 15px;
+}
+
+.logout button:hover {
+    background: #B91C1C;
+}
+
+/* Main content */
+.main {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+    min-height: 100vh;
+}
+
+.topbar {
+    min-height: 75px;
+    background: var(--white);
+    border-bottom: 2px solid var(--green);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    box-shadow: 0 3px 12px rgba(0,0,0,.045);
+}
+
+.topbar h2 {
+    font-size: 19px;
+    color: var(--green-dark);
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-badge {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--green-dark);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.admin-info strong {
+    display: block;
+    font-size: 13px;
+    color: var(--black);
+}
+
+.admin-info span {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.content {
+    padding: 30px;
+}
+
+/* Welcome section */
+.welcome {
+    margin-bottom: 25px;
+    padding: 24px;
+    border-radius: 15px;
+    background: linear-gradient(115deg, #0B2E1A, #16803C);
+    color: var(--white);
+    box-shadow: 0 8px 24px rgba(11,46,26,.15);
+}
+
+.welcome h1 {
+    font-size: 27px;
+    color: var(--white);
+}
+
+.welcome p {
+    margin-top: 7px;
+    color: #E5F5E9;
+    font-size: 14px;
+}
+
+/* Main section */
+.section {
+    background: rgba(255,255,255,.88);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    min-height: calc(100vh - 135px);
+    overflow: hidden;
+    box-shadow: 0 4px 18px rgba(0,0,0,.035);
+}
+
+/* Statistics */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 20px;
+    margin-bottom: 10px;
+}
+
+.stat-card {
+    background: var(--white);
+    padding: 23px;
+    border-radius: 15px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    border-left: 5px solid var(--green);
+    cursor: pointer;
+    transition: transform .2s, box-shadow .2s;
+    user-select: none;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 9px 26px rgba(11,46,26,.12);
+}
+
+.stat-card:focus {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+}
+
+.stat-card h4 {
+    color: var(--muted);
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.stat-card h2 {
+    font-size: 30px;
+    color: var(--green-dark);
+}
+
+.stat-blue,
+.stat-green,
+.stat-orange,
+.stat-yellow,
+.stat-purple {
+    border-left-color: var(--green);
+}
+
+.stat-red {
+    border-left-color: #DC2626;
+}
+
+/* Messages */
+.message {
+    display: none;
+    margin-bottom: 18px;
+    padding: 12px 15px;
+    border-radius: 9px;
+    font-size: 13px;
+    font-weight: 600;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.message.show {
+    display: block;
+}
+
+.message.success {
+    background: var(--green-light);
+    color: var(--green-dark);
+    border: 1px solid #C6E5D0;
+}
+
+.message.error {
+    background: #FEE2E2;
+    color: #991B1B;
+    border: 1px solid #FECACA;
+}
+
+/* Modals */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.68);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+}
+
+.modal-overlay.show {
+    display: flex;
+}
+
+.modal-box {
+    width: min(850px,100%);
+    max-height: 85vh;
+    background: var(--white);
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    box-shadow: 0 15px 40px rgba(0,0,0,.22);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header {
+    padding: 14px 18px;
+    border-bottom: 2px solid var(--green);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.modal-header h3 {
+    color: var(--green-dark);
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.modal-header p {
+    margin-top: 3px;
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.close-btn {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    border: none;
+    background: #E8F5EC;
+    color: var(--green-dark);
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.modal-body {
+    padding: 14px 18px;
+    overflow-y: auto;
+}
+
+.modal-footer {
+    padding: 10px 18px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+/* Buttons */
+.secondary-btn {
+    border: 1px solid #C8D8CD;
+    background: var(--white);
+    color: var(--black);
+    padding: 8px 13px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.secondary-btn:hover {
+    background: var(--green-light);
+}
+
+.primary-btn {
+    border: 1px solid var(--green);
+    background: var(--green);
+    color: var(--white);
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.primary-btn:hover {
+    background: var(--green-dark);
+}
+
+.primary-btn:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+.danger-btn {
+    background: #DC2626;
+    color: white;
+    border: 1px solid #DC2626;
+}
+
+.danger-btn:hover {
+    background: #B91C1C;
+}
+
+.approve-btn {
+    background: var(--green);
+}
+
+.approve-btn:hover {
+    background: var(--green-dark);
+}
+
+.correct-btn {
+    background: var(--black);
+}
+
+.correct-btn:hover {
+    background: #333333;
+}
+
+/* Tables */
+.details-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.details-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 600px;
+}
+
+.details-table th {
+    text-align: left;
+    background: var(--green-dark);
+    color: var(--white);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 10px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+}
+
+.details-table td {
+    padding: 9px 10px;
+    border-bottom: 1px solid #E5EDE7;
+    color: #333333;
+    font-size: 11px;
+    vertical-align: middle;
+}
+
+.details-table tbody tr:hover {
+    background: var(--green-light);
+}
+
+.employee-name {
+    font-weight: 600;
+    color: var(--black);
+    font-size: 11px;
+}
+
+.employee-code {
+    color: var(--muted);
+    font-size: 9px;
+    margin-top: 2px;
+}
+
+/* Status labels: preserve meaningful status colors */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 6px;
+    border-radius: 999px;
+    font-size: 9px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.status-present,
+.status-approved {
+    background: #DDF3E4;
+    color: #0B5A2B;
+}
+
+.status-late {
+    background: #FFEDD5;
+    color: #9A3412;
+}
+
+.status-early {
+    background: #FEF9C3;
+    color: #854D0E;
+}
+
+.status-pending {
+    background: #FEF3C7;
+    color: #92400E;
+}
+
+.status-rejected {
+    background: #FEE2E2;
+    color: #991B1B;
+}
+
+.status-none {
+    background: #EEEEEE;
+    color: #444444;
+}
+
+/* Action buttons */
+.leave-action-btn {
+    border: 1px solid #C6E5D0;
+    background: var(--green-light);
+    color: var(--green-dark);
+    padding: 5px 8px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+.warning-action-btn {
+    border: 1px solid #FCA5A5;
+    background: #FFF1F2;
+    color: #B91C1C;
+    padding: 6px 9px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.warning-action-btn:hover {
+    background: #FFE4E6;
+}
+
+.review-action-btn {
+    border: 0;
+    background: var(--green);
+    color: var(--white);
+    padding: 6px 8px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+    margin: 2px;
+}
+
+.review-action-btn:hover {
+    background: var(--green-dark);
+}
+
+.empty-state,
+.loading-state {
+    text-align: center;
+    padding: 25px 15px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+/* Forms */
+.form-group {
+    margin-bottom: 14px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #333333;
+}
+
+.form-control {
+    width: 100%;
+    padding: 10px 11px;
+    border: 1px solid #C8D8CD;
+    border-radius: 7px;
+    font-size: 13px;
+    color: var(--black);
+    background: var(--white);
+}
+
+.form-control:focus {
+    outline: 2px solid #B9DEC5;
+    border-color: var(--green);
+}
+
+.form-control[readonly] {
+    background: #F1F7F2;
+    color: #47574B;
+}
+
+.form-help {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 5px;
+    line-height: 1.5;
+}
+
+.warning-employee-summary {
+    padding: 12px;
+    background: #F1F7F2;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.warning-employee-summary strong {
+    display: block;
+    font-size: 13px;
+    color: var(--black);
+}
+
+.warning-employee-summary span {
+    display: block;
+    margin-top: 4px;
+    font-size: 11px;
+    color: var(--muted);
+}
+
+.request-reason {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    max-width: 260px;
+}
+
+.request-filter {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+}
+
+.request-filter select {
+    max-width: 200px;
+}
+
+.review-summary {
+    background: var(--green-light);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 16px;
+}
+
+.review-summary p {
+    font-size: 12px;
+    color: #47574B;
+    margin: 5px 0;
+    overflow-wrap: anywhere;
+}
+
+.review-summary strong {
+    color: var(--green-dark);
+}
+
+/* Responsive */
+@media(max-width:1100px) {
+    .stats-grid {
+        grid-template-columns: repeat(2,1fr);
     }
+}
 
-    body {
-        background: #f4f7fb;
-        color: #1f2937;
-        min-height: 100vh;
-    }
-
-
-    /* =========================
-       LAYOUT
-    ========================= */
-
-    .app {
-        display: flex;
-        min-height: 100vh;
-    }
-
-
-    /* =========================
-       SIDEBAR
-    ========================= */
-
+@media(max-width:800px) {
     .sidebar {
-        width: 250px;
-        background: #334155;
-        color: white;
-        position: fixed;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        padding: 25px 15px;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
+        width: 210px;
     }
-
-
-    /* =========================
-       BRAND
-    ========================= */
-
-    .brand {
-        text-align: center;
-        padding: 0;
-        margin-bottom: 30px;
-        border-bottom: none;
-    }
-
-    .brand h1 {
-        font-size: 25px;
-        font-weight: bold;
-        letter-spacing: 0;
-        color: white;
-    }
-
-    .brand p {
-        text-align: center;
-        color: #cbd5e1;
-        font-size: 13px;
-        margin-top: 8px;
-        margin-bottom: 0;
-    }
-
-
-    /* =========================
-       MENU
-       NO MAIN MENU
-    ========================= */
-
-    .menu {
-        padding: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        flex: 1;
-    }
-
-    .menu a {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 14px 15px;
-        color: #e5e7eb;
-        text-decoration: none;
-        border-radius: 10px;
-        font-size: 15px;
-        transition: 0.2s;
-    }
-
-    .menu a:hover,
-    .menu a.active {
-        background: rgba(255, 255, 255, 0.15);
-        color: white;
-    }
-
-    .menu a i,
-    .menu a svg {
-        width: 18px;
-        height: 18px;
-        flex-shrink: 0;
-    }
-
-
-    /* =========================
-       LOGOUT
-    ========================= */
-
-    .logout {
-        margin-top: 25px;
-        padding: 0;
-        border-top: none;
-    }
-
-    .logout button {
-        width: 100%;
-        border: none;
-        background: #dc2626;
-        color: white;
-        padding: 14px 15px;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        cursor: pointer;
-        border-radius: 10px;
-        font-size: 15px;
-        transition: 0.2s;
-    }
-
-    .logout button:hover {
-        background: #b91c1c;
-        color: white;
-    }
-
-    .logout button i,
-    .logout button svg {
-        width: 18px;
-        height: 18px;
-        flex-shrink: 0;
-    }
-
-
-    /* =========================
-       MAIN
-    ========================= */
 
     .main {
-        margin-left: 250px;
-        width: calc(100% - 250px);
-        min-height: 100vh;
+        margin-left: 210px;
+        width: calc(100% - 210px);
     }
-
-
-    /* =========================
-       TOP BAR
-    ========================= */
 
     .topbar {
-        height: 75px;
-        background: white;
-        border-bottom: 1px solid #e5e7eb;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 30px;
-        position: sticky;
-        top: 0;
-        z-index: 20;
+        padding: 0 15px;
     }
-
-    .topbar h2 {
-        font-size: 19px;
-        color: #111827;
-    }
-
-    .topbar-right {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .admin-badge {
-        width: 38px;
-        height: 38px;
-        border-radius: 50%;
-        background: #eef2ff;
-        color: #4f46e5;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .admin-badge i,
-    .admin-badge svg {
-        width: 18px;
-        height: 18px;
-    }
-
-    .admin-info strong {
-        display: block;
-        font-size: 13px;
-        color: #1f2937;
-    }
-
-    .admin-info span {
-        color: #6b7280;
-        font-size: 11px;
-    }
-
-
-    /* =========================
-       CONTENT
-    ========================= */
 
     .content {
-        padding: 30px;
+        padding: 20px 15px;
     }
-
-    .welcome {
-        margin-bottom: 25px;
-    }
-
-    .welcome h1 {
-        font-size: 27px;
-        color: #111827;
-    }
-
-    .welcome p {
-        margin-top: 7px;
-        color: #6b7280;
-        font-size: 14px;
-    }
-
-
-    /* =========================
-       DASHBOARD SECTION
-    ========================= */
 
     .section {
-        background: #f4f7fb;
-        border: 1px solid #e5e7eb;
-        border-radius: 16px;
-        padding: 24px;
-        min-height: calc(100vh - 135px);
-        overflow: hidden;
-    }
-
-    .section.active {
-        display: block;
-    }
-
-    #dashboard {
-        background: #f4f7fb;
-    }
-
-
-    /* =========================
-       SUMMARY CARDS
-    ========================= */
-
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 20px;
-        margin-bottom: 10px;
-    }
-
-    .stat-card {
-        background: white;
-        padding: 23px;
-        border-radius: 15px;
-        box-shadow:
-            0 5px 20px rgba(15, 23, 42, 0.06);
-        border: 1px solid #e5e7eb;
-        cursor: pointer;
-        transition: 0.2s;
-        user-select: none;
-    }
-
-    .stat-card:hover {
-        transform: translateY(-2px);
-        box-shadow:
-            0 8px 24px rgba(15, 23, 42, 0.11);
-    }
-
-    .stat-card:focus {
-        outline: 2px solid #2563eb;
-        outline-offset: 2px;
-    }
-
-    .stat-card h4 {
-        color: #64748b;
-        font-size: 14px;
-        margin-bottom: 12px;
-    }
-
-    .stat-card h2 {
-        font-size: 30px;
-        color: #111827;
-    }
-
-    .stat-blue {
-        border-left: 5px solid #2563eb;
-    }
-
-    .stat-green {
-        border-left: 5px solid #16a34a;
-    }
-
-    .stat-orange {
-        border-left: 5px solid #f97316;
-    }
-
-    .stat-yellow {
-        border-left: 5px solid #eab308;
-    }
-
-    .stat-red {
-        border-left: 5px solid #dc2626;
-    }
-
-    .stat-purple {
-        border-left: 5px solid #7c3aed;
-    }
-
-
-    /* =========================
-       MESSAGE
-    ========================= */
-
-    .message {
-        display: none;
-        margin-bottom: 18px;
-        padding: 12px 15px;
-        border-radius: 9px;
-        font-size: 13px;
-        font-weight: 600;
-    }
-
-    .message.show {
-        display: block;
-    }
-
-    .message.success {
-        background: #dcfce7;
-        color: #166534;
-    }
-
-    .message.error {
-        background: #fee2e2;
-        color: #991b1b;
-    }
-
-
-    /* =========================
-       COMPACT ATTENDANCE MODAL
-    ========================= */
-
-    .modal-overlay {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(15, 23, 42, 0.60);
-        z-index: 1000;
-        align-items: center;
-        justify-content: center;
-        padding: 15px;
-    }
-
-    .modal-overlay.show {
-        display: flex;
+        padding: 18px;
     }
 
     .modal-box {
-        width: min(850px, 100%);
-        max-height: 80vh;
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.18);
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
+        max-height: 82vh;
     }
+}
 
-    .modal-header {
-        padding: 14px 18px;
-        border-bottom: 1px solid #e5e7eb;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-    }
-
-    .modal-header h3 {
-        color: #111827;
-        font-size: 16px;
-        font-weight: 700;
-    }
-
-    .modal-header p {
-        margin-top: 3px;
-        color: #6b7280;
-        font-size: 11px;
-    }
-
-    .close-btn {
-        width: 30px;
-        height: 30px;
-        min-width: 30px;
-        border: none;
-        background: #f1f5f9;
-        color: #475569;
-        border-radius: 7px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-    }
-
-    .close-btn:hover {
-        background: #e2e8f0;
-    }
-
-    .close-btn svg {
-        width: 15px;
-        height: 15px;
-    }
-
-    .modal-body {
-        padding: 14px 18px;
-        overflow-y: auto;
-    }
-
-    .modal-footer {
-        padding: 10px 18px;
-        border-top: 1px solid #e5e7eb;
-        display: flex;
-        justify-content: flex-end;
-    }
-
-    .secondary-btn {
-        border: 1px solid #cbd5e1;
-        background: white;
-        color: #334155;
-        padding: 7px 13px;
-        border-radius: 6px;
-        cursor: pointer;
-        font-size: 11px;
-        font-weight: 600;
-    }
-
-    .secondary-btn:hover {
-        background: #f8fafc;
-    }
-
-
-    /* =========================
-       DETAILS TABLE
-       COMPACT
-    ========================= */
-
-    .details-table-wrapper {
+@media(max-width:600px) {
+    .sidebar {
+        position: relative;
         width: 100%;
-        overflow-x: auto;
+        min-height: auto;
+    }
+
+    .app {
+        display: block;
+    }
+
+    .main {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .topbar {
+        position: relative;
+    }
+
+    .admin-info {
+        display: none;
+    }
+
+    .modal-overlay {
+        padding: 8px;
+    }
+
+    .modal-box {
+        max-height: 85vh;
+        border-radius: 10px;
+    }
+
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding-left: 12px;
+        padding-right: 12px;
     }
 
     .details-table {
-        width: 100%;
-        border-collapse: collapse;
-        min-width: 600px;
+        min-width: 560px;
     }
-
-    .details-table th {
-        text-align: left;
-        background: #eff6ff;
-        color: #1e3a8a;
-        font-size: 11px;
-        font-weight: 700;
-        padding: 9px 10px;
-        border-bottom: 1px solid #e2e8f0;
-        white-space: nowrap;
-    }
-
-    .details-table td {
-        padding: 9px 10px;
-        border-bottom: 1px solid #e5e7eb;
-        color: #334155;
-        font-size: 11px;
-        vertical-align: middle;
-    }
-
-    .details-table tbody tr:hover {
-        background: #f8fafc;
-    }
-
-    .employee-name {
-        font-weight: 600;
-        color: #111827;
-        font-size: 11px;
-    }
-
-    .employee-code {
-        color: #64748b;
-        font-size: 9px;
-        margin-top: 2px;
-    }
-
-    .status-badge {
-        display: inline-flex;
-        align-items: center;
-        padding: 3px 6px;
-        border-radius: 999px;
-        font-size: 9px;
-        font-weight: 700;
-        white-space: nowrap;
-    }
-
-    .status-present {
-        background: #dcfce7;
-        color: #166534;
-    }
-
-    .status-late {
-        background: #ffedd5;
-        color: #9a3412;
-    }
-
-    .status-early {
-        background: #fef9c3;
-        color: #854d0e;
-    }
-
-    .status-approved {
-        background: #dcfce7;
-        color: #166534;
-    }
-
-    .status-pending {
-        background: #fef3c7;
-        color: #92400e;
-    }
-
-    .status-rejected {
-        background: #fee2e2;
-        color: #991b1b;
-    }
-
-    .status-none {
-        background: #f1f5f9;
-        color: #475569;
-    }
-
-    .leave-action-btn {
-        border: none;
-        background: #eef2ff;
-        color: #4338ca;
-        padding: 5px 8px;
-        border-radius: 5px;
-        cursor: pointer;
-        font-size: 10px;
-        font-weight: 600;
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        white-space: nowrap;
-    }
-
-    .leave-action-btn:hover {
-        background: #e0e7ff;
-    }
-
-    .leave-action-btn svg {
-        width: 11px;
-        height: 11px;
-    }
-
-    .empty-state {
-        text-align: center;
-        padding: 25px 15px;
-        color: #64748b;
-        font-size: 12px;
-    }
-
-    .loading-state {
-        text-align: center;
-        padding: 25px 15px;
-        color: #64748b;
-        font-size: 12px;
-    }
-
-
-    /* =========================
-       RESPONSIVE
-    ========================= */
-
-    @media (max-width: 1100px) {
-
-        .stats-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-
-    }
-
-
-    @media (max-width: 800px) {
-
-        .sidebar {
-            width: 210px;
-        }
-
-        .main {
-            margin-left: 210px;
-            width: calc(100% - 210px);
-        }
-
-        .topbar {
-            padding: 0 15px;
-        }
-
-        .content {
-            padding: 20px 15px;
-        }
-
-        .section {
-            padding: 18px;
-        }
-
-        .modal-box {
-            width: min(760px, 100%);
-            max-height: 82vh;
-        }
-
-    }
-
-
-    @media (max-width: 600px) {
-
-        .sidebar {
-            position: relative;
-            width: 100%;
-            min-height: auto;
-        }
-
-        .app {
-            display: block;
-        }
-
-        .main {
-            margin-left: 0;
-            width: 100%;
-        }
-
-        .stats-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .topbar {
-            position: relative;
-        }
-
-        .admin-info {
-            display: none;
-        }
-
-        .modal-overlay {
-            padding: 8px;
-        }
-
-        .modal-box {
-            max-height: 85vh;
-            border-radius: 10px;
-        }
-
-        .modal-header,
-        .modal-body,
-        .modal-footer {
-            padding-left: 12px;
-            padding-right: 12px;
-        }
-
-        .details-table {
-            min-width: 560px;
-        }
-
-    }
-
+}
 </style>
-
 </head>
 
-
 <body>
-
-
 <div class="app">
-
-
-    <!-- =========================
-         SIDEBAR
-    ========================== -->
-
     <aside class="sidebar">
-
-
         <div class="brand">
-
-            <h1>
-                GROWBYTEE
-            </h1>
-
-            <p>
-                Admin / CEO Dashboard
-            </p>
-
+            <h1>GROWBYTEE</h1>
+            <p>Admin / CEO Dashboard</p>
         </div>
-
 
         <nav class="menu">
-
-
-            <a
-                href="/admin-dashboard.html"
-                class="active">
-
-                <i data-lucide="layout-dashboard"></i>
-
-                <span>
-                    Dashboard
-                </span>
-
-            </a>
-
-
-            <a
-                href="/admin/employees.html">
-
-                <i data-lucide="users"></i>
-
-                <span>
-                    Employees
-                </span>
-
-            </a>
-
-
-            <a
-                href="/admin/leave.html">
-
-                <i data-lucide="calendar-days"></i>
-
-                <span>
-                    Leave
-                </span>
-
-            </a>
-
-
-            <a
-                href="/admin/ai-assistant.html">
-
-                <i data-lucide="bot"></i>
-
-                <span>
-                    AI Assistant
-                </span>
-
-            </a>
-
-
-            <a
-                href="/admin/working-day-settings.html">
-
-                <i data-lucide="calendar-cog"></i>
-
-                <span>
-                    Working Day Settings
-                </span>
-
-            </a>
-
-
-            <a
-                href="/admin/shift-settings.html">
-
-                <i data-lucide="clock-3"></i>
-
-                <span>
-                    Shift Settings
-                </span>
-
-            </a>
-
-
-            <a
-                href="/admin/branch-management.html">
-
-                <i data-lucide="map-pin"></i>
-
-                <span>
-                    Branch Management
-                </span>
-
-            </a>
-
-
-            <a
-                href="/admin/leave-permission-settings.html">
-
-                <i data-lucide="settings-2"></i>
-
-                <span>
-                    Leave & Permission Settings
-                </span>
-
-            </a>
-
-
-            <a
-                href="/admin/salary.html">
-
-                <i data-lucide="wallet"></i>
-
-                <span>
-                    Salary
-                </span>
-
-            </a>
-
-
-            <a
-                href="/admin/monthly-report.html">
-
-                <i data-lucide="file-chart-column"></i>
-
-                <span>
-                    Monthly Report
-                </span>
-
-            </a>
-
-
-            <a
-                href="/admin/history.html">
-
-                <i data-lucide="history"></i>
-
-                <span>
-                    History
-                </span>
-
-            </a>
-
-
+            <a href="/admin-dashboard.html" class="active"><i data-lucide="layout-dashboard"></i><span>Dashboard</span></a>
+            <a href="/admin/employees.html"><i data-lucide="users"></i><span>Employees</span></a>
+            <a href="/admin/leave.html"><i data-lucide="calendar-days"></i><span>Leave</span></a>
+            <a href="/admin/ai-assistant.html"><i data-lucide="bot"></i><span>AI Assistant</span></a>
+            <a href="/admin/working-day-settings.html"><i data-lucide="calendar-cog"></i><span>Working Day Settings</span></a>
+            <a href="/admin/shift-settings.html"><i data-lucide="clock-3"></i><span>Shift Settings</span></a>
+            <a href="/admin/branch-management.html"><i data-lucide="map-pin"></i><span>Branch Management</span></a>
+            <a href="/admin/leave-permission-settings.html"><i data-lucide="settings-2"></i><span>Leave & Permission Settings</span></a>
+            <a href="/admin/salary.html"><i data-lucide="wallet"></i><span>Salary</span></a>
+            <a href="/admin/monthly-report.html"><i data-lucide="file-chart-column"></i><span>Monthly Report</span></a>
+            <a href="/admin/attendance-history.html"><i data-lucide="calendar-clock"></i><span>Attendance History</span></a>
+            <a href="/admin/leave-history.html"><i data-lucide="file-clock"></i><span>Leave History</span></a>
+            <a href="/admin/history.html"><i data-lucide="history"></i><span>History</span></a>
         </nav>
 
-
         <div class="logout">
-
-            <button
-                type="button"
-                onclick="logout()">
-
-                <i data-lucide="log-out"></i>
-
-                <span>
-                    Logout
-                </span>
-
-            </button>
-
+            <button type="button" onclick="logout()"><i data-lucide="log-out"></i><span>Logout</span></button>
         </div>
-
-
     </aside>
 
-
-    <!-- =========================
-         MAIN
-    ========================== -->
-
     <main class="main">
-
-
         <header class="topbar">
-
-
-            <h2>
-                Admin / CEO Dashboard
-            </h2>
-
-
+            <h2>Admin / CEO Dashboard</h2>
             <div class="topbar-right">
-
-
                 <div class="admin-info">
-
-                    <strong id="adminName">
-                        Admin
-                    </strong>
-
-                    <span>
-                        Administrator
-                    </span>
-
+                    <strong id="adminName">Admin</strong>
+                    <span>Administrator</span>
                 </div>
-
-
-                <div class="admin-badge">
-
-                    <i data-lucide="user"></i>
-
-                </div>
-
-
+                <div class="admin-badge"><i data-lucide="user"></i></div>
             </div>
-
-
         </header>
 
-
         <section class="content">
-
-
             <div class="welcome">
-
-                <h1>
-                    GROWBYTEE - Admin Dashboard
-                </h1>
-
-                <p>
-                    Manage employees, attendance, leave and company settings.
-                </p>
-
+                <h1>GROWBYTEE - Admin Dashboard</h1>
+                <p>Manage employees, attendance, leave and company settings.</p>
             </div>
 
-
-            <section
-                id="dashboard"
-                class="section active">
-
-
-                <div
-                    style="
-                        padding: 0 0 24px 0;
-                        border-bottom: 1px solid #e5e7eb;
-                    ">
-
-                    <h2
-                        style="
-                            font-size: 19px;
-                            color: #111827;
-                        ">
-
-                        Dashboard Overview
-
-                    </h2>
-
-                    <p
-                        style="
-                            color: #6b7280;
-                            font-size: 13px;
-                            margin-top: 5px;
-                        ">
-
-                        Employee and attendance management overview
-
-                    </p>
-
+            <section id="dashboard" class="section">
+                <div style="padding:0 0 24px;border-bottom:1px solid #e5e7eb">
+                    <h2 style="font-size:19px;color:#111827">Dashboard Overview</h2>
+                    <p style="color:#6b7280;font-size:13px;margin-top:5px">Employee and attendance management overview</p>
                 </div>
 
-
-                <div style="padding-top: 24px;">
-
-
-                    <div
-                        id="dashboardMessage"
-                        class="message">
-                    </div>
-
-
+                <div style="padding-top:24px">
+                    <div id="dashboardMessage" class="message"></div>
                     <div class="stats-grid">
-
-
-                        <div
-                            class="stat-card stat-blue"
-                            tabindex="0"
-                            role="button"
-                            onclick="openAttendanceDetails('TOTAL')"
-                            onkeydown="handleCardKeydown(event, 'TOTAL')">
-
-                            <h4>
-                                Total Employees
-                            </h4>
-
-                            <h2 id="totalEmployees">
-                                0
-                            </h2>
-
+                        <div class="stat-card stat-blue" tabindex="0" role="button" onclick="openAttendanceDetails('TOTAL')" onkeydown="handleCardKeydown(event,'TOTAL')">
+                            <h4>Total Employees</h4><h2 id="totalEmployees">0</h2>
                         </div>
-
-
-                        <div
-                            class="stat-card stat-green"
-                            tabindex="0"
-                            role="button"
-                            onclick="openAttendanceDetails('PRESENT')"
-                            onkeydown="handleCardKeydown(event, 'PRESENT')">
-
-                            <h4>
-                                Present Today
-                            </h4>
-
-                            <h2 id="presentToday">
-                                0
-                            </h2>
-
+                        <div class="stat-card stat-green" tabindex="0" role="button" onclick="openAttendanceDetails('PRESENT')" onkeydown="handleCardKeydown(event,'PRESENT')">
+                            <h4>Present Today</h4><h2 id="presentToday">0</h2>
                         </div>
-
-
-                        <div
-                            class="stat-card stat-orange"
-                            tabindex="0"
-                            role="button"
-                            onclick="openAttendanceDetails('LATE')"
-                            onkeydown="handleCardKeydown(event, 'LATE')">
-
-                            <h4>
-                                Late Today
-                            </h4>
-
-                            <h2 id="lateToday">
-                                0
-                            </h2>
-
+                        <div class="stat-card stat-orange" tabindex="0" role="button" onclick="openAttendanceDetails('LATE')" onkeydown="handleCardKeydown(event,'LATE')">
+                            <h4>Late Today</h4><h2 id="lateToday">0</h2>
                         </div>
-
-
-                        <div
-                            class="stat-card stat-yellow"
-                            tabindex="0"
-                            role="button"
-                            onclick="openAttendanceDetails('EARLY')"
-                            onkeydown="handleCardKeydown(event, 'EARLY')">
-
-                            <h4>
-                                Early Check-Out
-                            </h4>
-
-                            <h2 id="earlyCheckoutToday">
-                                0
-                            </h2>
-
+                        <div class="stat-card stat-yellow" tabindex="0" role="button" onclick="openAttendanceDetails('MISSING_CHECKOUT')" onkeydown="handleCardKeydown(event,'MISSING_CHECKOUT')">
+                            <h4>Missing Check-Out Requests</h4><h2 id="missingCheckOut">0</h2>
                         </div>
-
-
-                        <div
-                            class="stat-card stat-red"
-                            tabindex="0"
-                            role="button"
-                            onclick="openAttendanceDetails('ABSENT')"
-                            onkeydown="handleCardKeydown(event, 'ABSENT')">
-
-                            <h4>
-                                Absent Today
-                            </h4>
-
-                            <h2 id="absentToday">
-                                0
-                            </h2>
-
+                        <div class="stat-card stat-red" tabindex="0" role="button" onclick="openAttendanceDetails('ABSENT')" onkeydown="handleCardKeydown(event,'ABSENT')">
+                            <h4>Absent Today</h4><h2 id="absentToday">0</h2>
                         </div>
-
-
-                        <div
-                            class="stat-card stat-purple"
-                            tabindex="0"
-                            role="button"
-                            onclick="openAttendanceDetails('LEAVE')"
-                            onkeydown="handleCardKeydown(event, 'LEAVE')">
-
-                            <h4>
-                                Pending Leaves
-                            </h4>
-
-                            <h2 id="pendingLeaves">
-                                0
-                            </h2>
-
+                        <div class="stat-card stat-purple" tabindex="0" role="button" onclick="openAttendanceDetails('LEAVE')" onkeydown="handleCardKeydown(event,'LEAVE')">
+                            <h4>Pending Leaves</h4><h2 id="pendingLeaves">0</h2>
                         </div>
-
-
                     </div>
-
-
                 </div>
-
-
             </section>
-
-
         </section>
-
-
     </main>
-
-
 </div>
 
-
-<!-- =========================
-     ATTENDANCE DETAILS MODAL
-========================== -->
-
-<div
-    id="attendanceDetailsModal"
-    class="modal-overlay"
-    onclick="handleModalOverlayClick(event)">
-
-    <div
-        class="modal-box"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="attendanceDetailsTitle">
-
-
+<!-- ATTENDANCE DETAILS MODAL -->
+<div id="attendanceDetailsModal" class="modal-overlay" onclick="handleModalOverlayClick(event)">
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="attendanceDetailsTitle">
         <div class="modal-header">
-
-
             <div>
-
-                <h3 id="attendanceDetailsTitle">
-                    Attendance Details
-                </h3>
-
-                <p id="attendanceDetailsSubtitle">
-                    Today's attendance information
-                </p>
-
+                <h3 id="attendanceDetailsTitle">Attendance Details</h3>
+                <p id="attendanceDetailsSubtitle">Today's attendance information</p>
             </div>
-
-
-            <button
-                type="button"
-                class="close-btn"
-                onclick="closeAttendanceDetails()"
-                aria-label="Close">
-
-                <i data-lucide="x"></i>
-
-            </button>
-
-
+            <button type="button" class="close-btn" onclick="closeAttendanceDetails()" aria-label="Close"><i data-lucide="x"></i></button>
         </div>
-
-
-        <div
-            id="attendanceDetailsBody"
-            class="modal-body">
-
-            <div class="loading-state">
-                Loading...
-            </div>
-
-        </div>
-
-
+        <div id="attendanceDetailsBody" class="modal-body"><div class="loading-state">Loading...</div></div>
         <div class="modal-footer">
+            <button type="button" class="secondary-btn" onclick="closeAttendanceDetails()">Close</button>
+        </div>
+    </div>
+</div>
 
-            <button
-                type="button"
-                class="secondary-btn"
-                onclick="closeAttendanceDetails()">
+<!-- ADMIN REVIEW / CORRECTION MODAL -->
+<div id="reviewModal" class="modal-overlay" onclick="handleReviewOverlayClick(event)">
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="reviewTitle" style="width:min(560px,100%)">
+        <div class="modal-header">
+            <div>
+                <h3 id="reviewTitle">Review Missing Check-Out</h3>
+                <p>Review the employee's request before updating attendance.</p>
+            </div>
+            <button type="button" class="close-btn" onclick="closeReviewModal()" aria-label="Close"><i data-lucide="x"></i></button>
+        </div>
 
-                Close
+        <div class="modal-body">
+            <div id="reviewMessageBox" class="message"></div>
+            <div class="review-summary">
+                <p><strong>Employee:</strong> <span id="reviewEmployeeName">-</span></p>
+                <p><strong>Employee Code:</strong> <span id="reviewEmployeeCode">-</span></p>
+                <p><strong>Attendance Date:</strong> <span id="reviewAttendanceDate">-</span></p>
+                <p><strong>Employee Check-In:</strong> <span id="reviewOriginalCheckIn">-</span></p>
+                <p><strong>Requested Check-Out:</strong> <span id="reviewRequestedCheckOut">-</span></p>
+                <p><strong>Employee Explanation:</strong></p>
+                <p id="reviewEmployeeReason" class="request-reason">-</p>
+            </div>
 
-            </button>
+            <input type="hidden" id="reviewAttendanceId">
+
+            <div class="form-group">
+                <label for="reviewCheckIn">Correct Check-In</label>
+                <input class="form-control" type="time" id="reviewCheckIn" required>
+            </div>
+
+            <div class="form-group">
+                <label for="reviewCheckOut">Correct Check-Out</label>
+                <input class="form-control" type="time" id="reviewCheckOut" required>
+            </div>
+
+            
+<div class="form-group">
+    <label for="reviewRemark">Admin Remark / Reason</label>
+    <textarea class="form-control" id="reviewRemark" rows="3" maxlength="2000" placeholder="Enter the reason for attendance correction." required></textarea>
+    <p class="form-help">Enter the corrected Check-In, Check-Out, and the reason for correction. Saving updates the attendance record and notifies the employee.</p>
+</div>
 
         </div>
 
+        
+<div class="modal-footer">
+    <button type="button" class="secondary-btn" onclick="closeReviewModal()">Cancel</button>
+    <button type="button" class="primary-btn correct-btn" id="correctRequestButton" onclick="reviewMissingCheckout('correct')">Correct &amp; Save</button>
+</div>
 
     </div>
-
 </div>
 
+<!-- WARNING / REPORT POPUP -->
+<div id="warningModal" class="modal-overlay" onclick="handleWarningOverlayClick(event)">
+    <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="warningModalTitle" style="width:min(520px,100%);max-height:90vh">
+        <div class="modal-header">
+            <div>
+                <h3 id="warningModalTitle">Send Warning / Report</h3>
+                <p>Send an attendance warning to the selected employee.</p>
+            </div>
+            <button type="button" class="close-btn" onclick="closeWarningModal()" aria-label="Close"><i data-lucide="x"></i></button>
+        </div>
+
+        <form id="warningForm" onsubmit="sendMissingCheckoutWarning(event)">
+            <div class="modal-body">
+                <div id="warningMessageBox" class="message"></div>
+
+                <div class="warning-employee-summary">
+                    <strong id="warningEmployeeName">Employee</strong>
+                    <span id="warningEmployeeCode">Employee Code: -</span>
+                </div>
+
+                <input type="hidden" id="warningEmployeeId">
+                <input type="hidden" id="warningAttendanceId">
+
+                <div class="form-group">
+                    <label for="warningAttendanceDate">Attendance Date</label>
+                    <input class="form-control" type="text" id="warningAttendanceDate" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="warningCheckIn">Check-In Time</label>
+                    <input class="form-control" type="text" id="warningCheckIn" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="warningMessage">Warning Message <span style="color:#dc2626">*</span></label>
+                    <textarea class="form-control" id="warningMessage" rows="5" maxlength="2000" required placeholder="Enter the warning message for this missing check-out..."></textarea>
+                    <p class="form-help">The employee should see this warning on their Employee Dashboard and submit an explanation before an admin can perform a manual check-out.</p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="secondary-btn" onclick="closeWarningModal()">Cancel</button>
+                <button type="submit" class="primary-btn danger-btn" id="sendWarningButton">Send Warning</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 <script>
+const API_BASE_URL =
+    window.location.hostname === "localhost" ||
+    window.location.hostname === "127.0.0.1"
+        ? "http://localhost:8080"
+        : "https://attendance-management-d5h6.onrender.com";
 
+async function apiFetch(url, options = {}) {
+    return fetch(API_BASE_URL + url, options);
+}
 
-    // =====================================================
-    // API BASE URL
-    // =====================================================
+function loadAdminInfo() {
+    const adminEmail = localStorage.getItem("adminEmail");
+    const adminName = localStorage.getItem("adminName");
 
-    const API_BASE_URL =
-        window.location.hostname === "localhost" ||
-        window.location.hostname === "127.0.0.1"
+    if (adminName) setText("adminName", adminName);
 
-            ? "http://localhost:8080"
-
-            : "https://attendance-management-d5h6.onrender.com";
-
-
-    // =====================================================
-    // API FETCH
-    // =====================================================
-
-    async function apiFetch(
-        url,
-        options = {}
-    ) {
-
-        return fetch(
-            API_BASE_URL + url,
-            options
-        );
-
+    if (adminEmail) {
+        const emailField = document.getElementById("verifyAdminEmail");
+        if (emailField) emailField.value = adminEmail;
     }
+}
 
-
-    // =====================================================
-    // LOAD ADMIN INFORMATION
-    // =====================================================
-
-    function loadAdminInfo() {
-
-        const adminEmail =
-            localStorage.getItem(
-                "adminEmail"
-            );
-
-        const adminName =
-            localStorage.getItem(
-                "adminName"
-            );
-
-
-        if (adminName) {
-
-            const adminNameElement =
-                document.getElementById(
-                    "adminName"
-                );
-
-            if (adminNameElement) {
-
-                adminNameElement.textContent =
-                    adminName;
-
-            }
-
-        }
-
-
-        if (adminEmail) {
-
-            const emailField =
-                document.getElementById(
-                    "verifyAdminEmail"
-                );
-
-            if (emailField) {
-
-                emailField.value =
-                    adminEmail;
-
-            }
-
-        }
-
-    }
-
-
-    // =====================================================
-    // ERROR MESSAGE
-    // =====================================================
-
-    async function getErrorMessage(
-        response
-    ) {
+async function getErrorMessage(response) {
+    try {
+        const text = await response.text();
+        if (!text) return "Request failed. HTTP " + response.status;
 
         try {
-
-            const text =
-                await response.text();
-
-
-            if (!text) {
-
-                return (
-                    "Request failed. HTTP " +
-                    response.status
-                );
-
-            }
-
-
-            try {
-
-                const json =
-                    JSON.parse(
-                        text
-                    );
-
-
-                return (
-                    json.message ||
-                    json.error ||
-                    text
-                );
-
-            }
-
-            catch {
-
-                return text;
-
-            }
-
+            const json = JSON.parse(text);
+            return json.message || json.error || text;
+        } catch {
+            return text;
         }
+    } catch {
+        return "Request failed. HTTP " + response.status;
+    }
+}
 
-        catch {
+function showMessage(elementId, message, type) {
+    const element = document.getElementById(elementId);
+    if (!element) return;
 
-            return (
-                "Request failed. HTTP " +
-                response.status
+    element.textContent = message;
+    element.className = "message show " + (type === "success" ? "success" : "error");
+
+    setTimeout(() => element.classList.remove("show"), 5000);
+}
+
+function logout() {
+    if (!confirm("Are you sure you want to logout?")) return;
+
+    localStorage.removeItem("adminEmail");
+    localStorage.removeItem("adminName");
+    window.location.href = "/admin/admin-login.html";
+}
+
+let employees = [];
+let activeReviewItem = null;
+let currentAttendanceDetailType = null;
+
+async function loadEmployees() {
+    try {
+        const response = await apiFetch("/admin/employees");
+        if (!response.ok) throw new Error(await getErrorMessage(response));
+
+        employees = await response.json();
+        await updateDashboardStats();
+    } catch (error) {
+        console.error("Load employees error:", error);
+        showMessage("dashboardMessage", error.message || "Unable to load employees.", "error");
+    }
+}
+
+async function loadLeaves() {
+    try {
+        const response = await apiFetch("/admin/leaves");
+        if (!response.ok) throw new Error(await getErrorMessage(response));
+
+        updatePendingLeaveCount(await response.json());
+    } catch (error) {
+        console.error("Load leaves error:", error);
+        showMessage("dashboardMessage", error.message || "Unable to load leaves.", "error");
+    }
+}
+
+function updatePendingLeaveCount(leaves) {
+    const count = (leaves || []).filter(leave =>
+        String(leave.status || "").toUpperCase() === "PENDING"
+    ).length;
+
+    setText("pendingLeaves", count);
+}
+
+async function loadPendingMissingCheckoutRequests() {
+    const response = await apiFetch("/admin/missing-checkout/requests?status=PENDING");
+    if (!response.ok) throw new Error(await getErrorMessage(response));
+
+    const records = await response.json();
+    return Array.isArray(records) ? records : [];
+}
+
+async function updateDashboardStats() {
+    setText("totalEmployees", employees.length);
+
+    try {
+        const response = await apiFetch("/admin/dashboard/stats");
+        if (!response.ok) throw new Error(await getErrorMessage(response));
+
+        const stats = await response.json();
+        setText("presentToday", Number(stats.presentToday || 0));
+        setText("lateToday", Number(stats.lateToday || 0));
+        setText("absentToday", Number(stats.absentToday || 0));
+        setText("pendingLeaves", Number(stats.pendingLeaves || 0));
+    } catch (error) {
+        console.error("Dashboard statistics error:", error);
+    }
+
+    try {
+        const requests = await loadPendingMissingCheckoutRequests();
+        setText("missingCheckOut", requests.length);
+    } catch (error) {
+        console.error("Missing Check-Out request count error:", error);
+    }
+}
+
+function setText(id, value) {
+    const element = document.getElementById(id);
+    if (element) element.textContent = value ?? "";
+}
+
+async function openAttendanceDetails(type) {
+    if (type === "TOTAL") {
+        window.location.href = "/admin/employees.html";
+        return;
+    }
+
+    if (type === "LEAVE") {
+        window.location.href = "/admin/leave.html";
+        return;
+    }
+
+    currentAttendanceDetailType = type;
+
+    const modal = document.getElementById("attendanceDetailsModal");
+    const title = document.getElementById("attendanceDetailsTitle");
+    const subtitle = document.getElementById("attendanceDetailsSubtitle");
+    const body = document.getElementById("attendanceDetailsBody");
+
+    const titles = {
+        PRESENT: "Present Employees",
+        LATE: "Late Employees",
+        EARLY: "Early Check-Out Employees",
+        MISSING_CHECKOUT: "Missing Check-Out Requests",
+        ABSENT: "Absent Employees"
+    };
+
+    const subtitles = {
+        PRESENT: "Employees who have attendance recorded today.",
+        LATE: "Employees who checked in late today.",
+        EARLY: "Employees who checked out before the configured shift time.",
+        MISSING_CHECKOUT: "Review employee-submitted Missing Check-Out requests.",
+        ABSENT: "Employees without attendance recorded today."
+    };
+
+    title.textContent = titles[type] || "Attendance Details";
+    subtitle.textContent = subtitles[type] || "Attendance information";
+    body.innerHTML = '<div class="loading-state">Loading...</div>';
+    modal.classList.add("show");
+    refreshIcons();
+
+    try {
+        let records;
+
+        if (type === "MISSING_CHECKOUT") {
+            records = await loadPendingMissingCheckoutRequests();
+        } else {
+            const response = await apiFetch(
+                "/admin/dashboard/details?type=" + encodeURIComponent(type)
             );
 
+            if (!response.ok) throw new Error(await getErrorMessage(response));
+            records = await response.json();
         }
 
+        renderAttendanceDetails(type, records);
+    } catch (error) {
+        console.error("Attendance details error:", error);
+        body.innerHTML = '<div class="empty-state">' +
+            escapeHtml(error.message || "Unable to load attendance details.") +
+            '</div>';
+    }
+
+    refreshIcons();
+}
+
+
+function renderMissingCheckoutDetails(data, body) {
+    if (!Array.isArray(data) || data.length === 0) {
+        body.innerHTML = '<div class="empty-state">No pending Missing Check-Out requests.</div>';
+        setText("missingCheckOut", 0);
+        return;
+    }
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "details-table-wrapper";
+
+    const table = document.createElement("table");
+    table.className = "details-table";
+    table.innerHTML =
+        "<thead><tr>" +
+        "<th>Employee</th><th>Attendance Date</th><th>Check-In</th>" +
+        "<th>Requested Check-Out</th><th>Explanation</th><th>Status</th><th>Actions</th>" +
+        "</tr></thead>";
+
+    const tbody = document.createElement("tbody");
+
+    data.forEach(item => {
+        const tr = document.createElement("tr");
+
+        const employeeCell = document.createElement("td");
+
+        const employeeName = document.createElement("div");
+        employeeName.className = "employee-name";
+        employeeName.textContent = item.employeeName || "-";
+
+        const employeeCode = document.createElement("div");
+        employeeCode.className = "employee-code";
+        employeeCode.textContent = "Code: " + (item.employeeCode || "-");
+
+        employeeCell.append(employeeName, employeeCode);
+
+        const dateCell = document.createElement("td");
+        dateCell.textContent = item.attendanceDate || "-";
+
+        const checkInCell = document.createElement("td");
+        checkInCell.textContent = formatTime(item.checkIn);
+
+        const requestedCell = document.createElement("td");
+        requestedCell.textContent = formatTime(item.requestedCheckOut);
+
+        const reasonCell = document.createElement("td");
+        reasonCell.className = "request-reason";
+        reasonCell.textContent = item.reason || "-";
+
+        const statusCell = document.createElement("td");
+        const badge = document.createElement("span");
+        badge.className = "status-badge status-pending";
+        badge.textContent = item.requestStatus || "PENDING";
+        statusCell.appendChild(badge);
+
+        // Review button only. Warning / Report button removed.
+        const actionCell = document.createElement("td");
+
+        const reviewButton = document.createElement("button");
+        reviewButton.type = "button";
+        reviewButton.className = "review-action-btn primary-btn";
+        reviewButton.textContent = "Review";
+        reviewButton.addEventListener("click", () => openReviewModal(item));
+
+        actionCell.appendChild(reviewButton);
+
+        tr.append(
+            employeeCell,
+            dateCell,
+            checkInCell,
+            requestedCell,
+            reasonCell,
+            statusCell,
+            actionCell
+        );
+
+        tbody.appendChild(tr);
+    });
+
+    table.appendChild(tbody);
+    wrapper.appendChild(table);
+    body.replaceChildren(wrapper);
+
+    setText("missingCheckOut", data.length);
+}
+
+
+function renderAttendanceDetails(type, data) {
+    const body = document.getElementById("attendanceDetailsBody");
+    if (!body) return;
+
+    if (type === "MISSING_CHECKOUT") {
+        renderMissingCheckoutDetails(data, body);
+        return;
+    }
+
+    if (!Array.isArray(data) || data.length === 0) {
+        body.innerHTML = '<div class="empty-state">No records found.</div>';
+        return;
+    }
+
+    if (["PRESENT", "LATE", "EARLY"].includes(type)) {
+        let html = '<div class="details-table-wrapper"><table class="details-table">';
+        html += '<thead><tr><th>Employee</th><th>Check-In</th><th>Check-Out</th><th>Status</th></tr></thead><tbody>';
+
+        data.forEach(item => {
+            const status = String(item.status || "PRESENT");
+            let badgeClass = "status-present";
+
+            if (status.toUpperCase().startsWith("LATE")) badgeClass = "status-late";
+            else if (status.toUpperCase().startsWith("EARLY")) badgeClass = "status-early";
+
+            html += '<tr><td><div class="employee-name">' +
+                escapeHtml(item.employeeName || "-") +
+                '</div><div class="employee-code">Code: ' +
+                escapeHtml(item.employeeCode || "-") +
+                '</div></td>';
+
+            html += '<td>' + escapeHtml(formatTime(item.checkIn)) + '</td>';
+            html += '<td>' + escapeHtml(formatTime(item.checkOut)) + '</td>';
+            html += '<td><span class="status-badge ' + badgeClass + '">' +
+                escapeHtml(status) + '</span></td></tr>';
+        });
+
+        html += '</tbody></table></div>';
+        body.innerHTML = html;
+        return;
+    }
+
+    if (type === "ABSENT") {
+        let html = '<div class="details-table-wrapper"><table class="details-table">';
+        html += '<thead><tr><th>Employee</th><th>Attendance</th><th>Leave Status</th><th>Leave Type</th><th>Reason</th><th>Action</th></tr></thead><tbody>';
+
+        data.forEach(item => {
+            const leaveStatus = String(item.leaveStatus || "NO_LEAVE_REQUEST").toUpperCase();
+            let badgeClass = "status-none";
+
+            if (leaveStatus === "APPROVED") badgeClass = "status-approved";
+            else if (leaveStatus === "PENDING") badgeClass = "status-pending";
+            else if (leaveStatus === "REJECTED") badgeClass = "status-rejected";
+
+            html += '<tr><td><div class="employee-name">' +
+                escapeHtml(item.employeeName || "-") +
+                '</div><div class="employee-code">Code: ' +
+                escapeHtml(item.employeeCode || "-") +
+                '</div></td>';
+
+            html += '<td><span class="status-badge status-none">Absent</span></td>';
+            html += '<td><span class="status-badge ' + badgeClass + '">' +
+                escapeHtml(formatLeaveStatus(leaveStatus)) + '</span></td>';
+
+            html += '<td>' + escapeHtml(item.leaveType || "-") + '</td>';
+            html += '<td>' + escapeHtml(item.leaveReason || "-") + '</td>';
+            html += '<td><button type="button" class="leave-action-btn" onclick="openLeaveManagement()">Leave Management</button></td></tr>';
+        });
+
+        html += '</tbody></table></div>';
+        body.innerHTML = html;
+        refreshIcons();
+    }
+}
+
+function formatLeaveStatus(status) {
+    return status === "NO_LEAVE_REQUEST" ? "No Leave Request" : status;
+}
+
+function openLeaveManagement() {
+    window.location.href = "/admin/leave.html";
+}
+
+function closeAttendanceDetails() {
+    document.getElementById("attendanceDetailsModal")?.classList.remove("show");
+}
+
+function handleModalOverlayClick(event) {
+    if (event.target?.id === "attendanceDetailsModal") closeAttendanceDetails();
+}
+
+function handleCardKeydown(event, type) {
+    if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        openAttendanceDetails(type);
+    }
+}
+
+// =====================================================
+// MISSING CHECK-OUT REVIEW
+// =====================================================
+
+function openReviewModal(item) {
+    if (!item || item.attendanceId == null) {
+        alert("Attendance ID is missing from the request.");
+        return;
+    }
+
+    activeReviewItem = item;
+
+    setText("reviewAttendanceId", item.attendanceId);
+    setText("reviewEmployeeName", item.employeeName || "-");
+    setText("reviewEmployeeCode", item.employeeCode || "-");
+    setText("reviewAttendanceDate", item.attendanceDate || "-");
+    setText("reviewOriginalCheckIn", formatTime(item.checkIn));
+    setText("reviewRequestedCheckOut", formatTime(item.requestedCheckOut));
+    setText("reviewEmployeeReason", item.reason || "-");
+
+    document.getElementById("reviewCheckIn").value = toInputTime(item.checkIn);
+    document.getElementById("reviewCheckOut").value = toInputTime(item.requestedCheckOut);
+    document.getElementById("reviewRemark").value = "";
+
+    const message = document.getElementById("reviewMessageBox");
+    message.className = "message";
+    message.textContent = "";
+
+    document.getElementById("reviewModal").classList.add("show");
+    refreshIcons();
+}
+
+function closeReviewModal() {
+    document.getElementById("reviewModal")?.classList.remove("show");
+    activeReviewItem = null;
+}
+
+function handleReviewOverlayClick(event) {
+    if (event.target?.id === "reviewModal") closeReviewModal();
+}
+
+function toInputTime(value) {
+    if (!value) return "";
+
+    const text = String(value);
+    if (text.includes("T")) return text.split("T")[1].substring(0, 5);
+    return text.substring(0, 5);
+}
+
+function showReviewMessage(message, type) {
+    const element = document.getElementById("reviewMessageBox");
+    element.textContent = message;
+    element.className = "message show " + (type === "success" ? "success" : "error");
+}
+
+async function reviewMissingCheckout(action) {
+    if (!activeReviewItem || activeReviewItem.attendanceId == null) {
+        showReviewMessage("Select a valid attendance request.", "error");
+        return;
+    }
+
+    const adminEmail = localStorage.getItem("adminEmail");
+
+    if (!adminEmail) {
+        showReviewMessage("Admin login information is missing. Please log in again.", "error");
+        return;
+    }
+
+    const attendanceId = activeReviewItem.attendanceId;
+    const remark = document.getElementById("reviewRemark").value.trim();
+    const checkIn = document.getElementById("reviewCheckIn").value;
+    const checkOut = document.getElementById("reviewCheckOut").value;
+    const button = document.getElementById("correctRequestButton");
+
+    if (!remark || remark.length < 3) {
+        showReviewMessage(
+            "Please enter a correction reason (at least 3 characters).",
+            "error"
+        );
+        return;
+    }
+
+    if (!checkIn || !checkOut) {
+        showReviewMessage(
+            "Both Check-In and Check-Out times are required.",
+            "error"
+        );
+        return;
     }
 
 
-    // =====================================================
-    // SHOW MESSAGE
-    // =====================================================
+    if (checkOut <= checkIn) {
+        showReviewMessage(
+            "Check-Out must be later than Check-In.",
+            "error"
+        );
+        return;
+    }
 
-    function showMessage(
-        elementId,
+    if (!confirm("Save the corrected Check-In and Check-Out times?")) {
+        return;
+    }
+
+    button.disabled = true;
+    button.textContent = "Saving...";
+
+    try {
+        const response = await apiFetch(
+            "/admin/missing-checkout/" + attendanceId + "/correct",
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    adminEmail: adminEmail,
+                    checkIn: checkIn.length === 5 ? checkIn + ":00" : checkIn,
+                    checkOut: checkOut.length === 5 ? checkOut + ":00" : checkOut,
+                    remark: remark
+                })
+            }
+        );
+
+        if (!response.ok) {
+            throw new Error(await getErrorMessage(response));
+        }
+
+        const successText = await response.text();
+
+        closeReviewModal();
+
+        showMessage(
+            "dashboardMessage",
+            successText || "Attendance corrected successfully.",
+            "success"
+        );
+
+        if (currentAttendanceDetailType === "MISSING_CHECKOUT") {
+            await openAttendanceDetails("MISSING_CHECKOUT");
+        }
+
+        await updateDashboardStats();
+
+    } catch (error) {
+        console.error("Missing Check-Out correction error:", error);
+
+        showReviewMessage(
+            error.message || "Unable to save the attendance correction.",
+            "error"
+        );
+
+    } finally {
+      if (button) {
+    button.disabled = false;
+    button.textContent = "Correct & Save";
+}
+}
+}
+
+// =====================================================
+// WARNING POPUP - EXISTING FUNCTIONALITY PRESERVED
+// =====================================================
+
+function openWarningModal(item) {
+    if (!item || item.attendanceId == null || item.employeeId == null) {
+        alert("Attendance ID or Employee ID is missing from the API response.");
+        console.error("Missing Check-Out API record:", item);
+        return;
+    }
+
+    setText("warningEmployeeName", item.employeeName || "Employee");
+    setText("warningEmployeeCode", "Employee Code: " + (item.employeeCode || "-"));
+
+    document.getElementById("warningEmployeeId").value = item.employeeId;
+    document.getElementById("warningAttendanceId").value = item.attendanceId;
+    document.getElementById("warningAttendanceDate").value = item.attendanceDate || "-";
+    document.getElementById("warningCheckIn").value = formatTime(item.checkIn);
+
+    document.getElementById("warningMessage").value =
+        "You checked in but did not record your check-out. Please provide an explanation for this attendance date.";
+
+    const messageBox = document.getElementById("warningMessageBox");
+    messageBox.className = "message";
+    messageBox.textContent = "";
+
+    document.getElementById("warningModal").classList.add("show");
+    refreshIcons();
+    document.getElementById("warningMessage").focus();
+}
+
+function closeWarningModal() {
+    document.getElementById("warningModal")?.classList.remove("show");
+}
+
+function handleWarningOverlayClick(event) {
+    if (event.target?.id === "warningModal") closeWarningModal();
+}
+
+async function sendMissingCheckoutWarning(event) {
+    event.preventDefault();
+
+    const employeeId = document.getElementById("warningEmployeeId").value;
+    const attendanceId = document.getElementById("warningAttendanceId").value;
+    const attendanceDate = document.getElementById("warningAttendanceDate").value;
+    const message = document.getElementById("warningMessage").value.trim();
+    const adminEmail = localStorage.getItem("adminEmail");
+    const button = document.getElementById("sendWarningButton");
+
+    if (!employeeId || !attendanceId) {
+        showWarningMessage("Missing employee or attendance record information.", "error");
+        return;
+    }
+
+    if (!message) {
+        showWarningMessage("Please enter a warning message.", "error");
+        return;
+    }
+
+    if (!adminEmail) {
+        showWarningMessage("Admin login information is missing. Please log in again.", "error");
+        return;
+    }
+
+    const payload = {
+        employeeId: Number(employeeId),
+        attendanceId: Number(attendanceId),
+        attendanceDate,
         message,
-        type
-    ) {
+        adminEmail
+    };
 
-        const element =
-            document.getElementById(
-                elementId
-            );
+    button.disabled = true;
+    button.textContent = "Sending...";
 
+    try {
+        const response = await apiFetch("/admin/missing-checkout/warnings", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
 
-        if (!element) {
-            return;
-        }
+        if (!response.ok) throw new Error(await getErrorMessage(response));
 
+        showWarningMessage("Warning sent successfully.", "success");
 
-        element.textContent =
-            message;
-
-
-        element.className =
-            "message show " +
-            (
-                type === "success"
-                    ? "success"
-                    : "error"
-            );
-
-
-        setTimeout(
-            function() {
-
-                element.classList.remove(
-                    "show"
-                );
-
-            },
-            5000
-        );
-
-    }
-
-
-    // =====================================================
-    // LOGOUT
-    // =====================================================
-
-    function logout() {
-
-        const confirmed =
-            confirm(
-                "Are you sure you want to logout?"
-            );
-
-
-        if (!confirmed) {
-            return;
-        }
-
-
-        localStorage.removeItem(
-            "adminEmail"
-        );
-
-        localStorage.removeItem(
-            "adminName"
-        );
-
-
-        window.location.href =
-            "/admin/admin-login.html";
-
-    }
-
-
-    // =====================================================
-    // EMPLOYEES
-    // =====================================================
-
-    let employees = [];
-
-
-    async function loadEmployees() {
-
-        try {
-
-            const response =
-                await apiFetch(
-                    "/admin/employees"
-                );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    await getErrorMessage(
-                        response
-                    )
-                );
-
+        setTimeout(async () => {
+            closeWarningModal();
+            if (currentAttendanceDetailType === "MISSING_CHECKOUT") {
+                await openAttendanceDetails("MISSING_CHECKOUT");
             }
-
-
-            employees =
-                await response.json();
-
-
             await updateDashboardStats();
-
-        }
-
-        catch (error) {
-
-            console.error(
-                "Load employees error:",
-                error
-            );
-
-
-            showMessage(
-                "dashboardMessage",
-                error.message ||
-                "Unable to load employees.",
-                "error"
-            );
-
-        }
-
-    }
-
-
-    // =====================================================
-    // LEAVES
-    // =====================================================
-
-    async function loadLeaves() {
-
-        try {
-
-            const response =
-                await apiFetch(
-                    "/admin/leaves"
-                );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    await getErrorMessage(
-                        response
-                    )
-                );
-
-            }
-
-
-            const leaves =
-                await response.json();
-
-
-            updatePendingLeaveCount(
-                leaves
-            );
-
-        }
-
-        catch (error) {
-
-            console.error(
-                "Load leaves error:",
-                error
-            );
-
-
-            showMessage(
-                "dashboardMessage",
-                error.message ||
-                "Unable to load leaves.",
-                "error"
-            );
-
-        }
-
-    }
-
-
-    // =====================================================
-    // UPDATE PENDING LEAVE COUNT
-    // =====================================================
-
-    function updatePendingLeaveCount(
-        leaves
-    ) {
-
-        const count =
-            (leaves || []).filter(
-                function(leave) {
-
-                    return String(
-                        leave.status ||
-                        ""
-                    ).toUpperCase() ===
-                        "PENDING";
-
-                }
-            ).length;
-
-
-        const pendingElement =
-            document.getElementById(
-                "pendingLeaves"
-            );
-
-
-        if (pendingElement) {
-
-            pendingElement.textContent =
-                count;
-
-        }
-
-    }
-
-
-    // =====================================================
-    // UPDATE DASHBOARD STATISTICS
-    // =====================================================
-
-    async function updateDashboardStats() {
-
-        const total =
-            employees.length;
-
-
-        const totalElement =
-            document.getElementById(
-                "totalEmployees"
-            );
-
-
-        if (totalElement) {
-
-            totalElement.textContent =
-                total;
-
-        }
-
-
-        try {
-
-            const response =
-                await apiFetch(
-                    "/admin/dashboard/stats"
-                );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    await getErrorMessage(
-                        response
-                    )
-                );
-
-            }
-
-
-            const stats =
-                await response.json();
-
-
-            const presentElement =
-                document.getElementById(
-                    "presentToday"
-                );
-
-            const lateElement =
-                document.getElementById(
-                    "lateToday"
-                );
-
-            const earlyElement =
-                document.getElementById(
-                    "earlyCheckoutToday"
-                );
-
-            const absentElement =
-                document.getElementById(
-                    "absentToday"
-                );
-
-            const pendingElement =
-                document.getElementById(
-                    "pendingLeaves"
-                );
-
-
-            if (presentElement) {
-
-                presentElement.textContent =
-                    Number(
-                        stats.presentToday || 0
-                    );
-
-            }
-
-
-            if (lateElement) {
-
-                lateElement.textContent =
-                    Number(
-                        stats.lateToday || 0
-                    );
-
-            }
-
-
-            if (earlyElement) {
-
-                earlyElement.textContent =
-                    Number(
-                        stats.earlyCheckoutToday || 0
-                    );
-
-            }
-
-
-            if (absentElement) {
-
-                absentElement.textContent =
-                    Number(
-                        stats.absentToday || 0
-                    );
-
-            }
-
-
-            if (pendingElement) {
-
-                pendingElement.textContent =
-                    Number(
-                        stats.pendingLeaves || 0
-                    );
-
-            }
-
-        }
-
-        catch (error) {
-
-            console.error(
-                "Dashboard statistics error:",
-                error
-            );
-
-
-            const presentElement =
-                document.getElementById(
-                    "presentToday"
-                );
-
-            const lateElement =
-                document.getElementById(
-                    "lateToday"
-                );
-
-            const earlyElement =
-                document.getElementById(
-                    "earlyCheckoutToday"
-                );
-
-            const absentElement =
-                document.getElementById(
-                    "absentToday"
-                );
-
-
-            if (presentElement) {
-                presentElement.textContent = "0";
-            }
-
-            if (lateElement) {
-                lateElement.textContent = "0";
-            }
-
-            if (earlyElement) {
-                earlyElement.textContent = "0";
-            }
-
-            if (absentElement) {
-                absentElement.textContent =
-                    employees.length;
-            }
-
-        }
-
-    }
-
-
-    // =====================================================
-    // OPEN ATTENDANCE DETAILS
-    // =====================================================
-
-    async function openAttendanceDetails(
-        type
-    ) {
-
-        if (type === "TOTAL") {
-
-            window.location.href =
-                "/admin/employees.html";
-
-            return;
-
-        }
-
-
-        if (type === "LEAVE") {
-
-            window.location.href =
-                "/admin/leave.html";
-
-            return;
-
-        }
-
-
-        const modal =
-            document.getElementById(
-                "attendanceDetailsModal"
-            );
-
-        const title =
-            document.getElementById(
-                "attendanceDetailsTitle"
-            );
-
-        const subtitle =
-            document.getElementById(
-                "attendanceDetailsSubtitle"
-            );
-
-        const body =
-            document.getElementById(
-                "attendanceDetailsBody"
-            );
-
-
-        if (!modal || !title || !subtitle || !body) {
-            return;
-        }
-
-
-        const titles = {
-
-            PRESENT:
-                "Present Employees",
-
-            LATE:
-                "Late Employees",
-
-            EARLY:
-                "Early Check-Out Employees",
-
-            ABSENT:
-                "Absent Employees"
-
-        };
-
-
-        const subtitles = {
-
-            PRESENT:
-                "Employees who have attendance recorded today.",
-
-            LATE:
-                "Employees who checked in late today.",
-
-            EARLY:
-                "Employees who checked out before the configured shift time.",
-
-            ABSENT:
-                "Employees without attendance recorded today."
-
-        };
-
-
-        title.textContent =
-            titles[type] ||
-            "Attendance Details";
-
-
-        subtitle.textContent =
-            subtitles[type] ||
-            "Today's attendance information";
-
-
-        body.innerHTML =
-            '<div class="loading-state">Loading...</div>';
-
-
-        modal.classList.add(
-            "show"
+        }, 900);
+    } catch (error) {
+        console.error("Send warning error:", error);
+        showWarningMessage(
+            error.message || "Unable to send warning. The backend API may not be configured yet.",
+            "error"
         );
+    } finally {
+        button.disabled = false;
+        button.textContent = "Send Warning";
+    }
+}
 
+function showWarningMessage(message, type) {
+    const element = document.getElementById("warningMessageBox");
+    element.textContent = message;
+    element.className = "message show " + (type === "success" ? "success" : "error");
+}
 
-        refreshIcons();
+function formatTime(value) {
+    if (!value) return "-";
 
+    const text = String(value);
 
-        try {
-
-            const response =
-                await apiFetch(
-                    "/admin/dashboard/details?type=" +
-                    encodeURIComponent(type)
-                );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    await getErrorMessage(
-                        response
-                    )
-                );
-
-            }
-
-
-            const data =
-                await response.json();
-
-
-            renderAttendanceDetails(
-                type,
-                data
-            );
-
-        }
-
-        catch (error) {
-
-            console.error(
-                "Attendance details error:",
-                error
-            );
-
-
-            body.innerHTML =
-                '<div class="empty-state">' +
-                escapeHtml(
-                    error.message ||
-                    "Unable to load attendance details."
-                ) +
-                '</div>';
-
-        }
-
-
-        refreshIcons();
-
+    if (text.includes("T")) {
+        const timePart = text.split("T")[1];
+        if (timePart) return timePart.substring(0, 5);
     }
 
-
-    // =====================================================
-    // RENDER ATTENDANCE DETAILS
-    // =====================================================
-
-    function renderAttendanceDetails(
-        type,
-        data
-    ) {
-
-        const body =
-            document.getElementById(
-                "attendanceDetailsBody"
-            );
-
-
-        if (!body) {
-            return;
-        }
-
-
-        if (
-            !Array.isArray(data) ||
-            data.length === 0
-        ) {
-
-            body.innerHTML =
-                '<div class="empty-state">' +
-                'No records found for today.' +
-                '</div>';
-
-            return;
-
-        }
-
-
-        if (
-            type === "PRESENT" ||
-            type === "LATE" ||
-            type === "EARLY"
-        ) {
-
-            let html = '';
-
-            html +=
-                '<div class="details-table-wrapper">';
-
-            html +=
-                '<table class="details-table">';
-
-            html += '<thead><tr>';
-
-            html += '<th>Employee</th>';
-            html += '<th>Check-In</th>';
-            html += '<th>Check-Out</th>';
-            html += '<th>Status</th>';
-
-            html += '</tr></thead>';
-
-            html += '<tbody>';
-
-
-            data.forEach(
-                function(item) {
-
-                    const status =
-                        String(
-                            item.status ||
-                            "PRESENT"
-                        );
-
-
-                    let badgeClass =
-                        "status-present";
-
-
-                    if (
-                        status.toUpperCase()
-                            .startsWith("LATE")
-                    ) {
-
-                        badgeClass =
-                            "status-late";
-
-                    }
-
-                    else if (
-                        status.toUpperCase()
-                            .startsWith("EARLY")
-                    ) {
-
-                        badgeClass =
-                            "status-early";
-
-                    }
-
-
-                    html += '<tr>';
-
-
-                    html +=
-                        '<td>' +
-                        '<div class="employee-name">' +
-                        escapeHtml(
-                            item.employeeName ||
-                            "-"
-                        ) +
-                        '</div>' +
-                        '<div class="employee-code">' +
-                        'Code: ' +
-                        escapeHtml(
-                            item.employeeCode ||
-                            "-"
-                        ) +
-                        '</div>' +
-                        '</td>';
-
-
-                    html +=
-                        '<td>' +
-                        escapeHtml(
-                            formatTime(
-                                item.checkIn
-                            )
-                        ) +
-                        '</td>';
-
-
-                    html +=
-                        '<td>' +
-                        escapeHtml(
-                            formatTime(
-                                item.checkOut
-                            )
-                        ) +
-                        '</td>';
-
-
-                    html +=
-                        '<td>' +
-                        '<span class="status-badge ' +
-                        badgeClass +
-                        '">' +
-                        escapeHtml(
-                            status
-                        ) +
-                        '</span>' +
-                        '</td>';
-
-
-                    html += '</tr>';
-
-                }
-            );
-
-
-            html += '</tbody>';
-            html += '</table>';
-            html += '</div>';
-
-
-            body.innerHTML =
-                html;
-
-
-            return;
-
-        }
-
-
-        if (type === "ABSENT") {
-
-            let html = '';
-
-            html +=
-                '<div class="details-table-wrapper">';
-
-            html +=
-                '<table class="details-table">';
-
-            html += '<thead><tr>';
-
-            html += '<th>Employee</th>';
-            html += '<th>Attendance</th>';
-            html += '<th>Leave Status</th>';
-            html += '<th>Leave Type</th>';
-            html += '<th>Reason</th>';
-            html += '<th>Action</th>';
-
-            html += '</tr></thead>';
-
-            html += '<tbody>';
-
-
-            data.forEach(
-                function(item) {
-
-                    const leaveStatus =
-                        String(
-                            item.leaveStatus ||
-                            "NO_LEAVE_REQUEST"
-                        ).toUpperCase();
-
-
-                    let badgeClass =
-                        "status-none";
-
-
-                    if (
-                        leaveStatus ===
-                        "APPROVED"
-                    ) {
-
-                        badgeClass =
-                            "status-approved";
-
-                    }
-
-                    else if (
-                        leaveStatus ===
-                        "PENDING"
-                    ) {
-
-                        badgeClass =
-                            "status-pending";
-
-                    }
-
-                    else if (
-                        leaveStatus ===
-                        "REJECTED"
-                    ) {
-
-                        badgeClass =
-                            "status-rejected";
-
-                    }
-
-
-                    const showAction =
-                        leaveStatus === "APPROVED" ||
-                        leaveStatus === "PENDING" ||
-                        leaveStatus === "REJECTED" ||
-                        leaveStatus === "NO_LEAVE_REQUEST";
-
-
-                    html += '<tr>';
-
-
-                    html +=
-                        '<td>' +
-                        '<div class="employee-name">' +
-                        escapeHtml(
-                            item.employeeName ||
-                            "-"
-                        ) +
-                        '</div>' +
-                        '<div class="employee-code">' +
-                        'Code: ' +
-                        escapeHtml(
-                            item.employeeCode ||
-                            "-"
-                        ) +
-                        '</div>' +
-                        '</td>';
-
-
-                    html +=
-                        '<td>' +
-                        '<span class="status-badge status-none">' +
-                        'Absent' +
-                        '</span>' +
-                        '</td>';
-
-
-                    html +=
-                        '<td>' +
-                        '<span class="status-badge ' +
-                        badgeClass +
-                        '">' +
-                        escapeHtml(
-                            formatLeaveStatus(
-                                leaveStatus
-                            )
-                        ) +
-                        '</span>' +
-                        '</td>';
-
-
-                    html +=
-                        '<td>' +
-                        escapeHtml(
-                            item.leaveType ||
-                            "-"
-                        ) +
-                        '</td>';
-
-
-                    html +=
-                        '<td>' +
-                        escapeHtml(
-                            item.leaveReason ||
-                            "-"
-                        ) +
-                        '</td>';
-
-
-                    html += '<td>';
-
-
-                    if (showAction) {
-
-                        html +=
-                            '<button ' +
-                            'type="button" ' +
-                            'class="leave-action-btn" ' +
-                            'onclick="openLeaveManagement()">' +
-
-                            '<i data-lucide="external-link"></i>' +
-
-                            'Leave Management' +
-
-                            '</button>';
-
-                    }
-
-                    else {
-
-                        html += '-';
-
-                    }
-
-
-                    html += '</td>';
-
-
-                    html += '</tr>';
-
-                }
-            );
-
-
-            html += '</tbody>';
-            html += '</table>';
-            html += '</div>';
-
-
-            body.innerHTML =
-                html;
-
-
-            refreshIcons();
-
-        }
-
+    if (/^\d{2}:\d{2}/.test(text)) return text.substring(0, 5);
+    return text;
+}
+
+function escapeHtml(value) {
+    if (value === null || value === undefined) return "";
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function refreshIcons() {
+    if (typeof lucide !== "undefined") lucide.createIcons();
+}
+
+document.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+        closeWarningModal();
+        closeAttendanceDetails();
+        closeReviewModal();
     }
-
-
-    // =====================================================
-    // FORMAT LEAVE STATUS
-    // =====================================================
-
-    function formatLeaveStatus(
-        status
-    ) {
-
-        if (
-            status ===
-            "NO_LEAVE_REQUEST"
-        ) {
-
-            return "No Leave Request";
-
-        }
-
-
-        return status;
-
-    }
-
-
-    // =====================================================
-    // OPEN LEAVE MANAGEMENT
-    // =====================================================
-
-    function openLeaveManagement() {
-
-        window.location.href =
-            "/admin/leave.html";
-
-    }
-
-
-    // =====================================================
-    // CLOSE DETAILS MODAL
-    // =====================================================
-
-    function closeAttendanceDetails() {
-
-        const modal =
-            document.getElementById(
-                "attendanceDetailsModal"
-            );
-
-
-        if (modal) {
-
-            modal.classList.remove(
-                "show"
-            );
-
-        }
-
-    }
-
-
-    // =====================================================
-    // MODAL OVERLAY CLICK
-    // =====================================================
-
-    function handleModalOverlayClick(
-        event
-    ) {
-
-        if (
-            event.target &&
-            event.target.id ===
-                "attendanceDetailsModal"
-        ) {
-
-            closeAttendanceDetails();
-
-        }
-
-    }
-
-
-    // =====================================================
-    // CARD KEYBOARD SUPPORT
-    // =====================================================
-
-    function handleCardKeydown(
-        event,
-        type
-    ) {
-
-        if (
-            event.key === "Enter" ||
-            event.key === " "
-        ) {
-
-            event.preventDefault();
-
-            openAttendanceDetails(
-                type
-            );
-
-        }
-
-    }
-
-
-    // =====================================================
-    // FORMAT TIME
-    // =====================================================
-
-    function formatTime(
-        value
-    ) {
-
-        if (!value) {
-            return "-";
-        }
-
-
-        const text =
-            String(value);
-
-
-        if (
-            text.includes("T")
-        ) {
-
-            const timePart =
-                text.split("T")[1];
-
-
-            if (timePart) {
-
-                return timePart
-                    .substring(0, 5);
-
-            }
-
-        }
-
-
-        if (
-            /^\d{2}:\d{2}/.test(
-                text
-            )
-        ) {
-
-            return text.substring(
-                0,
-                5
-            );
-
-        }
-
-
-        return text;
-
-    }
-
-
-    // =====================================================
-    // ESCAPE HTML
-    // =====================================================
-
-    function escapeHtml(
-        value
-    ) {
-
-        if (
-            value === null ||
-            value === undefined
-        ) {
-
-            return "";
-
-        }
-
-
-        return String(value)
-            .replace(
-                /&/g,
-                "&amp;"
-            )
-            .replace(
-                /</g,
-                "&lt;"
-            )
-            .replace(
-                />/g,
-                "&gt;"
-            )
-            .replace(
-                /"/g,
-                "&quot;"
-            )
-            .replace(
-                /'/g,
-                "&#039;"
-            );
-
-    }
-
-
-    // =====================================================
-    // REFRESH LUCIDE ICONS
-    // =====================================================
-
-    function refreshIcons() {
-
-        if (
-            typeof lucide !==
-            "undefined"
-        ) {
-
-            lucide.createIcons();
-
-        }
-
-    }
-
-
-    // =====================================================
-    // ESC KEY
-    // =====================================================
-
-    document.addEventListener(
-        "keydown",
-        function(event) {
-
-            if (
-                event.key === "Escape"
-            ) {
-
-                closeAttendanceDetails();
-
-            }
-
-        }
-    );
-
-
-    // =====================================================
-    // INITIAL LOAD
-    // =====================================================
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        function() {
-
-            refreshIcons();
-
-            loadAdminInfo();
-
-            loadEmployees();
-
-            loadLeaves();
-
-        }
-    );
-
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    refreshIcons();
+    loadAdminInfo();
+    loadEmployees();
+    loadLeaves();
+});
 
 </script>
 
-
+<script src="end-date-alert.js"></script>
 </body>
-
 </html>

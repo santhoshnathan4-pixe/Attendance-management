@@ -88,6 +88,48 @@ public final class PayrollMath {
                 round2(finalSalary));
     }
 
+    /**
+     * Same as above, plus a shift shortfall (in days) that is
+     * cut from the paid days. The shortfall is NOT covered by
+     * the leave balance (only whole absences are auto covered).
+     */
+    public static Result calculate(
+            List<LocalDate> workingDates,
+            Set<LocalDate> presentDates,
+            Map<LocalDate, Double> paidLeaveByDate,
+            double shortfallDays,
+            double autoCoverCap,
+            double monthlySalary) {
+
+        Result base = calculate(
+                workingDates,
+                presentDates,
+                paidLeaveByDate,
+                autoCoverCap,
+                monthlySalary);
+
+        double shortage = Math.min(
+                Math.max(0.0, shortfallDays),
+                base.paidDays());
+
+        if (shortage <= 0) {
+            return base;
+        }
+
+        double extraLoss = shortage * base.perDaySalary();
+
+        return new Result(
+                base.workingDays(),
+                base.presentDays(),
+                base.paidLeaveDays(),
+                base.autoCoveredDays(),
+                round2(base.paidDays() - shortage),
+                round2(base.lopDays() + shortage),
+                base.perDaySalary(),
+                round2(base.lossOfPay() + extraLoss),
+                round2(base.finalSalary() - extraLoss));
+    }
+
     public static double round2(double value) {
         return Math.round(value * 100.0) / 100.0;
     }

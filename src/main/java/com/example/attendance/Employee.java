@@ -1,7 +1,8 @@
-
 package com.example.attendance;
 
 import jakarta.persistence.*;
+import java.time.LocalDate;
+import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "employees")
@@ -43,13 +44,58 @@ public class Employee {
     private Boolean active = true;
 
     // =========================
+    // INTERNSHIP DETAILS
+    // =========================
+
+    @Column(name = "internship_start_date")
+    private LocalDate internshipStartDate;
+
+    @Column(name = "internship_duration_months")
+    private Integer internshipDurationMonths;
+
+    @Column(name = "internship_end_date")
+    private LocalDate internshipEndDate;
+
+    @Column(name = "stipend_type")
+    private String stipendType;
+
+    // =========================
+    // EMPLOYMENT DETAILS
+    // =========================
+
+    @Column(name = "employment_start_date")
+    private LocalDate employmentStartDate;
+
+    @Column(name = "employment_end_date")
+    private LocalDate employmentEndDate;
+
+    // =========================
+    // LAST ADMIN ACTION (reason, who, date and time)
+    // Updated on the SAME row for Add, Edit, Delete and every Review.
+    // =========================
+
+    @Column(name = "last_action_type")
+    private String lastActionType;
+
+    @Column(name = "last_action_reason", columnDefinition = "TEXT")
+    private String lastActionReason;
+
+    @Column(name = "last_action_by")
+    private String lastActionBy;
+
+    @Column(name = "last_action_by_email")
+    private String lastActionByEmail;
+
+    @Column(name = "last_action_at")
+    private OffsetDateTime lastActionAt;
+
+    // =========================
     // BRANCH
     // =========================
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "branch_id")
     private Branch branch;
-
 
     // =========================
     // GETTERS
@@ -115,6 +161,49 @@ public class Employee {
         return branch;
     }
 
+    public LocalDate getInternshipStartDate() {
+        return internshipStartDate;
+    }
+
+    public Integer getInternshipDurationMonths() {
+        return internshipDurationMonths;
+    }
+
+    public LocalDate getInternshipEndDate() {
+        return internshipEndDate;
+    }
+
+    public String getStipendType() {
+        return stipendType;
+    }
+
+    public LocalDate getEmploymentStartDate() {
+        return employmentStartDate;
+    }
+
+    public LocalDate getEmploymentEndDate() {
+        return employmentEndDate;
+    }
+
+    public String getLastActionType() {
+        return lastActionType;
+    }
+
+    public String getLastActionReason() {
+        return lastActionReason;
+    }
+
+    public String getLastActionBy() {
+        return lastActionBy;
+    }
+
+    public String getLastActionByEmail() {
+        return lastActionByEmail;
+    }
+
+    public OffsetDateTime getLastActionAt() {
+        return lastActionAt;
+    }
 
     // =========================
     // SETTERS
@@ -179,5 +268,48 @@ public class Employee {
     public void setBranch(Branch branch) {
         this.branch = branch;
     }
-}
 
+    public void setInternshipStartDate(LocalDate internshipStartDate) {
+        this.internshipStartDate = internshipStartDate;
+    }
+
+    public void setInternshipDurationMonths(Integer internshipDurationMonths) {
+        this.internshipDurationMonths = internshipDurationMonths;
+    }
+
+    public void setInternshipEndDate(LocalDate internshipEndDate) {
+        this.internshipEndDate = internshipEndDate;
+    }
+
+    public void setStipendType(String stipendType) {
+        this.stipendType = stipendType;
+    }
+
+    public void setEmploymentStartDate(LocalDate employmentStartDate) {
+        this.employmentStartDate = employmentStartDate;
+    }
+
+    public void setEmploymentEndDate(LocalDate employmentEndDate) {
+        this.employmentEndDate = employmentEndDate;
+    }
+
+    public void setLastActionType(String lastActionType) {
+        this.lastActionType = lastActionType;
+    }
+
+    public void setLastActionReason(String lastActionReason) {
+        this.lastActionReason = lastActionReason;
+    }
+
+    public void setLastActionBy(String lastActionBy) {
+        this.lastActionBy = lastActionBy;
+    }
+
+    public void setLastActionByEmail(String lastActionByEmail) {
+        this.lastActionByEmail = lastActionByEmail;
+    }
+
+    public void setLastActionAt(OffsetDateTime lastActionAt) {
+        this.lastActionAt = lastActionAt;
+    }
+}

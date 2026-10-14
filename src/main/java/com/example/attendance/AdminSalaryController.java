@@ -57,6 +57,94 @@ public class AdminSalaryController {
         }
 
         // =========================================
+        // EMPLOYEE ANNIVERSARY NOTICE STATUS
+        // =========================================
+
+        @GetMapping("/anniversary-notice/{employeeId}")
+        public boolean isAnniversaryNoticePending(
+                        @PathVariable Integer employeeId) {
+
+                Employee employee = employeeRepository.findById(employeeId)
+                                .orElseThrow(() -> new ResponseStatusException(
+                                                HttpStatus.NOT_FOUND,
+                                                "Employee not found"));
+
+                if (!Boolean.TRUE.equals(employee.getActive())
+                                || employee.getJoiningDate() == null
+                                || employee.getJoiningDate().trim().isEmpty()) {
+                        return false;
+                }
+
+                LocalDate joiningDate;
+
+                try {
+                        joiningDate = LocalDate.parse(employee.getJoiningDate().trim());
+                } catch (Exception exception) {
+                        return false;
+                }
+
+                LocalDate today = LocalDate.now(ZoneId.of("Asia/Kolkata"));
+
+                int day = Math.min(
+                                joiningDate.getDayOfMonth(),
+                                joiningDate.withYear(today.getYear())
+                                                .withDayOfMonth(1)
+                                                .lengthOfMonth());
+
+                LocalDate anniversaryDate = LocalDate.of(
+                                today.getYear(),
+                                joiningDate.getMonthValue(),
+                                day);
+
+                if (anniversaryDate.isAfter(today)
+                                || today.getYear() <= joiningDate.getYear()) {
+                        return false;
+                }
+
+                List<AdminActionHistory> actions = historyRepository
+                                .findByEmployeeIdAndActionDateGreaterThanEqualOrderByActionDateDescActionTimeDesc(
+                                                employeeId,
+                                                anniversaryDate);
+
+                for (AdminActionHistory history : actions) {
+
+                        String action = history.getAction() == null
+                                        ? ""
+                                        : history.getAction().trim().toUpperCase();
+
+                        String field = history.getFieldName() == null
+                                        ? ""
+                                        : history.getFieldName().trim().toUpperCase();
+
+                        // An actual salary increase resolves the notice.
+                        if ("SALARY UPDATE".equals(action)
+                                        && "SALARY".equals(field)) {
+
+                                try {
+                                        double oldSalary = Double.parseDouble(history.getOldValue());
+                                        double newSalary = Double.parseDouble(history.getNewValue());
+
+                                        if (newSalary > oldSalary) {
+                                                return false;
+                                        }
+                                } catch (Exception ignored) {
+                                        // Invalid history values do not resolve the notice.
+                                }
+                        }
+
+                        // Recognize explicitly recorded promotion/upgradation actions.
+                        if (action.contains("PROMOTION")
+                                        || action.contains("UPGRADATION")
+                                        || field.equals("PROMOTION")
+                                        || field.equals("UPGRADATION")) {
+                                return false;
+                        }
+                }
+
+                return true;
+        }
+
+        // =========================================
         // UPDATE EMPLOYEE SALARY
         // =========================================
 
@@ -65,25 +153,21 @@ public class AdminSalaryController {
                         @PathVariable Integer employeeId,
                         @RequestBody AdminSalaryUpdateRequest request) {
 
-                Admin admin = findLoggedInAdmin(
-                                request.getAdminEmail());
+                Admin admin = findLoggedInAdmin(request.getAdminEmail());
 
                 if (request.getNewSalary() == null) {
-
                         throw new ResponseStatusException(
                                         HttpStatus.BAD_REQUEST,
                                         "Salary is required");
                 }
 
                 if (request.getNewSalary() < 0) {
-
                         throw new ResponseStatusException(
                                         HttpStatus.BAD_REQUEST,
                                         "Salary cannot be negative");
                 }
 
-                validateReason(
-                                request.getReason());
+                validateReason(request.getReason());
 
                 Employee employee = employeeRepository.findById(employeeId)
                                 .orElseThrow(() -> new ResponseStatusException(
@@ -91,14 +175,12 @@ public class AdminSalaryController {
                                                 "Employee not found"));
 
                 if (!Boolean.TRUE.equals(employee.getActive())) {
-
                         throw new ResponseStatusException(
                                         HttpStatus.BAD_REQUEST,
                                         "Employee is inactive");
                 }
 
                 if ("ADMIN".equalsIgnoreCase(employee.getRole())) {
-
                         throw new ResponseStatusException(
                                         HttpStatus.BAD_REQUEST,
                                         "Salary cannot be updated for admin");
@@ -111,14 +193,12 @@ public class AdminSalaryController {
                 Double newSalary = request.getNewSalary();
 
                 if (Double.compare(oldSalary, newSalary) == 0) {
-
                         throw new ResponseStatusException(
                                         HttpStatus.BAD_REQUEST,
                                         "No salary change detected");
                 }
 
                 employee.setSalary(newSalary);
-
                 employeeRepository.save(employee);
 
                 saveHistory(
@@ -136,13 +216,8 @@ public class AdminSalaryController {
         // =========================================
         // CALCULATE MONTHLY SALARY
         //
-        // working days = month - Sundays - holidays
-        // one day = monthly salary / working days
-        // payable days = present + approved sick/casual
-        // + absent days covered by leave balance
-        // salary = one day x payable days
-        //
-        // All the maths is inside PayrollService.
+        // Existing salary calculation is preserved.
+        // All payroll maths remains inside PayrollService.
         // =========================================
 
         @GetMapping("/calculate")
@@ -183,20 +258,16 @@ public class AdminSalaryController {
         // FIND LOGGED-IN ADMIN
         // =========================================
 
-        private Admin findLoggedInAdmin(
-                        String email) {
+        private Admin findLoggedInAdmin(String email) {
 
-                if (email == null ||
-                                email.trim().isEmpty()) {
-
+                if (email == null || email.trim().isEmpty()) {
                         throw new ResponseStatusException(
                                         HttpStatus.UNAUTHORIZED,
                                         "Admin login required");
                 }
 
                 return adminRepository
-                                .findByEmail(
-                                                email.trim())
+                                .findByEmail(email.trim())
                                 .orElseThrow(() -> new ResponseStatusException(
                                                 HttpStatus.UNAUTHORIZED,
                                                 "Logged-in admin not found"));
@@ -206,19 +277,15 @@ public class AdminSalaryController {
         // REASON VALIDATION
         // =========================================
 
-        private void validateReason(
-                        String reason) {
+        private void validateReason(String reason) {
 
-                if (reason == null ||
-                                reason.trim().isEmpty()) {
-
+                if (reason == null || reason.trim().isEmpty()) {
                         throw new ResponseStatusException(
                                         HttpStatus.BAD_REQUEST,
                                         "Reason is required for this operation");
                 }
 
                 if (reason.trim().length() < 3) {
-
                         throw new ResponseStatusException(
                                         HttpStatus.BAD_REQUEST,
                                         "Please enter a valid reason");
@@ -240,40 +307,20 @@ public class AdminSalaryController {
 
                 AdminActionHistory history = new AdminActionHistory();
 
-                history.setAdminName(
-                                admin.getAdminName());
-
-                history.setAction(
-                                action);
-
-                history.setEmployeeId(
-                                employee.getId());
-
-                history.setEmployeeCode(
-                                employee.getEmployeeCode());
-
-                history.setEmployeeName(
-                                employee.getName());
-
-                history.setReason(
-                                reason.trim());
+                history.setAdminName(admin.getAdminName());
+                history.setAction(action);
+                history.setEmployeeId(employee.getId());
+                history.setEmployeeCode(employee.getEmployeeCode());
+                history.setEmployeeName(employee.getName());
+                history.setReason(reason.trim());
 
                 ZoneId indiaZone = ZoneId.of("Asia/Kolkata");
 
-                history.setActionDate(
-                                LocalDate.now(indiaZone));
-
-                history.setActionTime(
-                                LocalTime.now(indiaZone));
-
-                history.setFieldName(
-                                fieldName);
-
-                history.setOldValue(
-                                oldValue);
-
-                history.setNewValue(
-                                newValue);
+                history.setActionDate(LocalDate.now(indiaZone));
+                history.setActionTime(LocalTime.now(indiaZone));
+                history.setFieldName(fieldName);
+                history.setOldValue(oldValue);
+                history.setNewValue(newValue);
 
                 historyRepository.save(history);
         }

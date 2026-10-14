@@ -1,713 +1,865 @@
 
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
-
 <meta charset="UTF-8">
-
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Growbytee - Employee Login</title>
 
+<!-- HUMAN FACE LIBRARY -->
+<script src="https://cdn.jsdelivr.net/npm/@vladmandic/human/dist/human.js"></script>
 
-<!-- =========================
-     HUMAN FACE LIBRARY
-========================== -->
+ <style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
 
-<script
-    src="https://cdn.jsdelivr.net/npm/@vladmandic/human/dist/human.js">
-</script>
+:root {
+    --primary: #16a34a;
+    --primary-dark: #15803d;
+    --navy: #101512;
+    --text: #1b2820;
+    --muted: #6b786f;
+    --border: #dce5de;
+    --surface: #ffffff;
+    --background: #f3f6f3;
+}
 
+body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 28px;
+    background: var(--background);
+    color: var(--text);
+}
 
-<style>
+.page-container {
+    width: 100%;
+    max-width: 1060px;
+    min-height: 650px;
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    background: var(--surface);
+    border: 1px solid #e0e8e1;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(16, 35, 22, 0.10);
+}
 
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: Arial, sans-serif;
-    }
+/* CORPORATE BRAND PANEL */
 
+.brand-panel {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 45px 38px;
+    color: #fff;
+    overflow: hidden;
+    background: linear-gradient(
+        145deg,
+        #1b2c20 0%,
+        #101512 58%,
+        #080c09 100%
+    );
+}
 
+.brand-panel::before {
+    content: "";
+    position: absolute;
+    width: 300px;
+    height: 300px;
+    right: -145px;
+    top: 100px;
+    border: 1px solid rgba(74, 222, 128, 0.16);
+    border-radius: 50%;
+    box-shadow:
+        0 0 0 35px rgba(74, 222, 128, 0.035),
+        0 0 0 75px rgba(74, 222, 128, 0.025);
+    pointer-events: none;
+}
+
+.brand-panel::after {
+    content: "";
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    bottom: -120px;
+    left: -90px;
+    border-radius: 50%;
+    background: rgba(22, 163, 74, 0.18);
+    pointer-events: none;
+}
+
+.brand-content,
+.brand-footer,
+.brand-logo {
+    position: relative;
+    z-index: 1;
+}
+
+.brand-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo-mark {
+    width: 43px;
+    height: 43px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: #ffffff;
+    color: #15803d;
+    font-size: 23px;
+    font-weight: 800;
+    flex-shrink: 0;
+}
+
+.brand-logo h1 {
+    font-size: 23px;
+    letter-spacing: 1.5px;
+    font-weight: 750;
+}
+
+.brand-logo p {
+    margin-top: 4px;
+    font-size: 11px;
+    letter-spacing: 1.7px;
+    color: #c3d8c8;
+    text-transform: uppercase;
+}
+
+.brand-content {
+    margin: 65px 0;
+}
+
+.brand-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border: 1px solid rgba(74, 222, 128, 0.25);
+    border-radius: 30px;
+    background: rgba(22, 163, 74, 0.10);
+    color: #dcfce7;
+    font-size: 12px;
+    margin-bottom: 24px;
+}
+
+.brand-tag span {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #4ade80;
+}
+
+.brand-content h2 {
+    max-width: 350px;
+    font-size: clamp(29px, 3vw, 39px);
+    line-height: 1.25;
+    letter-spacing: -.8px;
+    font-weight: 650;
+}
+
+.brand-content h2 span {
+    color: #4ade80;
+}
+
+.brand-description {
+    margin-top: 19px;
+    max-width: 330px;
+    color: #c4d2c7;
+    font-size: 14px;
+    line-height: 1.9;
+}
+
+.brand-features {
+    display: grid;
+    gap: 18px;
+    margin-top: 35px;
+}
+
+.brand-feature {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    color: #e0ebe2;
+    font-size: 13px;
+}
+
+.feature-icon {
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(74, 222, 128, 0.20);
+    border-radius: 9px;
+    background: rgba(22, 163, 74, 0.10);
+    color: #4ade80;
+    font-size: 16px;
+}
+
+.brand-footer {
+    color: #a7b9aa;
+    font-size: 11px;
+    line-height: 1.8;
+}
+
+/* RIGHT SIDE */
+
+.form-panel {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 48px 60px;
+    min-width: 0;
+}
+
+.mobile-brand {
+    display: none;
+}
+
+.logo {
+    margin-bottom: 28px;
+}
+
+.logo h1 {
+    color: #15803d;
+    font-size: 22px;
+    letter-spacing: 1px;
+    font-weight: 800;
+}
+
+.logo p {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 6px;
+}
+
+.login-title,
+.face-title {
+    margin-bottom: 9px;
+    color: var(--text);
+    font-size: 27px;
+    font-weight: 700;
+    letter-spacing: -.5px;
+}
+
+.form-subtitle {
+    margin-bottom: 30px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.input-group {
+    margin-bottom: 21px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 9px;
+    color: #33483a;
+    font-size: 13px;
+    font-weight: 650;
+}
+
+.input-group input {
+    width: 100%;
+    height: 48px;
+    padding: 0 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    outline: none;
+    background: #fff;
+    color: var(--text);
+    font-size: 14px;
+    transition: border-color .2s, box-shadow .2s;
+}
+
+.input-group input::placeholder {
+    color: #a1ada3;
+}
+
+.input-group input:hover {
+    border-color: #a8c8af;
+}
+
+.input-group input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.12);
+}
+
+.password-wrapper {
+    position: relative;
+}
+
+.password-wrapper input {
+    padding-right: 65px;
+}
+
+.eye-btn {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    padding: 6px;
+    border: none;
+    background: transparent;
+    color: #15803d;
+    font-size: 12px;
+    font-weight: 650;
+    cursor: pointer;
+}
+
+.login-btn,
+.continue-btn,
+.face-btn {
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 650;
+    cursor: pointer;
+    transition: background .2s, transform .2s, box-shadow .2s;
+}
+
+.login-btn,
+.face-btn {
+    background: #15803d;
+}
+
+.login-btn:hover,
+.face-btn:hover {
+    background: #166534;
+    box-shadow: 0 5px 14px rgba(22, 101, 52, 0.18);
+}
+
+.login-btn:active,
+.continue-btn:active,
+.face-btn:active {
+    transform: translateY(1px);
+}
+
+#message,
+#setupMessage,
+#faceMessage {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+
+.security-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    margin-top: 24px;
+    color: #879589;
+    font-size: 11px;
+}
+
+/* PASSWORD SETUP */
+
+.password-setup,
+.face-registration {
+    display: none;
+}
+
+.password-info,
+.face-info {
+    margin-bottom: 23px;
+    padding: 14px 15px;
+    border: 1px solid #d1ead7;
+    border-radius: 8px;
+    background: #f0f9f1;
+    color: #285c37;
+    font-size: 12px;
+    line-height: 1.8;
+}
+
+.continue-btn {
+    background: #15803d;
+}
+
+.continue-btn:hover:not(:disabled) {
+    background: #166534;
+    box-shadow: 0 5px 14px rgba(22, 101, 52, 0.16);
+}
+
+.continue-btn:disabled,
+.face-btn:disabled {
+    background: #a8b4aa;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+.back-btn,
+.skip-face-btn {
+    width: 100%;
+    min-height: 44px;
+    margin-top: 11px;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #fff;
+    color: #4c5e50;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s, border-color .2s;
+}
+
+.back-btn:hover,
+.skip-face-btn:hover {
+    border-color: #a7d6b2;
+    background: #f2faf4;
+}
+
+#passwordMatchMessage {
+    min-height: 16px;
+    margin-top: -8px;
+    margin-bottom: 15px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* FACE REGISTRATION */
+
+.face-title {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.camera-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    margin-bottom: 14px;
+    overflow: hidden;
+    border: 1px solid #d5e2d8;
+    border-radius: 12px;
+    background: #101512;
+}
+
+#faceVideo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scaleX(-1);
+}
+
+#faceCanvas {
+    display: none;
+}
+
+.camera-status {
+    min-height: 18px;
+    margin-bottom: 14px;
+    color: var(--muted);
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+#faceContinueBtn {
+    margin-top: 12px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 800px) {
     body {
-        min-height: 100vh;
+        padding: 18px;
+    }
 
+    .page-container {
+        max-width: 540px;
+        min-height: auto;
+        grid-template-columns: 1fr;
+    }
+
+    .brand-panel {
+        display: none;
+    }
+
+    .form-panel {
+        padding: 38px 35px;
+    }
+
+    .mobile-brand {
         display: flex;
-        justify-content: center;
         align-items: center;
-
-        background: #f4f7fb;
+        gap: 11px;
+        margin-bottom: 34px;
     }
 
-
-    .login-container {
-        width: 380px;
-        max-width: 95%;
-
-        background: white;
-
-        padding: 35px;
-
-        border-radius: 15px;
-
-        box-shadow:
-            0 10px 30px rgba(0, 0, 0, 0.12);
+    .mobile-brand .logo-mark {
+        background: #e8f7ec;
+        color: #15803d;
     }
 
-
-    .logo {
-        text-align: center;
-
-        margin-bottom: 10px;
+    .mobile-brand h1 {
+        color: #101512;
+        font-size: 19px;
+        letter-spacing: 1px;
     }
 
+    .mobile-brand p {
+        margin-top: 4px;
+        color: var(--muted);
+        font-size: 11px;
+    }
+}
 
-    .logo h1 {
-        color: #2563eb;
-
-        font-size: 30px;
+@media (max-width: 480px) {
+    body {
+        padding: 0;
+        align-items: stretch;
+        background: #fff;
     }
 
-
-    .logo p {
-        color: #777;
-
-        margin-top: 5px;
-
-        font-size: 14px;
-    }
-
-
-    .login-title {
-        text-align: center;
-
-        margin: 25px 0;
-
-        color: #333;
-    }
-
-
-    .input-group {
-        margin-bottom: 18px;
-    }
-
-
-    .input-group label {
-        display: block;
-
-        margin-bottom: 7px;
-
-        color: #444;
-
-        font-size: 14px;
-
-        font-weight: bold;
-    }
-
-
-    .password-wrapper {
-        position: relative;
-    }
-
-
-    .input-group input {
-        width: 100%;
-
-        padding: 12px;
-
-        border: 1px solid #ddd;
-
-        border-radius: 8px;
-
-        outline: none;
-
-        font-size: 15px;
-    }
-
-
-    .password-wrapper input {
-        padding-right: 65px;
-    }
-
-
-    .input-group input:focus {
-        border-color: #2563eb;
-    }
-
-
-    .eye-btn {
-        position: absolute;
-
-        right: 8px;
-        top: 50%;
-
-        transform: translateY(-50%);
-
+    .page-container {
+        min-height: 100vh;
         border: none;
-
-        background: transparent;
-
-        cursor: pointer;
-
-        font-size: 12px;
-
-        color: #2563eb;
-
-        padding: 5px 7px;
+        border-radius: 0;
+        box-shadow: none;
     }
 
-
-    .login-btn,
-    .continue-btn,
-    .face-btn {
-        width: 100%;
-
-        padding: 13px;
-
-        border: none;
-
-        border-radius: 8px;
-
-        color: white;
-
-        font-size: 16px;
-
-        font-weight: bold;
-
-        cursor: pointer;
+    .form-panel {
+        justify-content: flex-start;
+        padding: 28px 23px;
     }
 
-
-    .login-btn {
-        background: #2563eb;
+    .mobile-brand {
+        margin-bottom: 42px;
     }
 
-
-    .login-btn:hover {
-        background: #1d4ed8;
-    }
-
-
-    #message,
-    #setupMessage,
-    #faceMessage {
-        text-align: center;
-
-        margin-top: 15px;
-
-        font-size: 14px;
-    }
-
-
-    /* =========================
-       FIRST TIME PASSWORD SETUP
-    ========================== */
-
-    .password-setup,
-    .face-registration {
-        display: none;
-    }
-
-
-    .password-info,
-    .face-info {
-        background: #eff6ff;
-
-        border: 1px solid #bfdbfe;
-
-        color: #1e40af;
-
-        padding: 12px;
-
-        border-radius: 8px;
-
-        margin-bottom: 18px;
-
-        font-size: 13px;
-
-        line-height: 1.5;
-    }
-
-
-    .continue-btn {
-        background: #16a34a;
-    }
-
-
-    .continue-btn:hover {
-        background: #15803d;
-    }
-
-
-    .continue-btn:disabled {
-        background: #9ca3af;
-
-        cursor: not-allowed;
-    }
-
-
-    .back-btn {
-        width: 100%;
-
-        padding: 11px;
-
-        margin-top: 10px;
-
-        border: 1px solid #ddd;
-
-        border-radius: 8px;
-
-        background: white;
-
-        color: #555;
-
-        font-size: 14px;
-
-        cursor: pointer;
-    }
-
-
-    .back-btn:hover {
-        background: #f5f5f5;
-    }
-
-
-    #passwordMatchMessage {
-        font-size: 13px;
-
-        margin-top: -8px;
-
-        margin-bottom: 15px;
-
-        font-weight: bold;
-    }
-
-
-    /* =========================
-       FACE REGISTRATION
-    ========================== */
-
+    .login-title,
     .face-title {
-        text-align: center;
-
-        margin: 25px 0 15px;
-
-        color: #333;
+        font-size: 25px;
     }
 
-
-    .camera-wrapper {
-        width: 100%;
-
-        aspect-ratio: 4 / 3;
-
-        background: #111827;
-
-        border-radius: 12px;
-
-        overflow: hidden;
-
-        position: relative;
-
-        margin-bottom: 15px;
+    .form-subtitle {
+        margin-bottom: 27px;
     }
+}
 
-
-    #faceVideo {
-        width: 100%;
-
-        height: 100%;
-
-        object-fit: cover;
-
-        transform: scaleX(-1);
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        transition: none !important;
     }
-
-
-    #faceCanvas {
-        display: none;
-    }
-
-
-    .camera-status {
-        text-align: center;
-
-        font-size: 13px;
-
-        color: #555;
-
-        margin-bottom: 12px;
-
-        min-height: 18px;
-    }
-
-
-    .face-btn {
-        background: #2563eb;
-    }
-
-
-    .face-btn:hover {
-        background: #1d4ed8;
-    }
-
-
-    .face-btn:disabled {
-        background: #9ca3af;
-
-        cursor: not-allowed;
-    }
-
-
-    .skip-face-btn {
-        width: 100%;
-
-        padding: 11px;
-
-        margin-top: 10px;
-
-        border: 1px solid #ddd;
-
-        border-radius: 8px;
-
-        background: white;
-
-        color: #555;
-
-        font-size: 14px;
-
-        cursor: pointer;
-    }
-
+}
 </style>
+
 
 </head>
 
-
 <body>
 
+<div class="page-container">
 
-<div class="login-container">
+    <!-- CORPORATE BRAND PANEL -->
 
+    <aside class="brand-panel">
 
-    <!-- =================================
-         EMPLOYEE LOGIN
-    ================================== -->
+        <div class="brand-logo">
+            <div class="logo-mark">G</div>
+            <div>
+                <h1>GROWBYTEE</h1>
+                <p>Workforce Management</p>
+            </div>
+        </div>
 
-    <div id="loginSection">
+        <div class="brand-content">
 
+            <div class="brand-tag">
+                <span></span>
+                Employee Portal
+            </div>
 
-        <div class="logo">
+            <h2>
+                Work smarter.<br>
+                <span>Grow together.</span>
+            </h2>
 
-            <h1>GROWBYTEE</h1>
-
-            <p>
-                Attendance Management System
+            <p class="brand-description">
+                Your workplace, attendance and daily
+                work essentials — all in one secure place.
             </p>
 
+            <div class="brand-features">
+
+                <div class="brand-feature">
+                    <div class="feature-icon">✓</div>
+                    <span>Simple and secure employee access</span>
+                </div>
+
+                <div class="brand-feature">
+                    <div class="feature-icon">◷</div>
+                    <span>Convenient attendance management</span>
+                </div>
+
+                <div class="brand-feature">
+                    <div class="feature-icon">⌁</div>
+                    <span>One place for your work essentials</span>
+                </div>
+
+            </div>
         </div>
 
-
-        <h2 class="login-title">
-            Employee Login
-        </h2>
-
-
-        <div class="input-group">
-
-            <label>
-                Email
-            </label>
-
-            <input
-                type="email"
-                id="email"
-                placeholder="Enter your email"
-                autocomplete="off">
-
+        <div class="brand-footer">
+            GROWBYTEE<br>
+            © 2026 Employee Portal
         </div>
 
+    </aside>
 
-        <div class="input-group">
+    <!-- FORM PANEL -->
 
-            <label>
-                Password
-            </label>
+    <main class="form-panel">
 
+        <div class="mobile-brand">
+            <div class="logo-mark">G</div>
+            <div>
+                <h1>GROWBYTEE</h1>
+                <p>Attendance Management System</p>
+            </div>
+        </div>
 
-            <div class="password-wrapper">
+        <!-- EMPLOYEE LOGIN -->
 
+        <div id="loginSection">
+
+            <div class="logo">
+                <h1>Welcome back</h1>
+                <p>Sign in to your employee account</p>
+            </div>
+
+            <h2 class="login-title">Employee Login</h2>
+
+            <p class="form-subtitle">
+                Enter your registered email and password
+                to continue to your dashboard.
+            </p>
+
+            <div class="input-group">
+                <label for="email">Email Address</label>
                 <input
-                    type="password"
-                    id="password"
-                    placeholder="Enter your password"
-                    autocomplete="off">
+                    type="email"
+                    id="email"
+                    placeholder="name@company.com"
+                    autocomplete="username">
+            </div>
 
+            <div class="input-group">
+                <label for="password">Password</label>
 
-                <button
-                    type="button"
-                    class="eye-btn"
-                    onclick="togglePassword('password', this)">
+                <div class="password-wrapper">
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Enter your password"
+                        autocomplete="current-password">
 
-                    Show
+                    <button
+                        type="button"
+                        class="eye-btn"
+                        onclick="togglePassword('password', this)">
+                        Show
+                    </button>
+                </div>
+            </div>
 
-                </button>
+            <button class="login-btn" onclick="login()">
+                Sign In
+            </button>
 
+            <p id="message" role="status" aria-live="polite"></p>
+
+            <div class="security-note">
+                <span>◆</span>
+                Employee access portal
             </div>
 
         </div>
 
+        <!-- FIRST-TIME PASSWORD SETUP -->
 
-        <button
-            class="login-btn"
-            onclick="login()">
+        <div id="passwordSetupSection" class="password-setup">
 
-            Login
-
-        </button>
-
-
-        <p id="message"></p>
-
-    </div>
-
-
-
-    <!-- =================================
-         FIRST TIME PASSWORD SETUP
-    ================================== -->
-
-    <div
-        id="passwordSetupSection"
-        class="password-setup">
-
-
-        <div class="logo">
-
-            <h1>GROWBYTEE</h1>
-
-            <p>
-                Attendance Management System
-            </p>
-
-        </div>
-
-
-        <h2 class="login-title">
-            Set Employee Password
-        </h2>
-
-
-        <div class="password-info">
-
-            This is your first login.<br>
-
-            Enter the same email registered
-            by Admin and create your password.
-
-        </div>
-
-
-        <div class="input-group">
-
-            <label>
-                Employee Email
-            </label>
-
-            <input
-                type="email"
-                id="setupEmail"
-                placeholder="Enter your employee email"
-                autocomplete="off">
-
-        </div>
-
-
-        <div class="input-group">
-
-            <label>
-                New Password
-            </label>
-
-
-            <div class="password-wrapper">
-
-                <input
-                    type="password"
-                    id="newPassword"
-                    placeholder="Enter new password"
-                    autocomplete="new-password"
-                    oninput="checkPasswordMatch()">
-
-
-                <button
-                    type="button"
-                    class="eye-btn"
-                    onclick="togglePassword('newPassword', this)">
-
-                    Show
-
-                </button>
-
+            <div class="logo">
+                <h1>GROWBYTEE</h1>
+                <p>Attendance Management System</p>
             </div>
 
-        </div>
+            <h2 class="login-title">Create your password</h2>
 
-
-        <div class="input-group">
-
-            <label>
-                Confirm Password
-            </label>
-
-
-            <div class="password-wrapper">
-
-                <input
-                    type="password"
-                    id="confirmPassword"
-                    placeholder="Confirm your password"
-                    autocomplete="new-password"
-                    oninput="checkPasswordMatch()">
-
-
-                <button
-                    type="button"
-                    class="eye-btn"
-                    onclick="togglePassword('confirmPassword', this)">
-
-                    Show
-
-                </button>
-
-            </div>
-
-        </div>
-
-
-        <p id="passwordMatchMessage"></p>
-
-
-        <button
-            id="continueBtn"
-            class="continue-btn"
-            onclick="setEmployeePassword()"
-            disabled>
-
-            Continue
-
-        </button>
-
-
-        <button
-            class="back-btn"
-            onclick="backToLogin()">
-
-            Back to Login
-
-        </button>
-
-
-        <p id="setupMessage"></p>
-
-    </div>
-
-
-
-    <!-- =================================
-         FIRST TIME FACE REGISTRATION
-    ================================== -->
-
-    <div
-        id="faceRegistrationSection"
-        class="face-registration">
-
-
-        <div class="logo">
-
-            <h1>GROWBYTEE</h1>
-
-            <p>
-                Attendance Management System
+            <p class="form-subtitle">
+                Secure your account to get started.
             </p>
 
+            <div class="password-info">
+                This is your first login. Enter the same email
+                registered by your Admin and create a password
+                for your employee account.
+            </div>
+
+            <div class="input-group">
+                <label for="setupEmail">Employee Email</label>
+                <input
+                    type="email"
+                    id="setupEmail"
+                    placeholder="Enter your employee email"
+                    autocomplete="username">
+            </div>
+
+            <div class="input-group">
+                <label for="newPassword">New Password</label>
+
+                <div class="password-wrapper">
+                    <input
+                        type="password"
+                        id="newPassword"
+                        placeholder="Enter new password"
+                        autocomplete="new-password"
+                        oninput="checkPasswordMatch()">
+
+                    <button
+                        type="button"
+                        class="eye-btn"
+                        onclick="togglePassword('newPassword', this)">
+                        Show
+                    </button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label for="confirmPassword">Confirm Password</label>
+
+                <div class="password-wrapper">
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        placeholder="Confirm your password"
+                        autocomplete="new-password"
+                        oninput="checkPasswordMatch()">
+
+                    <button
+                        type="button"
+                        class="eye-btn"
+                        onclick="togglePassword('confirmPassword', this)">
+                        Show
+                    </button>
+                </div>
+            </div>
+
+            <p id="passwordMatchMessage" aria-live="polite"></p>
+
+            <button
+                id="continueBtn"
+                class="continue-btn"
+                onclick="setEmployeePassword()"
+                disabled>
+                Continue
+            </button>
+
+            <button class="back-btn" onclick="backToLogin()">
+                Back to Login
+            </button>
+
+            <p id="setupMessage" role="status" aria-live="polite"></p>
+
         </div>
 
+        <!-- FIRST-TIME FACE REGISTRATION -->
 
-        <h2 class="face-title">
-            Face Registration
-        </h2>
+        <div id="faceRegistrationSection" class="face-registration">
 
+            <div class="logo">
+                <h1>GROWBYTEE</h1>
+                <p>Attendance Management System</p>
+            </div>
 
-        <div class="face-info">
+            <h2 class="face-title">Face Registration</h2>
 
-            Your first-time setup is almost complete.<br><br>
+            <p class="form-subtitle">
+                Complete your account verification.
+            </p>
 
-            Allow camera access and keep your face
-            clearly visible inside the camera frame.
+            <div class="face-info">
+                Your first-time setup is almost complete.
+                Allow camera access and keep your face clearly
+                visible inside the camera frame.
+                <br><br>
+                Your face descriptor will be registered for
+                attendance verification.
+            </div>
 
-            <br><br>
+            <div class="camera-wrapper">
+                <video
+                    id="faceVideo"
+                    autoplay
+                    muted
+                    playsinline>
+                </video>
 
-            Your face descriptor will be registered
-            for attendance verification.
+                <canvas id="faceCanvas"></canvas>
+            </div>
+
+            <p
+                id="cameraStatus"
+                class="camera-status"
+                role="status"
+                aria-live="polite">
+                Starting camera...
+            </p>
+
+            <button
+                id="captureFaceBtn"
+                class="face-btn"
+                onclick="registerFace()"
+                disabled>
+                Register Face
+            </button>
+
+            <button
+                id="faceContinueBtn"
+                class="continue-btn"
+                onclick="openDashboard()"
+                style="display:none;">
+                Continue to Dashboard
+            </button>
+
+            <button
+                type="button"
+                class="skip-face-btn"
+                onclick="backToLogin()">
+                Back to Login
+            </button>
+
+            <p id="faceMessage" role="status" aria-live="polite"></p>
 
         </div>
 
-
-        <div class="camera-wrapper">
-
-            <video
-                id="faceVideo"
-                autoplay
-                muted
-                playsinline>
-            </video>
-
-
-            <canvas
-                id="faceCanvas">
-            </canvas>
-
-        </div>
-
-
-        <p
-            id="cameraStatus"
-            class="camera-status">
-
-            Starting camera...
-
-        </p>
-
-
-        <button
-            id="captureFaceBtn"
-            class="face-btn"
-            onclick="registerFace()"
-            disabled>
-
-            Register Face
-
-        </button>
-
-
-        <button
-            id="faceContinueBtn"
-            class="continue-btn"
-            onclick="openDashboard()"
-            style="display:none;">
-
-            Continue to Dashboard
-
-        </button>
-
-
-        <p id="faceMessage"></p>
-
-    </div>
+    </main>
 
 </div>
 

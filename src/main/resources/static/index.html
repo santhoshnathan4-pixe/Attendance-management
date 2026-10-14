@@ -1,114 +1,581 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Attendance Management</title>
+    <title>Growbytee | Attendance Management</title>
+    <meta name="theme-color" content="#102344">
+    <meta name="description" content="Growbytee Attendance Management System">
 
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+:root {
+    --navy: #101512;
+    --blue: #15803d;
+    --text: #1b2820;
+    --muted: #6b786f;
+    --border: #dce5de;
+    --bg: #f3f6f3;
+}
 
-        body {
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-        }
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
-        .container {
-            width: 90%;
-            max-width: 500px;
-            background: white;
-            padding: 45px 35px;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-        }
+body {
+    min-height: 100vh;
+    font-family: "Inter", "Segoe UI", Arial, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+}
 
-        h1 {
-            color: #222;
-            margin-bottom: 10px;
-        }
+.topbar {
+    height: 76px;
+    padding: 0 7%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+}
 
-        .subtitle {
-            color: #666;
-            margin-bottom: 35px;
-        }
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
 
-        .login-btn {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            margin: 15px 0;
-            border: none;
-            border-radius: 10px;
-            color: white;
-            font-size: 17px;
-            font-weight: bold;
-            text-decoration: none;
-            cursor: pointer;
-        }
+.brand-icon {
+    width: 43px;
+    height: 43px;
+    border-radius: 12px;
+    background: #101512;
+    color: #4ade80;
+    display: grid;
+    place-items: center;
+    font-size: 21px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    box-shadow: 0 5px 12px rgba(16, 35, 22, .15);
+}
 
-        .employee-btn {
-            background: #2563eb;
-        }
+.brand-name {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -.5px;
+    color: #101512;
+}
 
-        .employee-btn:hover {
-            background: #1d4ed8;
-        }
+.brand-caption {
+    margin-top: 3px;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+}
 
-        .admin-btn {
-            background: #16a34a;
-        }
+.secure-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #647568;
+}
 
-        .admin-btn:hover {
-            background: #15803d;
-        }
+.secure-dot {
+    width: 8px;
+    height: 8px;
+    background: #16a34a;
+    border-radius: 50%;
+}
 
-        .footer {
-            margin-top: 25px;
-            color: #888;
-            font-size: 13px;
-        }
-    </style>
+main {
+    flex: 1;
+    width: 100%;
+    max-width: 1160px;
+    margin: auto;
+    padding: 55px 28px;
+    display: grid;
+    grid-template-columns: 1fr 440px;
+    align-items: center;
+    gap: 65px;
+}
+
+.intro {
+    padding: 20px 0;
+    animation: fadeUp .65s ease both;
+}
+
+.eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 9px 13px;
+    border: 1px solid #ccebd4;
+    border-radius: 30px;
+    background: #eaf7ed;
+    color: #166534;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.1px;
+    text-transform: uppercase;
+}
+
+.eyebrow-mark {
+    width: 7px;
+    height: 7px;
+    background: #16a34a;
+    border-radius: 50%;
+}
+
+.intro h1 {
+    max-width: 580px;
+    margin: 25px 0 20px;
+    color: #101512;
+    font-size: clamp(36px, 4.5vw, 57px);
+    line-height: 1.12;
+    letter-spacing: -2px;
+    font-weight: 800;
+}
+
+.intro h1 span {
+    color: #15803d;
+}
+
+.intro-text {
+    max-width: 470px;
+    color: #647568;
+    font-size: 16px;
+    line-height: 1.85;
+}
+
+.features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 22px;
+    margin-top: 32px;
+}
+
+.feature {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #405447;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.check {
+    width: 20px;
+    height: 20px;
+    display: grid;
+    place-items: center;
+    background: #dcfce7;
+    color: #15803d;
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.login-panel {
+    padding: 34px;
+    background: #fff;
+    border: 1px solid #e0e8e1;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(22, 39, 28, .08);
+    animation: fadeUp .7s ease both;
+}
+
+.panel-heading {
+    margin-bottom: 7px;
+    color: #101512;
+    font-size: 25px;
+    font-weight: 750;
+    letter-spacing: -.7px;
+}
+
+.panel-subtitle {
+    margin-bottom: 27px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.login-option {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+    padding: 19px 16px;
+    margin-top: 14px;
+    color: inherit;
+    text-decoration: none;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 13px;
+    transition: border-color .2s, background .2s,
+                transform .2s, box-shadow .2s;
+}
+
+.login-option:hover {
+    transform: translateY(-2px);
+    border-color: #9bd4aa;
+    background: #f5fbf6;
+    box-shadow: 0 8px 22px rgba(22, 101, 52, .08);
+}
+
+.option-icon {
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    border-radius: 12px;
+}
+
+.employee-icon {
+    color: #166534;
+    background: #eaf7ed;
+}
+
+.admin-icon {
+    color: #15803d;
+    background: #dcfce7;
+}
+
+.option-icon svg {
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.option-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.option-title {
+    color: #101512;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.option-description {
+    margin-top: 5px;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.arrow {
+    color: #8a998e;
+    font-size: 22px;
+    transition: transform .2s;
+}
+
+.login-option:hover .arrow {
+    transform: translateX(4px);
+    color: #15803d;
+}
+
+.panel-divider {
+    height: 1px;
+    margin: 25px 0 19px;
+    background: #edf2ed;
+}
+
+.privacy-note {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    color: #829087;
+    font-size: 11px;
+    text-align: center;
+    line-height: 1.6;
+}
+
+.privacy-note svg {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+}
+
+footer {
+    min-height: 65px;
+    padding: 18px 7%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    background: #fff;
+    border-top: 1px solid var(--border);
+    color: #849087;
+    font-size: 11px;
+}
+
+.footer-brand {
+    color: #405447;
+    font-weight: 700;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 850px) {
+    main {
+        max-width: 600px;
+        grid-template-columns: 1fr;
+        gap: 30px;
+        padding: 42px 24px;
+    }
+
+    .intro {
+        padding: 0;
+        text-align: center;
+    }
+
+    .intro h1,
+    .intro-text {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .features {
+        justify-content: center;
+    }
+
+    .login-panel {
+        width: 100%;
+        max-width: 480px;
+        margin: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .topbar {
+        height: 68px;
+        padding: 0 20px;
+    }
+
+    .brand-icon {
+        width: 39px;
+        height: 39px;
+    }
+
+    .brand-name {
+        font-size: 17px;
+    }
+
+    .brand-caption {
+        font-size: 9px;
+    }
+
+    .secure-label {
+        font-size: 10px;
+    }
+
+    main {
+        padding: 34px 18px;
+        gap: 29px;
+    }
+
+    .intro h1 {
+        font-size: 37px;
+        letter-spacing: -1.4px;
+    }
+
+    .intro-text {
+        font-size: 14px;
+    }
+
+    .features {
+        gap: 12px;
+    }
+
+    .feature {
+        font-size: 11px;
+    }
+
+    .login-panel {
+        padding: 25px 19px;
+        border-radius: 16px;
+    }
+
+    .panel-heading {
+        font-size: 23px;
+    }
+
+    .login-option {
+        padding: 15px 12px;
+        gap: 12px;
+    }
+
+    .option-icon {
+        width: 43px;
+        height: 43px;
+    }
+
+    footer {
+        justify-content: center;
+        text-align: center;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+    }
+}
+</style>
+
 </head>
 
 <body>
 
-    <div class="container">
-
-        <h1>Attendance Management</h1>
-
-        <p class="subtitle">
-            Please select your login
-        </p>
-
-        <a
-            href="login.html"
-            class="login-btn employee-btn"
-        >
-            Employee Login
-        </a>
-
-        <a
-            href="admin-login.html"
-            class="login-btn admin-btn"
-        >
-            Admin Login
-        </a>
-
-        <div class="footer">
-            Attendance Management System
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-icon" aria-hidden="true">G</div>
+            <div>
+                <div class="brand-name">Growbytee</div>
+                <div class="brand-caption">Workforce Management</div>
+            </div>
         </div>
 
-    </div>
+        <div class="secure-label">
+            <span class="secure-dot"></span>
+            Attendance Portal
+        </div>
+    </header>
+
+    <main>
+        <section class="intro">
+            <div class="eyebrow">
+                <span class="eyebrow-mark"></span>
+                Growbytee Global
+            </div>
+
+            <h1>
+                Work smarter.<br>
+                Manage better.<br>
+                <span>Grow together.</span>
+            </h1>
+
+            <p class="intro-text">
+                Welcome to your workforce management portal.
+                Access attendance, manage your workday, and stay
+                connected with your team through one secure platform.
+            </p>
+
+            <div class="features">
+                <div class="feature">
+                    <span class="check">✓</span>
+                    Attendance Tracking
+                </div>
+
+                <div class="feature">
+                    <span class="check">✓</span>
+                    Workforce Management
+                </div>
+
+                <div class="feature">
+                    <span class="check">✓</span>
+                    Centralized Access
+                </div>
+            </div>
+        </section>
+
+        <section class="login-panel" aria-labelledby="login-heading">
+            <h2 class="panel-heading" id="login-heading">
+                Welcome back
+            </h2>
+
+            <p class="panel-subtitle">
+                Select your account type to continue to your workspace.
+            </p>
+
+            <a href="login.html" class="login-option">
+                <div class="option-icon employee-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="12" cy="8" r="4"></circle>
+                        <path d="M4 21v-2a8 8 0 0 1 16 0v2"></path>
+                    </svg>
+                </div>
+
+                <div class="option-info">
+                    <div class="option-title">Employee Login</div>
+                    <div class="option-description">
+                        Access attendance and your employee dashboard
+                    </div>
+                </div>
+
+                <span class="arrow" aria-hidden="true">→</span>
+            </a>
+
+            <a href="admin-login.html" class="login-option">
+                <div class="option-icon admin-icon">
+                    <svg viewBox="0 0 24 24" aria-hidden="true">
+                        <rect x="4" y="10" width="16" height="11" rx="2"></rect>
+                        <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+                        <circle cx="12" cy="15" r="1"></circle>
+                        <path d="M12 16v2"></path>
+                    </svg>
+                </div>
+
+                <div class="option-info">
+                    <div class="option-title">Admin / Management</div>
+                    <div class="option-description">
+                        Manage employees, attendance and operations
+                    </div>
+                </div>
+
+                <span class="arrow" aria-hidden="true">→</span>
+            </a>
+
+            <div class="panel-divider"></div>
+
+            <div class="privacy-note">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="4" y="10" width="16" height="11" rx="2"></rect>
+                    <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+                </svg>
+                Secure access for authorized users
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div>© <span id="current-year"></span> <span class="footer-brand">Growbytee Global</span></div>
+        <div>Attendance Management System</div>
+    </footer>
+
+    <script>
+        document.getElementById("current-year").textContent =
+            new Date().getFullYear();
+    </script>
 
 </body>
 </html>

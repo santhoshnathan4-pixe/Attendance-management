@@ -4,7 +4,7 @@
 
 <head>
 
-```
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -22,8 +22,8 @@
 }
 
 body {
-    background: #f4f7fb;
-    color: #1f2937;
+    background: #F5F8F6;
+    color: #171717;
 }
 
 .container {
@@ -33,7 +33,7 @@ body {
 
 .sidebar {
     width: 250px;
-    background: #334155;
+    background: linear-gradient(180deg, #0B2E1A, #171717);
     color: white;
     position: fixed;
     left: 0;
@@ -48,11 +48,12 @@ body {
     font-size: 25px;
     font-weight: bold;
     margin-bottom: 8px;
+    color: #FFFFFF;
 }
 
 .admin-title {
     text-align: center;
-    color: #cbd5e1;
+    color: #C7D9CD;
     font-size: 13px;
     margin-bottom: 30px;
 }
@@ -66,7 +67,7 @@ body {
 .menu button {
     border: none;
     background: transparent;
-    color: #e5e7eb;
+    color: #E5E7EB;
     text-align: left;
     padding: 14px 15px;
     border-radius: 10px;
@@ -86,19 +87,19 @@ body {
 
 .menu button:hover,
 .menu button.active {
-    background: rgba(255, 255, 255, 0.15);
+    background: #16803C;
     color: white;
 }
 
 .logout-btn {
     margin-top: 25px;
-    background: #dc2626 !important;
+    background: #DC2626 !important;
     color: white !important;
     text-align: center !important;
 }
 
 .logout-btn:hover {
-    background: #b91c1c !important;
+    background: #B91C1C !important;
 }
 
 .main {
@@ -109,8 +110,8 @@ body {
 
 .header {
     height: 75px;
-    background: white;
-    border-bottom: 1px solid #e5e7eb;
+    background: #FFFFFF;
+    border-bottom: 2px solid #16803C;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -122,7 +123,7 @@ body {
 
 .header h1 {
     font-size: 23px;
-    color: #111827;
+    color: #171717;
 }
 
 .admin-info {
@@ -134,7 +135,7 @@ body {
 }
 
 .admin-badge {
-    background: #2563eb;
+    background: #16803C;
     color: white;
     padding: 8px 13px;
     border-radius: 20px;
@@ -151,7 +152,7 @@ body {
     padding: 24px;
     border-radius: 16px;
     min-height: calc(100vh - 135px);
-    border: 1px solid #e5e7eb;
+    border: 1px solid #D9E7DD;
 }
 
 .section.active {
@@ -159,23 +160,23 @@ body {
 }
 
 #history {
-    background: #f8fafb;
+    background: #F7FAF8;
 }
 
 .section-title {
     font-size: 25px;
     margin-bottom: 8px;
-    color: #111827;
+    color: #171717;
 }
 
 .section-subtitle {
-    color: #64748b;
+    color: #647568;
     margin-bottom: 25px;
     font-size: 14px;
 }
 
 .top-bar {
-    background: white;
+    background: #FFFFFF;
     padding: 16px;
     border-radius: 13px;
     margin-bottom: 18px;
@@ -183,7 +184,8 @@ body {
     justify-content: space-between;
     align-items: center;
     gap: 15px;
-    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
+    box-shadow: 0 4px 15px rgba(11, 46, 26, 0.06);
+    border: 1px solid #E0EAE3;
 }
 
 .btn {
@@ -197,12 +199,12 @@ body {
 }
 
 .btn-primary {
-    background: #2563eb;
+    background: #16803C;
     color: white;
 }
 
 .btn-primary:hover {
-    background: #1d4ed8;
+    background: #0F642E;
 }
 
 /*
@@ -210,10 +212,10 @@ body {
  */
 
 .table-card {
-    background: white;
+    background: #FFFFFF;
     border-radius: 14px;
-    box-shadow: 0 5px 20px rgba(15, 23, 42, 0.06);
-    border: 1px solid #e5e7eb;
+    box-shadow: 0 5px 20px rgba(11, 46, 26, 0.06);
+    border: 1px solid #D9E7DD;
     overflow: hidden;
     width: 100%;
 }
@@ -232,7 +234,7 @@ body {
     overflow-x: hidden;
     position: relative;
     scrollbar-width: thin;
-    scrollbar-color: #94a3b8 #f1f5f9;
+    scrollbar-color: #94A99A #EEF3EF;
 }
 
 .history-scroll-area::-webkit-scrollbar {
@@ -240,16 +242,16 @@ body {
 }
 
 .history-scroll-area::-webkit-scrollbar-track {
-    background: #f1f5f9;
+    background: #EEF3EF;
 }
 
 .history-scroll-area::-webkit-scrollbar-thumb {
-    background: #94a3b8;
+    background: #94A99A;
     border-radius: 10px;
 }
 
 .history-scroll-area::-webkit-scrollbar-thumb:hover {
-    background: #64748b;
+    background: #647568;
 }
 
 /*
@@ -262,7 +264,7 @@ body {
     position: sticky;
     top: 0;
     z-index: 30;
-    background: white;
+    background: #FFFFFF;
     width: 100%;
 }
 
@@ -276,7 +278,7 @@ body {
     overflow-x: auto;
     overflow-y: hidden;
     scrollbar-width: none;
-    background: #eff6ff;
+    background: #0B2E1A;
 }
 
 .history-header-scroll::-webkit-scrollbar {
@@ -293,11 +295,11 @@ body {
     height: 14px;
     overflow-x: auto;
     overflow-y: hidden;
-    background: #f8fafc;
-    border-top: 1px solid #dbeafe;
-    border-bottom: 1px solid #dbeafe;
+    background: #F0F7F2;
+    border-top: 1px solid #D9E7DD;
+    border-bottom: 1px solid #D9E7DD;
     scrollbar-width: thin;
-    scrollbar-color: #94a3b8 #f1f5f9;
+    scrollbar-color: #94A99A #EEF3EF;
 }
 
 .history-horizontal-scroll::-webkit-scrollbar {
@@ -305,16 +307,16 @@ body {
 }
 
 .history-horizontal-scroll::-webkit-scrollbar-track {
-    background: #f1f5f9;
+    background: #EEF3EF;
 }
 
 .history-horizontal-scroll::-webkit-scrollbar-thumb {
-    background: #94a3b8;
+    background: #94A99A;
     border-radius: 10px;
 }
 
 .history-horizontal-scroll::-webkit-scrollbar-thumb:hover {
-    background: #64748b;
+    background: #647568;
 }
 
 .history-horizontal-scroll-content {
@@ -352,19 +354,19 @@ table {
 }
 
 th {
-    background: #eff6ff;
-    color: #1e3a8a;
+    background: #0B2E1A;
+    color: #FFFFFF;
     font-size: 12px;
     font-weight: 700;
     text-align: left;
     padding: 12px 10px;
     white-space: nowrap;
-    border-bottom: 1px solid #dbeafe;
+    border-bottom: 1px solid #245438;
 }
 
 td {
     padding: 11px 10px;
-    border-bottom: 1px solid #e5e7eb;
+    border-bottom: 1px solid #E1E9E3;
     font-size: 12px;
     color: #334155;
     vertical-align: top;
@@ -379,7 +381,7 @@ tbody tr:last-child td {
 }
 
 tbody tr:hover td {
-    background: #f8fafc;
+    background: #F0F7F2;
 }
 
 /*
@@ -438,7 +440,7 @@ td:nth-child(10) {
 
 .history-action {
     font-weight: 700;
-    color: #1f2937;
+    color: #171717;
     overflow-wrap: anywhere;
 }
 
@@ -460,7 +462,7 @@ td:nth-child(10) {
 
 .empty-row {
     text-align: center;
-    color: #64748b;
+    color: #647568;
     padding: 35px !important;
     font-size: 13px;
 }
@@ -479,13 +481,13 @@ td:nth-child(10) {
 }
 
 .message.success {
-    background: #dcfce7;
+    background: #DCFCE7;
     color: #166534;
 }
 
 .message.error {
-    background: #fee2e2;
-    color: #991b1b;
+    background: #FEE2E2;
+    color: #991B1B;
 }
 
 .filter-box {
@@ -497,15 +499,18 @@ td:nth-child(10) {
 .filter-box input,
 .filter-box select {
     padding: 9px 12px;
-    border: 1px solid #cbd5e1;
+    border: 1px solid #CBD8CE;
     border-radius: 8px;
     outline: none;
-    background: white;
+    background: #FFFFFF;
+    color: #171717;
     font-size: 13px;
 }
 
+.filter-box input:focus,
 .filter-box select:focus {
-    border-color: #2563eb;
+    border-color: #16803C;
+    box-shadow: 0 0 0 3px rgba(22, 128, 60, 0.10);
 }
 
 @media (max-width: 1200px) {
@@ -613,7 +618,6 @@ td:nth-child(10) {
 }
 
 </style>
-```
 
 </head>
 
@@ -693,6 +697,19 @@ td:nth-child(10) {
             <i data-lucide="calendar-days"></i>
             Monthly Report
         </button>
+
+        
+<button class="menu-btn"
+        onclick="window.location.href='attendance-history.html'">
+    <i data-lucide="calendar-clock"></i>
+    Attendance History
+</button>
+
+<button class="menu-btn"
+        onclick="window.location.href='leave-history.html'">
+    <i data-lucide="file-clock"></i>
+    Leave History
+</button>
 
         <button class="menu-btn active"
                 onclick="window.location.href='history.html'">

@@ -1,0 +1,2092 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave History | GROWBYTEE Admin</title>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+   <style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #F5F8F6;
+    color: #171717;
+}
+
+button, input, select {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+/* SIDEBAR — GROWBYTEE GREEN + BLACK THEME */
+
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background: linear-gradient(180deg, #0B2E1A, #171717);
+    color: white;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    padding: 25px 15px;
+    overflow-y: auto;
+    z-index: 20;
+}
+
+.logo {
+    text-align: center;
+    font-size: 25px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #FFFFFF;
+}
+
+.admin-title {
+    text-align: center;
+    color: #C7D9CD;
+    font-size: 13px;
+    margin-bottom: 30px;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.menu-btn {
+    width: 100%;
+    border: none;
+    background: transparent;
+    color: #E5E7EB;
+    text-align: left;
+    padding: 14px 15px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.menu-btn svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.menu-btn:hover,
+.menu-btn.active {
+    background: #16803C;
+    color: white;
+}
+
+.logout-btn,
+.menu-btn.logout-btn {
+    margin-top: 25px;
+    background: #DC2626 !important;
+    color: white !important;
+    text-align: center !important;
+}
+
+.logout-btn:hover,
+.menu-btn.logout-btn:hover {
+    background: #B91C1C !important;
+}
+
+/* MAIN LAYOUT */
+
+.main {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+    min-height: 100vh;
+}
+
+.header {
+    min-height: 75px;
+    background: #FFFFFF;
+    border-bottom: 2px solid #16803C;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 16px 30px;
+}
+
+.header h1 {
+    font-size: 23px;
+    font-weight: 600;
+    color: #171717;
+}
+
+.header-subtitle {
+    color: #647568;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.content {
+    padding: 30px;
+}
+
+.section {
+    background: #FFFFFF;
+    border: 1px solid #D9E7DD;
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 22px;
+}
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.section-heading h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #171717;
+}
+
+.section-heading p {
+    font-size: 12px;
+    color: #647568;
+    margin-top: 6px;
+}
+
+/* EMPLOYEE FILTERS */
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 15px;
+}
+
+.field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #475569;
+    margin-bottom: 8px;
+}
+
+.field input,
+.field select {
+    width: 100%;
+    min-width: 0;
+    height: 40px;
+    padding: 0 11px;
+    border: 1px solid #CBD8CE;
+    border-radius: 6px;
+    outline: none;
+    background: #FFFFFF;
+    color: #171717;
+    font-size: 13px;
+}
+
+.field input:focus,
+.field select:focus {
+    border-color: #16803C;
+    box-shadow: 0 0 0 2px rgba(22, 128, 60, 0.1);
+}
+
+.button-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+}
+
+.btn {
+    min-height: 39px;
+    padding: 9px 15px;
+    border: 0;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn svg {
+    width: 15px;
+    height: 15px;
+}
+
+.btn-primary {
+    background: #16803C;
+    color: #FFFFFF;
+}
+
+.btn-primary:hover {
+    background: #0F642E;
+}
+
+.btn-secondary {
+    background: #E8EFEA;
+    color: #334155;
+}
+
+.btn-secondary:hover {
+    background: #D5E2D9;
+}
+
+.btn-outline {
+    background: #FFFFFF;
+    color: #334155;
+    border: 1px solid #CBD8CE;
+}
+
+.btn-outline:hover {
+    background: #F0F7F2;
+}
+
+.btn:disabled {
+    opacity: .55;
+    cursor: not-allowed;
+}
+
+/* EMPLOYEE CARDS */
+
+.list-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+}
+
+.list-heading h2 {
+    font-size: 18px;
+    color: #171717;
+}
+
+.muted {
+    color: #647568;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.result-count {
+    color: #647568;
+    font-size: 12px;
+}
+
+.employee-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.employee-card {
+    min-width: 0;
+    border: 1px solid #D9E7DD;
+    border-radius: 9px;
+    padding: 18px;
+    background: #FFFFFF;
+    cursor: pointer;
+    transition: border-color .15s, box-shadow .15s, transform .15s;
+}
+
+.employee-card:hover {
+    border-color: #16803C;
+    box-shadow: 0 5px 18px rgba(11, 46, 26, .08);
+    transform: translateY(-2px);
+}
+
+.employee-card:focus-visible {
+    outline: 2px solid #16803C;
+    outline-offset: 2px;
+}
+
+.employee-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.employee-avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 9px;
+    background: #E8F5EC;
+    color: #16803C;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.employee-avatar svg {
+    width: 21px;
+    height: 21px;
+}
+
+.employee-code {
+    color: #16803C;
+    font-size: 12px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+.employee-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #171717;
+    margin-top: 5px;
+    overflow-wrap: anywhere;
+}
+
+.employee-meta {
+    color: #647568;
+    font-size: 12px;
+    line-height: 1.5;
+    margin-top: 4px;
+    overflow-wrap: anywhere;
+}
+
+.employee-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 17px;
+    padding-top: 13px;
+    border-top: 1px solid #E7EEE9;
+    color: #16803C;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.employee-card-footer svg {
+    width: 15px;
+    height: 15px;
+}
+
+.type-badge {
+    display: inline-block;
+    border-radius: 20px;
+    padding: 5px 8px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .3px;
+    white-space: nowrap;
+    background: #E8EFEA;
+    color: #475569;
+}
+
+.type-badge.intern {
+    background: #FEF3C7;
+    color: #92400E;
+}
+
+.type-badge.employee {
+    background: #E8F5EC;
+    color: #166534;
+}
+
+/* PAGINATION */
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 22px;
+    padding-top: 18px;
+    border-top: 1px solid #E1E9E3;
+}
+
+.pagination-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.empty-state,
+.loading {
+    text-align: center;
+    padding: 38px 15px;
+    color: #647568;
+    font-size: 13px;
+    grid-column: 1 / -1;
+}
+
+/* MESSAGES */
+
+.message {
+    display: none;
+    margin-bottom: 18px;
+    padding: 12px 15px;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.message.error {
+    display: block;
+    background: #FEF2F2;
+    color: #991B1B;
+    border: 1px solid #FECACA;
+}
+
+.message.info {
+    display: block;
+    background: #E8F5EC;
+    color: #166534;
+    border: 1px solid #B7DCC2;
+}
+
+/* MONTHLY LEAVE HISTORY POPUP */
+
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(11, 30, 18, .65);
+    padding: 24px;
+    overflow-y: auto;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.modal.open {
+    display: flex;
+}
+
+.modal-dialog {
+    background: #F5F8F6;
+    width: 100%;
+    max-width: 1250px;
+    border-radius: 12px;
+    margin: auto;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(15, 23, 42, .25);
+}
+
+.modal-header {
+    background: #FFFFFF;
+    border-bottom: 1px solid #D9E7DD;
+    padding: 20px 24px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+.modal-header h2 {
+    font-size: 20px;
+    color: #171717;
+}
+
+.modal-employee-details {
+    color: #647568;
+    font-size: 12px;
+    margin-top: 7px;
+}
+
+.icon-button {
+    border: 1px solid #D9E7DD;
+    border-radius: 7px;
+    background: #FFFFFF;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.icon-button:hover {
+    background: #E8F5EC;
+}
+
+.icon-button svg {
+    width: 19px;
+    height: 19px;
+}
+
+.modal-body {
+    padding: 22px;
+}
+
+.month-filter-grid {
+    display: grid;
+    grid-template-columns: minmax(160px, 1fr) minmax(130px, .7fr) auto;
+    align-items: end;
+    gap: 14px;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.summary-card {
+    background: #FFFFFF;
+    border: 1px solid #D9E7DD;
+    border-radius: 9px;
+    padding: 17px;
+}
+
+.summary-label {
+    font-size: 12px;
+    color: #647568;
+    font-weight: 600;
+}
+
+.summary-value {
+    font-size: 26px;
+    font-weight: 700;
+    margin-top: 10px;
+    color: #171717;
+}
+
+.summary-note {
+    font-size: 11px;
+    color: #647568;
+    margin-top: 4px;
+}
+
+.summary-card.pending .summary-value {
+    color: #B45309;
+}
+
+.summary-card.approved .summary-value {
+    color: #16803C;
+}
+
+.summary-card.rejected .summary-value {
+    color: #B91C1C;
+}
+
+.records-section {
+    background: #FFFFFF;
+    border: 1px solid #D9E7DD;
+    border-radius: 9px;
+    padding: 18px;
+}
+
+.records-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.records-heading h3 {
+    font-size: 16px;
+    color: #171717;
+}
+
+.table-scroll {
+    width: 100%;
+    overflow: auto;
+    max-height: 480px;
+    border: 1px solid #D9E7DD;
+    border-radius: 7px;
+    background: #FFFFFF;
+}
+
+table {
+    width: 100%;
+    min-width: 1250px;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 12px;
+}
+
+thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #0B2E1A;
+    color: #FFFFFF;
+    font-weight: 700;
+    text-align: left;
+    padding: 13px 12px;
+    border-bottom: 1px solid #245438;
+    white-space: nowrap;
+}
+
+tbody td {
+    padding: 13px 12px;
+    border-bottom: 1px solid #E7EEE9;
+    color: #475569;
+    vertical-align: top;
+    white-space: nowrap;
+}
+
+tbody tr:hover {
+    background: #F0F7F2;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.reason-cell {
+    max-width: 230px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.45;
+}
+
+.decision-maker-cell {
+    min-width: 150px;
+    max-width: 220px;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.45;
+}
+
+.status {
+    display: inline-block;
+    padding: 5px 9px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.status-approved {
+    background: #DCFCE7;
+    color: #166534;
+}
+
+.status-rejected {
+    background: #FEE2E2;
+    color: #991B1B;
+}
+
+.status-pending {
+    background: #FEF3C7;
+    color: #92400E;
+}
+
+.status-other {
+    background: #E8EFEA;
+    color: #475569;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 16px 22px;
+    border-top: 1px solid #D9E7DD;
+    background: #FFFFFF;
+}
+
+body.modal-open {
+    overflow: hidden;
+}
+
+/* RESPONSIVE LAYOUT */
+
+@media (max-width: 1250px) {
+    .employee-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .filter-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 850px) {
+    .content {
+        padding: 18px;
+    }
+
+    .header {
+        padding: 15px 18px;
+    }
+
+    .summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .modal {
+        padding: 12px;
+    }
+
+    .modal-body {
+        padding: 14px;
+    }
+
+    .month-filter-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .month-filter-grid .button-field {
+        grid-column: 1 / -1;
+    }
+}
+
+/* SIDEBAR RESPONSIVE SIZING */
+
+@media (max-width: 800px) {
+    .sidebar {
+        width: 210px;
+    }
+
+    .main {
+        margin-left: 210px;
+        width: calc(100% - 210px);
+    }
+}
+
+@media (max-width: 600px) {
+    .sidebar {
+        position: relative;
+        width: 100%;
+        min-height: auto;
+        height: auto;
+    }
+
+    .main {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .header {
+        position: relative;
+        align-items: flex-start;
+    }
+
+    .header h1 {
+        font-size: 19px;
+    }
+
+    .employee-grid,
+    .filter-grid,
+    .summary-grid,
+    .month-filter-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .month-filter-grid .button-field {
+        grid-column: auto;
+    }
+
+    .section {
+        padding: 16px;
+    }
+
+    .modal-header {
+        padding: 16px;
+    }
+
+    .modal-header h2 {
+        font-size: 17px;
+    }
+
+    .modal-footer {
+        padding: 14px;
+    }
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- SIDEBAR — SAME STRUCTURE AS HISTORY.HTML -->
+
+<aside class="sidebar">
+
+    <div class="logo">
+        GROWBYTEE
+    </div>
+
+    <div class="admin-title">
+        Admin / CEO Dashboard
+    </div>
+
+    <div class="menu">
+
+        <button class="menu-btn"
+                onclick="window.location.href='/admin/admin-dashboard.html'">
+            <i data-lucide="layout-dashboard"></i>
+            Dashboard
+        </button>
+
+        <button class="menu-btn"
+                onclick="window.location.href='/admin/employees.html'">
+            <i data-lucide="users"></i>
+            Employees
+        </button>
+
+        <button class="menu-btn"
+                onclick="window.location.href='/admin/leave.html'">
+            <i data-lucide="clipboard-list"></i>
+            Leave
+        </button>
+
+        <button class="menu-btn"
+                onclick="window.location.href='/admin/ai-assistant.html'">
+            <i data-lucide="sparkles"></i>
+            AI Assistant
+        </button>
+
+        <button class="menu-btn"
+                onclick="window.location.href='/admin/working-day-settings.html'">
+            <i data-lucide="calendar-days"></i>
+            Working Day Settings
+        </button>
+
+        <button class="menu-btn"
+                onclick="window.location.href='/admin/shift-settings.html'">
+            <i data-lucide="clock-3"></i>
+            Shift Settings
+        </button>
+
+        <button class="menu-btn"
+                onclick="window.location.href='/admin/branch-management.html'">
+            <i data-lucide="building-2"></i>
+            Branch Management
+        </button>
+
+        <button class="menu-btn"
+                onclick="window.location.href='/admin/leave-permission-settings.html'">
+            <i data-lucide="settings"></i>
+            Leave & Permission Settings
+        </button>
+
+        <button class="menu-btn"
+                onclick="window.location.href='/admin/salary.html'">
+            <i data-lucide="wallet"></i>
+            Salary
+        </button>
+
+        <button class="menu-btn"
+                onclick="window.location.href='/admin/monthly-report.html'">
+            <i data-lucide="calendar-days"></i>
+            Monthly Report
+        </button>
+
+       
+
+        <button class="menu-btn"
+                onclick="window.location.href='/admin/attendance-history.html'">
+            <i data-lucide="calendar-clock"></i>
+            Attendance History
+        </button>
+
+        <button class="menu-btn active"
+                onclick="window.location.href='/admin/leave-history.html'">
+            <i data-lucide="file-clock"></i>
+            Leave History
+        </button>
+
+         <button class="menu-btn"
+                onclick="window.location.href='/admin/history.html'">
+            <i data-lucide="history"></i>
+            History
+        </button>
+
+        <button class="menu-btn logout-btn"
+                onclick="logout()">
+            <i data-lucide="log-out"></i>
+            Logout
+        </button>
+
+    </div>
+</aside>
+
+<main class="main">
+
+    <header class="header">
+        <div>
+            <h1>Leave History</h1>
+            <p class="header-subtitle">
+                Select an employee to view month-wise leave and permission records
+            </p>
+        </div>
+
+        <button class="btn btn-outline" onclick="loadEmployees()">
+            <i data-lucide="refresh-cw"></i>
+            Refresh
+        </button>
+    </header>
+
+    <div class="content">
+
+        <div id="message" class="message"></div>
+
+        <section class="section">
+            <div class="section-heading">
+                <div>
+                    <h2>Find Employees</h2>
+                    <p>
+                        Search and filter employees, then select a card to view monthly leave history.
+                    </p>
+                </div>
+            </div>
+
+            <div class="filter-grid">
+
+                <div class="field">
+                    <label for="employeeSearch">Employee Code / Name</label>
+                    <input id="employeeSearch"
+                           type="search"
+                           placeholder="Search by code or name..."
+                           autocomplete="off">
+                </div>
+
+                <div class="field">
+                    <label for="typeFilter">Employee Type</label>
+                    <select id="typeFilter">
+                        <option value="">All Types</option>
+                        <option value="EMPLOYEE">Employee</option>
+                        <option value="INTERN">Intern</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="designationFilter">Designation</label>
+                    <select id="designationFilter">
+                        <option value="">All Designations</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="roleFilter">Role</label>
+                    <select id="roleFilter">
+                        <option value="">All Roles</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="branchFilter">Branch</label>
+                    <select id="branchFilter">
+                        <option value="">All Branches</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="button-row">
+                <button class="btn btn-primary" onclick="applyEmployeeFilters()">
+                    <i data-lucide="search"></i>
+                    Search
+                </button>
+
+                <button class="btn btn-secondary" onclick="clearEmployeeFilters()">
+                    <i data-lucide="x"></i>
+                    Clear Filters
+                </button>
+            </div>
+        </section>
+
+        <section class="section">
+
+            <div class="list-heading">
+                <div>
+                    <h2>Employees</h2>
+                    <p class="muted">
+                        Choose an employee card to open their leave history.
+                    </p>
+                </div>
+
+                <span class="result-count" id="employeeCount">0 employees</span>
+            </div>
+
+            <div class="employee-grid" id="employeeGrid">
+                <div class="loading">Loading employees...</div>
+            </div>
+
+            <div class="pagination">
+                <span class="result-count" id="paginationInfo">Page 1</span>
+
+                <div class="pagination-actions">
+                    <button class="btn btn-outline"
+                            id="previousPage"
+                            onclick="changePage(-1)"
+                            disabled>
+                        <i data-lucide="chevron-left"></i>
+                        Previous
+                    </button>
+
+                    <button class="btn btn-outline"
+                            id="nextPage"
+                            onclick="changePage(1)"
+                            disabled>
+                        Next
+                        <i data-lucide="chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+
+        </section>
+    </div>
+</main>
+
+<!-- SELECTED EMPLOYEE MONTHLY LEAVE HISTORY -->
+
+<div class="modal"
+     id="leaveModal"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="modalTitle">
+
+    <div class="modal-dialog">
+
+        <div class="modal-header">
+            <div>
+                <h2 id="modalTitle">Employee Leave History</h2>
+                <p class="modal-employee-details" id="modalEmployeeDetails"></p>
+            </div>
+
+            <button class="icon-button"
+                    onclick="closeLeaveModal()"
+                    aria-label="Close popup">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
+
+        <div class="modal-body">
+
+            <section class="section">
+                <div class="section-heading">
+                    <div>
+                        <h2>Monthly Filter</h2>
+                        <p>Select the month and year to view leave and permission records.</p>
+                    </div>
+                </div>
+
+                <div class="month-filter-grid">
+
+                    <div class="field">
+                        <label for="historyMonth">Month</label>
+                        <select id="historyMonth">
+                            <option value="1">January</option>
+                            <option value="2">February</option>
+                            <option value="3">March</option>
+                            <option value="4">April</option>
+                            <option value="5">May</option>
+                            <option value="6">June</option>
+                            <option value="7">July</option>
+                            <option value="8">August</option>
+                            <option value="9">September</option>
+                            <option value="10">October</option>
+                            <option value="11">November</option>
+                            <option value="12">December</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="historyYear">Year</label>
+                        <select id="historyYear"></select>
+                    </div>
+
+                    <div class="button-field">
+                        <button class="btn btn-primary"
+                                id="loadMonthButton"
+                                onclick="loadSelectedMonth()">
+                            <i data-lucide="search"></i>
+                            View History
+                        </button>
+                    </div>
+
+                </div>
+            </section>
+
+            <section class="summary-grid">
+
+                <div class="summary-card">
+                    <div class="summary-label">Total Records</div>
+                    <div class="summary-value" id="totalCount">0</div>
+                    <p class="summary-note">Selected month</p>
+                </div>
+
+                <div class="summary-card pending">
+                    <div class="summary-label">Pending</div>
+                    <div class="summary-value" id="pendingCount">0</div>
+                    <p class="summary-note">Awaiting a decision</p>
+                </div>
+
+                <div class="summary-card approved">
+                    <div class="summary-label">Approved</div>
+                    <div class="summary-value" id="approvedCount">0</div>
+                    <p class="summary-note">Approved requests</p>
+                </div>
+
+                <div class="summary-card rejected">
+                    <div class="summary-label">Rejected</div>
+                    <div class="summary-value" id="rejectedCount">0</div>
+                    <p class="summary-note">Rejected requests</p>
+                </div>
+
+            </section>
+
+            <section class="records-section">
+
+                <div class="records-heading">
+                    <div>
+                        <h3>Leave & Permission Records</h3>
+                        <p class="muted" id="recordsSubtitle">
+                            Select a month and year.
+                        </p>
+                    </div>
+
+                    <span class="result-count" id="recordCount">0 records</span>
+                </div>
+
+                <div class="table-scroll">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>S.No</th>
+                                <th>Leave Type</th>
+                                <th>Leave Date</th>
+                                <th>Duration</th>
+                                <th>Half-Day Session</th>
+                                <th>Permission Start</th>
+                                <th>Permission End</th>
+                                <th>LOP Days</th>
+                                <th>Reason</th>
+                                <th>Status</th>
+                                <th>Approved / Rejected By</th>
+                                <th>Decision Reason</th>
+                                <th>Requested At</th>
+                                <th>Decided At</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="leaveTableBody">
+                            <tr>
+                                <td colspan="14" class="loading">
+                                    Select a month to load records.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </section>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-outline" onclick="exportCsv()">
+                <i data-lucide="download"></i>
+                Export CSV
+            </button>
+
+            <button class="btn btn-secondary" onclick="closeLeaveModal()">
+                Close
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const API_BASE_URL =
+        window.location.hostname === "localhost" ||
+        window.location.hostname === "127.0.0.1"
+            ? "http://localhost:8080"
+            : "https://attendance-management-d5h6.onrender.com";
+
+    const PAGE_SIZE = 25;
+
+    let allEmployees = [];
+    let filteredEmployees = [];
+    let currentPage = 1;
+
+    let employeeMap = new Map();
+    let allLeaves = [];
+    let selectedEmployee = null;
+    let monthlyLeaves = [];
+    let leavesLoaded = false;
+    let leavesLoadingPromise = null;
+
+    function escapeHtml(value) {
+        return String(value ?? "").replace(/[&<>"']/g, character => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        })[character]);
+    }
+
+    function normalize(value) {
+        return String(value ?? "").trim().toUpperCase();
+    }
+
+    function readValue(object, ...keys) {
+        if (!object || typeof object !== "object") return "";
+
+        for (const key of keys) {
+            if (object[key] !== undefined && object[key] !== null) {
+                return object[key];
+            }
+        }
+
+        return "";
+    }
+
+    function unwrapArray(payload) {
+        if (Array.isArray(payload)) return payload;
+
+        if (payload && typeof payload === "object") {
+            for (const key of [
+                "data", "content", "records", "employees", "leaves",
+                "leaveRequests", "requests", "items"
+            ]) {
+                if (Array.isArray(payload[key])) return payload[key];
+            }
+        }
+
+        return [];
+    }
+
+    function employeeId(employee) {
+        return readValue(employee, "id", "employeeId", "employee_id");
+    }
+
+    function employeeCode(employee) {
+        return readValue(employee, "employeeCode", "employee_code", "code") || "—";
+    }
+
+    function employeeName(employee) {
+        return readValue(employee, "name", "employeeName", "employee_name") || "Unnamed Employee";
+    }
+
+    function employeeDesignation(employee) {
+        return readValue(employee, "designation", "jobTitle", "job_title") || "—";
+    }
+
+    function employeeRole(employee) {
+        return readValue(employee, "role", "employeeRole", "employee_role") || "—";
+    }
+
+    function employeeBranch(employee) {
+        return readValue(employee, "branchName", "branch_name") || "—";
+    }
+
+    function getEmployeeType(employee) {
+        const explicitType = normalize(readValue(
+            employee, "employeeType", "employee_type", "employmentType", "employment_type"
+        ));
+
+        if (explicitType.includes("INTERN")) return "INTERN";
+        if (explicitType === "EMPLOYEE" || explicitType === "FULL_TIME") return "EMPLOYEE";
+
+        const designation = normalize(employeeDesignation(employee));
+        const role = normalize(employeeRole(employee));
+
+        if (designation.includes("INTERN") || role.includes("INTERN")) return "INTERN";
+
+        const stipendType = normalize(readValue(employee, "stipendType", "stipend_type"));
+        const internshipStart = readValue(employee, "internshipStartDate", "internship_start_date");
+        const internshipDuration = readValue(employee, "internshipDurationMonths", "internship_duration_months");
+        const internshipEnd = readValue(employee, "internshipEndDate", "internship_end_date");
+
+        if (stipendType || internshipStart || internshipDuration || internshipEnd) {
+            const employmentStart = readValue(employee, "employmentStartDate", "employment_start_date");
+
+            if (!employmentStart) return "INTERN";
+        }
+
+        return "EMPLOYEE";
+    }
+
+    function showMessage(text, type = "info") {
+        const message = document.getElementById("message");
+        message.textContent = text;
+        message.className = `message ${type}`;
+    }
+
+    function hideMessage() {
+        const message = document.getElementById("message");
+        message.textContent = "";
+        message.className = "message";
+    }
+
+    async function fetchJson(url) {
+        const response = await fetch(url, {
+            method: "GET",
+            headers: { "Accept": "application/json" },
+            credentials: "include"
+        });
+
+        if (!response.ok) {
+            throw new Error(`${response.status} ${response.statusText}`);
+        }
+
+        return response.json();
+    }
+
+    async function loadEmployees() {
+        hideMessage();
+
+        const grid = document.getElementById("employeeGrid");
+        grid.innerHTML = '<div class="loading">Loading employees...</div>';
+
+        try {
+            const payload = await fetchJson(`${API_BASE_URL}/admin/employees`);
+            allEmployees = unwrapArray(payload);
+
+            employeeMap = new Map(
+                allEmployees.map(employee => [String(employeeId(employee)), employee])
+            );
+
+            populateEmployeeFilters();
+            applyEmployeeFilters();
+        } catch (error) {
+            console.error("Unable to load employees:", error);
+
+            grid.innerHTML =
+                '<div class="empty-state">Unable to load employees. Please check the server and try again.</div>';
+
+            document.getElementById("employeeCount").textContent = "0 employees";
+            document.getElementById("paginationInfo").textContent = "Page 0";
+
+            showMessage(
+                "Could not load employee details from /admin/employees.",
+                "error"
+            );
+        }
+
+        refreshIcons();
+    }
+
+    function populateSelect(selectId, values, defaultLabel) {
+        const select = document.getElementById(selectId);
+        const previousValue = select.value;
+
+        select.innerHTML = "";
+
+        const first = document.createElement("option");
+        first.value = "";
+        first.textContent = defaultLabel;
+        select.appendChild(first);
+
+        [...new Set(values.map(value => String(value ?? "").trim()).filter(Boolean))]
+            .sort((a, b) => a.localeCompare(b))
+            .forEach(value => {
+                const option = document.createElement("option");
+                option.value = value;
+                option.textContent = value;
+                select.appendChild(option);
+            });
+
+        if ([...select.options].some(option => option.value === previousValue)) {
+            select.value = previousValue;
+        }
+    }
+
+    function populateEmployeeFilters() {
+        populateSelect(
+            "designationFilter",
+            allEmployees.map(employeeDesignation).filter(value => value !== "—"),
+            "All Designations"
+        );
+
+        populateSelect(
+            "roleFilter",
+            allEmployees.map(employeeRole).filter(value => value !== "—"),
+            "All Roles"
+        );
+
+        populateSelect(
+            "branchFilter",
+            allEmployees.map(employeeBranch).filter(value => value !== "—"),
+            "All Branches"
+        );
+    }
+
+    function applyEmployeeFilters() {
+        const search = document.getElementById("employeeSearch").value.trim().toLowerCase();
+        const type = document.getElementById("typeFilter").value;
+        const designation = document.getElementById("designationFilter").value;
+        const role = document.getElementById("roleFilter").value;
+        const branch = document.getElementById("branchFilter").value;
+
+        filteredEmployees = allEmployees.filter(employee => {
+            const code = String(employeeCode(employee)).toLowerCase();
+            const name = String(employeeName(employee)).toLowerCase();
+
+            if (search && !code.includes(search) && !name.includes(search)) return false;
+            if (type && getEmployeeType(employee) !== type) return false;
+            if (designation && employeeDesignation(employee) !== designation) return false;
+            if (role && employeeRole(employee) !== role) return false;
+            if (branch && employeeBranch(employee) !== branch) return false;
+
+            return true;
+        });
+
+        currentPage = 1;
+        renderEmployeeCards();
+    }
+
+    function clearEmployeeFilters() {
+        document.getElementById("employeeSearch").value = "";
+        document.getElementById("typeFilter").value = "";
+        document.getElementById("designationFilter").value = "";
+        document.getElementById("roleFilter").value = "";
+        document.getElementById("branchFilter").value = "";
+
+        applyEmployeeFilters();
+    }
+
+    function renderEmployeeCards() {
+        const grid = document.getElementById("employeeGrid");
+        const total = filteredEmployees.length;
+        const pageCount = Math.ceil(total / PAGE_SIZE);
+
+        currentPage = Math.max(1, Math.min(currentPage, pageCount || 1));
+
+        const startIndex = (currentPage - 1) * PAGE_SIZE;
+        const pageEmployees = filteredEmployees.slice(startIndex, startIndex + PAGE_SIZE);
+
+        document.getElementById("employeeCount").textContent =
+            `${total} employee${total === 1 ? "" : "s"}`;
+
+        document.getElementById("paginationInfo").textContent =
+            total === 0 ? "Page 0 of 0" : `Page ${currentPage} of ${pageCount}`;
+
+        document.getElementById("previousPage").disabled = currentPage <= 1;
+        document.getElementById("nextPage").disabled = currentPage >= pageCount;
+
+        if (!pageEmployees.length) {
+            grid.innerHTML =
+                '<div class="empty-state">No employees found for the selected filters.</div>';
+            return;
+        }
+
+        grid.innerHTML = pageEmployees.map((employee, index) => {
+            const type = getEmployeeType(employee);
+            const badgeClass = type === "INTERN" ? "intern" : "employee";
+            const name = employeeName(employee);
+            const code = employeeCode(employee);
+
+            return `
+                <article class="employee-card"
+                    role="button"
+                    tabindex="0"
+                    data-index="${startIndex + index}"
+                    aria-label="View leave history for ${escapeHtml(name)}">
+
+                    <div class="employee-card-top">
+                        <div style="min-width:0">
+                            <div class="employee-code">${escapeHtml(code)}</div>
+                            <div class="employee-name">${escapeHtml(name)}</div>
+                            <div class="employee-meta">${escapeHtml(employeeDesignation(employee))}</div>
+                        </div>
+
+                        <div class="employee-avatar">
+                            <i data-lucide="user-round"></i>
+                        </div>
+                    </div>
+
+                    <div class="employee-meta">
+                        Role: ${escapeHtml(employeeRole(employee))}
+                    </div>
+
+                    <div class="employee-meta">
+                        Branch: ${escapeHtml(employeeBranch(employee))}
+                    </div>
+
+                    <div class="employee-card-footer">
+                        <span class="type-badge ${badgeClass}">${type}</span>
+                        <span>
+                            View monthly history
+                            <i data-lucide="arrow-up-right"
+                               style="display:inline-block;vertical-align:middle"></i>
+                        </span>
+                    </div>
+                </article>`;
+        }).join("");
+
+        grid.querySelectorAll(".employee-card").forEach(card => {
+            const open = () => {
+                const index = Number(card.dataset.index);
+                const employee = filteredEmployees[index];
+
+                if (employee) openLeaveModal(employee);
+            };
+
+            card.addEventListener("click", open);
+
+            card.addEventListener("keydown", event => {
+                if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    open();
+                }
+            });
+        });
+
+        refreshIcons();
+    }
+
+    function changePage(direction) {
+        const pageCount = Math.ceil(filteredEmployees.length / PAGE_SIZE);
+
+        currentPage = Math.max(
+            1,
+            Math.min(currentPage + direction, pageCount || 1)
+        );
+
+        renderEmployeeCards();
+
+        document.querySelector(".list-heading").scrollIntoView({
+            behavior: "smooth",
+            block: "start"
+        });
+    }
+
+    function populateModalYears() {
+        const select = document.getElementById("historyYear");
+        const currentYear = new Date().getFullYear();
+
+        select.innerHTML = "";
+
+        for (let year = currentYear; year >= currentYear - 10; year--) {
+            const option = document.createElement("option");
+            option.value = String(year);
+            option.textContent = String(year);
+            select.appendChild(option);
+        }
+
+        select.value = String(currentYear);
+    }
+
+    async function openLeaveModal(employee) {
+        selectedEmployee = employee;
+        monthlyLeaves = [];
+
+        document.getElementById("modalTitle").textContent = employeeName(employee);
+
+        document.getElementById("modalEmployeeDetails").textContent =
+            `${employeeCode(employee)}  |  ${employeeDesignation(employee)}  |  ${employeeRole(employee)}  |  ${employeeBranch(employee)}`;
+
+        const now = new Date();
+
+        document.getElementById("historyMonth").value =
+            String(now.getMonth() + 1);
+
+        populateModalYears();
+
+        document.getElementById("leaveModal").classList.add("open");
+        document.body.classList.add("modal-open");
+
+        resetMonthlySummary();
+
+        document.getElementById("recordsSubtitle").textContent =
+            `${document.getElementById("historyMonth").selectedOptions[0].text} ${now.getFullYear()}`;
+
+        document.getElementById("leaveTableBody").innerHTML =
+            '<tr><td colspan="14" class="loading">Loading leave records...</td></tr>';
+
+        refreshIcons();
+        await loadSelectedMonth();
+    }
+
+    function closeLeaveModal() {
+        document.getElementById("leaveModal").classList.remove("open");
+        document.body.classList.remove("modal-open");
+        selectedEmployee = null;
+    }
+
+    function getLeaveEmployeeId(leave) {
+        const directId = readValue(leave, "employeeId", "employee_id");
+
+        if (directId !== "") return directId;
+
+        const nested = readValue(leave, "employee");
+
+        if (nested && typeof nested === "object") {
+            return readValue(nested, "id", "employeeId", "employee_id");
+        }
+
+        return "";
+    }
+
+    function getLeaveDate(leave) {
+        return readValue(leave, "leaveDate", "leave_date", "date");
+    }
+
+    function getStatus(leave) {
+        return normalize(readValue(leave, "status", "leaveStatus", "leave_status"));
+    }
+
+    /*
+     * Reads the approver/rejector's display name.
+     * The backend response must contain the name field.
+     * A numeric decidedBy ID is not displayed as a person's name.
+     */
+    function getDecisionMaker(leave) {
+        const directName = readValue(
+            leave,
+            "decidedByName",
+            "decided_by_name",
+            "approverName",
+            "approver_name",
+            "approvedByName",
+            "approved_by_name",
+            "rejectedByName",
+            "rejected_by_name",
+            "reviewedByName",
+            "reviewed_by_name",
+            "decisionMakerName",
+            "decision_maker_name",
+            "actionedByName",
+            "actioned_by_name"
+        );
+
+        if (typeof directName === "string" && directName.trim()) {
+            return directName.trim();
+        }
+
+        const nestedKeys = [
+            "decidedBy",
+            "decided_by",
+            "approver",
+            "approvedBy",
+            "approved_by",
+            "rejectedBy",
+            "rejected_by",
+            "reviewer",
+            "decisionMaker",
+            "decision_maker"
+        ];
+
+        for (const key of nestedKeys) {
+            const person = leave && leave[key];
+
+            if (person && typeof person === "object" && !Array.isArray(person)) {
+                const name = readValue(
+                    person,
+                    "name",
+                    "fullName",
+                    "full_name",
+                    "displayName",
+                    "display_name",
+                    "employeeName",
+                    "employee_name",
+                    "email"
+                );
+
+                if (typeof name === "string" && name.trim()) {
+                    return name.trim();
+                }
+            }
+        }
+
+        return "—";
+    }
+
+    function dateParts(value) {
+        if (Array.isArray(value)) {
+            return {
+                year: Number(value[0]),
+                month: Number(value[1]),
+                day: Number(value[2])
+            };
+        }
+
+        const text = String(value ?? "");
+        const match = text.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+
+        if (!match) return null;
+
+        return {
+            year: Number(match[1]),
+            month: Number(match[2]),
+            day: Number(match[3])
+        };
+    }
+
+    function leaveBelongsToEmployee(leave, employee) {
+        const leaveId = getLeaveEmployeeId(leave);
+        const targetId = employeeId(employee);
+
+        if (leaveId !== "" && targetId !== "") {
+            return String(leaveId) === String(targetId);
+        }
+
+        const nested = readValue(leave, "employee");
+
+        if (nested && typeof nested === "object") {
+            const nestedId = readValue(nested, "id", "employeeId", "employee_id");
+
+            if (nestedId !== "" && targetId !== "") {
+                return String(nestedId) === String(targetId);
+            }
+        }
+
+        const leaveCode = readValue(leave, "employeeCode", "employee_code");
+        const targetCode = employeeCode(employee);
+
+        return leaveId === "" &&
+            leaveCode &&
+            targetCode !== "—" &&
+            String(leaveCode) === String(targetCode);
+    }
+
+    async function loadAllLeavesIfNeeded() {
+        if (leavesLoaded) return allLeaves;
+        if (leavesLoadingPromise) return leavesLoadingPromise;
+
+        leavesLoadingPromise = fetchJson(`${API_BASE_URL}/admin/leaves`)
+            .then(payload => {
+                allLeaves = unwrapArray(payload);
+                leavesLoaded = true;
+                return allLeaves;
+            })
+            .finally(() => {
+                leavesLoadingPromise = null;
+            });
+
+        return leavesLoadingPromise;
+    }
+
+    async function loadSelectedMonth() {
+        if (!selectedEmployee) return;
+
+        const button = document.getElementById("loadMonthButton");
+
+        button.disabled = true;
+        hideMessage();
+
+        const month = Number(document.getElementById("historyMonth").value);
+        const year = Number(document.getElementById("historyYear").value);
+
+        const monthName =
+            document.getElementById("historyMonth").selectedOptions[0].text;
+
+        document.getElementById("recordsSubtitle").textContent =
+            `${monthName} ${year}`;
+
+        document.getElementById("leaveTableBody").innerHTML =
+            '<tr><td colspan="14" class="loading">Loading leave records...</td></tr>';
+
+        try {
+            const leaves = await loadAllLeavesIfNeeded();
+
+            monthlyLeaves = leaves.filter(leave => {
+                if (!leaveBelongsToEmployee(leave, selectedEmployee)) {
+                    return false;
+                }
+
+                const parts = dateParts(getLeaveDate(leave));
+
+                return parts &&
+                    parts.year === year &&
+                    parts.month === month;
+            });
+
+            monthlyLeaves.sort((a, b) => {
+                const dateA = String(getLeaveDate(a) ?? "");
+                const dateB = String(getLeaveDate(b) ?? "");
+
+                return dateB.localeCompare(dateA);
+            });
+
+            renderLeaveTable();
+            updateMonthlySummary();
+
+        } catch (error) {
+            console.error("Unable to load leave history:", error);
+
+            document.getElementById("leaveTableBody").innerHTML =
+                '<tr><td colspan="14" class="empty-state">Unable to load leave records. Please check the server and try again.</td></tr>';
+
+            resetMonthlySummary();
+
+            showMessage(
+                "Could not load leave records from /admin/leaves.",
+                "error"
+            );
+
+        } finally {
+            button.disabled = false;
+            refreshIcons();
+        }
+    }
+
+    function formatDate(value) {
+        const parts = dateParts(value);
+
+        if (parts) {
+            return `${String(parts.day).padStart(2, "0")}/${String(parts.month).padStart(2, "0")}/${parts.year}`;
+        }
+
+        return value ? String(value) : "—";
+    }
+
+    function formatDateTime(value) {
+        if (!value) return "—";
+
+        if (Array.isArray(value)) {
+            const [year, month, day, hour = 0, minute = 0] = value;
+
+            return `${String(day).padStart(2, "0")}/${String(month).padStart(2, "0")}/${year} ${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+        }
+
+        const text = String(value).replace("T", " ");
+
+        return text.length > 16 ? text.substring(0, 16) : text;
+    }
+
+    function formatTime(value) {
+        if (!value) return "—";
+
+        if (Array.isArray(value)) {
+            return `${String(value[0] ?? 0).padStart(2, "0")}:${String(value[1] ?? 0).padStart(2, "0")}`;
+        }
+
+        const text = String(value);
+
+        return text.length >= 5 ? text.substring(0, 5) : text;
+    }
+
+    function formatNumber(value) {
+        if (value === "" || value === null || value === undefined) {
+            return "0";
+        }
+
+        const number = Number(value);
+
+        return Number.isFinite(number)
+            ? number.toLocaleString("en-IN", { maximumFractionDigits: 2 })
+            : String(value);
+    }
+
+    function statusClass(status) {
+        if (status === "APPROVED") return "status-approved";
+        if (status === "REJECTED") return "status-rejected";
+        if (status === "PENDING") return "status-pending";
+
+        return "status-other";
+    }
+
+    function renderLeaveTable() {
+        const body = document.getElementById("leaveTableBody");
+
+        document.getElementById("recordCount").textContent =
+            `${monthlyLeaves.length} record${monthlyLeaves.length === 1 ? "" : "s"}`;
+
+        if (!monthlyLeaves.length) {
+            body.innerHTML = `
+                <tr>
+                    <td colspan="14" class="empty-state">
+                        No leave or permission records found for this employee in the selected month.
+                    </td>
+                </tr>`;
+
+            return;
+        }
+
+        body.innerHTML = monthlyLeaves.map((leave, index) => {
+            const status = getStatus(leave);
+            const leaveType = readValue(leave, "leaveType", "leave_type");
+            const duration = readValue(leave, "leaveDuration", "leave_duration", "duration");
+            const halfDay = readValue(leave, "halfDaySession", "half_day_session");
+            const permissionStart = readValue(leave, "permissionStart", "permission_start");
+            const permissionEnd = readValue(leave, "permissionEnd", "permission_end");
+            const lop = readValue(leave, "lopDays", "lop_days");
+            const reason = readValue(leave, "reason");
+            const decisionMaker = getDecisionMaker(leave);
+            const decisionReason = readValue(leave, "decisionReason", "decision_reason");
+            const createdAt = readValue(leave, "createdAt", "created_at");
+            const decidedAt = readValue(leave, "decidedAt", "decided_at");
+
+            return `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td>${escapeHtml(leaveType || "—")}</td>
+                    <td>${escapeHtml(formatDate(getLeaveDate(leave)))}</td>
+                    <td>${duration === "" ? "—" : escapeHtml(formatNumber(duration))}</td>
+                    <td>${escapeHtml(halfDay || "—")}</td>
+                    <td>${escapeHtml(formatTime(permissionStart))}</td>
+                    <td>${escapeHtml(formatTime(permissionEnd))}</td>
+                    <td>${escapeHtml(formatNumber(lop))}</td>
+                    <td class="reason-cell" title="${escapeHtml(reason || "")}">${escapeHtml(reason || "—")}</td>
+                    <td>
+                        <span class="status ${statusClass(status)}">
+                            ${escapeHtml(status || "Unknown")}
+                        </span>
+                    </td>
+                    <td class="decision-maker-cell" title="${escapeHtml(decisionMaker)}">${escapeHtml(decisionMaker)}</td>
+                    <td class="reason-cell" title="${escapeHtml(decisionReason || "")}">${escapeHtml(decisionReason || "—")}</td>
+                    <td>${escapeHtml(formatDateTime(createdAt))}</td>
+                    <td>${escapeHtml(formatDateTime(decidedAt))}</td>
+                </tr>`;
+        }).join("");
+    }
+
+    function resetMonthlySummary() {
+        document.getElementById("totalCount").textContent = "0";
+        document.getElementById("pendingCount").textContent = "0";
+        document.getElementById("approvedCount").textContent = "0";
+        document.getElementById("rejectedCount").textContent = "0";
+        document.getElementById("recordCount").textContent = "0 records";
+    }
+
+    function updateMonthlySummary() {
+        document.getElementById("totalCount").textContent = monthlyLeaves.length;
+
+        document.getElementById("pendingCount").textContent =
+            monthlyLeaves.filter(leave => getStatus(leave) === "PENDING").length;
+
+        document.getElementById("approvedCount").textContent =
+            monthlyLeaves.filter(leave => getStatus(leave) === "APPROVED").length;
+
+        document.getElementById("rejectedCount").textContent =
+            monthlyLeaves.filter(leave => getStatus(leave) === "REJECTED").length;
+    }
+
+    function exportCsv() {
+        if (!monthlyLeaves.length) {
+            showMessage(
+                "There are no leave records to export for this month.",
+                "info"
+            );
+
+            return;
+        }
+
+        const headers = [
+            "Employee Code",
+            "Employee Name",
+            "Leave Type",
+            "Leave Date",
+            "Duration",
+            "Half-Day Session",
+            "Permission Start",
+            "Permission End",
+            "LOP Days",
+            "Reason",
+            "Status",
+            "Approved / Rejected By",
+            "Decision Reason",
+            "Requested At",
+            "Decided At"
+        ];
+
+        const rows = monthlyLeaves.map(leave => [
+            employeeCode(selectedEmployee),
+            employeeName(selectedEmployee),
+            readValue(leave, "leaveType", "leave_type"),
+            formatDate(getLeaveDate(leave)),
+            readValue(leave, "leaveDuration", "leave_duration", "duration"),
+            readValue(leave, "halfDaySession", "half_day_session"),
+            formatTime(readValue(leave, "permissionStart", "permission_start")),
+            formatTime(readValue(leave, "permissionEnd", "permission_end")),
+            readValue(leave, "lopDays", "lop_days"),
+            readValue(leave, "reason"),
+            getStatus(leave),
+            getDecisionMaker(leave),
+            readValue(leave, "decisionReason", "decision_reason"),
+            formatDateTime(readValue(leave, "createdAt", "created_at")),
+            formatDateTime(readValue(leave, "decidedAt", "decided_at"))
+        ]);
+
+        const csvCell = value =>
+            `"${String(value ?? "").replace(/"/g, '""')}"`;
+
+        const csv = [headers, ...rows]
+            .map(row => row.map(csvCell).join(","))
+            .join("\r\n");
+
+        const blob = new Blob(
+            ["\uFEFF" + csv],
+            { type: "text/csv;charset=utf-8;" }
+        );
+
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+
+        const month =
+            document.getElementById("historyMonth").selectedOptions[0].text;
+
+        const year = document.getElementById("historyYear").value;
+
+        const code = String(employeeCode(selectedEmployee))
+            .replace(/[^a-zA-Z0-9_-]/g, "_");
+
+        link.href = url;
+        link.download = `leave-history-${code}-${month}-${year}.csv`;
+        link.click();
+
+        URL.revokeObjectURL(url);
+    }
+
+    function logout() {
+        // Preserve the existing authentication/logout behavior.
+    }
+
+    function refreshIcons() {
+        if (window.lucide) {
+            lucide.createIcons();
+        }
+    }
+
+    document.getElementById("employeeSearch")
+        .addEventListener("input", applyEmployeeFilters);
+
+    document.getElementById("typeFilter")
+        .addEventListener("change", applyEmployeeFilters);
+
+    document.getElementById("designationFilter")
+        .addEventListener("change", applyEmployeeFilters);
+
+    document.getElementById("roleFilter")
+        .addEventListener("change", applyEmployeeFilters);
+
+    document.getElementById("branchFilter")
+        .addEventListener("change", applyEmployeeFilters);
+
+    document.getElementById("historyMonth")
+        .addEventListener("change", loadSelectedMonth);
+
+    document.getElementById("historyYear")
+        .addEventListener("change", loadSelectedMonth);
+
+    document.getElementById("leaveModal").addEventListener("click", event => {
+        if (event.target.id === "leaveModal") {
+            closeLeaveModal();
+        }
+    });
+
+    document.addEventListener("keydown", event => {
+        if (event.key === "Escape") {
+            closeLeaveModal();
+        }
+    });
+
+    refreshIcons();
+    loadEmployees();
+</script>
+
+</body>
+</html>

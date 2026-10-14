@@ -14,7 +14,8 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <style>
+   
+<style>
 
         * {
             margin: 0;
@@ -30,20 +31,22 @@
             justify-content: center;
             align-items: center;
 
-            background: #eef2ff;
+            background: #F4F7F5;
         }
 
         .login-container {
             width: 380px;
 
-            background: white;
+            background: #FFFFFF;
 
             padding: 35px;
 
             border-radius: 15px;
 
+            border: 1px solid #D9E7DD;
+
             box-shadow:
-                0 10px 30px rgba(0, 0, 0, 0.12);
+                0 10px 30px rgba(11, 46, 26, 0.12);
         }
 
         .logo {
@@ -53,13 +56,13 @@
         }
 
         .logo h1 {
-            color: #4f46e5;
+            color: #16803C;
 
             font-size: 30px;
         }
 
         .logo p {
-            color: #777;
+            color: #64748B;
 
             margin-top: 5px;
 
@@ -71,7 +74,7 @@
 
             margin: 25px 0;
 
-            color: #333;
+            color: #171717;
         }
 
         .input-group {
@@ -83,7 +86,7 @@
 
             margin-bottom: 7px;
 
-            color: #444;
+            color: #374151;
 
             font-size: 14px;
 
@@ -101,17 +104,25 @@
 
             padding: 12px;
 
-            border: 1px solid #ddd;
+            border: 1px solid #C8D8CD;
 
             border-radius: 8px;
 
             outline: none;
 
             font-size: 15px;
+
+            background: #FFFFFF;
+
+            color: #171717;
+
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         .input-group input:focus {
-            border-color: #4f46e5;
+            border-color: #16803C;
+
+            box-shadow: 0 0 0 3px rgba(22, 128, 60, 0.12);
         }
 
         /* Password input */
@@ -135,7 +146,7 @@
 
             background: transparent;
 
-            color: #666;
+            color: #64748B;
 
             cursor: pointer;
 
@@ -147,9 +158,9 @@
         }
 
         .password-toggle:hover {
-            background: #f1f1f1;
+            background: #E8F5EC;
 
-            color: #4f46e5;
+            color: #16803C;
         }
 
         .password-toggle svg {
@@ -166,19 +177,26 @@
 
             border-radius: 8px;
 
-            background: #4f46e5;
+            background: #16803C;
 
-            color: white;
+            color: #FFFFFF;
 
             font-size: 16px;
 
             font-weight: bold;
 
             cursor: pointer;
+
+            transition: background 0.2s;
         }
 
         .login-btn:hover {
-            background: #4338ca;
+            background: #0F642E;
+        }
+
+        .login-btn:focus-visible {
+            outline: 3px solid #86C99A;
+            outline-offset: 3px;
         }
 
         #message {
@@ -189,10 +207,7 @@
             font-size: 14px;
         }
 
-    </style>
-
-</head>
-
+</style>
 
 <body>
 

@@ -10,7 +10,7 @@
 
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <style>
+   <style>
 
     * {
         box-sizing: border-box;
@@ -20,8 +20,8 @@
     }
 
     body {
-        background: #f4f7fb;
-        color: #1f2937;
+        background: #F5F8F5;
+        color: #171717;
     }
 
     .container {
@@ -31,8 +31,8 @@
 
     .sidebar {
         width: 250px;
-        background: #334155;
-        color: white;
+        background: linear-gradient(180deg, #0B2E1A, #171717);
+        color: #FFFFFF;
         position: fixed;
         left: 0;
         top: 0;
@@ -46,11 +46,12 @@
         font-size: 25px;
         font-weight: bold;
         margin-bottom: 8px;
+        color: #FFFFFF;
     }
 
     .admin-title {
         text-align: center;
-        color: #cbd5e1;
+        color: #C7D8CC;
         font-size: 13px;
         margin-bottom: 30px;
     }
@@ -64,7 +65,7 @@
     .menu button {
         border: none;
         background: transparent;
-        color: #e5e7eb;
+        color: #E5E7EB;
         text-align: left;
         padding: 14px 15px;
         border-radius: 10px;
@@ -83,20 +84,20 @@
     }
 
     .menu button:hover,
-.menu button.active {
-        background: rgba(255, 255, 255, 0.15);
-        color: white;
+    .menu button.active {
+        background: #16803C;
+        color: #FFFFFF;
     }
 
     .logout-btn {
         margin-top: 25px;
-        background: #dc2626 !important;
-        color: white !important;
+        background: #DC2626 !important;
+        color: #FFFFFF !important;
         text-align: center !important;
     }
 
     .logout-btn:hover {
-        background: #b91c1c !important;
+        background: #B91C1C !important;
     }
 
     .main {
@@ -107,8 +108,8 @@
 
     .header {
         height: 75px;
-        background: white;
-        border-bottom: 1px solid #e5e7eb;
+        background: #FFFFFF;
+        border-bottom: 1px solid #D9E7DD;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -120,7 +121,7 @@
 
     .header h1 {
         font-size: 23px;
-        color: #111827;
+        color: #171717;
     }
 
     .admin-info {
@@ -132,8 +133,8 @@
     }
 
     .admin-badge {
-        background: #2563eb;
-        color: white;
+        background: #16803C;
+        color: #FFFFFF;
         padding: 8px 13px;
         border-radius: 20px;
         font-size: 12px;
@@ -149,7 +150,7 @@
         padding: 24px;
         border-radius: 16px;
         min-height: calc(100vh - 135px);
-        border: 1px solid #e5e7eb;
+        border: 1px solid #D9E7DD;
     }
 
     .section.active {
@@ -157,47 +158,47 @@
     }
 
     #dashboard {
-        background: #f8fafc;
+        background: #F5F8F5;
     }
 
     #employees {
-        background: #f8fbff;
+        background: #F0F7F1;
     }
 
     #leave {
-        background: #fbfaf8;
+        background: #FBFAF5;
     }
 
     #leaveSettings {
-        background: #f7fbff;
+        background: #F2F8F3;
     }
 
     #salary {
-        background: #f8fbfa;
+        background: #F3F8F4;
     }
 
     #monthly {
-        background: #faf9fc;
+        background: #F6F8F5;
     }
 
     #history {
-        background: #f8fafb;
+        background: #F5F8F6;
     }
 
     .section-title {
         font-size: 25px;
         margin-bottom: 8px;
-        color: #111827;
+        color: #171717;
     }
 
     .section-subtitle {
-        color: #64748b;
+        color: #647568;
         margin-bottom: 25px;
         font-size: 14px;
     }
 
     .top-bar {
-        background: white;
+        background: #FFFFFF;
         padding: 18px;
         border-radius: 13px;
         margin-bottom: 20px;
@@ -205,11 +206,12 @@
         justify-content: space-between;
         align-items: center;
         gap: 15px;
-        box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
+        box-shadow: 0 4px 15px rgba(11, 46, 26, 0.06);
+        border: 1px solid #E2EBE4;
     }
 
     .top-bar-left,
-.top-bar-right {
+    .top-bar-right {
         display: flex;
         align-items: center;
         gap: 10px;
@@ -226,48 +228,49 @@
     }
 
     .btn-primary {
-        background: #2563eb;
-        color: white;
+        background: #16803C;
+        color: #FFFFFF;
     }
 
     .btn-primary:hover {
-        background: #1d4ed8;
+        background: #0F642E;
     }
 
     .btn-success {
-        background: #16a34a;
-        color: white;
+        background: #16803C;
+        color: #FFFFFF;
     }
 
     .btn-success:hover {
-        background: #15803d;
+        background: #0F642E;
     }
 
     .btn-danger {
-        background: #dc2626;
-        color: white;
+        background: #DC2626;
+        color: #FFFFFF;
     }
 
     .btn-danger:hover {
-        background: #b91c1c;
+        background: #B91C1C;
     }
 
     .btn-warning {
-        background: #f59e0b;
-        color: white;
+        background: #F59E0B;
+        color: #171717;
     }
 
     .btn-warning:hover {
-        background: #d97706;
+        background: #D97706;
+        color: #FFFFFF;
     }
 
     .btn-secondary {
-        background: #64748b;
-        color: white;
+        background: #475569;
+        color: #FFFFFF;
     }
 
     .btn-secondary:hover {
-        background: #475569;
+        background: #334155;
     }
 
     .btn-small {
@@ -276,11 +279,11 @@
     }
 
     .table-card {
-        background: white;
+        background: #FFFFFF;
         border-radius: 14px;
-        box-shadow: 0 5px 20px rgba(15, 23, 42, 0.06);
+        box-shadow: 0 5px 20px rgba(11, 46, 26, 0.06);
         overflow: hidden;
-        border: 1px solid #e5e7eb;
+        border: 1px solid #D9E7DD;
     }
 
     .table-wrapper {
@@ -294,8 +297,8 @@
     }
 
     th {
-        background: #eff6ff;
-        color: #1e3a8a;
+        background: #0B2E1A;
+        color: #FFFFFF;
         font-size: 13px;
         text-align: left;
         padding: 14px;
@@ -304,18 +307,18 @@
 
     td {
         padding: 13px 14px;
-        border-top: 1px solid #e5e7eb;
+        border-top: 1px solid #E2EBE4;
         font-size: 13px;
         white-space: nowrap;
     }
 
     tr:hover td {
-        background: #f8fafc;
+        background: #F0F7F1;
     }
 
     .empty-row {
         text-align: center;
-        color: #64748b;
+        color: #647568;
         padding: 30px;
     }
 
@@ -328,18 +331,18 @@
     }
 
     .badge-green {
-        background: #dcfce7;
+        background: #DCFCE7;
         color: #166534;
     }
 
     .badge-blue {
-        background: #dbeafe;
-        color: #1e40af;
+        background: #DBEAFE;
+        color: #1E40AF;
     }
 
     .badge-orange {
-        background: #ffedd5;
-        color: #9a3412;
+        background: #FFEDD5;
+        color: #9A3412;
     }
 
     .form-grid {
@@ -361,15 +364,16 @@
     }
 
     .form-group input,
-.form-group select,
-.form-group textarea {
+    .form-group select,
+    .form-group textarea {
         width: 100%;
         padding: 11px 12px;
-        border: 1px solid #cbd5e1;
+        border: 1px solid #C8D8CC;
         border-radius: 8px;
         outline: none;
         font-size: 14px;
-        background: white;
+        background: #FFFFFF;
+        color: #171717;
     }
 
     .form-group textarea {
@@ -378,16 +382,16 @@
     }
 
     .form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-        border-color: #2563eb;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    .form-group select:focus,
+    .form-group textarea:focus {
+        border-color: #16803C;
+        box-shadow: 0 0 0 3px rgba(22, 128, 60, 0.12);
     }
 
     .priority-box {
-        background: #eff6ff;
-        border: 1px solid #bfdbfe;
-        color: #1e40af;
+        background: #E8F5EC;
+        border: 1px solid #B8DCC2;
+        color: #0B5D2A;
         border-radius: 10px;
         padding: 13px 15px;
         font-size: 13px;
@@ -399,7 +403,7 @@
         display: none;
         position: fixed;
         inset: 0;
-        background: rgba(15, 23, 42, 0.65);
+        background: rgba(11, 25, 16, 0.65);
         z-index: 100;
         align-items: center;
         justify-content: center;
@@ -413,7 +417,7 @@
     .modal-box {
         width: 100%;
         max-width: 650px;
-        background: white;
+        background: #FFFFFF;
         border-radius: 16px;
         padding: 25px;
         max-height: 90vh;
@@ -434,12 +438,13 @@
 
     .modal-header h2 {
         font-size: 20px;
-        color: #111827;
+        color: #171717;
     }
 
     .close-btn {
         border: none;
-        background: #f1f5f9;
+        background: #E8F5EC;
+        color: #0B2E1A;
         width: 34px;
         height: 34px;
         border-radius: 50%;
@@ -448,7 +453,7 @@
     }
 
     .close-btn:hover {
-        background: #e2e8f0;
+        background: #D5EBDD;
     }
 
     .modal-footer {
@@ -459,9 +464,9 @@
     }
 
     .info-box {
-        background: #eff6ff;
-        border: 1px solid #bfdbfe;
-        color: #1e40af;
+        background: #E8F5EC;
+        border: 1px solid #B8DCC2;
+        color: #0B5D2A;
         border-radius: 10px;
         padding: 13px 15px;
         font-size: 13px;
@@ -483,13 +488,13 @@
     }
 
     .message.success {
-        background: #dcfce7;
+        background: #DCFCE7;
         color: #166534;
     }
 
     .message.error {
-        background: #fee2e2;
-        color: #991b1b;
+        background: #FEE2E2;
+        color: #991B1B;
     }
 
     @media (max-width: 800px) {
@@ -549,7 +554,7 @@
         }
     }
 
-    </style>
+</style>
 
 </head>
 
@@ -632,6 +637,19 @@
         <i data-lucide="calendar-days"></i>
         Monthly Report
     </button>
+
+    
+<button class="menu-btn"
+        onclick="window.location.href='attendance-history.html'">
+    <i data-lucide="calendar-clock"></i>
+    Attendance History
+</button>
+
+<button class="menu-btn"
+        onclick="window.location.href='leave-history.html'">
+    <i data-lucide="file-clock"></i>
+    Leave History
+</button>
 
     <button class="menu-btn"
             onclick="window.location.href='history.html'">

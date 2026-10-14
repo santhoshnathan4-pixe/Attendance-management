@@ -10,8 +10,7 @@
 
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <style>
-
+   <style>
     * {
         box-sizing: border-box;
         margin: 0;
@@ -19,9 +18,20 @@
         font-family: Arial, Helvetica, sans-serif;
     }
 
+    :root {
+        --growbytee-green: #16803C;
+        --growbytee-dark: #0B2E1A;
+        --growbytee-light: #E8F5EC;
+        --growbytee-black: #171717;
+        --growbytee-white: #FFFFFF;
+        --growbytee-border: #D9E7DD;
+        --growbytee-text: #26352B;
+        --growbytee-muted: #647568;
+    }
+
     body {
-        background: #f4f7fb;
-        color: #1f2937;
+        background: #F4F8F5;
+        color: var(--growbytee-text);
     }
 
     .container {
@@ -31,7 +41,7 @@
 
     .sidebar {
         width: 250px;
-        background: #334155;
+        background: linear-gradient(180deg, #0B2E1A 0%, #171717 100%);
         color: white;
         position: fixed;
         left: 0;
@@ -39,6 +49,7 @@
         bottom: 0;
         padding: 25px 15px;
         overflow-y: auto;
+        border-right: 1px solid #245638;
     }
 
     .logo {
@@ -46,11 +57,13 @@
         font-size: 25px;
         font-weight: bold;
         margin-bottom: 8px;
+        color: #FFFFFF;
+        letter-spacing: 0.5px;
     }
 
     .admin-title {
         text-align: center;
-        color: #cbd5e1;
+        color: #B9D9C2;
         font-size: 13px;
         margin-bottom: 30px;
     }
@@ -64,7 +77,7 @@
     .menu button {
         border: none;
         background: transparent;
-        color: #e5e7eb;
+        color: #E0EAE3;
         text-align: left;
         padding: 14px 15px;
         border-radius: 10px;
@@ -83,20 +96,21 @@
     }
 
     .menu button:hover,
-.menu button.active {
-        background: rgba(255, 255, 255, 0.15);
+    .menu button.active {
+        background: var(--growbytee-green);
         color: white;
+        box-shadow: 0 4px 12px rgba(22, 128, 60, 0.2);
     }
 
     .logout-btn {
         margin-top: 25px;
-        background: #dc2626 !important;
+        background: #DC2626 !important;
         color: white !important;
         text-align: center !important;
     }
 
     .logout-btn:hover {
-        background: #b91c1c !important;
+        background: #B91C1C !important;
     }
 
     .main {
@@ -107,8 +121,8 @@
 
     .header {
         height: 75px;
-        background: white;
-        border-bottom: 1px solid #e5e7eb;
+        background: #FFFFFF;
+        border-bottom: 2px solid var(--growbytee-green);
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -116,28 +130,30 @@
         position: sticky;
         top: 0;
         z-index: 20;
+        box-shadow: 0 2px 10px rgba(11, 46, 26, 0.04);
     }
 
     .header h1 {
         font-size: 23px;
-        color: #111827;
+        color: var(--growbytee-black);
     }
 
     .admin-info {
         display: flex;
         align-items: center;
         gap: 10px;
-        color: #475569;
+        color: #435449;
         font-size: 14px;
     }
 
     .admin-badge {
-        background: #2563eb;
+        background: var(--growbytee-dark);
         color: white;
         padding: 8px 13px;
         border-radius: 20px;
         font-size: 12px;
         font-weight: bold;
+        border: 1px solid var(--growbytee-green);
     }
 
     .content {
@@ -149,37 +165,30 @@
         padding: 24px;
         border-radius: 16px;
         min-height: calc(100vh - 135px);
-        border: 1px solid #e5e7eb;
+        background: #FFFFFF;
+        border: 1px solid var(--growbytee-border);
+        box-shadow: 0 4px 16px rgba(11, 46, 26, 0.035);
     }
 
     .section.active {
         display: block;
     }
 
-    #dashboard {
-        background: #f8fafc;
-    }
-
-    #leave {
-        background: #fbfaf8;
-    }
-
-    #salary {
-        background: #f8fbfa;
-    }
-
+    #dashboard,
+    #leave,
+    #salary,
     #history {
-        background: #f8fafb;
+        background: #FFFFFF;
     }
 
     .section-title {
         font-size: 25px;
         margin-bottom: 8px;
-        color: #111827;
+        color: var(--growbytee-dark);
     }
 
     .section-subtitle {
-        color: #64748b;
+        color: var(--growbytee-muted);
         margin-bottom: 25px;
         font-size: 14px;
     }
@@ -195,12 +204,13 @@
     }
 
     .btn-primary {
-        background: #2563eb;
+        background: var(--growbytee-green);
         color: white;
     }
 
     .btn-primary:hover {
-        background: #1d4ed8;
+        background: #11652F;
+        box-shadow: 0 4px 10px rgba(22, 128, 60, 0.18);
     }
 
     table {
@@ -210,8 +220,8 @@
     }
 
     th {
-        background: #eff6ff;
-        color: #1e3a8a;
+        background: var(--growbytee-dark);
+        color: #FFFFFF;
         font-size: 13px;
         text-align: left;
         padding: 14px;
@@ -220,20 +230,20 @@
 
     td {
         padding: 13px 14px;
-        border-top: 1px solid #e5e7eb;
+        border-top: 1px solid #E1EAE3;
         font-size: 13px;
         white-space: nowrap;
     }
 
     tr:hover td {
-        background: #f8fafc;
+        background: #F0F8F2;
     }
 
     .modal {
         display: none;
         position: fixed;
         inset: 0;
-        background: rgba(15, 23, 42, 0.65);
+        background: rgba(10, 25, 15, 0.68);
         z-index: 100;
         align-items: center;
         justify-content: center;
@@ -258,8 +268,8 @@
     }
 
     .message.error {
-        background: #fee2e2;
-        color: #991b1b;
+        background: #FEE2E2;
+        color: #991B1B;
     }
 
     @media (max-width: 800px) {
@@ -309,8 +319,7 @@
             display: none;
         }
     }
-
-    </style>
+</style>
 
 </head>
 
@@ -393,6 +402,19 @@
         <i data-lucide="calendar-days"></i>
         Monthly Report
     </button>
+
+    
+<button class="menu-btn"
+        onclick="window.location.href='attendance-history.html'">
+    <i data-lucide="calendar-clock"></i>
+    Attendance History
+</button>
+
+<button class="menu-btn"
+        onclick="window.location.href='leave-history.html'">
+    <i data-lucide="file-clock"></i>
+    Leave History
+</button>
 
     <button class="menu-btn"
             onclick="window.location.href='history.html'">

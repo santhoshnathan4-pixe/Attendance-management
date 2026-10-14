@@ -15,6 +15,8 @@ import com.example.attendance.ShiftSettingRepository;
 import com.example.attendance.WorkingDaySetting;
 import com.example.attendance.WorkingDaySettingRepository;
 import org.springframework.stereotype.Service;
+import com.example.attendance.Branch;
+import com.example.attendance.BranchRepository;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -34,6 +36,7 @@ public class AttendanceAiService {
         private final ShiftSettingRepository shiftSettingRepository;
         private final AdminActionHistoryRepository historyRepository;
         private final GeminiAiService geminiAiService;
+        private final BranchRepository branchRepository;
 
         public AttendanceAiService(
                         AttendanceRepository attendanceRepository,
@@ -43,7 +46,8 @@ public class AttendanceAiService {
                         WorkingDaySettingRepository workingDaySettingRepository,
                         ShiftSettingRepository shiftSettingRepository,
                         AdminActionHistoryRepository historyRepository,
-                        GeminiAiService geminiAiService) {
+                        GeminiAiService geminiAiService,
+                        BranchRepository branchRepository) {
 
                 this.attendanceRepository = attendanceRepository;
                 this.employeeRepository = employeeRepository;
@@ -53,6 +57,8 @@ public class AttendanceAiService {
                 this.shiftSettingRepository = shiftSettingRepository;
                 this.historyRepository = historyRepository;
                 this.geminiAiService = geminiAiService;
+                this.branchRepository = branchRepository;
+
         }
 
         public String analyzeCurrentMonth(String question) {
@@ -81,6 +87,83 @@ public class AttendanceAiService {
                                 endDate);
 
                 StringBuilder data = new StringBuilder();
+
+                // =========================================
+// BRANCH MANAGEMENT DATA
+// =========================================
+
+data.append("\n")
+        .append("BRANCH MANAGEMENT DATA")
+        .append("\n")
+        .append("====================")
+        .append("\n");
+
+List<Branch> branches = branchRepository.findAll()
+        .stream()
+        .sorted(
+                Comparator.comparing(
+                        Branch::getBranchName,
+                        Comparator.nullsLast(
+                                String.CASE_INSENSITIVE_ORDER)))
+        .toList();
+
+if (branches.isEmpty()) {
+
+    data.append("No branch records were found.\n");
+
+} else {
+
+    data.append("Total Branches: ")
+            .append(branches.size())
+            .append("\n");
+
+    data.append("Active Branches: ")
+            .append(branches.stream()
+                    .filter(branch -> Boolean.TRUE.equals(
+                            branch.getActive()))
+                    .count())
+            .append("\n");
+
+    data.append("Inactive Branches: ")
+            .append(branches.stream()
+                    .filter(branch -> !Boolean.TRUE.equals(
+                            branch.getActive()))
+                    .count())
+            .append("\n\n");
+
+    for (Branch branch : branches) {
+
+        data.append("Branch Name: ")
+                .append(branch.getBranchName())
+                .append("\n");
+
+        data.append("Status: ")
+                .append(Boolean.TRUE.equals(branch.getActive())
+                        ? "Active"
+                        : "Inactive")
+                .append("\n");
+
+        data.append("Allowed Radius: ")
+                .append(branch.getAllowedRadiusMeters())
+                .append(" meters\n");
+
+        data.append("Location Verification: ")
+                .append(Boolean.TRUE.equals(
+                        branch.getLocationVerificationEnabled())
+                        ? "Enabled"
+                        : "Disabled")
+                .append("\n");
+
+        data.append("Face Verification: ")
+                .append(Boolean.TRUE.equals(
+                        branch.getFaceVerificationEnabled())
+                        ? "Enabled"
+                        : "Disabled")
+                .append("\n");
+
+        data.append("--------------------\n");
+    }
+}
 
                 data.append("Attendance period: ")
                                 .append(startDate)

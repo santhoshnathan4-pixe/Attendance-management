@@ -3,7 +3,10 @@ package com.example.attendance;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.YearMonth;
+import java.time.ZoneId;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -15,743 +18,711 @@ import java.util.Set;
 @Service
 public class PayrollService {
 
-    public static final boolean AUTO_COVER_ABSENCE_WITH_LEAVE_BALANCE = true;
+        public static final boolean AUTO_COVER_ABSENCE_WITH_LEAVE_BALANCE = true;
 
-    private final EmployeeRepository employeeRepository;
-    private final AttendanceRepository attendanceRepository;
-    private final LeaveRequestRepository leaveRequestRepository;
-    private final WorkingDaySettingRepository workingDaySettingRepository;
-    private final WeeklyOffSettingRepository weeklyOffSettingRepository;
-    private final LeavePermissionSettingRepository settingRepository;
-    private final EmployeeLeaveBalanceRepository balanceRepository;
-    private final OvertimeRecordRepository overtimeRecordRepository;
+        private final EmployeeRepository employeeRepository;
+        private final AttendanceRepository attendanceRepository;
+        private final LeaveRequestRepository leaveRequestRepository;
+        private final WorkingDaySettingRepository workingDaySettingRepository;
+        private final WeeklyOffSettingRepository weeklyOffSettingRepository;
+        private final LeavePermissionSettingRepository settingRepository;
+        private final EmployeeLeaveBalanceRepository balanceRepository;
+        private final OvertimeRecordRepository overtimeRecordRepository;
+        private final ShiftTimeService shiftTimeService;
 
-    public PayrollService(
-            EmployeeRepository employeeRepository,
-            AttendanceRepository attendanceRepository,
-            LeaveRequestRepository leaveRequestRepository,
-            WorkingDaySettingRepository workingDaySettingRepository,
-            WeeklyOffSettingRepository weeklyOffSettingRepository,
-            LeavePermissionSettingRepository settingRepository,
-            EmployeeLeaveBalanceRepository balanceRepository,
-            OvertimeRecordRepository overtimeRecordRepository) {
+        // Shift shortfall rule: allowed shortfall (late + early) in minutes
+        private static final long ALLOWED_SHORTFALL_MINUTES = 30;
 
-        this.employeeRepository = employeeRepository;
-        this.attendanceRepository = attendanceRepository;
-        this.leaveRequestRepository = leaveRequestRepository;
-        this.workingDaySettingRepository = workingDaySettingRepository;
-        this.weeklyOffSettingRepository = weeklyOffSettingRepository;
-        this.settingRepository = settingRepository;
-        this.balanceRepository = balanceRepository;
-        this.overtimeRecordRepository = overtimeRecordRepository;
-    }
+        private static final ZoneId INDIA_ZONE = ZoneId.of("Asia/Kolkata");
 
+        public PayrollService(
+                        EmployeeRepository employeeRepository,
+                        AttendanceRepository attendanceRepository,
+                        LeaveRequestRepository leaveRequestRepository,
+                        WorkingDaySettingRepository workingDaySettingRepository,
+                        WeeklyOffSettingRepository weeklyOffSettingRepository,
+                        LeavePermissionSettingRepository settingRepository,
+                        EmployeeLeaveBalanceRepository balanceRepository,
+                        OvertimeRecordRepository overtimeRecordRepository,
+                        ShiftTimeService shiftTimeService) {
 
-    public record EmployeePayroll(
-            Employee employee,
-            PayrollMath.Result math,
-            double sickLeave,
-            double casualLeave,
-            double halfDay,
-            int permission,
-            double lopLeave,
-            double absentDays,
-            int overtimeDays,
-            double overtimeSalary,
-            double compensatoryOffDays,
-            double finalSalaryWithOvertime) {
-    }
-
-
-    public record MonthPayroll(
-            int workingDays,
-            List<EmployeePayroll> employees) {
-    }
-
-
-    // =========================================
-    // CALCULATE MONTH PAYROLL
-    // =========================================
-
-    public MonthPayroll calculate(
-            int year,
-            int month) {
-
-        YearMonth yearMonth =
-                YearMonth.of(year, month);
-
-        LocalDate start =
-                yearMonth.atDay(1);
-
-        LocalDate end =
-                yearMonth.atEndOfMonth();
-
-
-        // =========================================
-        // LOAD ACTIVE WORKING DAY SETTINGS ONLY
-        // =========================================
-
-        Map<LocalDate, String> settingTypes =
-                new HashMap<>();
-
-        for (WorkingDaySetting setting :
-                workingDaySettingRepository
-                        .findBySettingDateBetweenAndActiveTrueOrderBySettingDateAsc(
-                                start,
-                                end)) {
-
-            if (setting != null &&
-                    setting.getSettingDate() != null &&
-                    setting.getSettingType() != null) {
-
-                settingTypes.put(
-                        setting.getSettingDate(),
-                        setting.getSettingType()
-                );
-            }
+                this.employeeRepository = employeeRepository;
+                this.attendanceRepository = attendanceRepository;
+                this.leaveRequestRepository = leaveRequestRepository;
+                this.workingDaySettingRepository = workingDaySettingRepository;
+                this.weeklyOffSettingRepository = weeklyOffSettingRepository;
+                this.settingRepository = settingRepository;
+                this.balanceRepository = balanceRepository;
+                this.overtimeRecordRepository = overtimeRecordRepository;
+                this.shiftTimeService = shiftTimeService;
         }
 
-
-        // =========================================
-        // LOAD OVERALL RECURRING WEEKLY OFF DAYS
-        // =========================================
-
-        List<String> recurringWeeklyOffDays =
-                weeklyOffSettingRepository
-                        .findByActiveTrueOrderByDayOfWeekAsc()
-                        .stream()
-                        .filter(setting ->
-                                setting != null &&
-                                setting.getDayOfWeek() != null
-                        )
-                        .map(setting ->
-                                setting.getDayOfWeek()
-                        )
-                        .toList();
-
-
-        // =========================================
-        // CALCULATE WORKING DATES
-        // =========================================
-
-        List<LocalDate> workingDates =
-                WorkingDayCalculator.workingDates(
-                        yearMonth,
-                        settingTypes,
-                        recurringWeeklyOffDays
-                );
-
-        Set<LocalDate> workingSet =
-                new HashSet<>(
-                        workingDates
-                );
-
-
-        // =========================================
-        // LOAD ATTENDANCE
-        // =========================================
-
-        Map<Integer, Set<LocalDate>> presentByEmployee =
-                new HashMap<>();
-
-        for (Attendance attendance :
-                attendanceRepository
-                        .findByAttendanceDateBetween(
-                                start,
-                                end
-                        )) {
-
-            if (attendance.getEmployeeId() == null ||
-                    attendance.getAttendanceDate() == null ||
-                    attendance.getCheckIn() == null) {
-
-                continue;
-            }
-
-            presentByEmployee
-                    .computeIfAbsent(
-                            attendance.getEmployeeId(),
-                            key -> new HashSet<>()
-                    )
-                    .add(
-                            attendance.getAttendanceDate()
-                    );
+        public record EmployeePayroll(
+                        Employee employee,
+                        PayrollMath.Result math,
+                        double sickLeave,
+                        double casualLeave,
+                        double halfDay,
+                        int permission,
+                        double lopLeave,
+                        double absentDays,
+                        int overtimeDays,
+                        double overtimeSalary,
+                        double compensatoryOffDays,
+                        double finalSalaryWithOvertime) {
         }
 
-
-        // =========================================
-        // LOAD LEAVE REQUESTS
-        // =========================================
-
-        Map<Integer, List<LeaveRequest>> leavesByEmployee =
-                new HashMap<>();
-
-        for (LeaveRequest leave :
-                leaveRequestRepository
-                        .findByLeaveDateBetween(
-                                start,
-                                end
-                        )) {
-
-            if (leave.getEmployeeId() == null) {
-                continue;
-            }
-
-            leavesByEmployee
-                    .computeIfAbsent(
-                            leave.getEmployeeId(),
-                            key -> new ArrayList<>()
-                    )
-                    .add(leave);
+        public record MonthPayroll(
+                        int workingDays,
+                        List<EmployeePayroll> employees) {
         }
 
-
         // =========================================
-        // LOAD OT RECORDS
-        // =========================================
-
-        Map<Integer, List<OvertimeRecord>> overtimeByEmployee =
-                new HashMap<>();
-
-        for (OvertimeRecord overtime :
-                overtimeRecordRepository
-                        .findByOtDateBetweenOrderByOtDateAsc(
-                                start,
-                                end
-                        )) {
-
-            if (overtime == null ||
-                    overtime.getEmployeeId() == null) {
-
-                continue;
-            }
-
-            overtimeByEmployee
-                    .computeIfAbsent(
-                            overtime.getEmployeeId(),
-                            key -> new ArrayList<>()
-                    )
-                    .add(overtime);
-        }
-
-
-        // =========================================
-        // LOAD ACTIVE NON-ADMIN EMPLOYEES
+        // CALCULATE MONTH PAYROLL
         // =========================================
 
-        List<Employee> employees =
-                employeeRepository.findAll()
-                        .stream()
-                        .filter(e ->
-                                Boolean.TRUE.equals(
-                                        e.getActive()
-                                )
-                        )
-                        .filter(e ->
-                                !"ADMIN".equalsIgnoreCase(
-                                        e.getRole()
-                                )
-                        )
-                        .sorted(
-                                Comparator.comparing(
-                                        Employee::getEmployeeCode,
-                                        Comparator.nullsLast(
-                                                String.CASE_INSENSITIVE_ORDER
-                                        )
-                                )
-                        )
-                        .toList();
+        public MonthPayroll calculate(
+                        int year,
+                        int month) {
 
+                YearMonth yearMonth = YearMonth.of(year, month);
 
-        List<EmployeePayroll> result =
-                new ArrayList<>();
+                LocalDate start = yearMonth.atDay(1);
 
+                LocalDate end = yearMonth.atEndOfMonth();
 
-        // =========================================
-        // CALCULATE EACH EMPLOYEE
-        // =========================================
+                // =========================================
+                // LOAD ACTIVE WORKING DAY SETTINGS ONLY
+                // =========================================
 
-        for (Employee employee : employees) {
+                Map<LocalDate, String> settingTypes = new HashMap<>();
 
-            Integer employeeId =
-                    employee.getId();
+                for (WorkingDaySetting setting : workingDaySettingRepository
+                                .findBySettingDateBetweenAndActiveTrueOrderBySettingDateAsc(
+                                                start,
+                                                end)) {
 
-            Set<LocalDate> present =
-                    presentByEmployee.getOrDefault(
-                            employeeId,
-                            Set.of()
-                    );
+                        if (setting != null &&
+                                        setting.getSettingDate() != null &&
+                                        setting.getSettingType() != null) {
 
-            List<LeaveRequest> leaves =
-                    leavesByEmployee.getOrDefault(
-                            employeeId,
-                            List.of()
-                    );
-
-
-            Map<LocalDate, Double> paidLeaveByDate =
-                    new HashMap<>();
-
-            double sick = 0;
-            double casual = 0;
-            double half = 0;
-            double lop = 0;
-            int permission = 0;
-
-
-            // =========================================
-            // PROCESS APPROVED LEAVES
-            // =========================================
-
-            for (LeaveRequest leave : leaves) {
-
-                if (!"APPROVED".equalsIgnoreCase(
-                            leave.getStatus()
-                        )
-                        || leave.getLeaveType() == null
-                        || leave.getLeaveDate() == null) {
-
-                    continue;
+                                settingTypes.put(
+                                                setting.getSettingDate(),
+                                                setting.getSettingType());
+                        }
                 }
 
-
-                String type =
-                        leave.getLeaveType()
-                                .trim()
-                                .toUpperCase();
-
-
                 // =========================================
-                // PERMISSION
+                // LOAD OVERALL RECURRING WEEKLY OFF DAYS
                 // =========================================
 
-                if (type.equals("PERMISSION")) {
+                List<String> recurringWeeklyOffDays = weeklyOffSettingRepository
+                                .findByActiveTrueOrderByDayOfWeekAsc()
+                                .stream()
+                                .filter(setting -> setting != null &&
+                                                setting.getDayOfWeek() != null)
+                                .map(setting -> setting.getDayOfWeek())
+                                .toList();
 
-                    permission++;
+                // =========================================
+                // CALCULATE WORKING DATES
+                // =========================================
 
-                    continue;
+                List<LocalDate> workingDates = WorkingDayCalculator.workingDates(
+                                yearMonth,
+                                settingTypes,
+                                recurringWeeklyOffDays);
+
+                Set<LocalDate> workingSet = new HashSet<>(
+                                workingDates);
+
+                // =========================================
+                // LOAD ATTENDANCE
+                // =========================================
+
+                Map<Integer, Set<LocalDate>> presentByEmployee = new HashMap<>();
+
+                // All sessions (rows) per employee per date, used for the shift rule
+                Map<Integer, Map<LocalDate, List<Attendance>>> sessionsByEmployee = new HashMap<>();
+
+                for (Attendance attendance : attendanceRepository
+                                .findByAttendanceDateBetween(
+                                                start,
+                                                end)) {
+
+                        if (attendance.getEmployeeId() == null ||
+                                        attendance.getAttendanceDate() == null ||
+                                        attendance.getCheckIn() == null) {
+
+                                continue;
+                        }
+
+                        presentByEmployee
+                                        .computeIfAbsent(
+                                                        attendance.getEmployeeId(),
+                                                        key -> new HashSet<>())
+                                        .add(
+                                                        attendance.getAttendanceDate());
+
+                        sessionsByEmployee
+                                        .computeIfAbsent(
+                                                        attendance.getEmployeeId(),
+                                                        key -> new HashMap<>())
+                                        .computeIfAbsent(
+                                                        attendance.getAttendanceDate(),
+                                                        key -> new ArrayList<>())
+                                        .add(attendance);
                 }
 
+                // =========================================
+                // LOAD LEAVE REQUESTS
+                // =========================================
 
-                double duration =
-                        leave.getLeaveDuration() != null
-                                ? leave.getLeaveDuration()
-                                : 1.0;
+                Map<Integer, List<LeaveRequest>> leavesByEmployee = new HashMap<>();
 
+                for (LeaveRequest leave : leaveRequestRepository
+                                .findByLeaveDateBetween(
+                                                start,
+                                                end)) {
 
-                if (duration <= 0) {
-                    continue;
+                        if (leave.getEmployeeId() == null) {
+                                continue;
+                        }
+
+                        leavesByEmployee
+                                        .computeIfAbsent(
+                                                        leave.getEmployeeId(),
+                                                        key -> new ArrayList<>())
+                                        .add(leave);
                 }
 
-
-                duration =
-                        Math.min(
-                                duration,
-                                1.0
-                        );
-
-
-                LocalDate date =
-                        leave.getLeaveDate();
-
-
                 // =========================================
-                // SICK / CASUAL LEAVE
+                // LOAD OT RECORDS
                 // =========================================
 
-                if (type.equals("SICK") ||
-                        type.equals("CASUAL")) {
+                Map<Integer, List<OvertimeRecord>> overtimeByEmployee = new HashMap<>();
 
-                    if (type.equals("SICK")) {
+                for (OvertimeRecord overtime : overtimeRecordRepository
+                                .findByOtDateBetweenOrderByOtDateAsc(
+                                                start,
+                                                end)) {
 
-                        sick += duration;
+                        if (overtime == null ||
+                                        overtime.getEmployeeId() == null) {
 
-                    } else {
+                                continue;
+                        }
 
-                        casual += duration;
-                    }
-
-
-                    if (duration == 0.5) {
-
-                        half += 0.5;
-                    }
-
-
-                    if (workingSet.contains(date)) {
-
-                        paidLeaveByDate.merge(
-                                date,
-                                duration,
-                                (a, b) ->
-                                        Math.min(
-                                                1.0,
-                                                a + b
-                                        )
-                        );
-                    }
+                        overtimeByEmployee
+                                        .computeIfAbsent(
+                                                        overtime.getEmployeeId(),
+                                                        key -> new ArrayList<>())
+                                        .add(overtime);
                 }
 
+                // =========================================
+                // LOAD ACTIVE NON-ADMIN EMPLOYEES
+                // =========================================
+
+                List<Employee> employees = employeeRepository.findAll()
+                                .stream()
+                                .filter(e -> Boolean.TRUE.equals(
+                                                e.getActive()))
+                                .filter(e -> !"ADMIN".equalsIgnoreCase(
+                                                e.getRole()))
+                                .sorted(
+                                                Comparator.comparing(
+                                                                Employee::getEmployeeCode,
+                                                                Comparator.nullsLast(
+                                                                                String.CASE_INSENSITIVE_ORDER)))
+                                .toList();
+
+                List<EmployeePayroll> result = new ArrayList<>();
 
                 // =========================================
-                // LOP LEAVE
+                // CALCULATE EACH EMPLOYEE
                 // =========================================
 
-                else if (type.equals("LOP")) {
+                for (Employee employee : employees) {
 
-                    if (workingSet.contains(date) &&
-                            !present.contains(date)) {
+                        Integer employeeId = employee.getId();
 
-                        lop += duration;
-                    }
-                }
-            }
-
-
-            // =========================================
-            // AUTO COVER ABSENCE
-            // =========================================
-
-            double autoCoverCap = 0;
-
-
-            if (AUTO_COVER_ABSENCE_WITH_LEAVE_BALANCE) {
-
-                LeavePermissionSetting setting =
-                        resolveSetting(employee);
-
-
-                double sickAllowance =
-                        setting != null &&
-                        setting.getSickLeave() != null
-                                ? Math.max(
-                                        0,
-                                        setting.getSickLeave()
-                                )
-                                : 1.0;
-
-
-                double casualAllowance =
-                        setting != null &&
-                        setting.getCasualLeave() != null
-                                ? Math.max(
-                                        0,
-                                        setting.getCasualLeave()
-                                )
-                                : 1.0;
-
-
-                double notUsedYet =
-                        Math.max(
-                                0,
-                                sickAllowance +
-                                casualAllowance -
-                                sick -
-                                casual
-                        );
-
-
-                autoCoverCap =
-                        notUsedYet;
-
-
-                var balance =
-                        balanceRepository
-                                .findByEmployeeIdAndBalanceMonth(
+                        Set<LocalDate> present = presentByEmployee.getOrDefault(
                                         employeeId,
-                                        start
-                                );
+                                        Set.of());
 
+                        List<LeaveRequest> leaves = leavesByEmployee.getOrDefault(
+                                        employeeId,
+                                        List.of());
 
-                if (balance.isPresent()) {
+                        Map<LocalDate, Double> paidLeaveByDate = new HashMap<>();
 
-                    double sickLeft =
-                            balance.get().getSickBalance() != null
-                                    ? Math.max(
-                                            0,
-                                            balance.get()
-                                                    .getSickBalance()
-                                    )
-                                    : 0;
+                        double sick = 0;
+                        double casual = 0;
+                        double half = 0;
+                        double lop = 0;
+                        int permission = 0;
 
+                        // Dates with approved permission (excluded from shift rule)
+                        Set<LocalDate> permissionDates = new HashSet<>();
 
-                    double casualLeft =
-                            balance.get().getCasualBalance() != null
-                                    ? Math.max(
-                                            0,
-                                            balance.get()
-                                                    .getCasualBalance()
-                                    )
-                                    : 0;
+                        // =========================================
+                        // PROCESS APPROVED LEAVES
+                        // =========================================
 
+                        for (LeaveRequest leave : leaves) {
 
-                    autoCoverCap =
-                            Math.min(
-                                    autoCoverCap,
-                                    sickLeft +
-                                    casualLeft
-                            );
+                                if (!"APPROVED".equalsIgnoreCase(
+                                                leave.getStatus())
+                                                || leave.getLeaveType() == null
+                                                || leave.getLeaveDate() == null) {
+
+                                        continue;
+                                }
+
+                                String type = leave.getLeaveType()
+                                                .trim()
+                                                .toUpperCase();
+
+                                // =========================================
+                                // PERMISSION
+                                // =========================================
+
+                                if (type.equals("PERMISSION")) {
+
+                                        permission++;
+
+                                        if (leave.getLeaveDate() != null) {
+                                                permissionDates.add(
+                                                                leave.getLeaveDate());
+                                        }
+
+                                        continue;
+                                }
+
+                                double duration = leave.getLeaveDuration() != null
+                                                ? leave.getLeaveDuration()
+                                                : 1.0;
+
+                                if (duration <= 0) {
+                                        continue;
+                                }
+
+                                duration = Math.min(
+                                                duration,
+                                                1.0);
+
+                                LocalDate date = leave.getLeaveDate();
+
+                                // =========================================
+                                // SICK / CASUAL LEAVE
+                                // =========================================
+
+                                if (type.equals("SICK") ||
+                                                type.equals("CASUAL")) {
+
+                                        if (type.equals("SICK")) {
+
+                                                sick += duration;
+
+                                        } else {
+
+                                                casual += duration;
+                                        }
+
+                                        if (duration == 0.5) {
+
+                                                half += 0.5;
+                                        }
+
+                                        if (workingSet.contains(date)) {
+
+                                                paidLeaveByDate.merge(
+                                                                date,
+                                                                duration,
+                                                                (a, b) -> Math.min(
+                                                                                1.0,
+                                                                                a + b));
+                                        }
+                                }
+
+                                // =========================================
+                                // LOP LEAVE
+                                // =========================================
+
+                                else if (type.equals("LOP")) {
+
+                                        if (workingSet.contains(date) &&
+                                                        !present.contains(date)) {
+
+                                                lop += duration;
+                                        }
+                                }
+                        }
+
+                        // =========================================
+                        // AUTO COVER ABSENCE
+                        // =========================================
+
+                        double autoCoverCap = 0;
+
+                        if (AUTO_COVER_ABSENCE_WITH_LEAVE_BALANCE) {
+
+                                LeavePermissionSetting setting = resolveSetting(employee);
+
+                                double sickAllowance = setting != null &&
+                                                setting.getSickLeave() != null
+                                                                ? Math.max(
+                                                                                0,
+                                                                                setting.getSickLeave())
+                                                                : 1.0;
+
+                                double casualAllowance = setting != null &&
+                                                setting.getCasualLeave() != null
+                                                                ? Math.max(
+                                                                                0,
+                                                                                setting.getCasualLeave())
+                                                                : 1.0;
+
+                                double notUsedYet = Math.max(
+                                                0,
+                                                sickAllowance +
+                                                                casualAllowance -
+                                                                sick -
+                                                                casual);
+
+                                autoCoverCap = notUsedYet;
+
+                                var balance = balanceRepository
+                                                .findByEmployeeIdAndBalanceMonth(
+                                                                employeeId,
+                                                                start);
+
+                                if (balance.isPresent()) {
+
+                                        double sickLeft = balance.get().getSickBalance() != null
+                                                        ? Math.max(
+                                                                        0,
+                                                                        balance.get()
+                                                                                        .getSickBalance())
+                                                        : 0;
+
+                                        double casualLeft = balance.get().getCasualBalance() != null
+                                                        ? Math.max(
+                                                                        0,
+                                                                        balance.get()
+                                                                                        .getCasualBalance())
+                                                        : 0;
+
+                                        autoCoverCap = Math.min(
+                                                        autoCoverCap,
+                                                        sickLeft +
+                                                                        casualLeft);
+                                }
+                        }
+
+                        // =========================================
+                        // MONTHLY SALARY
+                        // =========================================
+
+                        double monthlySalary = employee.getSalary() != null
+                                        ? employee.getSalary()
+                                        : 0.0;
+
+                        // =========================================
+                        // FINAL PAYROLL MATH
+                        // =========================================
+
+                        // =========================================
+                        // SHIFT SHORTFALL (late + early, all sessions)
+                        // =========================================
+
+                        double shortfallDays = calculateShortfallDays(
+                                        employee,
+                                        workingSet,
+                                        start,
+                                        sessionsByEmployee.getOrDefault(
+                                                        employeeId,
+                                                        Map.of()),
+                                        paidLeaveByDate.keySet(),
+                                        permissionDates);
+
+                        PayrollMath.Result math = PayrollMath.calculate(
+                                        workingDates,
+                                        present,
+                                        paidLeaveByDate,
+                                        shortfallDays,
+                                        autoCoverCap,
+                                        monthlySalary);
+
+                        // =========================================
+                        // DISPLAY ABSENCE / LOP DETAILS
+                        // =========================================
+
+                        // Shift shortfall is shown inside LOP days, not as absent days
+                        double rawAbsent = Math.max(
+                                        0,
+                                        math.lopDays() +
+                                                        math.autoCoveredDays() -
+                                                        shortfallDays);
+
+                        double lopShown = Math.min(
+                                        lop,
+                                        rawAbsent);
+
+                        double absent = PayrollMath.round2(
+                                        Math.max(
+                                                        0,
+                                                        rawAbsent -
+                                                                        lopShown));
+
+                        // =========================================
+                        // CALCULATE OVERTIME
+                        // =========================================
+
+                        List<OvertimeRecord> overtimeRecords = overtimeByEmployee.getOrDefault(
+                                        employeeId,
+                                        List.of());
+
+                        int overtimeDays = 0;
+
+                        double overtimeSalary = 0.0;
+
+                        double compensatoryOffDays = 0.0;
+
+                        /*
+                         * OT amount is based on the same
+                         * per-day salary used by payroll.
+                         *
+                         * Example:
+                         *
+                         * Salary = 25000
+                         * Working Days = 27
+                         *
+                         * Per Day = 925.93
+                         *
+                         * One Extra Salary OT = 925.93
+                         */
+
+                        double perDaySalary = math.perDaySalary();
+
+                        for (OvertimeRecord overtime : overtimeRecords) {
+
+                                if (!Boolean.TRUE.equals(
+                                                overtime.getOtEligible())) {
+
+                                        continue;
+                                }
+
+                                String benefitType = overtime.getBenefitType() != null
+                                                ? overtime.getBenefitType()
+                                                                .trim()
+                                                                .toUpperCase()
+                                                : "";
+
+                                /*
+                                 * Only APPLIED OT records should
+                                 * affect payroll.
+                                 */
+
+                                if (!"APPLIED".equalsIgnoreCase(
+                                                overtime.getStatus())) {
+
+                                        continue;
+                                }
+
+                                overtimeDays++;
+
+                                // =========================================
+                                // EXTRA SALARY
+                                // =========================================
+
+                                if ("EXTRA_SALARY".equals(
+                                                benefitType)) {
+
+                                        double amount = perDaySalary;
+
+                                        if (overtime.getOtAmount() != null &&
+                                                        overtime.getOtAmount() > 0) {
+
+                                                amount = overtime.getOtAmount();
+                                        }
+
+                                        overtimeSalary += amount;
+                                }
+
+                                // =========================================
+                                // COMPENSATORY OFF
+                                // =========================================
+
+                                else if ("COMP_OFF".equals(
+                                                benefitType)) {
+
+                                        double compOff = overtime.getCompOffDays() != null
+                                                        ? overtime.getCompOffDays()
+                                                        : 1.0;
+
+                                        compensatoryOffDays += Math.max(
+                                                        0,
+                                                        compOff);
+                                }
+                        }
+
+                        overtimeSalary = PayrollMath.round2(
+                                        overtimeSalary);
+
+                        compensatoryOffDays = PayrollMath.round2(
+                                        compensatoryOffDays);
+
+                        double finalSalaryWithOvertime = PayrollMath.round2(
+                                        math.finalSalary() +
+                                                        overtimeSalary);
+
+                        // =========================================
+                        // ADD EMPLOYEE PAYROLL RESULT
+                        // =========================================
+
+                        result.add(
+                                        new EmployeePayroll(
+                                                        employee,
+                                                        math,
+                                                        PayrollMath.round2(sick),
+                                                        PayrollMath.round2(casual),
+                                                        PayrollMath.round2(half),
+                                                        permission,
+                                                        PayrollMath.round2(lopShown),
+                                                        absent,
+                                                        overtimeDays,
+                                                        overtimeSalary,
+                                                        compensatoryOffDays,
+                                                        finalSalaryWithOvertime));
                 }
-            }
 
-
-            // =========================================
-            // MONTHLY SALARY
-            // =========================================
-
-            double monthlySalary =
-                    employee.getSalary() != null
-                            ? employee.getSalary()
-                            : 0.0;
-
-
-            // =========================================
-            // FINAL PAYROLL MATH
-            // =========================================
-
-            PayrollMath.Result math =
-                    PayrollMath.calculate(
-                            workingDates,
-                            present,
-                            paidLeaveByDate,
-                            autoCoverCap,
-                            monthlySalary
-                    );
-
-
-            // =========================================
-            // DISPLAY ABSENCE / LOP DETAILS
-            // =========================================
-
-            double rawAbsent =
-                    math.lopDays() +
-                    math.autoCoveredDays();
-
-
-            double lopShown =
-                    Math.min(
-                            lop,
-                            rawAbsent
-                    );
-
-
-            double absent =
-                    PayrollMath.round2(
-                            Math.max(
-                                    0,
-                                    rawAbsent -
-                                    lopShown
-                            )
-                    );
-
-
-            // =========================================
-            // CALCULATE OVERTIME
-            // =========================================
-
-            List<OvertimeRecord> overtimeRecords =
-                    overtimeByEmployee.getOrDefault(
-                            employeeId,
-                            List.of()
-                    );
-
-
-            int overtimeDays = 0;
-
-            double overtimeSalary = 0.0;
-
-            double compensatoryOffDays = 0.0;
-
-
-            /*
-             * OT amount is based on the same
-             * per-day salary used by payroll.
-             *
-             * Example:
-             *
-             * Salary = 25000
-             * Working Days = 27
-             *
-             * Per Day = 925.93
-             *
-             * One Extra Salary OT = 925.93
-             */
-
-            double perDaySalary =
-                    math.perDaySalary();
-
-
-            for (OvertimeRecord overtime :
-                    overtimeRecords) {
-
-                if (!Boolean.TRUE.equals(
-                        overtime.getOtEligible())) {
-
-                    continue;
-                }
-
-
-                String benefitType =
-                        overtime.getBenefitType() != null
-                                ? overtime.getBenefitType()
-                                        .trim()
-                                        .toUpperCase()
-                                : "";
-
-
-                /*
-                 * Only APPLIED OT records should
-                 * affect payroll.
-                 */
-
-                if (!"APPLIED".equalsIgnoreCase(
-                        overtime.getStatus())) {
-
-                    continue;
-                }
-
-
-                overtimeDays++;
-
-
-                // =========================================
-                // EXTRA SALARY
-                // =========================================
-
-                if ("EXTRA_SALARY".equals(
-                        benefitType)) {
-
-                    double amount =
-                            perDaySalary;
-
-
-                    if (overtime.getOtAmount() != null &&
-                            overtime.getOtAmount() > 0) {
-
-                        amount =
-                                overtime.getOtAmount();
-                    }
-
-
-                    overtimeSalary += amount;
-                }
-
-
-                // =========================================
-                // COMPENSATORY OFF
-                // =========================================
-
-                else if ("COMP_OFF".equals(
-                        benefitType)) {
-
-                    double compOff =
-                            overtime.getCompOffDays() != null
-                                    ? overtime.getCompOffDays()
-                                    : 1.0;
-
-
-                    compensatoryOffDays +=
-                            Math.max(
-                                    0,
-                                    compOff
-                            );
-                }
-            }
-
-
-            overtimeSalary =
-                    PayrollMath.round2(
-                            overtimeSalary
-                    );
-
-
-            compensatoryOffDays =
-                    PayrollMath.round2(
-                            compensatoryOffDays
-                    );
-
-
-            double finalSalaryWithOvertime =
-                    PayrollMath.round2(
-                            math.finalSalary() +
-                            overtimeSalary
-                    );
-
-
-            // =========================================
-            // ADD EMPLOYEE PAYROLL RESULT
-            // =========================================
-
-            result.add(
-                    new EmployeePayroll(
-                            employee,
-                            math,
-                            PayrollMath.round2(sick),
-                            PayrollMath.round2(casual),
-                            PayrollMath.round2(half),
-                            permission,
-                            PayrollMath.round2(lopShown),
-                            absent,
-                            overtimeDays,
-                            overtimeSalary,
-                            compensatoryOffDays,
-                            finalSalaryWithOvertime
-                    )
-            );
+                return new MonthPayroll(
+                                workingDates.size(),
+                                result);
         }
 
+        // =========================================
+        // SHIFT SHORTFALL RULE
+        //
+        // Per past working day with attendance:
+        // worked = total time of ALL sessions (check-out required)
+        // shortfall = shift minutes - worked
+        // shortfall <= 30 min -> full day paid
+        // shortfall > 30 min -> only the missing time is cut
+        //
+        // Skipped: today / future, Sick / Casual / Half day and
+        // Permission days.
+        // A session without check-out counts as 0 minutes
+        // until the admin approves the missing check-out.
+        // =========================================
 
-        return new MonthPayroll(
-                workingDates.size(),
-                result
-        );
-    }
+        private double calculateShortfallDays(
+                        Employee employee,
+                        Set<LocalDate> workingSet,
+                        LocalDate ruleStart,
+                        Map<LocalDate, List<Attendance>> sessionsByDate,
+                        Set<LocalDate> leaveDates,
+                        Set<LocalDate> permissionDates) {
 
+                if (sessionsByDate.isEmpty()) {
+                        return 0.0;
+                }
 
-    // =========================================
-    // RESOLVE LEAVE SETTING
-    // =========================================
+                ShiftTimeService.ShiftTimes shift = shiftTimeService.getShiftTimes(employee);
 
-    private LeavePermissionSetting resolveSetting(
-            Employee employee) {
+                long shiftMinutes = shift == null
+                                ? 0
+                                : shift.totalMinutes();
 
-        if (employee.getId() != null) {
+                if (shiftMinutes <= 0) {
+                        return 0.0;
+                }
 
-            var employeeSetting =
-                    settingRepository
-                            .findBySettingTypeAndEmployeeId(
-                                    "EMPLOYEE",
-                                    employee.getId()
-                            );
+                LocalDate today = LocalDate.now(INDIA_ZONE);
 
-            if (employeeSetting.isPresent()) {
+                double total = 0.0;
 
-                return employeeSetting.get();
-            }
+                for (Map.Entry<LocalDate, List<Attendance>> entry : sessionsByDate.entrySet()) {
+
+                        LocalDate date = entry.getKey();
+
+                        if (!workingSet.contains(date)
+                                        || date.isBefore(ruleStart)
+                                        || !date.isBefore(today)
+                                        || leaveDates.contains(date)
+                                        || permissionDates.contains(date)) {
+
+                                continue;
+                        }
+
+                        long worked = 0;
+
+                        for (Attendance session : entry.getValue()) {
+
+                                LocalTime in = session.getCheckIn();
+                                LocalTime out = session.getCheckOut();
+
+                                if (in == null || out == null || !out.isAfter(in)) {
+                                        continue;
+                                }
+
+                                worked += Duration.between(in, out).toMinutes();
+                        }
+
+                        long shortfall = shiftMinutes - worked;
+
+                        if (shortfall <= ALLOWED_SHORTFALL_MINUTES) {
+                                continue;
+                        }
+
+                        total += Math.min(
+                                        1.0,
+                                        (double) shortfall / shiftMinutes);
+                }
+
+                return total;
         }
 
+        // =========================================
+        // RESOLVE LEAVE SETTING
+        // =========================================
 
-        if (employee.getRole() != null &&
-                !employee.getRole().isBlank()) {
+        private LeavePermissionSetting resolveSetting(
+                        Employee employee) {
 
-            var roleSetting =
-                    settingRepository
-                            .findBySettingTypeAndRole(
-                                    "ROLE",
-                                    employee.getRole()
-                                            .trim()
-                                            .toUpperCase()
-                            );
+                if (employee.getId() != null) {
 
-            if (roleSetting.isPresent()) {
+                        var employeeSetting = settingRepository
+                                        .findBySettingTypeAndEmployeeId(
+                                                        "EMPLOYEE",
+                                                        employee.getId());
 
-                return roleSetting.get();
-            }
+                        if (employeeSetting.isPresent()) {
+
+                                return employeeSetting.get();
+                        }
+                }
+
+                if (employee.getRole() != null &&
+                                !employee.getRole().isBlank()) {
+
+                        var roleSetting = settingRepository
+                                        .findBySettingTypeAndRole(
+                                                        "ROLE",
+                                                        employee.getRole()
+                                                                        .trim()
+                                                                        .toUpperCase());
+
+                        if (roleSetting.isPresent()) {
+
+                                return roleSetting.get();
+                        }
+                }
+
+                return settingRepository
+                                .findBySettingType("DEFAULT")
+                                .orElse(null);
         }
-
-
-        return settingRepository
-                .findBySettingType("DEFAULT")
-                .orElse(null);
-    }
 }

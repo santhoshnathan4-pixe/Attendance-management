@@ -1,6 +1,8 @@
 
 package com.example.attendance;
 
+import java.time.LocalDate;
+
 public class AdminEmployeeResponse {
 
     private Integer id;
@@ -28,10 +30,22 @@ public class AdminEmployeeResponse {
 
     private String branchName;
 
+    // Internship details
+    private LocalDate internshipStartDate;
+
+    private Integer internshipDurationMonths;
+
+    private LocalDate internshipEndDate;
+
+    private String stipendType;
+
+    // Employment details
+    private LocalDate employmentStartDate;
+
+    private LocalDate employmentEndDate;
 
     public AdminEmployeeResponse() {
     }
-
 
     public AdminEmployeeResponse(
             Integer id,
@@ -60,7 +74,6 @@ public class AdminEmployeeResponse {
         this.branchId = branchId;
         this.branchName = branchName;
     }
-
 
     // =========================
     // GETTERS
@@ -114,6 +127,29 @@ public class AdminEmployeeResponse {
         return branchName;
     }
 
+    public LocalDate getInternshipStartDate() {
+        return internshipStartDate;
+    }
+
+    public Integer getInternshipDurationMonths() {
+        return internshipDurationMonths;
+    }
+
+    public LocalDate getInternshipEndDate() {
+        return internshipEndDate;
+    }
+
+    public String getStipendType() {
+        return stipendType;
+    }
+
+    public LocalDate getEmploymentStartDate() {
+        return employmentStartDate;
+    }
+
+    public LocalDate getEmploymentEndDate() {
+        return employmentEndDate;
+    }
 
     // =========================
     // SETTERS
@@ -167,5 +203,42 @@ public class AdminEmployeeResponse {
         this.branchName = branchName;
     }
 
-}
+    public void setInternshipStartDate(
+            LocalDate internshipStartDate) {
+        this.internshipStartDate = internshipStartDate;
+    }
 
+    public void setInternshipDurationMonths(
+            Integer internshipDurationMonths) {
+        this.internshipDurationMonths = internshipDurationMonths;
+    }
+
+    public void setInternshipEndDate(
+            LocalDate internshipEndDate) {
+        this.internshipEndDate = internshipEndDate;
+    }
+
+    public void setStipendType(String stipendType) {
+        this.stipendType = stipendType;
+    }
+
+    public void setEmploymentStartDate(
+            LocalDate employmentStartDate) {
+        this.employmentStartDate = employmentStartDate;
+    }
+
+    public void setEmploymentEndDate(
+            LocalDate employmentEndDate) {
+        this.employmentEndDate = employmentEndDate;
+    }
+
+    private Double stipendAmount;
+
+    public Double getStipendAmount() {
+        return stipendAmount;
+    }
+
+    public void setStipendAmount(Double stipendAmount) {
+        this.stipendAmount = stipendAmount;
+    }
+}

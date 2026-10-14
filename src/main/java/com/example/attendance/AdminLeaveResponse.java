@@ -1,3 +1,4 @@
+
 package com.example.attendance;
 
 import java.time.LocalDate;
@@ -28,6 +29,10 @@ public class AdminLeaveResponse {
 
     private String requestGroupId;
     private String decisionReason;
+
+    // Approver / rejector details
+    private String decidedByName;
+    private LocalDateTime decidedAt;
 
     public AdminLeaveResponse(
             Integer id,
@@ -127,5 +132,21 @@ public class AdminLeaveResponse {
 
     public String getDecisionReason() {
         return decisionReason;
+    }
+
+    public String getDecidedByName() {
+        return decidedByName;
+    }
+
+    public void setDecidedByName(String decidedByName) {
+        this.decidedByName = decidedByName;
+    }
+
+    public LocalDateTime getDecidedAt() {
+        return decidedAt;
+    }
+
+    public void setDecidedAt(LocalDateTime decidedAt) {
+        this.decidedAt = decidedAt;
     }
 }

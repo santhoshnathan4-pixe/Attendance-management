@@ -11,6 +11,7 @@
 
 <script src="https://unpkg.com/lucide@latest"></script>
 
+
 <style>
 
 * {
@@ -21,8 +22,8 @@
 }
 
 body {
-    background: #f4f7fb;
-    color: #1f2937;
+    background: #F4F7F5;
+    color: #171717;
 }
 
 .container {
@@ -32,8 +33,8 @@ body {
 
 .sidebar {
     width: 250px;
-    background: #334155;
-    color: white;
+    background: linear-gradient(180deg, #0B2E1A, #171717);
+    color: #FFFFFF;
     position: fixed;
     left: 0;
     top: 0;
@@ -51,7 +52,7 @@ body {
 
 .admin-title {
     text-align: center;
-    color: #cbd5e1;
+    color: #C7D8CC;
     font-size: 13px;
     margin-bottom: 30px;
 }
@@ -65,7 +66,7 @@ body {
 .menu button {
     border: none;
     background: transparent;
-    color: #e5e7eb;
+    color: #E5E7EB;
     text-align: left;
     padding: 14px 15px;
     border-radius: 10px;
@@ -85,19 +86,19 @@ body {
 
 .menu button:hover,
 .menu button.active {
-    background: rgba(255, 255, 255, 0.15);
-    color: white;
+    background: #16803C;
+    color: #FFFFFF;
 }
 
 .logout-btn {
     margin-top: 25px;
-    background: #dc2626 !important;
-    color: white !important;
+    background: #DC2626 !important;
+    color: #FFFFFF !important;
     text-align: center !important;
 }
 
 .logout-btn:hover {
-    background: #b91c1c !important;
+    background: #B91C1C !important;
 }
 
 .main {
@@ -108,8 +109,8 @@ body {
 
 .header {
     height: 75px;
-    background: white;
-    border-bottom: 1px solid #e5e7eb;
+    background: #FFFFFF;
+    border-bottom: 1px solid #D9E7DD;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -121,7 +122,7 @@ body {
 
 .header h1 {
     font-size: 23px;
-    color: #111827;
+    color: #171717;
 }
 
 .admin-info {
@@ -133,8 +134,8 @@ body {
 }
 
 .admin-badge {
-    background: #2563eb;
-    color: white;
+    background: #16803C;
+    color: #FFFFFF;
     padding: 8px 13px;
     border-radius: 20px;
     font-size: 12px;
@@ -150,8 +151,8 @@ body {
     padding: 24px;
     border-radius: 16px;
     min-height: calc(100vh - 135px);
-    border: 1px solid #e5e7eb;
-    background: #f8fafc;
+    border: 1px solid #D9E7DD;
+    background: #F8FAF8;
 }
 
 .section.active {
@@ -168,26 +169,26 @@ body {
 
 .section-title h2 {
     font-size: 25px;
-    color: #111827;
+    color: #171717;
     margin-bottom: 8px;
 }
 
 .section-subtitle {
-    color: #64748b;
+    color: #64748B;
     margin-bottom: 0;
     font-size: 14px;
 }
 
 .top-bar {
-    background: white;
+    background: #FFFFFF;
     padding: 16px 18px;
     border-radius: 13px;
     margin-bottom: 20px;
     display: flex;
     align-items: flex-end;
     gap: 15px;
-    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.05);
-    border: 1px solid #e5e7eb;
+    box-shadow: 0 4px 15px rgba(11, 46, 26, 0.05);
+    border: 1px solid #D9E7DD;
     flex-wrap: wrap;
 }
 
@@ -206,16 +207,16 @@ body {
 .filter-item select {
     min-width: 150px;
     padding: 10px 12px;
-    border: 1px solid #cbd5e1;
+    border: 1px solid #C8D8CD;
     border-radius: 8px;
     outline: none;
-    background: white;
+    background: #FFFFFF;
     font-size: 14px;
 }
 
 .filter-item select:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    border-color: #16803C;
+    box-shadow: 0 0 0 3px rgba(22, 128, 60, 0.12);
 }
 
 .btn {
@@ -238,30 +239,30 @@ body {
 }
 
 .btn-primary {
-    background: #2563eb;
-    color: white;
+    background: #16803C;
+    color: #FFFFFF;
 }
 
 .btn-primary:hover {
-    background: #1d4ed8;
+    background: #0F642E;
 }
 
 .btn-danger {
-    background: #dc2626;
-    color: white;
+    background: #DC2626;
+    color: #FFFFFF;
 }
 
 .btn-danger:hover {
-    background: #b91c1c;
+    background: #B91C1C;
 }
 
 .btn-secondary {
-    background: #64748b;
-    color: white;
+    background: #475569;
+    color: #FFFFFF;
 }
 
 .btn-secondary:hover {
-    background: #475569;
+    background: #334155;
 }
 
 .btn-small {
@@ -270,20 +271,20 @@ body {
 }
 
 .btn-weekly {
-    background: #7c3aed;
-    color: white;
+    background: #16803C;
+    color: #FFFFFF;
 }
 
 .btn-weekly:hover {
-    background: #6d28d9;
+    background: #0F642E;
 }
 
 .table-card {
-    background: white;
+    background: #FFFFFF;
     border-radius: 14px;
-    box-shadow: 0 5px 20px rgba(15, 23, 42, 0.06);
+    box-shadow: 0 5px 20px rgba(11, 46, 26, 0.06);
     overflow: hidden;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #D9E7DD;
 }
 
 .table-wrapper {
@@ -297,8 +298,8 @@ table {
 }
 
 th {
-    background: #eff6ff;
-    color: #1e3a8a;
+    background: #0B2E1A;
+    color: #FFFFFF;
     font-size: 13px;
     text-align: left;
     padding: 14px;
@@ -307,18 +308,18 @@ th {
 
 td {
     padding: 13px 14px;
-    border-top: 1px solid #e5e7eb;
+    border-top: 1px solid #E2E8E3;
     font-size: 13px;
     vertical-align: middle;
 }
 
 tr:hover td {
-    background: #f8fafc;
+    background: #F0F7F1;
 }
 
 .empty-row {
     text-align: center;
-    color: #64748b;
+    color: #64748B;
     padding: 30px;
 }
 
@@ -332,33 +333,33 @@ tr:hover td {
 }
 
 .setting-badge.working {
-    background: #dcfce7;
+    background: #DCFCE7;
     color: #166534;
 }
 
 .setting-badge.weekly-off {
-    background: #ede9fe;
-    color: #6d28d9;
+    background: #E8F5EC;
+    color: #0B2E1A;
 }
 
 .setting-badge.government {
-    background: #fee2e2;
-    color: #991b1b;
+    background: #FEE2E2;
+    color: #991B1B;
 }
 
 .setting-badge.company {
-    background: #fef3c7;
-    color: #92400e;
+    background: #FEF3C7;
+    color: #92400E;
 }
 
 .setting-badge.announcement {
-    background: #dbeafe;
-    color: #1e40af;
+    background: #E8F5EC;
+    color: #166534;
 }
 
 .announcement-title {
     font-weight: 600;
-    color: #111827;
+    color: #171717;
     margin-bottom: 3px;
 }
 
@@ -387,11 +388,11 @@ tr:hover td {
 .form-group textarea {
     width: 100%;
     padding: 11px 12px;
-    border: 1px solid #cbd5e1;
+    border: 1px solid #C8D8CD;
     border-radius: 8px;
     outline: none;
     font-size: 14px;
-    background: white;
+    background: #FFFFFF;
 }
 
 .form-group textarea {
@@ -402,16 +403,16 @@ tr:hover td {
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    border-color: #16803C;
+    box-shadow: 0 0 0 3px rgba(22, 128, 60, 0.12);
 }
 
 .setting-help {
     margin-top: -8px;
     margin-bottom: 16px;
     padding: 11px 13px;
-    background: #f1f5f9;
-    border: 1px solid #e2e8f0;
+    background: #F0F7F1;
+    border: 1px solid #D9E7DD;
     border-radius: 8px;
     color: #475569;
     font-size: 12px;
@@ -431,12 +432,12 @@ tr:hover td {
 }
 
 .weekly-off-summary {
-    background: white;
-    border: 1px solid #e5e7eb;
+    background: #FFFFFF;
+    border: 1px solid #D9E7DD;
     border-radius: 13px;
     padding: 18px;
     margin-bottom: 20px;
-    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.04);
+    box-shadow: 0 4px 15px rgba(11, 46, 26, 0.04);
 }
 
 .weekly-off-summary-header {
@@ -453,17 +454,17 @@ tr:hover td {
     gap: 9px;
     font-size: 16px;
     font-weight: 700;
-    color: #111827;
+    color: #171717;
 }
 
 .weekly-off-summary-title svg {
     width: 19px;
     height: 19px;
-    color: #7c3aed;
+    color: #16803C;
 }
 
 .weekly-off-summary-text {
-    color: #64748b;
+    color: #64748B;
     font-size: 13px;
     line-height: 1.5;
 }
@@ -481,14 +482,14 @@ tr:hover td {
     gap: 6px;
     padding: 7px 11px;
     border-radius: 20px;
-    background: #ede9fe;
-    color: #6d28d9;
+    background: #E8F5EC;
+    color: #0B2E1A;
     font-size: 12px;
     font-weight: 700;
 }
 
 .weekly-off-none {
-    color: #64748b;
+    color: #64748B;
     font-size: 13px;
     padding: 7px 0;
 }
@@ -505,23 +506,23 @@ tr:hover td {
     align-items: center;
     gap: 12px;
     padding: 12px 13px;
-    border: 1px solid #e2e8f0;
+    border: 1px solid #D9E7DD;
     border-radius: 9px;
     cursor: pointer;
-    background: #f8fafc;
+    background: #F8FAF8;
     transition: 0.2s;
 }
 
 .weekday-option:hover {
-    border-color: #c4b5fd;
-    background: #faf5ff;
+    border-color: #86C99A;
+    background: #F0F7F1;
 }
 
 .weekday-option input {
     width: 18px;
     height: 18px;
     cursor: pointer;
-    accent-color: #7c3aed;
+    accent-color: #16803C;
 }
 
 .weekday-option span {
@@ -531,9 +532,9 @@ tr:hover td {
 }
 
 .weekly-off-modal-help {
-    background: #f5f3ff;
-    border: 1px solid #ddd6fe;
-    color: #5b21b6;
+    background: #E8F5EC;
+    border: 1px solid #C8E6D0;
+    color: #0B2E1A;
     border-radius: 9px;
     padding: 12px 13px;
     font-size: 12px;
@@ -563,7 +564,7 @@ tr:hover td {
 .modal-box {
     width: 100%;
     max-width: 650px;
-    background: white;
+    background: #FFFFFF;
     border-radius: 16px;
     padding: 25px;
     max-height: 90vh;
@@ -585,12 +586,13 @@ tr:hover td {
 .modal-header h2,
 .modal-header h3 {
     font-size: 20px;
-    color: #111827;
+    color: #171717;
 }
 
 .close-btn {
     border: none;
-    background: #f1f5f9;
+    background: #E8F5EC;
+    color: #0B2E1A;
     width: 34px;
     height: 34px;
     border-radius: 50%;
@@ -602,7 +604,7 @@ tr:hover td {
 }
 
 .close-btn:hover {
-    background: #e2e8f0;
+    background: #D4EBD9;
 }
 
 .modal-footer {
@@ -626,13 +628,201 @@ tr:hover td {
 }
 
 .message.success {
-    background: #dcfce7;
+    background: #DCFCE7;
     color: #166534;
 }
 
 .message.error {
-    background: #fee2e2;
-    color: #991b1b;
+    background: #FEE2E2;
+    color: #991B1B;
+}
+
+/* MONTHLY CALENDAR */
+.calendar-card {
+    background: #FFFFFF;
+    border: 1px solid #D9E7DD;
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 5px 20px rgba(11, 46, 26, 0.06);
+}
+
+.calendar-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+}
+
+.calendar-heading h3 {
+    font-size: 18px;
+    color: #171717;
+}
+
+.calendar-hint {
+    color: #64748B;
+    font-size: 12px;
+}
+
+.calendar-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 18px;
+    margin-bottom: 18px;
+    font-size: 12px;
+    color: #475569;
+}
+
+.legend-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.legend-dot.red { background: #DC2626; }
+.legend-dot.green { background: #16803C; }
+.legend-dot.gray { background: #CBD5E1; }
+.legend-dot.blue { background: #2563EB; }
+
+.calendar-weekdays,
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 7px;
+}
+
+.calendar-weekdays {
+    margin-bottom: 7px;
+}
+
+.calendar-weekdays div {
+    text-align: center;
+    padding: 10px 2px;
+    font-weight: 700;
+    color: #475569;
+    font-size: 12px;
+}
+
+.calendar-day {
+    min-width: 0;
+    min-height: 90px;
+    border: 1px solid #D9E7DD;
+    border-radius: 9px;
+    background: #F8FAF8;
+    padding: 9px;
+    text-align: left;
+    cursor: pointer;
+    position: relative;
+    transition: border-color .15s, transform .15s;
+}
+
+.calendar-day:hover {
+    border-color: #16803C;
+    transform: translateY(-1px);
+}
+
+.calendar-day:focus-visible {
+    outline: 2px solid #16803C;
+    outline-offset: 2px;
+}
+
+.calendar-day.empty {
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.calendar-day.holiday {
+    background: #FEE2E2;
+    border-color: #FCA5A5;
+    color: #991B1B;
+}
+
+.calendar-day.working {
+    background: #DCFCE7;
+    border-color: #86EFAC;
+    color: #166534;
+}
+
+.calendar-day.has-announcement {
+    box-shadow: inset 0 -4px 0 #60A5FA;
+}
+
+.calendar-day-number {
+    display: block;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 7px;
+}
+
+.calendar-day-label {
+    display: block;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+
+.calendar-loading {
+    grid-column: 1 / -1;
+    padding: 25px;
+    text-align: center;
+    color: #64748B;
+}
+
+.calendar-day-details {
+    margin-top: 18px;
+    padding: 15px;
+    background: #F8FAF8;
+    border: 1px solid #D9E7DD;
+    border-radius: 10px;
+    color: #334155;
+    line-height: 1.7;
+    font-size: 13px;
+}
+
+.calendar-day-details h4 {
+    color: #171717;
+    margin-bottom: 8px;
+}
+
+.calendar-detail-item {
+    padding: 8px 0;
+    border-top: 1px solid #D9E7DD;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 600px) {
+    .calendar-card {
+        padding: 12px;
+    }
+
+    .calendar-weekdays,
+    .calendar-grid {
+        gap: 3px;
+    }
+
+    .calendar-day {
+        min-height: 66px;
+        padding: 5px 3px;
+    }
+
+    .calendar-day-number {
+        font-size: 12px;
+        margin-bottom: 4px;
+    }
+
+    .calendar-day-label {
+        font-size: 8px;
+    }
+
+    .calendar-weekdays div {
+        font-size: 10px;
+        padding: 7px 0;
+    }
 }
 
 @media (max-width: 800px) {
@@ -710,7 +900,58 @@ tr:hover td {
 
 }
 
+/* CALENDAR INSIDE ADD SETTING MODAL */
+.setting-calendar-card {
+    padding: 12px;
+    margin-bottom: 0;
+    box-shadow: none;
+}
+
+.setting-calendar-card .calendar-heading {
+    gap: 6px;
+}
+
+.setting-calendar-card .calendar-heading h3 {
+    font-size: 15px;
+    text-align: center;
+}
+
+.setting-calendar-card .calendar-grid {
+    gap: 5px;
+}
+
+.setting-calendar-card .calendar-day {
+    min-height: 65px;
+    padding: 6px;
+}
+
+.setting-calendar-card .calendar-day-label {
+    font-size: 9px;
+}
+
+.setting-calendar-card .calendar-day.selected {
+    outline: 3px solid #16803C;
+    outline-offset: -3px;
+}
+
+.setting-calendar-card .calendar-day:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+@media (max-width: 600px) {
+    .setting-calendar-card .calendar-day {
+        min-height: 52px;
+        padding: 4px 2px;
+    }
+
+    .setting-calendar-card .calendar-day-label {
+        font-size: 7px;
+    }
+}
+
 </style>
+
 
 </head>
 
@@ -789,6 +1030,19 @@ tr:hover td {
             <i data-lucide="calendar-days"></i>
             Monthly Report
         </button>
+
+        
+<button class="menu-btn"
+        onclick="window.location.href='attendance-history.html'">
+    <i data-lucide="calendar-clock"></i>
+    Attendance History
+</button>
+
+<button class="menu-btn"
+        onclick="window.location.href='leave-history.html'">
+    <i data-lucide="file-clock"></i>
+    Leave History
+</button>
 
         <button class="menu-btn"
                 onclick="window.location.href='history.html'">
@@ -961,6 +1215,33 @@ tr:hover td {
 
             </div>
 
+
+            <!-- FULL MONTH CALENDAR -->
+<div class="calendar-card">
+    <div class="calendar-heading">
+        <h3 id="calendarMonthTitle">Monthly Calendar</h3>
+        <span class="calendar-hint">Date-ஐ click செய்து details பார்க்கவும்</span>
+    </div>
+
+    <div class="calendar-legend">
+        <span><i class="legend-dot red"></i> Weekly Off / Leave / Holiday</span>
+        <span><i class="legend-dot green"></i> Working Day</span>
+        <span><i class="legend-dot gray"></i> No Setting</span>
+        <span><i class="legend-dot blue"></i> Announcement</span>
+    </div>
+
+    <div class="calendar-weekdays">
+        <div>Mon</div><div>Tue</div><div>Wed</div>
+        <div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div>
+    </div>
+
+    <div id="workingDayCalendar" class="calendar-grid">
+        <div class="calendar-loading">Loading calendar...</div>
+    </div>
+
+    <div id="calendarDayDetails" class="calendar-day-details" hidden></div>
+</div>
+
             <div class="table-card">
 
                 <div class="table-wrapper">
@@ -1036,18 +1317,72 @@ tr:hover td {
     </div>
 
 
-    <div class="form-group">
+    
 
-        <label for="workingDayDate">
-            Date
-        </label>
+<!-- DATE CALENDAR INSIDE ADD SETTING MODAL -->
+<div class="form-group">
+    <label for="workingDayDate">Select Date</label>
 
-        <input
-            type="date"
-            id="workingDayDate"
-            required>
+    <input
+        type="hidden"
+        id="workingDayDate"
+        required>
+
+    <div class="calendar-card setting-calendar-card">
+
+        <div class="calendar-heading">
+            <button
+                type="button"
+                class="btn btn-secondary btn-small"
+                onclick="changeSettingCalendarMonth(-1)">
+                Previous
+            </button>
+
+            <h3 id="settingCalendarMonthTitle">
+                Select Date
+            </h3>
+
+            <button
+                type="button"
+                class="btn btn-secondary btn-small"
+                onclick="changeSettingCalendarMonth(1)">
+                Next
+            </button>
+        </div>
+
+        <div class="calendar-weekdays">
+            <div>Mon</div>
+            <div>Tue</div>
+            <div>Wed</div>
+            <div>Thu</div>
+            <div>Fri</div>
+            <div>Sat</div>
+            <div>Sun</div>
+        </div>
+
+        <div
+            id="settingCalendarGrid"
+            class="calendar-grid">
+            <div class="calendar-loading">
+                Loading calendar...
+            </div>
+        </div>
+
+        <p class="calendar-hint" style="margin-top:12px;">
+            Date-ஐ click செய்து select பண்ணு.
+            Reason தெரிந்துகொள்ள date மேல் mouse வை.
+        </p>
+
+        <p
+            id="selectedSettingDateText"
+            style="margin-top:10px;font-size:13px;font-weight:600;color:#2563eb;">
+            No date selected
+        </p>
 
     </div>
+</div>
+
+
 
 
     <div class="form-group">
@@ -1795,6 +2130,8 @@ async function loadWorkingDaySettings() {
 
         renderCombinedSettings();
 
+        renderMonthlyCalendar();    
+
     }
     catch (error) {
 
@@ -1935,6 +2272,8 @@ async function loadWeeklyOffSettings() {
 
 
         renderWeeklyOffSummary();
+
+        renderMonthlyCalendar();
 
     }
     catch (error) {
@@ -2836,6 +3175,462 @@ function renderCombinedSettings() {
 
 }
 
+/* =========================================================
+   FULL MONTH CALENDAR
+   ========================================================= */
+
+function getCalendarDateKey(year, month, day) {
+    return String(year) + "-" +
+        String(month).padStart(2, "0") + "-" +
+        String(day).padStart(2, "0");
+}
+
+function getCalendarSettingDate(value) {
+    if (!value) return "";
+
+    // Date-only API values: preserve the exact calendar date.
+    const text = String(value);
+    const match = text.match(/^(\d{4})-(\d{2})-(\d{2})/);
+
+    if (match) {
+        return match[1] + "-" + match[2] + "-" + match[3];
+    }
+
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "";
+
+    return getCalendarDateKey(
+        date.getFullYear(),
+        date.getMonth() + 1,
+        date.getDate()
+    );
+}
+
+function getCalendarTypeLabel(type) {
+    const labels = {
+        WEEKLY_OFF: "Weekly Off",
+        LEAVE: "Leave",
+        GOVERNMENT_HOLIDAY: "Government Holiday",
+        COMPANY_HOLIDAY: "Company Holiday",
+        WORKING_DAY: "Working Day",
+        ANNOUNCEMENT: "Announcement"
+    };
+
+    return labels[type] || String(type || "Setting");
+}
+
+function getCalendarDayItems(dateKey) {
+    const items = [];
+
+    if (Array.isArray(workingDaySettings)) {
+        workingDaySettings.forEach(function(setting) {
+            if (getCalendarSettingDate(setting.settingDate) !== dateKey) {
+                return;
+            }
+
+            items.push({
+                type: String(setting.settingType || "").toUpperCase(),
+                title: "",
+                reason: setting.reason || "",
+                source: "working-day"
+            });
+        });
+    }
+
+    if (Array.isArray(announcementList)) {
+        announcementList.forEach(function(item) {
+            if (
+                getCalendarSettingDate(item.announcementDate) !== dateKey
+            ) {
+                return;
+            }
+
+            items.push({
+                type: "ANNOUNCEMENT",
+                title: item.title || "Announcement",
+                reason: item.message || "",
+                source: "announcement"
+            });
+        });
+    }
+
+    return items;
+}
+
+function renderMonthlyCalendar() {
+    const calendar = document.getElementById("workingDayCalendar");
+    const title = document.getElementById("calendarMonthTitle");
+    const yearSelect = document.getElementById("workingDayYear");
+    const monthSelect = document.getElementById("workingDayMonth");
+
+    if (!calendar || !yearSelect || !monthSelect) return;
+
+    const year = Number(yearSelect.value);
+    const month = Number(monthSelect.value);
+
+    if (!year || month < 1 || month > 12) return;
+
+    const monthName = new Date(year, month - 1, 1)
+        .toLocaleString("en", { month: "long" });
+
+    title.textContent = monthName + " " + year;
+
+    const firstWeekday = (new Date(year, month - 1, 1).getDay() + 6) % 7;
+    const daysInMonth = new Date(year, month, 0).getDate();
+    const activeWeeklyOffs = getActiveWeeklyOffDays();
+
+    calendar.innerHTML = "";
+
+    // Monday-first calendar: blank cells before the first date.
+    for (let i = 0; i < firstWeekday; i++) {
+        const blank = document.createElement("div");
+        blank.className = "calendar-day empty";
+        blank.setAttribute("aria-hidden", "true");
+        calendar.appendChild(blank);
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dateKey = getCalendarDateKey(year, month, day);
+        const date = new Date(year, month - 1, day);
+        const weekdayKeys = [
+            "SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY",
+            "THURSDAY", "FRIDAY", "SATURDAY"
+        ];
+
+        const weekday = weekdayKeys[date.getDay()];
+        const items = getCalendarDayItems(dateKey);
+
+        const explicitWorking = items.some(function(item) {
+            return item.type === "WORKING_DAY";
+        });
+
+        
+const isWeeklyOff = activeWeeklyOffs.includes(weekday);
+
+const isHoliday = items.some(function(item) {
+    return [
+        "COMPANY_HOLIDAY",
+        "GOVERNMENT_HOLIDAY"
+    ].includes(item.type) ||
+    (
+        item.type === "WEEKLY_OFF" &&
+        !explicitWorking
+    );
+});
+
+
+  
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "calendar-day";
+
+        // A specific-date setting takes precedence over a recurring weekly off.
+        if (isHoliday || (isWeeklyOff && !explicitWorking)) {
+            button.classList.add("holiday");
+        } else if (explicitWorking) {
+            button.classList.add("working");
+        }
+
+        const announcements = items.filter(function(item) {
+            return item.type === "ANNOUNCEMENT";
+        });
+
+        if (announcements.length) {
+            button.classList.add("has-announcement");
+        }
+
+        const labels = [];
+
+        if (isHoliday) {
+            items.forEach(function(item) {
+                if ([
+                    "WEEKLY_OFF",
+                    "LEAVE",
+                    "COMPANY_HOLIDAY",
+                    "GOVERNMENT_HOLIDAY"
+                ].includes(item.type)) {
+                    labels.push(getCalendarTypeLabel(item.type));
+                }
+            });
+        } else if (isWeeklyOff && !explicitWorking) {
+            labels.push("Weekly Off");
+        } else if (explicitWorking) {
+            labels.push("Working Day");
+        }
+
+        if (announcements.length) {
+            labels.push("Announcement");
+        }
+
+        button.innerHTML =
+            '<span class="calendar-day-number">' + day + '</span>' +
+            labels.slice(0, 2).map(function(label) {
+                return '<span class="calendar-day-label">' +
+                    escapeHtml(label) + '</span>';
+            }).join("");
+
+        const tooltipParts = [];
+
+        if (isWeeklyOff && !explicitWorking && !isHoliday) {
+            tooltipParts.push("Recurring Weekly Off");
+        }
+
+        items.forEach(function(item) {
+            const description = [
+                getCalendarTypeLabel(item.type),
+                item.title,
+                item.reason
+            ].filter(Boolean).join(" — ");
+
+            tooltipParts.push(description);
+        });
+
+        // Announcement-only dates do not become holidays.
+        button.title = tooltipParts.length
+            ? tooltipParts.join("\n")
+            : "No setting";
+
+        button.setAttribute(
+            "aria-label",
+            dateKey + (tooltipParts.length
+                ? ": " + tooltipParts.join(", ")
+                : ": No setting")
+        );
+
+        button.addEventListener("click", function() {
+            showCalendarDayDetails(dateKey, items, isWeeklyOff, explicitWorking);
+        });
+
+        calendar.appendChild(button);
+    }
+}
+
+
+/* =========================================================
+   ADD SETTING MODAL CALENDAR
+   ========================================================= */
+
+let settingCalendarYear = new Date().getFullYear();
+let settingCalendarMonth = new Date().getMonth() + 1;
+
+function changeSettingCalendarMonth(direction) {
+    settingCalendarMonth += direction;
+
+    if (settingCalendarMonth < 1) {
+        settingCalendarMonth = 12;
+        settingCalendarYear--;
+    } else if (settingCalendarMonth > 12) {
+        settingCalendarMonth = 1;
+        settingCalendarYear++;
+    }
+
+    renderSettingCalendar();
+}
+
+function renderSettingCalendar() {
+    const grid = document.getElementById("settingCalendarGrid");
+    const title = document.getElementById("settingCalendarMonthTitle");
+
+    if (!grid || !title) return;
+
+    const monthName = new Date(
+        settingCalendarYear,
+        settingCalendarMonth - 1,
+        1
+    ).toLocaleString("en", { month: "long" });
+
+    title.textContent = monthName + " " + settingCalendarYear;
+
+    const firstWeekday =
+        (new Date(
+            settingCalendarYear,
+            settingCalendarMonth - 1,
+            1
+        ).getDay() + 6) % 7;
+
+    const daysInMonth = new Date(
+        settingCalendarYear,
+        settingCalendarMonth,
+        0
+    ).getDate();
+
+    const selectedDate =
+        document.getElementById("workingDayDate")?.value || "";
+
+    const activeWeeklyOffs = getActiveWeeklyOffDays();
+
+    grid.innerHTML = "";
+
+    for (let i = 0; i < firstWeekday; i++) {
+        const blank = document.createElement("div");
+        blank.className = "calendar-day empty";
+        blank.setAttribute("aria-hidden", "true");
+        grid.appendChild(blank);
+    }
+
+    const weekdayKeys = [
+        "SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY",
+        "THURSDAY", "FRIDAY", "SATURDAY"
+    ];
+
+    for (let day = 1; day <= daysInMonth; day++) {
+        const dateKey = getCalendarDateKey(
+            settingCalendarYear,
+            settingCalendarMonth,
+            day
+        );
+
+        const date = new Date(
+            settingCalendarYear,
+            settingCalendarMonth - 1,
+            day
+        );
+
+        const weekday = weekdayKeys[date.getDay()];
+        const items = getCalendarDayItems(dateKey);
+
+        const explicitWorking = items.some(
+            item => item.type === "WORKING_DAY"
+        );
+
+        const isHoliday = items.some(
+            item => [
+                "COMPANY_HOLIDAY",
+                "GOVERNMENT_HOLIDAY"
+            ].includes(item.type) ||
+            (
+                item.type === "WEEKLY_OFF" &&
+                !explicitWorking
+            )
+        );
+
+        const isWeeklyOff = activeWeeklyOffs.includes(weekday);
+
+        const announcements = items.filter(
+            item => item.type === "ANNOUNCEMENT"
+        );
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "calendar-day";
+
+        if (isHoliday || (isWeeklyOff && !explicitWorking)) {
+            button.classList.add("holiday");
+        } else if (explicitWorking) {
+            button.classList.add("working");
+        }
+
+        if (announcements.length) {
+            button.classList.add("has-announcement");
+        }
+
+        if (dateKey === selectedDate) {
+            button.classList.add("selected");
+        }
+
+        const labels = [];
+
+        if (isHoliday) {
+            items.forEach(item => {
+                if ([
+                    "WEEKLY_OFF",
+                    "COMPANY_HOLIDAY",
+                    "GOVERNMENT_HOLIDAY"
+                ].includes(item.type)) {
+                    labels.push(getCalendarTypeLabel(item.type));
+                }
+            });
+        } else if (isWeeklyOff && !explicitWorking) {
+            labels.push("Weekly Off");
+        } else if (explicitWorking) {
+            labels.push("Working Day");
+        }
+
+        if (announcements.length) {
+            labels.push("Announcement");
+        }
+
+        button.innerHTML =
+            '<span class="calendar-day-number">' + day + '</span>' +
+            labels.slice(0, 2).map(label =>
+                '<span class="calendar-day-label">' +
+                escapeHtml(label) +
+                '</span>'
+            ).join("");
+
+        const tooltipParts = [];
+
+        if (isWeeklyOff && !explicitWorking && !isHoliday) {
+            tooltipParts.push("Recurring Weekly Off");
+        }
+
+        items.forEach(item => {
+            tooltipParts.push([
+                getCalendarTypeLabel(item.type),
+                item.title,
+                item.reason
+            ].filter(Boolean).join(" — "));
+        });
+
+        button.title = tooltipParts.length
+            ? tooltipParts.join("\n")
+            : "No setting";
+
+        button.addEventListener("click", function() {
+            document.getElementById("workingDayDate").value = dateKey;
+
+            const selectedText =
+                document.getElementById("selectedSettingDateText");
+
+            if (selectedText) {
+                selectedText.textContent = "Selected Date: " + dateKey;
+            }
+
+            renderSettingCalendar();
+        });
+
+        grid.appendChild(button);
+    }
+}
+
+
+function showCalendarDayDetails(dateKey, items, isWeeklyOff, explicitWorking) {
+    const details = document.getElementById("calendarDayDetails");
+    if (!details) return;
+
+    const parts = dateKey.split("-");
+    const displayDate = parts[2] + "-" + parts[1] + "-" + parts[0];
+
+    let html = "<h4>" + escapeHtml(displayDate) + " — Details</h4>";
+
+    if (isWeeklyOff && !explicitWorking) {
+        html += '<div class="calendar-detail-item"><strong>Recurring:</strong> Weekly Off</div>';
+    }
+
+    if (!items.length && !(isWeeklyOff && !explicitWorking)) {
+        html += '<div class="calendar-detail-item">No setting for this date.</div>';
+    }
+
+    items.forEach(function(item) {
+        html += '<div class="calendar-detail-item">';
+        html += "<strong>" + escapeHtml(getCalendarTypeLabel(item.type)) + "</strong>";
+
+        if (item.title) {
+            html += "<div>" + escapeHtml(item.title) + "</div>";
+        }
+
+        if (item.reason) {
+            html += "<div>" + escapeHtml(item.reason) + "</div>";
+        }
+
+        html += "</div>";
+    });
+
+    details.innerHTML = html;
+    details.hidden = false;
+    details.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
 
 function handleSettingTypeChange() {
 
@@ -3007,12 +3802,16 @@ function openWorkingDayModal() {
     }
 
 
-    handleSettingTypeChange();
+   handleSettingTypeChange();
 
+const today = new Date();
 
-    modal.classList.add(
-        "show"
-    );
+settingCalendarYear = today.getFullYear();
+settingCalendarMonth = today.getMonth() + 1;
+
+renderSettingCalendar();
+
+modal.classList.add("show");
 
 
     if (
@@ -3152,6 +3951,13 @@ function openWorkingDayForEdit(
 
 
     handleSettingTypeChange();
+
+    const selectedDate = setting.settingDate || "";
+if (selectedDate) {
+    settingCalendarYear = Number(selectedDate.substring(0, 4));
+    settingCalendarMonth = Number(selectedDate.substring(5, 7));
+}
+renderSettingCalendar();
 
 
     if (modal) {
@@ -3725,6 +4531,13 @@ function openAnnouncementForEdit(
 
 
     handleSettingTypeChange();
+
+    const selectedDate = item.announcementDate || "";
+if (selectedDate) {
+    settingCalendarYear = Number(selectedDate.substring(0, 4));
+    settingCalendarMonth = Number(selectedDate.substring(5, 7));
+}
+renderSettingCalendar();
 
 
     document.getElementById(

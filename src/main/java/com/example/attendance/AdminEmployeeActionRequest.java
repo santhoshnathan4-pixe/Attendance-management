@@ -1,5 +1,6 @@
-
 package com.example.attendance;
+
+import java.time.LocalDate;
 
 public class AdminEmployeeActionRequest {
 
@@ -23,6 +24,19 @@ public class AdminEmployeeActionRequest {
     private Double salary;
     private String joiningDate;
 
+    // Internship details
+    private LocalDate internshipStartDate;
+    private Integer internshipDurationMonths;
+    private LocalDate internshipEndDate;
+    private String stipendType;
+
+    // Monthly stipend amount (saved in internship_stipend table)
+    private Double stipendAmount;
+
+    // Employment details
+    private LocalDate employmentStartDate;
+    private LocalDate employmentEndDate;
+
     // Admin verification details only
     private String adminEmail;
     private String adminPassword;
@@ -30,11 +44,7 @@ public class AdminEmployeeActionRequest {
     // Reason for ADD / EDIT / DELETE
     private String reason;
 
-
-    // =========================================
     // EMPLOYEE CODE
-    // =========================================
-
     public String getEmployeeCode() {
         return employeeCode;
     }
@@ -43,11 +53,7 @@ public class AdminEmployeeActionRequest {
         this.employeeCode = employeeCode;
     }
 
-
-    // =========================================
     // NAME
-    // =========================================
-
     public String getName() {
         return name;
     }
@@ -56,11 +62,7 @@ public class AdminEmployeeActionRequest {
         this.name = name;
     }
 
-
-    // =========================================
     // EMAIL
-    // =========================================
-
     public String getEmail() {
         return email;
     }
@@ -69,11 +71,7 @@ public class AdminEmployeeActionRequest {
         this.email = email;
     }
 
-
-    // =========================================
     // CONTACT NUMBER
-    // =========================================
-
     public String getContactNumber() {
         return contactNumber;
     }
@@ -82,11 +80,7 @@ public class AdminEmployeeActionRequest {
         this.contactNumber = contactNumber;
     }
 
-
-    // =========================================
     // ROLE
-    // =========================================
-
     public String getRole() {
         return role;
     }
@@ -95,11 +89,7 @@ public class AdminEmployeeActionRequest {
         this.role = role;
     }
 
-
-    // =========================================
     // TECHNOLOGY
-    // =========================================
-
     public String getTechnology() {
         return technology;
     }
@@ -108,11 +98,7 @@ public class AdminEmployeeActionRequest {
         this.technology = technology;
     }
 
-
-    // =========================================
     // DESIGNATION
-    // =========================================
-
     public String getDesignation() {
         return designation;
     }
@@ -121,11 +107,7 @@ public class AdminEmployeeActionRequest {
         this.designation = designation;
     }
 
-
-    // =========================================
     // BRANCH ID
-    // =========================================
-
     public Long getBranchId() {
         return branchId;
     }
@@ -134,11 +116,7 @@ public class AdminEmployeeActionRequest {
         this.branchId = branchId;
     }
 
-
-    // =========================================
     // SALARY
-    // =========================================
-
     public Double getSalary() {
         return salary;
     }
@@ -147,11 +125,7 @@ public class AdminEmployeeActionRequest {
         this.salary = salary;
     }
 
-
-    // =========================================
     // JOINING DATE
-    // =========================================
-
     public String getJoiningDate() {
         return joiningDate;
     }
@@ -160,11 +134,70 @@ public class AdminEmployeeActionRequest {
         this.joiningDate = joiningDate;
     }
 
+    // INTERNSHIP START DATE
+    public LocalDate getInternshipStartDate() {
+        return internshipStartDate;
+    }
 
-    // =========================================
+    public void setInternshipStartDate(LocalDate internshipStartDate) {
+        this.internshipStartDate = internshipStartDate;
+    }
+
+    // INTERNSHIP DURATION
+    public Integer getInternshipDurationMonths() {
+        return internshipDurationMonths;
+    }
+
+    public void setInternshipDurationMonths(Integer internshipDurationMonths) {
+        this.internshipDurationMonths = internshipDurationMonths;
+    }
+
+    // INTERNSHIP END DATE
+    public LocalDate getInternshipEndDate() {
+        return internshipEndDate;
+    }
+
+    public void setInternshipEndDate(LocalDate internshipEndDate) {
+        this.internshipEndDate = internshipEndDate;
+    }
+
+    // STIPEND TYPE
+    public String getStipendType() {
+        return stipendType;
+    }
+
+    public void setStipendType(String stipendType) {
+        this.stipendType = stipendType;
+    }
+
+    // STIPEND AMOUNT
+    public Double getStipendAmount() {
+        return stipendAmount;
+    }
+
+    public void setStipendAmount(Double stipendAmount) {
+        this.stipendAmount = stipendAmount;
+    }
+
+    // EMPLOYMENT START DATE
+    public LocalDate getEmploymentStartDate() {
+        return employmentStartDate;
+    }
+
+    public void setEmploymentStartDate(LocalDate employmentStartDate) {
+        this.employmentStartDate = employmentStartDate;
+    }
+
+    // EMPLOYMENT END DATE
+    public LocalDate getEmploymentEndDate() {
+        return employmentEndDate;
+    }
+
+    public void setEmploymentEndDate(LocalDate employmentEndDate) {
+        this.employmentEndDate = employmentEndDate;
+    }
+
     // ADMIN EMAIL
-    // =========================================
-
     public String getAdminEmail() {
         return adminEmail;
     }
@@ -173,11 +206,7 @@ public class AdminEmployeeActionRequest {
         this.adminEmail = adminEmail;
     }
 
-
-    // =========================================
     // ADMIN PASSWORD
-    // =========================================
-
     public String getAdminPassword() {
         return adminPassword;
     }
@@ -186,11 +215,7 @@ public class AdminEmployeeActionRequest {
         this.adminPassword = adminPassword;
     }
 
-
-    // =========================================
     // REASON
-    // =========================================
-
     public String getReason() {
         return reason;
     }
@@ -198,6 +223,4 @@ public class AdminEmployeeActionRequest {
     public void setReason(String reason) {
         this.reason = reason;
     }
-
 }
-
