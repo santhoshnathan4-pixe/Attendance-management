@@ -1,4 +1,3 @@
-
 package com.example.attendance;
 
 import org.springframework.http.HttpStatus;
@@ -102,11 +101,17 @@ public class EmployeeController {
         // PASSWORD LENGTH
         // =========================================
 
-        if (request.getNewPassword().length() < 6) {
+        String passwordError =
+                InputValidator.passwordError(
+                        request.getNewPassword(),
+                        request.getEmail()
+                );
+
+        if (passwordError != null) {
 
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
-                    "Password must contain at least 6 characters"
+                    passwordError
             );
         }
 
@@ -215,4 +220,3 @@ public class EmployeeController {
         return response;
     }
 }
-

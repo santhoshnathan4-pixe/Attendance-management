@@ -1,2249 +1,903 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>GROWBYTEE - Leave</title>
-
-    <script src="https://unpkg.com/lucide@latest"></script>
-
-    <style>
-
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        font-family: Arial, Helvetica, sans-serif;
-    }
-
-    body {
-        background: #F5F8F5;
-        color: #171717;
-    }
-
-    .container {
-        display: flex;
-        min-height: 100vh;
-    }
-
-    .sidebar {
-        width: 250px;
-        background: linear-gradient(180deg, #0B2E1A, #171717);
-        color: #FFFFFF;
-        position: fixed;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        padding: 25px 15px;
-        overflow-y: auto;
-    }
-
-    .logo {
-        text-align: center;
-        font-size: 25px;
-        font-weight: bold;
-        margin-bottom: 8px;
-        color: #FFFFFF;
-    }
-
-    .admin-title {
-        text-align: center;
-        color: #C7D8CC;
-        font-size: 13px;
-        margin-bottom: 30px;
-    }
-
-    .menu {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    .menu button {
-        border: none;
-        background: transparent;
-        color: #E5E7EB;
-        text-align: left;
-        padding: 14px 15px;
-        border-radius: 10px;
-        cursor: pointer;
-        font-size: 15px;
-        transition: 0.2s;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .menu button svg {
-        width: 18px;
-        height: 18px;
-        flex-shrink: 0;
-    }
-
-    .menu button:hover,
-    .menu button.active {
-        background: #16803C;
-        color: #FFFFFF;
-    }
-
-    .logout-btn {
-        margin-top: 25px;
-        background: #DC2626 !important;
-        color: #FFFFFF !important;
-        text-align: center !important;
-    }
-
-    .logout-btn:hover {
-        background: #B91C1C !important;
-    }
-
-    .main {
-        margin-left: 250px;
-        width: calc(100% - 250px);
-        min-height: 100vh;
-    }
-
-    .header {
-        height: 75px;
-        background: #FFFFFF;
-        border-bottom: 1px solid #D9E7DD;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 30px;
-        position: sticky;
-        top: 0;
-        z-index: 20;
-    }
-
-    .header h1 {
-        font-size: 23px;
-        color: #171717;
-    }
-
-    .admin-info {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        color: #475569;
-        font-size: 14px;
-    }
-
-    .admin-badge {
-        background: #16803C;
-        color: #FFFFFF;
-        padding: 8px 13px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: bold;
-    }
-
-    .content {
-        padding: 30px;
-    }
-
-    .section {
-        display: none;
-        padding: 24px;
-        border-radius: 16px;
-        min-height: calc(100vh - 135px);
-        border: 1px solid #D9E7DD;
-    }
-
-    .section.active {
-        display: block;
-    }
-
-    #dashboard {
-        background: #F5F8F5;
-    }
-
-    #leave {
-        background: #FBFAF5;
-    }
-
-    #salary {
-        background: #F3F8F4;
-    }
-
-    #history {
-        background: #F5F8F6;
-    }
-
-    .section-title {
-        font-size: 25px;
-        margin-bottom: 8px;
-        color: #171717;
-    }
-
-    .section-subtitle {
-        color: #647568;
-        margin-bottom: 25px;
-        font-size: 14px;
-    }
-
-    .btn {
-        border: none;
-        border-radius: 8px;
-        padding: 10px 16px;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: 600;
-        transition: 0.2s;
-    }
-
-    .btn-primary {
-        background: #16803C;
-        color: #FFFFFF;
-    }
-
-    .btn-primary:hover {
-        background: #0F642E;
-    }
-
-    .btn-success {
-        background: #16803C;
-        color: #FFFFFF;
-    }
-
-    .btn-success:hover {
-        background: #0F642E;
-    }
-
-    .btn-danger {
-        background: #DC2626;
-        color: #FFFFFF;
-    }
-
-    .btn-danger:hover {
-        background: #B91C1C;
-    }
-
-    .btn-secondary {
-        background: #475569;
-        color: #FFFFFF;
-    }
-
-    .btn-secondary:hover {
-        background: #334155;
-    }
-
-    .btn-small {
-        padding: 7px 11px;
-        font-size: 12px;
-    }
-
-    .table-card {
-        background: #FFFFFF;
-        border-radius: 14px;
-        box-shadow: 0 5px 20px rgba(11, 46, 26, 0.06);
-        overflow: hidden;
-        border: 1px solid #D9E7DD;
-    }
-
-    .table-wrapper {
-        overflow-x: auto;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        min-width: 900px;
-    }
-
-    th {
-        background: #0B2E1A;
-        color: #FFFFFF;
-        font-size: 13px;
-        text-align: left;
-        padding: 14px;
-        white-space: nowrap;
-    }
-
-    td {
-        padding: 13px 14px;
-        border-top: 1px solid #E2EBE4;
-        font-size: 13px;
-        white-space: nowrap;
-    }
-
-    tr:hover td {
-        background: #F0F7F1;
-    }
-
-    .empty-row {
-        text-align: center;
-        color: #647568;
-        padding: 30px;
-    }
-
-    .badge {
-        display: inline-block;
-        padding: 5px 9px;
-        border-radius: 20px;
-        font-size: 11px;
-        font-weight: bold;
-    }
-
-    .badge-green {
-        background: #DCFCE7;
-        color: #166534;
-    }
-
-    .badge-blue {
-        background: #DBEAFE;
-        color: #1E40AF;
-    }
-
-    .badge-orange {
-        background: #FFEDD5;
-        color: #9A3412;
-    }
-
-    .badge-red {
-        background: #FEE2E2;
-        color: #991B1B;
-    }
-
-    .badge-gray {
-        background: #E5E7EB;
-        color: #374151;
-    }
-
-    .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 7px;
-    }
-
-    .form-group label {
-        font-size: 13px;
-        font-weight: 600;
-        color: #374151;
-    }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-        width: 100%;
-        padding: 11px 12px;
-        border: 1px solid #C8D8CC;
-        border-radius: 8px;
-        outline: none;
-        font-size: 14px;
-        background: #FFFFFF;
-        color: #171717;
-    }
-
-    .form-group textarea {
-        resize: vertical;
-        min-height: 90px;
-    }
-
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-        border-color: #16803C;
-        box-shadow: 0 0 0 3px rgba(22, 128, 60, 0.12);
-    }
-
-    .modal {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(11, 25, 16, 0.65);
-        z-index: 100;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-    }
-
-    .modal.show {
-        display: flex;
-    }
-
-    .modal-box {
-        width: 100%;
-        max-width: 650px;
-        background: #FFFFFF;
-        border-radius: 16px;
-        padding: 25px;
-        max-height: 90vh;
-        overflow-y: auto;
-        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
-    }
-
-    .modal-box.small {
-        max-width: 450px;
-    }
-
-    .modal-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 22px;
-    }
-
-    .modal-header h2 {
-        font-size: 20px;
-        color: #171717;
-    }
-
-    .close-btn {
-        border: none;
-        background: #E8F5EC;
-        color: #0B2E1A;
-        width: 34px;
-        height: 34px;
-        border-radius: 50%;
-        cursor: pointer;
-        font-size: 18px;
-    }
-
-    .close-btn:hover {
-        background: #D5EBDD;
-    }
-
-    .modal-footer {
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-        margin-top: 25px;
-    }
-
-    .info-box {
-        background: #E8F5EC;
-        border: 1px solid #B8DCC2;
-        color: #0B5D2A;
-        border-radius: 10px;
-        padding: 13px 15px;
-        font-size: 13px;
-        line-height: 1.6;
-        margin-bottom: 18px;
-    }
-
-    .message {
-        display: none;
-        margin-bottom: 18px;
-        padding: 12px 15px;
-        border-radius: 9px;
-        font-size: 13px;
-        font-weight: 600;
-    }
-
-    .message.show {
-        display: block;
-    }
-
-    .message.success {
-        background: #DCFCE7;
-        color: #166534;
-    }
-
-    .message.error {
-        background: #FEE2E2;
-        color: #991B1B;
-    }
-
-    @media (max-width: 800px) {
-        .sidebar {
-            width: 210px;
-        }
-
-        .main {
-            margin-left: 210px;
-            width: calc(100% - 210px);
-        }
-
-        .header {
-            padding: 0 15px;
-        }
-
-        .content {
-            padding: 20px 15px;
-        }
-
-        .section {
-            padding: 18px;
-        }
-    }
-
-    @media (max-width: 600px) {
-        .sidebar {
-            position: relative;
-            width: 100%;
-            min-height: auto;
-        }
-
-        .container {
-            display: block;
-        }
-
-        .main {
-            margin-left: 0;
-            width: 100%;
-        }
-
-        .header {
-            position: relative;
-        }
-
-        .admin-info {
-            display: none;
-        }
-    }
-
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GROWBYTEE - Leave & Attendance</title>
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--g:#16803C;--gd:#0B2E1A;--gl:#E8F5EC;--k:#171717;--line:#E1E8E3;--mut:#6B7A70;--bg:#F4F6F5;--red:#DC2626}
+body{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;background:var(--bg);color:var(--k);font-size:14px}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+.hide{display:none!important}
+
+/* main */
+.main{min-height:100vh}
+.topbar{background:#fff;border-bottom:1px solid var(--line);padding:16px 28px 0;position:sticky;top:0;z-index:20}
+.topbar-row{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px}
+.topbar h1{font-size:20px;font-weight:600}
+.topbar p{color:var(--mut);font-size:12.5px;margin-top:3px}
+.admin-info{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mut)}
+.admin-badge{background:var(--gd);color:#fff;padding:5px 11px;border-radius:20px;font-size:11px;font-weight:700}
+.tabs{display:flex;gap:2px;overflow-x:auto}
+.tab{border:0;background:none;padding:11px 16px;font-size:13.5px;font-weight:600;color:var(--mut);border-bottom:3px solid transparent;display:flex;align-items:center;gap:8px;white-space:nowrap}
+.tab svg{width:16px;height:16px}
+.tab:hover{color:var(--k)}
+.tab.active{color:var(--g);border-bottom-color:var(--g)}
+.count-pill{background:#FEF3C7;color:#92400E;border-radius:10px;padding:1px 8px;font-size:11px;font-weight:700}
+.count-pill:empty{display:none}
+.content{padding:22px 28px}
+.panel{display:none}.panel.active{display:block}
+
+/* toast */
+.toast{position:fixed;top:18px;right:18px;z-index:200;max-width:380px;padding:12px 16px;border-radius:8px;font-size:13px;font-weight:600;box-shadow:0 8px 24px rgba(0,0,0,.15);display:none}
+.toast.show{display:block}
+.toast.success{background:#DCFCE7;color:#166534;border:1px solid #A7E3BB}
+.toast.error{background:#FEE2E2;color:#991B1B;border:1px solid #FBC5C5}
+
+/* cards, toolbar, buttons */
+.card{background:#fff;border:1px solid var(--line);border-radius:10px}
+.toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 16px;border-bottom:1px solid var(--line)}
+.toolbar .grow{flex:1}
+.seg{display:flex;background:var(--bg);border-radius:8px;padding:3px;gap:2px}
+.seg button{border:0;background:none;padding:7px 13px;border-radius:6px;font-size:13px;font-weight:600;color:var(--mut)}
+.seg button.on{background:#fff;color:var(--g);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.seg b{font-weight:700;margin-left:4px}
+.input,.select,.textarea{border:1px solid #CBD6CE;border-radius:7px;padding:9px 11px;background:#fff;outline:none;font-size:13px;width:100%}
+.input:focus,.select:focus,.textarea:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(22,128,60,.12)}
+.textarea{resize:vertical;min-height:80px}
+.search{max-width:260px;min-width:170px}
+.btn{border:0;border-radius:7px;padding:9px 15px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:7px;transition:.15s;white-space:nowrap}
+.btn svg{width:15px;height:15px}
+.btn-primary{background:var(--g);color:#fff}.btn-primary:hover{background:#0F642E}
+.btn-dark{background:var(--k);color:#fff}.btn-dark:hover{background:#000}
+.btn-danger{background:var(--red);color:#fff}.btn-danger:hover{background:#B91C1C}
+.btn-ghost{background:#fff;border:1px solid #CBD6CE;color:#33443A}.btn-ghost:hover{background:var(--gl)}
+.btn-sm{padding:6px 11px;font-size:12px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* tables */
+.tbl-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:760px}
+th{background:#F7FAF8;color:#42524A;font-size:11.5px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);white-space:nowrap;position:sticky;top:0;z-index:1}
+td{padding:12px 14px;border-bottom:1px solid #EEF2EF;font-size:13px;vertical-align:middle}
+tbody tr:hover td{background:#F7FBF8}
+tbody tr:last-child td{border-bottom:0}
+.empty{text-align:center;color:var(--mut);padding:36px 14px!important}
+.sub{font-size:11.5px;color:var(--mut);margin-top:3px;line-height:1.4}
+.nowrap{white-space:nowrap}
+.wrap-cell{max-width:240px;overflow-wrap:anywhere}
+.person{display:flex;align-items:center;gap:10px}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--gl);color:var(--gd);font-weight:700;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.strong{font-weight:600}
+
+/* badges */
+.badge{display:inline-block;padding:3px 9px;border-radius:12px;font-size:11px;font-weight:700;white-space:nowrap}
+.b-green{background:#DCFCE7;color:#166534}.b-amber{background:#FEF3C7;color:#92400E}.b-red{background:#FEE2E2;color:#991B1B}
+.b-grey{background:#E8EDE9;color:#44544A}.b-dark{background:var(--gd);color:#fff}.b-teal{background:#D5F3E8;color:#0F6B4A}.b-sky{background:#E3F0FB;color:#1D5A93}
+
+/* pagination */
+.pager{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-top:1px solid var(--line);color:var(--mut);font-size:12.5px;gap:10px;flex-wrap:wrap}
+.pager div{display:flex;gap:6px}
+
+/* summary tiles */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:14px}
+.tile{background:#fff;border:1px solid var(--line);border-left:3px solid var(--g);border-radius:8px;padding:11px 14px}
+.tile span{display:block;font-size:11.5px;color:var(--mut)}
+.tile b{font-size:21px;font-weight:700}
+
+/* note */
+.note{background:var(--gl);border:1px solid #B8DCC2;color:#0B5D2A;border-radius:8px;padding:10px 14px;font-size:12.5px;line-height:1.6}
+
+/* modals */
+.modal{display:none;position:fixed;inset:0;background:rgba(11,25,16,.6);z-index:100;align-items:center;justify-content:center;padding:18px}
+.modal.show{display:flex}
+.box{background:#fff;border-radius:12px;width:100%;max-width:560px;max-height:92vh;display:flex;flex-direction:column;box-shadow:0 24px 60px rgba(0,0,0,.25)}
+.box.wide{max-width:1100px}
+.box-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:18px 22px;border-bottom:1px solid var(--line)}
+.box-head h2{font-size:17px}
+.box-head p{color:var(--mut);font-size:12px;margin-top:4px}
+.x{border:1px solid var(--line);background:#fff;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.x:hover{background:var(--gl)}
+.x svg{width:16px;height:16px}
+.box-body{padding:18px 22px;overflow-y:auto}
+.box-foot{display:flex;justify-content:flex-end;gap:10px;padding:13px 22px;border-top:1px solid var(--line)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.field label{display:block;font-size:12px;font-weight:600;color:#4A5B50;margin-bottom:6px}
+.field .req{color:var(--red)}
+.field+.field{margin-top:0}
+.stack{display:flex;flex-direction:column;gap:14px}
+.filters{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 1fr auto;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line);align-items:end}
+.mfilter{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin-bottom:14px}
+.mfilter .field{min-width:140px}
+.radio-row label{margin-right:14px;font-size:13px;cursor:pointer}
+
+@media(max-width:1100px){.filters{grid-template-columns:1fr 1fr 1fr}}
+@media(max-width:800px){.content{padding:16px}.topbar{padding:14px 16px 0}}
+@media(max-width:620px){.filters,.grid2{grid-template-columns:1fr}.admin-info{display:none}}
 </style>
-
 </head>
-
 <body>
 
-<div class="container">
 
-    <aside class="sidebar">
-
-        <div class="logo">
-            GROWBYTEE
-        </div>
-
-        <div class="admin-title">
-            Admin / CEO Dashboard
-        </div>
-
-        <div class="menu">
-
-            <button class="menu-btn"
-                    onclick="window.location.href='/admin-dashboard.html'">
-                <i data-lucide="layout-dashboard"></i>
-                Dashboard
-            </button>
-
-<button class="menu-btn"
-        onclick="window.location.href='employees.html'">
-    <i data-lucide="users"></i>
-    Employees
-</button>
-
-<button class="menu-btn active" 
-        onclick="window.location.href='leave.html'">
-    <i data-lucide="clipboard-list"></i>
-    Leave
-</button>
-
-
-
-
-            <button class="menu-btn"
-                    onclick="window.location.href='ai-assistant.html'">
-                <i data-lucide="sparkles"></i>
-                AI Assistant
-            </button>
-
-            <button class="menu-btn"
-                    onclick="window.location.href='working-day-settings.html'">
-                <i data-lucide="calendar-days"></i>
-                Working Day Settings
-            </button>
-
-            <button class="menu-btn"
-                    onclick="window.location.href='shift-settings.html'">
-                <i data-lucide="clock-3"></i>
-                Shift Settings
-            </button>
-
-            <button class="menu-btn"
-                    onclick="window.location.href='branch-management.html'">
-                <i data-lucide="building-2"></i>
-                Branch Management
-            </button>
-
-            <button class="menu-btn"
-                    onclick="window.location.href='leave-permission-settings.html'">
-                <i data-lucide="settings"></i>
-                Leave & Permission Settings
-            </button>
-
-            <button class="menu-btn"
-                    onclick="window.location.href='salary.html'">
-                <i data-lucide="wallet"></i>
-                Salary
-            </button>
-
-            <button class="menu-btn"
-                    onclick="window.location.href='monthly-report.html'">
-                <i data-lucide="calendar-days"></i>
-                Monthly Report
-            </button>
-
-            
-<button class="menu-btn"
-        onclick="window.location.href='attendance-history.html'">
-    <i data-lucide="calendar-clock"></i>
-    Attendance History
-</button>
-
-<button class="menu-btn"
-        onclick="window.location.href='leave-history.html'">
-    <i data-lucide="file-clock"></i>
-    Leave History
-</button>
-
-            <button class="menu-btn"
-                    onclick="window.location.href='history.html'">
-                <i data-lucide="history"></i>
-                History
-            </button>
-
-            <button class="menu-btn logout-btn"
-                    onclick="logout()">
-                <i data-lucide="log-out"></i>
-                Logout
-            </button>
-
-        </div>
-
-    </aside>
-
-    <main class="main">
-
-        <header class="header">
-
-            <h1>
-                GROWBYTEE - Admin Dashboard
-            </h1>
-
-            <div class="admin-info" id="adminInfo" style="display: none;">
-
-                <span id="loggedAdminName">
-                    Welcome, Admin
-                </span>
-
-                <span class="admin-badge">
-                    ADMIN
-                </span>
-
-            </div>
-
-        </header>
-
-        <div class="content">
-
-<section id="leave" class="section active"> 
- 
-    <h2 class="section-title"> 
-        Leave Management 
-    </h2> 
- 
-    <p class="section-subtitle"> 
-        Review and manage employee leave requests 
-    </p> 
- 
-    <div id="leaveMessage" 
-         class="message"> 
-    </div> 
- 
-    <div class="table-card"> 
- 
-        <div class="table-wrapper"> 
- 
-            <table> 
- 
-                <thead> 
- 
-                <tr> 
-                    <th>Employee</th> 
-                    <th>Leave Type</th> 
-                    <th>Date</th> 
-                    <th>Duration</th> 
-                    <th>LOP Days</th> 
-                    <th>Reason</th> 
-                    <th>Status</th> 
-                    <th>Action</th> 
-                </tr> 
- 
-                </thead> 
- 
-                <tbody id="leaveTableBody"> 
- 
-                <tr> 
-                    <td colspan="8" 
-                        class="empty-row"> 
-                        Loading leave requests... 
-                    </td> 
-                </tr> 
- 
-                </tbody> 
- 
-            </table> 
- 
-        </div> 
- 
-    </div> 
- 
-</section> 
-
-<!-- LEAVE REVIEW MODAL -->
-<div id="leaveReviewModal" class="modal">
-    <div class="modal-box">
-        <div class="modal-header">
-            <h2 id="leaveReviewTitle">Review Leave</h2>
-            <button class="close-btn" onclick="closeLeaveReview()">×</button>
-        </div>
-
-        <div id="leaveReviewInfo" class="info-box"></div>
-
-        <div style="margin:12px 0;display:flex;gap:8px;flex-wrap:wrap;">
-            <button type="button" class="btn btn-success btn-small" onclick="setAllLeaveDecision('APPROVE')">Approve all</button>
-            <button type="button" class="btn btn-danger btn-small" onclick="setAllLeaveDecision('REJECT')">Reject all</button>
-        </div>
-
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Leave</th>
-                        <th>Days</th>
-                        <th>LOP</th>
-                        <th>Decision</th>
-                    </tr>
-                </thead>
-                <tbody id="leaveReviewBody"></tbody>
-            </table>
-        </div>
-
-        <div class="form-group" style="margin-top:14px;">
-            <label>
-                Reason
-                <span id="leaveReviewReasonMark" style="color:#dc2626;display:none;"> * (required for rejected dates)</span>
-            </label>
-            <textarea id="leaveReviewReason" rows="3" placeholder="This reason is shown to the employee..."></textarea>
-        </div>
-
-        <div class="modal-footer">
-            <button class="btn btn-secondary" onclick="closeLeaveReview()">Cancel</button>
-            <button class="btn btn-primary" id="leaveReviewSubmit" onclick="submitLeaveReview()">Save Decision</button>
-        </div>
+<main class="main">
+  <header class="topbar">
+    <div class="topbar-row">
+      <div>
+        <h1>Leave &amp; Attendance</h1>
+        <p>Review requests, check attendance and leave history, and manage leave rules in one place.</p>
+      </div>
+      <div class="admin-info"><span id="adminName">Admin</span><span class="admin-badge">ADMIN</span></div>
     </div>
-</div>
+    <nav class="tabs" id="tabs">
+      <button class="tab active" data-tab="requests"><i data-lucide="inbox"></i>Leave Requests<span class="count-pill" id="pendingPill"></span></button>
+      <button class="tab" data-tab="attendance"><i data-lucide="calendar-check"></i>Attendance History</button>
+      <button class="tab" data-tab="history"><i data-lucide="file-clock"></i>Leave History</button>
+      <button class="tab" data-tab="settings"><i data-lucide="sliders-horizontal"></i>Leave &amp; Permission Settings</button>
+    </nav>
+  </header>
 
+  <div class="content">
 
-<!-- ACTION REASON MODAL -->
-
-<div id="actionReasonModal"
-     class="modal">
-
-    <div class="modal-box small">
-
-        <div class="modal-header">
-
-            <h2 id="actionReasonTitle">
-                Confirm Action
-            </h2>
-
-            <button class="close-btn"
-                    onclick="closeActionReasonModal()">
-
-                <i data-lucide="x"></i>
-
-            </button>
-
+    <!-- ===== LEAVE REQUESTS ===== -->
+    <section class="panel active" id="panel-requests">
+      <div class="card">
+        <div class="toolbar">
+          <div class="seg" id="reqSeg">
+            <button data-f="PENDING" class="on">Pending<b id="cPending">0</b></button>
+            <button data-f="APPROVED">Approved<b id="cApproved">0</b></button>
+            <button data-f="REJECTED">Rejected / Cancelled<b id="cRejected">0</b></button>
+            <button data-f="ALL">All<b id="cAll">0</b></button>
+          </div>
+          <div class="grow"></div>
+          <input class="input search" id="reqSearch" type="search" placeholder="Search employee..." autocomplete="off">
+          <button class="btn btn-ghost" onclick="loadLeaves(true)"><i data-lucide="refresh-cw"></i>Refresh</button>
         </div>
-
-        <div class="info-box">
-
-            <strong>
-                No admin password required.
-            </strong>
-
-            <br>
-
-            You are already logged in as an administrator.
-
-            <br>
-
-            Enter the reason for this action.
-
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Employee</th><th>Type</th><th>Date</th><th>Days</th><th>LOP</th><th>Reason</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody id="reqBody"><tr><td colspan="8" class="empty">Loading leave requests...</td></tr></tbody>
+          </table>
         </div>
+      </div>
+    </section>
 
-        <div class="form-group">
+    <!-- ===== ATTENDANCE HISTORY ===== -->
+    <section class="panel" id="panel-attendance">
+      <div class="card" id="dir-att"></div>
+    </section>
 
-            <label>
+    <!-- ===== LEAVE HISTORY ===== -->
+    <section class="panel" id="panel-history">
+      <div class="card" id="dir-lh"></div>
+    </section>
 
-                Reason
-
-                <span id="actionReasonRequired"
-                      style="color:#dc2626;">
-
-                    *
-
-                </span>
-
-            </label>
-
-            <textarea id="actionReason"
-                      rows="4"
-                      placeholder="Enter reason for this action..."></textarea>
-
+    <!-- ===== SETTINGS ===== -->
+    <section class="panel" id="panel-settings">
+      <div class="note" style="margin-bottom:14px"><strong>Priority:</strong> Employee setting &rarr; Role setting &rarr; Default setting. Sick leave, casual leave and permission are set separately; unused sick / casual balance carries forward as per the backend balance logic.</div>
+      <div class="card">
+        <div class="toolbar">
+          <button class="btn btn-primary" onclick="openSettingModal('DEFAULT')"><i data-lucide="plus"></i>Default</button>
+          <button class="btn btn-dark" onclick="openSettingModal('ROLE')"><i data-lucide="plus"></i>Role</button>
+          <button class="btn btn-ghost" onclick="openSettingModal('EMPLOYEE')"><i data-lucide="plus"></i>Employee</button>
+          <div class="grow"></div>
+          <button class="btn btn-ghost" onclick="openSettingHistory()"><i data-lucide="history"></i>Change Log</button>
+          <button class="btn btn-ghost" onclick="loadSettings()"><i data-lucide="refresh-cw"></i>Refresh</button>
         </div>
-
-        <div class="modal-footer">
-
-            <button class="btn btn-secondary"
-                    onclick="closeActionReasonModal()">
-
-                Cancel
-
-            </button>
-
-            <button class="btn btn-primary"
-                    onclick="confirmActionReason()">
-
-                Confirm
-
-            </button>
-
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>Applies To</th><th>Sick / Month</th><th>Casual / Month</th><th>Permission / Month</th><th>Shift</th><th>Updated</th><th>Action</th></tr></thead>
+            <tbody id="setBody"><tr><td colspan="7" class="empty">Loading settings...</td></tr></tbody>
+          </table>
         </div>
+      </div>
+    </section>
 
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<!-- REVIEW LEAVE -->
+<div class="modal" id="reviewModal"><div class="box wide">
+  <div class="box-head"><div><h2 id="reviewTitle">Review Leave</h2><p id="reviewInfo"></p></div><button class="x" onclick="closeModal('reviewModal')"><i data-lucide="x"></i></button></div>
+  <div class="box-body">
+    <div style="display:flex;gap:8px;margin-bottom:12px">
+      <button class="btn btn-primary btn-sm" onclick="setAllDecision('APPROVE')">Approve all</button>
+      <button class="btn btn-danger btn-sm" onclick="setAllDecision('REJECT')">Reject all</button>
     </div>
+    <div class="card tbl-wrap"><table style="min-width:520px"><thead><tr><th>Date</th><th>Leave</th><th>Days</th><th>LOP</th><th>Decision</th></tr></thead><tbody id="reviewBody"></tbody></table></div>
+    <div class="field" style="margin-top:14px"><label>Reason <span class="req hide" id="reviewReq">* required for rejected dates</span></label>
+      <textarea class="textarea" id="reviewReason" rows="3" placeholder="This reason is shown to the employee..."></textarea></div>
+  </div>
+  <div class="box-foot"><button class="btn btn-ghost" onclick="closeModal('reviewModal')">Cancel</button><button class="btn btn-primary" id="reviewSave" onclick="submitReview()">Save Decision</button></div>
+</div></div>
 
-</div>
+<!-- ATTENDANCE -->
+<div class="modal" id="attModal"><div class="box wide">
+  <div class="box-head"><div><h2 id="attTitle">Attendance</h2><p id="attMeta"></p></div><button class="x" onclick="closeModal('attModal')"><i data-lucide="x"></i></button></div>
+  <div class="box-body">
+    <div class="mfilter">
+      <div class="field"><label>Month</label><select class="select" id="attMonth"></select></div>
+      <div class="field"><label>Year</label><select class="select" id="attYear"></select></div>
+      <button class="btn btn-primary" onclick="loadAttendance()"><i data-lucide="search"></i>Load</button>
+    </div>
+    <div class="tiles">
+      <div class="tile"><span>Records</span><b id="aTotal">0</b></div>
+      <div class="tile"><span>Present</span><b id="aPresent">0</b></div>
+      <div class="tile"><span>Late</span><b id="aLate">0</b></div>
+      <div class="tile"><span>Re-entry</span><b id="aRe">0</b></div>
+      <div class="tile"><span>Leave days</span><b id="aLeave">0</b></div>
+    </div>
+    <div class="card tbl-wrap" style="max-height:380px"><table style="min-width:640px">
+      <thead><tr><th>Date</th><th>Check-In</th><th>Check-Out</th><th>Status</th><th>Details</th></tr></thead>
+      <tbody id="attBody"></tbody></table></div>
+  </div>
+  <div class="box-foot"><button class="btn btn-ghost" onclick="closeModal('attModal')">Close</button></div>
+</div></div>
 
+<!-- LEAVE HISTORY -->
+<div class="modal" id="lhModal"><div class="box wide">
+  <div class="box-head"><div><h2 id="lhTitle">Leave History</h2><p id="lhMeta"></p></div><button class="x" onclick="closeModal('lhModal')"><i data-lucide="x"></i></button></div>
+  <div class="box-body">
+    <div class="mfilter">
+      <div class="field"><label>Month</label><select class="select" id="lhMonth"></select></div>
+      <div class="field"><label>Year</label><select class="select" id="lhYear"></select></div>
+      <button class="btn btn-primary" onclick="loadLeaveHistory()"><i data-lucide="search"></i>View</button>
+    </div>
+    <div class="tiles">
+      <div class="tile"><span>Total</span><b id="lTotal">0</b></div>
+      <div class="tile"><span>Pending</span><b id="lPending">0</b></div>
+      <div class="tile"><span>Approved</span><b id="lApproved">0</b></div>
+      <div class="tile"><span>Rejected / Cancelled</span><b id="lRejected">0</b></div>
+    </div>
+    <div class="card tbl-wrap" style="max-height:380px"><table style="min-width:1080px">
+      <thead><tr><th>Date</th><th>Type</th><th>Days</th><th>Time</th><th>LOP</th><th>Reason</th><th>Status</th><th>Decided By</th><th>Decision Reason</th><th>Requested</th><th>Decided</th></tr></thead>
+      <tbody id="lhBody"></tbody></table></div>
+  </div>
+  <div class="box-foot"><button class="btn btn-ghost" onclick="exportCsv()"><i data-lucide="download"></i>Export CSV</button><button class="btn btn-ghost" onclick="closeModal('lhModal')">Close</button></div>
+</div></div>
 
+<!-- ADD SETTING -->
+<div class="modal" id="setModal"><div class="box">
+  <div class="box-head"><div><h2 id="setTitle">Leave &amp; Permission Settings</h2><p>Monthly allowance for sick leave, casual leave and permission.</p></div><button class="x" onclick="closeModal('setModal')"><i data-lucide="x"></i></button></div>
+  <div class="box-body stack">
+    <div class="field hide" id="setRoleBox"><label>Role</label>
+      <select class="select" id="setRole"><option value="">Select role</option><option>EMPLOYEE</option><option>DEVELOPER</option><option>HR</option><option>TEAM_LEAD</option><option>MANAGER</option><option>ADMIN</option></select></div>
+    <div class="field hide" id="setEmpBox"><label>Employee</label><select class="select" id="setEmployee"><option value="">Select employee</option></select></div>
+    <div class="grid2">
+      <div class="field"><label>Sick leave / month</label><input class="input" type="number" id="setSick" min="0" step="0.5" value="1"></div>
+      <div class="field"><label>Casual leave / month</label><input class="input" type="number" id="setCasual" min="0" step="0.5" value="1"></div>
+      <div class="field"><label>Permission / month</label><input class="input" type="number" id="setPerm" min="0" step="1" value="2"></div>
+      <div class="field"><label>Shift</label><select class="select" id="setShift"></select></div>
+    </div>
+  </div>
+  <div class="box-foot"><button class="btn btn-ghost" onclick="closeModal('setModal')">Cancel</button><button class="btn btn-primary" onclick="saveSetting()">Save Settings</button></div>
+</div></div>
 
-        </div>
+<!-- EDIT / DELETE SETTING -->
+<div class="modal" id="chgModal"><div class="box" style="max-width:440px">
+  <div class="box-head"><div><h2 id="chgTitle">Edit Setting</h2><p id="chgInfo"></p></div><button class="x" onclick="closeModal('chgModal')"><i data-lucide="x"></i></button></div>
+  <div class="box-body stack">
+    <div id="chgFields" class="stack">
+      <div class="field"><label>Sick leave / month</label><input class="input" type="number" id="chgSick" min="0" step="0.5"></div>
+      <div class="field"><label>Casual leave / month</label><input class="input" type="number" id="chgCasual" min="0" step="0.5"></div>
+      <div class="field"><label>Permission / month</label><input class="input" type="number" id="chgPerm" min="0" step="1"></div>
+    </div>
+    <div class="field"><label>Reason <span class="req">*</span></label><textarea class="textarea" id="chgReason" rows="3" placeholder="Enter the reason..."></textarea></div>
+  </div>
+  <div class="box-foot"><button class="btn btn-ghost" onclick="closeModal('chgModal')">Cancel</button><button class="btn btn-primary" id="chgSubmit" onclick="submitChange()">Save</button></div>
+</div></div>
 
-    </main>
-
-</div>
+<!-- SETTING CHANGE LOG -->
+<div class="modal" id="logModal"><div class="box wide">
+  <div class="box-head"><div><h2>Leave &amp; Permission Change Log</h2></div><button class="x" onclick="closeModal('logModal')"><i data-lucide="x"></i></button></div>
+  <div class="box-body"><div class="card tbl-wrap" style="max-height:60vh"><table style="min-width:900px">
+    <thead><tr><th>Date &amp; Time</th><th>Action</th><th>Setting</th><th>Old</th><th>New</th><th>Reason</th><th>Admin</th></tr></thead>
+    <tbody id="logBody"></tbody></table></div></div>
+  <div class="box-foot"><button class="btn btn-ghost" onclick="closeModal('logModal')">Close</button></div>
+</div></div>
 
 <script>
+const API_BASE_URL = (location.hostname === "localhost" || location.hostname === "127.0.0.1")
+    ? "http://localhost:8080" : "https://attendance-management-d5h6.onrender.com";
+const $ = id => document.getElementById(id);
+const apiFetch = (url, options = {}) => fetch(API_BASE_URL + url, options);
+const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 
-    const API_BASE_URL =
-        window.location.hostname === "localhost" ||
-            window.location.hostname === "127.0.0.1"
-            ? "http://localhost:8080"
-            : "https://attendance-management-d5h6.onrender.com";
+/* ---------- helpers ---------- */
+function esc(v){ return v == null ? "" : String(v).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]); }
+function escJs(v){ return v == null ? "" : String(v).replace(/\\/g,"\\\\").replace(/'/g,"\\'").replace(/\n/g,"\\n").replace(/\r/g,"\\r"); }
+function val(o, ...keys){ if(!o || typeof o !== "object") return ""; for(const k of keys){ if(o[k] !== undefined && o[k] !== null) return o[k]; } return ""; }
+function up(v){ return String(v ?? "").trim().toUpperCase(); }
+function list(p){ if(Array.isArray(p)) return p; if(p && typeof p === "object"){ for(const k of ["data","content","records","employees","leaves","items"]) if(Array.isArray(p[k])) return p[k]; } return []; }
+function nd(v){ if(!v) return ""; if(Array.isArray(v)) return [v[0], String(v[1]).padStart(2,"0"), String(v[2]).padStart(2,"0")].join("-"); return String(v).substring(0,10); }
+function fmtDate(v){ const d = nd(v); if(!d) return "—"; const p = d.split("-"); return p.length === 3 ? p[2]+"-"+p[1]+"-"+p[0] : d; }
+function fmtTime(v){ if(v == null || v === "") return "—"; if(Array.isArray(v)) return [v[0]??0, v[1]??0, v[2]??0].map(x => String(x).padStart(2,"0")).join(":"); return String(v).split(".")[0]; }
+function fmtHM(v){ const t = fmtTime(v); return t === "—" ? t : t.substring(0,5); }
+function fmtDT(v){ if(!v) return "—"; if(Array.isArray(v)){ const [y,m,d,h=0,mi=0] = v; return String(d).padStart(2,"0")+"-"+String(m).padStart(2,"0")+"-"+y+" "+String(h).padStart(2,"0")+":"+String(mi).padStart(2,"0"); } const s = String(v).replace("T"," "); return fmtDate(s.substring(0,10)) + " " + s.substring(11,16); }
+function num(v){ const n = Number(v); return Number.isFinite(n) ? n.toLocaleString("en-IN",{maximumFractionDigits:2}) : "0"; }
+function initials(n){ const p = String(n||"").trim().split(/\s+/).filter(Boolean); return !p.length ? "NA" : (p.length === 1 ? p[0].substring(0,2) : p[0][0]+p[p.length-1][0]).toUpperCase(); }
+function today(){ const d = new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function icons(){ if(window.lucide) lucide.createIcons(); }
 
-    async function apiFetch(
-        url,
-        options = {}
-    ) {
+let toastTimer;
+function notify(msg, type = "success"){
+    const t = $("toast"); t.textContent = msg; t.className = "toast show " + type;
+    clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove("show"), 4500);
+}
+async function errMsg(r){
+    try{ const t = await r.text(); if(!t) return "Request failed. HTTP " + r.status;
+        try{ const j = JSON.parse(t); return j.message || j.error || t; }catch{ return t; } }
+    catch{ return "Request failed. HTTP " + r.status; }
+}
+function openModal(id){ $(id).classList.add("show"); icons(); }
+function closeModal(id){ $(id).classList.remove("show"); }
+function logout(){
+    if(!confirm("Are you sure you want to logout?")) return;
+    localStorage.removeItem("adminEmail"); localStorage.removeItem("adminName");
+    location.href = "admin-login.html";
+}
+function adminEmailOrLogout(){
+    const e = localStorage.getItem("adminEmail");
+    if(!e){ alert("Admin login information not found. Please login again."); logout(); return null; }
+    return e;
+}
+function fillMonthYear(mId, yId){
+    $(mId).innerHTML = MONTHS.map((m,i) => `<option value="${i+1}">${m}</option>`).join("");
+    const y = new Date().getFullYear(); let h = "";
+    for(let i = y + 1; i >= y - 10; i--) h += `<option value="${i}">${i}</option>`;
+    $(yId).innerHTML = h;
+    $(mId).value = String(new Date().getMonth() + 1); $(yId).value = String(y);
+}
 
-        return fetch(
-            API_BASE_URL + url,
-            options
-        );
+/* ---------- employees (shared) ---------- */
+let employees = [], employeesPromise = null;
+function loadEmployees(){
+    if(employeesPromise) return employeesPromise;
+    employeesPromise = apiFetch("/admin/employees").then(async r => {
+        if(!r.ok) throw new Error(await errMsg(r));
+        employees = list(await r.json()).filter(e => e && e.id != null);
+        employees.sort((a,b) => String(a.employeeCode||"").localeCompare(String(b.employeeCode||""), undefined, {numeric:true, sensitivity:"base"}));
+        return employees;
+    }).catch(e => { employeesPromise = null; throw e; });
+    return employeesPromise;
+}
+function empType(e){
+    const t = up(val(e, "employeeType", "employmentType", "type"));
+    if(t.includes("INTERN")) return "INTERN";
+    if(t.includes("MANAGER")) return "MANAGER";
+    if(t === "EMPLOYEE" || t === "PERMANENT" || t === "FULL_TIME") return "EMPLOYEE";
+    const d = up(e.designation), r = up(e.role);
+    if(d.includes("INTERN") || r.includes("INTERN")) return "INTERN";
+    if(e.employmentStartDate || e.employmentEndDate) return "EMPLOYEE";
+    if(e.internshipStartDate || e.internshipEndDate || e.internshipDurationMonths != null || e.stipendType) return "INTERN";
+    return "EMPLOYEE";
+}
+const TYPE_BADGE = { EMPLOYEE:"b-green", INTERN:"b-amber", MANAGER:"b-dark" };
 
+/* ---------- employee directory (used by Attendance + Leave History) ---------- */
+const dirs = {};
+function buildDirectory(key, containerId, onOpen, actionLabel){
+    const d = dirs[key] = { page:1, filtered:[], onOpen, size:15 };
+    const p = key;
+    $(containerId).innerHTML = `
+      <div class="filters">
+        <div class="field"><label>Search</label><input class="input" id="${p}Q" type="search" placeholder="Code or name..." autocomplete="off"></div>
+        <div class="field"><label>Type</label><select class="select" id="${p}T"><option value="">All</option><option value="EMPLOYEE">Employee</option><option value="INTERN">Intern</option><option value="MANAGER">Manager</option></select></div>
+        <div class="field"><label>Designation</label><select class="select" id="${p}D"></select></div>
+        <div class="field"><label>Role</label><select class="select" id="${p}R"></select></div>
+        <div class="field"><label>Branch</label><select class="select" id="${p}B"></select></div>
+        <button class="btn btn-ghost" id="${p}Clear"><i data-lucide="x"></i>Clear</button>
+      </div>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Code</th><th>Employee</th><th>Role</th><th>Branch</th><th>Type</th><th></th></tr></thead>
+        <tbody id="${p}Body"><tr><td colspan="6" class="empty">Loading employees...</td></tr></tbody></table></div>
+      <div class="pager"><span id="${p}Info"></span><div id="${p}Pg"></div></div>`;
+    ["Q","T","D","R","B"].forEach(s => $(p+s).addEventListener(s === "Q" ? "input" : "change", () => { d.page = 1; filterDirectory(key); }));
+    $(p+"Clear").addEventListener("click", () => { ["Q","T","D","R","B"].forEach(s => $(p+s).value = ""); d.page = 1; filterDirectory(key); });
+    d.action = actionLabel;
+    icons();
+}
+function fillSelect(id, values, label){
+    const s = $(id), old = s.value;
+    s.innerHTML = `<option value="">${label}</option>` + [...new Set(values.map(v => String(v ?? "").trim()).filter(Boolean))].sort((a,b) => a.localeCompare(b)).map(v => `<option>${esc(v)}</option>`).join("");
+    if([...s.options].some(o => o.value === old)) s.value = old;
+}
+async function startDirectory(key){
+    const d = dirs[key];
+    try{
+        await loadEmployees();
+        fillSelect(key+"D", employees.map(e => e.designation), "All");
+        fillSelect(key+"R", employees.map(e => e.role), "All");
+        fillSelect(key+"B", employees.map(e => e.branchName || "No Branch"), "All");
+        filterDirectory(key);
+    }catch(e){
+        $(key+"Body").innerHTML = `<tr><td colspan="6" class="empty">Unable to load employees. ${esc(e.message)}</td></tr>`;
+        notify(e.message || "Unable to load employees.", "error");
     }
+}
+function filterDirectory(key){
+    const d = dirs[key], p = key;
+    const q = $(p+"Q").value.trim().toLowerCase(), t = $(p+"T").value, de = $(p+"D").value, ro = $(p+"R").value, br = $(p+"B").value;
+    d.filtered = employees.filter(e =>
+        (!q || String(e.employeeCode||"").toLowerCase().includes(q) || String(e.name||"").toLowerCase().includes(q)) &&
+        (!t || empType(e) === t) && (!de || String(e.designation||"").trim() === de) &&
+        (!ro || String(e.role||"").trim() === ro) && (!br || String(e.branchName || "No Branch").trim() === br));
+    renderDirectory(key);
+}
+function renderDirectory(key){
+    const d = dirs[key], p = key, total = d.filtered.length, pages = Math.max(1, Math.ceil(total / d.size));
+    d.page = Math.min(d.page, pages);
+    const start = (d.page - 1) * d.size, rows = d.filtered.slice(start, start + d.size);
+    $(p+"Body").innerHTML = rows.length ? rows.map((e,i) => {
+        const type = empType(e);
+        return `<tr>
+          <td class="strong nowrap" style="color:var(--g)">${esc(e.employeeCode || "—")}</td>
+          <td><div class="person"><div class="avatar">${esc(initials(e.name))}</div><div><div class="strong">${esc(e.name || "Unnamed")}</div><div class="sub">${esc(e.designation || "—")}</div></div></div></td>
+          <td>${esc(e.role || "—")}</td><td>${esc(e.branchName || "No Branch")}</td>
+          <td><span class="badge ${TYPE_BADGE[type]}">${type}</span></td>
+          <td style="text-align:right"><button class="btn btn-ghost btn-sm" onclick="dirs['${p}'].onOpen(${e.id})">${d.action}</button></td></tr>`;
+    }).join("") : `<tr><td colspan="6" class="empty">No employees match the filters.</td></tr>`;
+    $(p+"Info").textContent = total ? `Showing ${start+1}–${start+rows.length} of ${total}` : "0 employees";
+    $(p+"Pg").innerHTML = pages > 1 ? `<button class="btn btn-ghost btn-sm" ${d.page<=1?"disabled":""} onclick="dirPage('${p}',-1)">Previous</button><span style="align-self:center">Page ${d.page} / ${pages}</span><button class="btn btn-ghost btn-sm" ${d.page>=pages?"disabled":""} onclick="dirPage('${p}',1)">Next</button>` : "";
+}
+function dirPage(key, step){ dirs[key].page += step; renderDirectory(key); }
+const empById = id => employees.find(e => String(e.id) === String(id));
 
-    function loadAdminInfo() {
-
-        const adminEmail =
-            localStorage.getItem(
-                "adminEmail"
-            );
-
-        const adminName =
-            localStorage.getItem(
-                "adminName"
-            );
-
-
-        if (adminName) {
-
-            const adminNameElement =
-                document.getElementById(
-                    "loggedAdminName"
-                );
-
-            if (adminNameElement) {
-
-                adminNameElement.textContent =
-                    "Welcome, " + adminName;
-
-            }
-
-        }
-
-
-        if (adminEmail) {
-
-            const emailField =
-                document.getElementById(
-                    "verifyAdminEmail"
-                );
-
-            if (emailField) {
-
-                emailField.value =
-                    adminEmail;
-
-            }
-
-        }
-
+/* ---------- tabs ---------- */
+const loaded = {};
+function showTab(name){
+    document.querySelectorAll(".tab").forEach(t => t.classList.toggle("active", t.dataset.tab === name));
+    document.querySelectorAll(".panel").forEach(p => p.classList.toggle("active", p.id === "panel-" + name));
+    try{ history.replaceState(null, "", "#" + name); }catch{}
+    if(!loaded[name]){
+        loaded[name] = true;
+        if(name === "attendance") startDirectory("dirA");
+        if(name === "history") startDirectory("dirL");
+        if(name === "settings") { loadEmployees().catch(() => {}).finally(loadSettings); }
     }
-
-    async function getErrorMessage(
-        response
-    ) {
-
-        try {
-
-            const text =
-                await response.text();
-
-
-            if (!text) {
-
-                return (
-                    "Request failed. HTTP " +
-                    response.status
-                );
-
-            }
-
-
-            try {
-
-                const json =
-                    JSON.parse(
-                        text
-                    );
-
-
-                return (
-                    json.message ||
-                    json.error ||
-                    text
-                );
-
-            }
-            catch {
-
-                return text;
-
-            }
-
-        }
-        catch {
-
-            return (
-                "Request failed. HTTP " +
-                response.status
-            );
-
-        }
-
-    }
-
-    function showMessage(
-        elementId,
-        message,
-        type
-    ) {
-
-        const element =
-            document.getElementById(
-                elementId
-            );
-
-
-        if (!element) {
-            return;
-        }
-
-
-        element.textContent =
-            message;
-
-
-        element.className =
-            "message show " +
-            (
-                type === "success"
-                    ? "success"
-                    : "error"
-            );
-
-
-        setTimeout(
-            function() {
-
-                element.classList.remove(
-                    "show"
-                );
-
-            },
-            5000
-        );
-
-    }
-
-    function formatNumber(
-        value
-    ) {
-
-        if (
-            value === null ||
-            value === undefined ||
-            value === ""
-        ) {
-
-            return "0.00";
-
-        }
-
-
-        const number =
-            Number(value);
-
-
-        if (
-            Number.isNaN(number)
-        ) {
-
-            return "0.00";
-
-        }
-
-
-        return number.toLocaleString(
-            "en-IN",
-            {
-                minimumFractionDigits:
-                    2,
-
-                maximumFractionDigits:
-                    2
-
-            }
-        );
-
-    }
-
-    function formatDate(
-        value
-    ) {
-
-        if (!value) {
-            return "-";
-        }
-
-
-        const date =
-            new Date(value);
-
-
-        if (
-            Number.isNaN(
-                date.getTime()
-            )
-        ) {
-
-            return escapeHtml(
-                String(value)
-            );
-
-        }
-
-
-        const day =
-            String(
-                date.getDate()
-            ).padStart(
-                2,
-                "0"
-            );
-
-
-        const month =
-            String(
-                date.getMonth() + 1
-            ).padStart(
-                2,
-                "0"
-            );
-
-
-        const year =
-            date.getFullYear();
-
-
-        return (
-            day +
-            "-" +
-            month +
-            "-" +
-            year
-        );
-
-    }
-
-    function escapeHtml(
-        value
-    ) {
-
-        if (
-            value === null ||
-            value === undefined
-        ) {
-
-            return "";
-
-        }
-
-
-        return String(value)
-            .replaceAll(
-                "&",
-                "&amp;"
-            )
-            .replaceAll(
-                "<",
-                "&lt;"
-            )
-            .replaceAll(
-                ">",
-                "&gt;"
-            )
-            .replaceAll(
-                '"',
-                "&quot;"
-            )
-            .replaceAll(
-                "'",
-                "&#039;"
-            );
-
-    }
-
-    function escapeJs(
-        value
-    ) {
-
-        if (
-            value === null ||
-            value === undefined
-        ) {
-
-            return "";
-
-        }
-
-
-        return String(value)
-            .replaceAll(
-                "\\",
-                "\\\\"
-            )
-            .replaceAll(
-                "'",
-                "\\'"
-            )
-            .replaceAll(
-                "\n",
-                "\\n"
-            )
-            .replaceAll(
-                "\r",
-                "\\r"
-            );
-
-    }
-
-    function logout() {
-
-        const confirmed =
-            confirm(
-                "Are you sure you want to logout?"
-            );
-
-
-        if (!confirmed) {
-            return;
-        }
-
-
-        localStorage.removeItem(
-            "adminEmail"
-        );
-
-
-        localStorage.removeItem(
-            "adminName"
-        );
-
-
-        window.location.href =
-            "admin-login.html";
-
-    }
-
-    let pendingAction = null;
-
-    let pendingLeaveData = null;
-
-    let pendingActionReasonRequired = true;
-
-    function openActionReasonModal(
-        action,
-        required = true
-    ) {
-
-        pendingAction =
-            action;
-
-        pendingActionReasonRequired =
-            required;
-
-
-        const title =
-            document.getElementById(
-                "actionReasonTitle"
-            );
-
-
-        const requiredMark =
-            document.getElementById(
-                "actionReasonRequired"
-            );
-
-
-        const textarea =
-            document.getElementById(
-                "actionReason"
-            );
-
-
-        textarea.value =
-            "";
-
-
-        if (action ===
-            "LEAVE_APPROVE") {
-
-            title.textContent =
-                "Approve Leave";
-
-            textarea.placeholder =
-                "Reason is optional for approval.";
-
-        }
-        else if (action ===
-            "LEAVE_REJECT") {
-
-            title.textContent =
-                "Reject Leave";
-
-            textarea.placeholder =
-                "Enter the reason for rejecting this leave...";
-
-        }
-        else {
-
-            title.textContent =
-                "Confirm Action";
-
-        }
-
-
-        requiredMark.style.display =
-            required
-                ? "inline"
-                : "none";
-
-
-        document.getElementById(
-            "actionReasonModal"
-        ).classList.add(
-            "show"
-        );
-
-
-        setTimeout(
-            function() {
-
-                textarea.focus();
-
-            },
-            100
-        );
-
-    }
-
-    function closeActionReasonModal(
-        clearPending = true
-    ) {
-
-        document.getElementById(
-            "actionReasonModal"
-        ).classList.remove(
-            "show"
-        );
-
-
-        document.getElementById(
-            "actionReason"
-        ).value =
-            "";
-
-
-        if (clearPending) {
-
-
-
-
-
-
-
-            if (
-                pendingAction ===
-                "LEAVE_APPROVE" ||
-                pendingAction ===
-                "LEAVE_REJECT"
-            ) {
-
-                pendingLeaveData =
-                    null;
-
-            }
-
-
-            pendingAction =
-                null;
-
-        }
-
-    }
-
-    async function confirmActionReason() {
-
-        const reason =
-            document.getElementById(
-                "actionReason"
-            ).value.trim();
-
-
-        if (
-            pendingActionReasonRequired &&
-            !reason
-        ) {
-
-            alert(
-                "Please enter a reason."
-            );
-
-            return;
-
-        }
-
-
-        if (
-            reason &&
-            reason.length < 3
-        ) {
-
-            alert(
-                "Reason must contain at least 3 characters."
-            );
-
-            return;
-
-        }
-
-
-        const adminEmail =
-            localStorage.getItem(
-                "adminEmail"
-            );
-
-
-        if (!adminEmail) {
-
-            alert(
-                "Admin login information not found. Please login again."
-            );
-
-            logout();
-
-            return;
-
-        }
-
-
-        try {
-
-
-
-
-
-
-
-            if (
-                pendingAction ===
-                "LEAVE_APPROVE" ||
-                pendingAction ===
-                "LEAVE_REJECT"
-            ) {
-
-                await processLeaveAction(
-                    adminEmail,
-                    reason
-                );
-
-                return;
-
-            }
-
-        }
-        catch (error) {
-
-            console.error(
-                "Admin action error:",
-                error
-            );
-
-
-            showMessage(
-                "leaveMessage",
-                error.message || "Unable to process leave.",
-                "error"
-            );
-
-        }
-
-    }
-
-    async function loadLeaves() {
-
-        try {
-
-            const response =
-                await apiFetch(
-                    "/admin/leaves"
-                );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    await getErrorMessage(
-                        response
-                    )
-                );
-
-            }
-
-
-            const leaves =
-                await response.json();
-
-
-            renderLeaves(
-                leaves
-            );
-
-
-
-
-        }
-        catch (error) {
-
-            console.error(
-                "Load leaves error:",
-                error
-            );
-
-
-            showMessage(
-                "leaveMessage",
-                error.message,
-                "error"
-            );
-
-        }
-
-    }
-
-    let leaveGroupsCache = {};
-
-    function leaveStatusOf(row) {
-        const s = String(row.status || "").toUpperCase();
-        if (s === "PENDING") { return "PENDING"; }
-        if (s === "APPROVED") { return "APPROVED"; }
-        return "REJECTED";   /* REJECTED / CANCELLED */
-    }
-
-    function leaveTypeLabel(row) {
-        let label = String(row.leaveType || "-").toUpperCase();
-        if (row.halfDaySession) {
-            const session = String(row.halfDaySession);
-            label += " (Half - " + session.charAt(0) + session.slice(1).toLowerCase() + ")";
-        }
-        return label;
-    }
-
-    function buildLeaveGroups(leaves) {
-
-        const map = {};
-        const order = [];
-
-        leaves.forEach(function(leave) {
-
-            const key = leave.requestGroupId
-                ? String(leave.requestGroupId)
-                : "row-" + leave.id;
-
-            if (!map[key]) {
-                map[key] = {
-                    key: key,
-                    hasGroupId: !!leave.requestGroupId,
-                    rows: []
-                };
-                order.push(key);
-            }
-
-            map[key].rows.push(leave);
+}
+
+/* =====================================================
+   LEAVE REQUESTS
+   ===================================================== */
+let leaveGroups = [], reqFilter = "PENDING", currentReview = null;
+
+function leaveStatusOf(r){
+    const s = up(r.status);
+    return s === "PENDING" ? "PENDING" : s === "APPROVED" ? "APPROVED" : s === "CANCELLED" ? "CANCELLED" : "REJECTED";
+}
+function typeLabel(r){
+    let l = up(r.leaveType || "-");
+    if(r.halfDaySession){ const s = String(r.halfDaySession); l += " (Half - " + s.charAt(0) + s.slice(1).toLowerCase() + ")"; }
+    return l;
+}
+function buildGroups(leaves){
+    const map = {}, order = [];
+    leaves.forEach(l => {
+        const key = l.requestGroupId ? String(l.requestGroupId) : "row-" + l.id;
+        if(!map[key]){ map[key] = { key, hasGroupId: !!l.requestGroupId, rows: [] }; order.push(key); }
+        map[key].rows.push(l);
+    });
+    return order.map(key => {
+        const g = map[key], first = g.rows[0], byDate = {};
+        g.rows.forEach(r => { const d = nd(r.leaveDate); (byDate[d] = byDate[d] || { date:d, rows:[] }).rows.push(r); });
+        g.days = Object.keys(byDate).sort().map(d => {
+            const day = byDate[d], st = day.rows.map(leaveStatusOf);
+            day.status = st.includes("PENDING") ? "PENDING" : st.includes("APPROVED") ? "APPROVED" : st.every(s => s === "CANCELLED") ? "CANCELLED" : "REJECTED";
+            day.duration = day.rows.reduce((s,r) => s + Number(r.leaveDuration || 0), 0);
+            day.lop = day.rows.reduce((s,r) => s + Number(r.lopDays || 0), 0);
+            day.typeText = day.rows.map(typeLabel).join(" + ");
+            return day;
         });
-
-        return order.map(function(key) {
-
-            const group = map[key];
-            const first = group.rows[0];
-
-            const byDate = {};
-
-            group.rows.forEach(function(row) {
-
-                const date = row.leaveDate;
-
-                if (!byDate[date]) {
-                    byDate[date] = { date: date, rows: [] };
-                }
-
-                byDate[date].rows.push(row);
-            });
-
-            group.days = Object.keys(byDate).sort().map(function(date) {
-
-                const day = byDate[date];
-
-                const statuses = day.rows.map(leaveStatusOf);
-
-                day.status =
-                    statuses.indexOf("PENDING") >= 0 ? "PENDING"
-                        : statuses.indexOf("APPROVED") >= 0 ? "APPROVED"
-                            : "REJECTED";
-
-                day.duration = day.rows.reduce(function(sum, row) {
-                    return sum + Number(row.leaveDuration || 0);
-                }, 0);
-
-                day.lop = day.rows.reduce(function(sum, row) {
-                    return sum + Number(row.lopDays || 0);
-                }, 0);
-
-                day.typeText = day.rows.map(leaveTypeLabel).join(" + ");
-
-                return day;
-            });
-
-            group.employeeName = first.employeeName || first.name || "-";
-            group.employeeId = first.employeeId;
-            group.isPermission =
-                String(first.leaveType || "").toUpperCase() === "PERMISSION";
-            group.firstDate = group.days[0].date;
-            group.lastDate = group.days[group.days.length - 1].date;
-
-            group.totalDuration = group.days.reduce(function(s, d) { return s + d.duration; }, 0);
-            group.totalLop = group.days.reduce(function(s, d) { return s + d.lop; }, 0);
-
-            const types = [];
-            group.rows.forEach(function(row) {
-                const t = String(row.leaveType || "-").toUpperCase();
-                if (types.indexOf(t) < 0) { types.push(t); }
-            });
-            group.typeText = types.join(", ");
-
-            group.pendingCount = group.days.filter(function(d) { return d.status === "PENDING"; }).length;
-            group.approvedCount = group.days.filter(function(d) { return d.status === "APPROVED"; }).length;
-            group.rejectedCount = group.days.filter(function(d) { return d.status === "REJECTED"; }).length;
-
-            group.status =
-                group.pendingCount > 0 ? "PENDING"
-                    : (group.approvedCount > 0 && group.rejectedCount > 0) ? "PARTIAL"
-                        : group.approvedCount > 0 ? "APPROVED"
-                            : "REJECTED";
-
-            group.reason = first.reason || "";
-
-            const decisionReasons = [];
-            group.rows.forEach(function(row) {
-                if (row.decisionReason && decisionReasons.indexOf(row.decisionReason) < 0) {
-                    decisionReasons.push(row.decisionReason);
-                }
-            });
-            group.decisionReason = decisionReasons.join(" | ");
-
-            return group;
-        });
+        g.employeeName = first.employeeName || first.name || "-";
+        g.isPermission = up(first.leaveType) === "PERMISSION";
+        g.firstDate = g.days[0].date; g.lastDate = g.days[g.days.length-1].date;
+        g.totalDuration = g.days.reduce((s,d) => s + d.duration, 0);
+        g.totalLop = g.days.reduce((s,d) => s + d.lop, 0);
+        const types = []; g.rows.forEach(r => { const t = up(r.leaveType || "-"); if(!types.includes(t)) types.push(t); });
+        g.typeText = types.join(", ");
+        const pend = g.days.filter(d => d.status === "PENDING").length, appr = g.days.filter(d => d.status === "APPROVED").length;
+        const canc = g.days.filter(d => d.status === "CANCELLED").length, rej = g.days.length - pend - appr;
+        g.pendingCount = pend; g.approvedCount = appr; g.rejectedCount = rej;
+        g.status = pend ? "PENDING" : (appr && rej) ? "PARTIAL" : appr ? "APPROVED" : (canc === g.days.length ? "CANCELLED" : "REJECTED");
+        g.reason = first.reason || "";
+        const dr = []; g.rows.forEach(r => { if(r.decisionReason && !dr.includes(r.decisionReason)) dr.push(r.decisionReason); });
+        g.decisionReason = dr.join(" | ");
+        return g;
+    });
+}
+function groupDateHtml(g){
+    if(g.firstDate === g.lastDate){
+        let t = fmtDate(g.firstDate);
+        if(g.isPermission && g.rows[0].permissionStart) t += `<div class="sub">${esc(fmtHM(g.rows[0].permissionStart))} – ${esc(fmtHM(g.rows[0].permissionEnd))}</div>`;
+        return t;
     }
+    return `${fmtDate(g.firstDate)} to ${fmtDate(g.lastDate)}<div class="sub">${g.days.length} days</div>`;
+}
+function statusBadge(s){
+    const m = { PENDING:["b-amber","PENDING"], APPROVED:["b-green","APPROVED"], PARTIAL:["b-teal","PARTLY APPROVED"], REJECTED:["b-red","REJECTED"], CANCELLED:["b-grey","CANCELLED"] };
+    const x = m[s] || ["b-grey", s || "—"]; return `<span class="badge ${x[0]}">${x[1]}</span>`;
+}
+function groupBucket(g){ return g.status === "PENDING" ? "PENDING" : (g.status === "APPROVED" || g.status === "PARTIAL") ? "APPROVED" : "REJECTED"; }
 
-    function leaveGroupDateText(group) {
-
-        if (group.firstDate === group.lastDate) {
-
-            let text = formatDate(group.firstDate);
-
-            if (group.isPermission && group.rows[0].permissionStart) {
-                text += "<div style='font-size:12px;color:#6b7280;'>" +
-                    escapeHtml(String(group.rows[0].permissionStart).substring(0, 5)) +
-                    " - " +
-                    escapeHtml(String(group.rows[0].permissionEnd || "").substring(0, 5)) +
-                    "</div>";
-            }
-
-            return text;
-        }
-
-        return formatDate(group.firstDate) + " to " + formatDate(group.lastDate) +
-            "<div style='font-size:12px;color:#6b7280;'>(" +
-            group.days.length + " days)</div>";
+async function loadLeaves(showDone){
+    try{
+        const r = await apiFetch("/admin/leaves");
+        if(!r.ok) throw new Error(await errMsg(r));
+        leaveGroups = buildGroups(list(await r.json()));
+        leaveGroups.sort((a,b) => b.firstDate.localeCompare(a.firstDate));
+        renderLeaves();
+        if(showDone === true) notify("Leave list refreshed.");
+    }catch(e){
+        $("reqBody").innerHTML = `<tr><td colspan="8" class="empty">Unable to load leave requests.</td></tr>`;
+        notify(e.message || "Unable to load leave requests.", "error");
     }
+}
+function renderLeaves(){
+    const q = $("reqSearch").value.trim().toLowerCase();
+    const c = { PENDING:0, APPROVED:0, REJECTED:0 };
+    leaveGroups.forEach(g => c[groupBucket(g)]++);
+    $("cPending").textContent = c.PENDING; $("cApproved").textContent = c.APPROVED;
+    $("cRejected").textContent = c.REJECTED; $("cAll").textContent = leaveGroups.length;
+    $("pendingPill").textContent = c.PENDING || "";
 
-    function renderLeaveGroupRow(group) {
+    let rows = leaveGroups.filter(g => (reqFilter === "ALL" || groupBucket(g) === reqFilter) && (!q || g.employeeName.toLowerCase().includes(q)));
+    if(reqFilter === "PENDING") rows = rows.slice().sort((a,b) => a.firstDate.localeCompare(b.firstDate));
 
-        let badgeClass = "badge-gray";
-        let statusText = group.status;
-
-        if (group.status === "APPROVED") { badgeClass = "badge-green"; }
-        else if (group.status === "PENDING") { badgeClass = "badge-orange"; }
-        else if (group.status === "REJECTED") { badgeClass = "badge-red"; }
-        else if (group.status === "PARTIAL") { badgeClass = "badge-blue"; statusText = "PARTIALLY APPROVED"; }
-
-        let statusExtra = "";
-
-        if (group.status === "PARTIAL" || group.status === "REJECTED") {
-
-            const rejectedDates = group.days
-                .filter(function(d) { return d.status === "REJECTED"; })
-                .map(function(d) { return formatDate(d.date); });
-
-            if (rejectedDates.length > 0) {
-                statusExtra = "<div style='font-size:12px;color:#b91c1c;margin-top:4px;'>Rejected: " +
-                    escapeHtml(rejectedDates.join(", ")) + "</div>";
-            }
+    $("reqBody").innerHTML = rows.length ? rows.map(g => {
+        let extra = "";
+        if(g.status === "PARTIAL") extra = `<div class="sub" style="color:var(--g)">${g.approvedCount} day(s) approved</div>`;
+        if(g.status === "PARTIAL" || g.status === "REJECTED" || g.status === "CANCELLED"){
+            const rd = g.days.filter(d => d.status === "REJECTED" || d.status === "CANCELLED").map(d => fmtDate(d.date));
+            if(rd.length) extra += `<div class="sub" style="color:#B91C1C">${g.status === "CANCELLED" ? "Cancelled" : "Rejected"}: ${esc(rd.join(", "))}</div>`;
         }
-
-        if (group.status === "PARTIAL") {
-            statusExtra = "<div style='font-size:12px;color:#15803d;margin-top:4px;'>Approved: " +
-                group.approvedCount + " day(s)</div>" + statusExtra;
-        }
-
-        const reasonExtra = group.decisionReason
-            ? "<div style='font-size:12px;color:#6b7280;margin-top:4px;'>Admin: " +
-            escapeHtml(group.decisionReason) + "</div>"
-            : "";
-
-        const lopHtml = group.totalLop > 0
-            ? "<span class='badge badge-red'>" + formatNumber(group.totalLop) + "</span>"
-            : "0.00";
-
-        const actionHtml = group.status === "PENDING"
-            ? "<button class='btn btn-primary btn-small' onclick=\"openLeaveReview('" +
-            escapeJs(group.key) + "')\">Review</button>"
-            : "-";
-
-        return `
-            <tr>
-                <td>${escapeHtml(group.employeeName)}</td>
-                <td>${escapeHtml(group.typeText || "-")}</td>
-                <td>${leaveGroupDateText(group)}</td>
-                <td>${formatNumber(group.totalDuration)}</td>
-                <td>${lopHtml}</td>
-                <td>${escapeHtml(group.reason || "-")}${reasonExtra}</td>
-                <td><span class="badge ${badgeClass}">${escapeHtml(statusText)}</span>${statusExtra}</td>
-                <td>${actionHtml}</td>
-            </tr>
-        `;
-    }
-
-    function renderLeaves(leaves) {
-
-        const tbody = document.getElementById("leaveTableBody");
-
-        if (!tbody) {
-            return;
-        }
-
-        if (!leaves || leaves.length === 0) {
-
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="8" class="empty-row">
-                        No leave requests found.
-                    </td>
-                </tr>
-            `;
-
-            return;
-        }
-
-        const groups = buildLeaveGroups(leaves);
-
-        leaveGroupsCache = {};
-
-        groups.forEach(function(group) {
-            leaveGroupsCache[group.key] = group;
-        });
-
-        const pendingGroups = groups.filter(function(g) { return g.status === "PENDING"; });
-
-        const approvedGroups = groups.filter(function(g) {
-            return g.status === "APPROVED" || g.status === "PARTIAL";
-        });
-
-        const rejectedGroups = groups.filter(function(g) { return g.status === "REJECTED"; });
-
-        let html = "";
-
-        if (pendingGroups.length > 0) {
-
-            html += `
-                <tr>
-                    <td colspan="8" style="background:#fff7ed;font-weight:600;color:#c2410c;">
-                        <span style="display:inline-flex;align-items:center;gap:7px;">
-                            <i data-lucide="clock-3" style="width:18px;height:18px;"></i>
-                            <span>Pending Leave Requests</span>
-                        </span>
-                    </td>
-                </tr>
-            `;
-
-            pendingGroups.forEach(function(group) {
-                html += renderLeaveGroupRow(group);
-            });
-        }
-
-        if (approvedGroups.length > 0) {
-
-            html += `
-                <tr>
-                    <td colspan="8" style="background:#f0fdf4;padding:12px;">
-                        <button type="button" class="btn btn-success btn-small"
-                                onclick="toggleLeaveHistory('approved')">
-                            <i data-lucide="circle-check" style="width:16px;height:16px;vertical-align:middle;"></i>
-                            Approved (${approvedGroups.length})
-                        </button>
-                    </td>
-                </tr>
-                <tr id="approvedLeaveRows" style="display:none;">
-                    <td colspan="8" style="padding:0;">
-                        <table style="width:100%;">
-                            <tbody>
-                                ${approvedGroups.map(renderLeaveGroupRow).join("")}
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-            `;
-        }
-
-        if (rejectedGroups.length > 0) {
-
-            html += `
-                <tr>
-                    <td colspan="8" style="background:#fef2f2;padding:12px;">
-                        <button type="button" class="btn btn-danger btn-small"
-                                onclick="toggleLeaveHistory('rejected')">
-                            <i data-lucide="circle-x" style="width:16px;height:16px;vertical-align:middle;"></i>
-                            Rejected (${rejectedGroups.length})
-                        </button>
-                    </td>
-                </tr>
-                <tr id="rejectedLeaveRows" style="display:none;">
-                    <td colspan="8" style="padding:0;">
-                        <table style="width:100%;">
-                            <tbody>
-                                ${rejectedGroups.map(renderLeaveGroupRow).join("")}
-                            </tbody>
-                        </table>
-                    </td>
-                </tr>
-            `;
-        }
-
-        if (html === "") {
-
-            html = `
-                <tr>
-                    <td colspan="8" class="empty-row">
-                        No leave requests found.
-                    </td>
-                </tr>
-            `;
-        }
-
-        tbody.innerHTML = html;
-
-        if (typeof lucide !== "undefined") {
-            lucide.createIcons();
-        }
-    }
-
-    let currentLeaveReview = null;
-
-    function openLeaveReview(key) {
-
-        const group = leaveGroupsCache[key];
-
-        if (!group) {
-            return;
-        }
-
-        currentLeaveReview = group;
-
-        document.getElementById("leaveReviewTitle").textContent =
-            "Review Leave - " + group.employeeName;
-
-        document.getElementById("leaveReviewInfo").innerHTML =
-            "<strong>" + escapeHtml(group.typeText) + "</strong> &nbsp; " +
-            leaveGroupDateText(group).replace(/<div[^>]*>/g, " ").replace(/<\/div>/g, "") +
-            "<br>Employee reason: " + escapeHtml(group.reason || "-");
-
-        document.getElementById("leaveReviewReason").value = "";
-
-        document.getElementById("leaveReviewBody").innerHTML =
-            group.days.map(function(day, index) {
-
-                let decisionHtml;
-
-                if (day.status === "PENDING") {
-
-                    decisionHtml =
-                        "<label style='margin-right:14px;cursor:pointer;'>" +
-                        "<input type='radio' name='leaveDecision_" + index + "' value='APPROVE' checked " +
-                        "onchange='updateLeaveReviewReasonMark()'> Approve</label>" +
-                        "<label style='cursor:pointer;'>" +
-                        "<input type='radio' name='leaveDecision_" + index + "' value='REJECT' " +
-                        "onchange='updateLeaveReviewReasonMark()'> Reject</label>";
-
-                } else {
-
-                    decisionHtml = "<span class='badge " +
-                        (day.status === "APPROVED" ? "badge-green" : "badge-red") + "'>" +
-                        day.status + "</span>";
-                }
-
-                return "<tr>" +
-                    "<td>" + escapeHtml(formatDate(day.date)) + "</td>" +
-                    "<td>" + escapeHtml(day.typeText) + "</td>" +
-                    "<td>" + formatNumber(day.duration) + "</td>" +
-                    "<td>" + formatNumber(day.lop) + "</td>" +
-                    "<td>" + decisionHtml + "</td>" +
-                    "</tr>";
-
-            }).join("");
-
-        updateLeaveReviewReasonMark();
-
-        document.getElementById("leaveReviewModal").classList.add("show");
-    }
-
-    function closeLeaveReview() {
-
-        document.getElementById("leaveReviewModal").classList.remove("show");
-
-        currentLeaveReview = null;
-    }
-
-    function setAllLeaveDecision(value) {
-
-        const radios = document.querySelectorAll(
-            "#leaveReviewBody input[type='radio'][value='" + value + "']"
-        );
-
-        radios.forEach(function(radio) {
-            radio.checked = true;
-        });
-
-        updateLeaveReviewReasonMark();
-    }
-
-    function updateLeaveReviewReasonMark() {
-
-        const rejected = document.querySelectorAll(
-            "#leaveReviewBody input[type='radio'][value='REJECT']:checked"
-        ).length;
-
-        document.getElementById("leaveReviewReasonMark").style.display =
-            rejected > 0 ? "inline" : "none";
-    }
-
-    async function submitLeaveReview() {
-
-        const group = currentLeaveReview;
-
-        if (!group) {
-            return;
-        }
-
-        const adminEmail = localStorage.getItem("adminEmail");
-
-        if (!adminEmail) {
-            alert("Admin login information not found. Please login again.");
-            logout();
-            return;
-        }
-
-        const approvedDates = [];
-        const rejectedDates = [];
-
-        group.days.forEach(function(day, index) {
-
-            if (day.status !== "PENDING") {
-                return;
-            }
-
-            const selected = document.querySelector(
-                "input[name='leaveDecision_" + index + "']:checked"
-            );
-
-            if (selected && selected.value === "REJECT") {
-                rejectedDates.push(day.date);
-            } else {
-                approvedDates.push(day.date);
-            }
-        });
-
-        const reason =
-            document.getElementById("leaveReviewReason").value.trim();
-
-        if (rejectedDates.length > 0 && reason.length < 3) {
-            alert("Please enter a reason (minimum 3 characters) for the rejected date(s).");
-            return;
-        }
-
-        if (reason && reason.length < 3) {
-            alert("Reason must contain at least 3 characters.");
-            return;
-        }
-
-        const button = document.getElementById("leaveReviewSubmit");
-
-        button.disabled = true;
-
-        try {
-
-            if (group.hasGroupId) {
-
-                const response = await apiFetch(
-                    "/admin/leaves/review/group/" + encodeURIComponent(group.key),
-                    {
-                        method: "PUT",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            adminEmail: adminEmail,
-                            approvedDates: approvedDates,
-                            rejectedDates: rejectedDates,
-                            reason: reason
-                        })
-                    }
-                );
-
-                if (!response.ok) {
-                    throw new Error(await getErrorMessage(response));
-                }
-
-            } else {
-
-                /* old rows created before request_group_id existed */
-                for (const day of group.days) {
-
-                    if (day.status !== "PENDING") {
-                        continue;
-                    }
-
-                    const status =
-                        rejectedDates.indexOf(day.date) >= 0
-                            ? "REJECTED" : "APPROVED";
-
-                    for (const row of day.rows) {
-
-                        if (leaveStatusOf(row) !== "PENDING") {
-                            continue;
-                        }
-
-                        const response = await apiFetch(
-                            "/admin/leaves/review/row/" + row.id,
-                            {
-                                method: "PUT",
-                                headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify({
-                                    adminEmail: adminEmail,
-                                    status: status,
-                                    reason: reason
-                                })
-                            }
-                        );
-
-                        if (!response.ok) {
-                            throw new Error(await getErrorMessage(response));
-                        }
-                    }
+        return `<tr>
+          <td><div class="person"><div class="avatar">${esc(initials(g.employeeName))}</div><span class="strong">${esc(g.employeeName)}</span></div></td>
+          <td>${esc(g.typeText || "-")}</td><td class="nowrap">${groupDateHtml(g)}</td>
+          <td>${num(g.totalDuration)}</td>
+          <td>${g.totalLop > 0 ? `<span class="badge b-red">${num(g.totalLop)}</span>` : "0"}</td>
+          <td class="wrap-cell">${esc(g.reason || "-")}${g.decisionReason ? `<div class="sub">Admin: ${esc(g.decisionReason)}</div>` : ""}</td>
+          <td>${statusBadge(g.status)}${extra}</td>
+          <td>${g.status === "PENDING" ? `<button class="btn btn-primary btn-sm" onclick="openReview('${escJs(g.key)}')">Review</button>` : "—"}</td></tr>`;
+    }).join("") : `<tr><td colspan="8" class="empty">${reqFilter === "PENDING" ? "No pending leave requests." : "No leave requests found."}</td></tr>`;
+}
+function openReview(key){
+    const g = leaveGroups.find(x => x.key === key); if(!g) return;
+    currentReview = g;
+    $("reviewTitle").textContent = "Review Leave - " + g.employeeName;
+    $("reviewInfo").innerHTML = `${esc(g.typeText)} · ${groupDateHtml(g).replace(/<div[^>]*>/g," · ").replace(/<\/div>/g,"")} · Employee reason: ${esc(g.reason || "-")}`;
+    $("reviewReason").value = "";
+    $("reviewBody").innerHTML = g.days.map((day,i) => {
+        const dec = day.status === "PENDING"
+            ? `<div class="radio-row"><label><input type="radio" name="dec_${i}" value="APPROVE" checked onchange="updateReviewMark()"> Approve</label><label><input type="radio" name="dec_${i}" value="REJECT" onchange="updateReviewMark()"> Reject</label></div>`
+            : statusBadge(day.status);
+        return `<tr><td>${esc(fmtDate(day.date))}</td><td>${esc(day.typeText)}</td><td>${num(day.duration)}</td><td>${num(day.lop)}</td><td>${dec}</td></tr>`;
+    }).join("");
+    updateReviewMark(); openModal("reviewModal");
+}
+function setAllDecision(v){ document.querySelectorAll(`#reviewBody input[value='${v}']`).forEach(r => r.checked = true); updateReviewMark(); }
+function updateReviewMark(){ $("reviewReq").classList.toggle("hide", !document.querySelectorAll("#reviewBody input[value='REJECT']:checked").length); }
+async function submitReview(){
+    const g = currentReview; if(!g) return;
+    const adminEmail = adminEmailOrLogout(); if(!adminEmail) return;
+    const approved = [], rejected = [];
+    g.days.forEach((day,i) => {
+        if(day.status !== "PENDING") return;
+        const sel = document.querySelector(`input[name='dec_${i}']:checked`);
+        (sel && sel.value === "REJECT" ? rejected : approved).push(day.date);
+    });
+    const reason = $("reviewReason").value.trim();
+    if(rejected.length && reason.length < 3){ alert("Please enter a reason (minimum 3 characters) for the rejected date(s)."); return; }
+    if(reason && reason.length < 3){ alert("Reason must contain at least 3 characters."); return; }
+    const btn = $("reviewSave"); btn.disabled = true;
+    try{
+        if(g.hasGroupId){
+            const r = await apiFetch("/admin/leaves/review/group/" + encodeURIComponent(g.key), {
+                method:"PUT", headers:{"Content-Type":"application/json"},
+                body: JSON.stringify({ adminEmail, approvedDates: approved, rejectedDates: rejected, reason }) });
+            if(!r.ok) throw new Error(await errMsg(r));
+        }else{
+            for(const day of g.days){
+                if(day.status !== "PENDING") continue;
+                const status = rejected.includes(day.date) ? "REJECTED" : "APPROVED";
+                for(const row of day.rows){
+                    if(leaveStatusOf(row) !== "PENDING") continue;
+                    const r = await apiFetch("/admin/leaves/review/row/" + row.id, {
+                        method:"PUT", headers:{"Content-Type":"application/json"},
+                        body: JSON.stringify({ adminEmail, status, reason }) });
+                    if(!r.ok) throw new Error(await errMsg(r));
                 }
             }
-
-            closeLeaveReview();
-
-            await loadLeaves();
-
-            showMessage("leaveMessage", "Leave decision saved successfully.", "success");
-
-            try {
-
-            } catch (ignore) { }
-
-        } catch (error) {
-
-            console.error("Leave review error:", error);
-
-            alert(error.message || "Unable to save leave decision.");
-
-        } finally {
-
-            button.disabled = false;
         }
+        closeModal("reviewModal"); currentReview = null;
+        await loadLeaves(); allLeaves = null;
+        notify("Leave decision saved.");
+    }catch(e){ alert(e.message || "Unable to save leave decision."); }
+    finally{ btn.disabled = false; }
+}
+
+/* =====================================================
+   ATTENDANCE HISTORY
+   ===================================================== */
+let attEmp = null, attReq = 0;
+function openAttendance(id){
+    attEmp = empById(id); if(!attEmp) return;
+    $("attTitle").textContent = attEmp.name || "Employee";
+    $("attMeta").textContent = [attEmp.employeeCode, attEmp.designation, attEmp.role, empType(attEmp), attEmp.branchName || "No Branch"].filter(Boolean).join("  ·  ");
+    fillMonthYear("attMonth", "attYear");
+    openModal("attModal"); loadAttendance();
+}
+function attStatusClass(s){
+    const n = String(s || "").toLowerCase().replaceAll("_","-");
+    if(n.includes("weekly-off") || n.includes("holiday")) return "b-sky";
+    if(n.includes("absent")) return "b-red";
+    if(n.includes("late") || n.includes("early")) return "b-amber";
+    if(n.includes("re-entry") || n.includes("reentry")) return "b-sky";
+    if(n.includes("present")) return "b-green";
+    return "b-grey";
+}
+function leaveTypeClass(r){
+    const t = up(r.leaveType || r.leaveLabel);
+    return t.includes("SICK") ? "b-red" : t.includes("CASUAL") ? "b-sky" : t.includes("LOP") ? "b-red" : t.includes("PERMISSION") ? "b-teal" : "b-grey";
+}
+function leaveStatClass(s){ s = up(s); return s === "APPROVED" ? "b-green" : s === "PENDING" ? "b-amber" : s === "REJECTED" ? "b-red" : "b-grey"; }
+async function loadAttendance(){
+    if(!attEmp) return;
+    const id = attEmp.id, m = Number($("attMonth").value), y = Number($("attYear").value), n = ++attReq;
+    $("attBody").innerHTML = `<tr><td colspan="5" class="empty">Loading records...</td></tr>`;
+    ["aTotal","aPresent","aLate","aRe","aLeave"].forEach(i => $(i).textContent = "0");
+    try{
+        const q = new URLSearchParams({ employeeId:String(id), month:String(m), year:String(y) }).toString();
+        let r = await apiFetch("/admin/attendance-history/employee-month?" + q);
+        if(r.status === 404) r = await apiFetch("/attendance/admin/employee-month?" + q);
+        if(!r.ok) throw new Error(await errMsg(r));
+        const data = await r.json();
+        if(n !== attReq || !attEmp || String(attEmp.id) !== String(id)) return;
+        if(!Array.isArray(data)) throw new Error("Attendance API did not return a list.");
+        renderAttendance(data);
+    }catch(e){
+        if(n !== attReq) return;
+        $("attBody").innerHTML = `<tr><td colspan="5" class="empty">Unable to load attendance records.</td></tr>`;
+        notify(e.message || "Unable to load attendance records.", "error");
     }
-
-    function toggleLeaveHistory(
-        type
-    ) {
-
-        const elementId =
-            type === "approved"
-                ? "approvedLeaveRows"
-                : "rejectedLeaveRows";
-
-
-        const element =
-            document.getElementById(
-                elementId
-            );
-
-
-        if (!element) {
+}
+function renderAttendance(records){
+    const rows = records.map(r => ({ ...r, kind: r.recordType || "ATTENDANCE", _d: nd(r.date ?? r.attendanceDate), _id: r.recordId ?? r.id ?? 0 }));
+    rows.sort((a,b) => a._d !== b._d ? b._d.localeCompare(a._d) : (a.kind === "LEAVE") - (b.kind === "LEAVE") || Number(b._id) - Number(a._id));
+    let present = 0, late = 0, re = 0, leave = 0;
+    rows.forEach(r => {
+        if(r.kind === "LEAVE"){
+            const s = up(r.leaveStatus);
+            if(s !== "REJECTED" && s !== "CANCELLED" && up(r.leaveType) !== "PERMISSION") leave += Number(r.leaveDuration ?? 1) || 0;
             return;
         }
+        const st = String(r.status || "").toLowerCase();
+        if(st.includes("present")) present++; if(st.includes("late")) late++; if(st.includes("re-entry") || st.includes("reentry")) re++;
+    });
+    $("aTotal").textContent = rows.length; $("aPresent").textContent = present; $("aLate").textContent = late;
+    $("aRe").textContent = re; $("aLeave").textContent = String(Number(leave.toFixed(2)));
+    if(!rows.length){ $("attBody").innerHTML = `<tr><td colspan="5" class="empty">No attendance or leave records for this month.</td></tr>`; return; }
+    $("attBody").innerHTML = rows.map(r => {
+        const date = fmtDate(r._d);
+        if(r.kind === "LEAVE"){
+            const label = r.leaveLabel || r.leaveType || "Leave", ls = up(r.leaveStatus);
+            return `<tr style="background:#FFFCEF"><td>${esc(date)}</td><td>—</td><td>—</td>
+              <td><span class="badge ${leaveTypeClass(r)}">${esc(label)}</span> ${ls ? `<span class="badge ${leaveStatClass(ls)}">${esc(ls)}</span>` : ""}</td>
+              <td class="wrap-cell">${esc(r.reason || "—")}</td></tr>`;
+        }
+        const st = String(r.status || "Not specified");
+        let det = "—";
+        if(!r.checkOut && r._d && r._d < today()){
+            const rs = up(r.missingCheckoutStatus);
+            det = rs ? `<span class="badge ${leaveStatClass(rs)}">Check-out request: ${esc(rs)}</span>` : `<span class="badge b-amber">Missing check-out</span>`;
+        }
+        return `<tr><td>${esc(date)}</td><td>${esc(fmtTime(r.checkIn))}</td><td>${esc(fmtTime(r.checkOut))}</td>
+          <td><span class="badge ${attStatusClass(st)}">${esc(st.replaceAll("_"," "))}</span></td><td>${det}</td></tr>`;
+    }).join("");
+}
 
-
-        element.style.display =
-            element.style.display ===
-                "none"
-                ? "table-row"
-                : "none";
-
+/* =====================================================
+   LEAVE HISTORY
+   ===================================================== */
+let allLeaves = null, lhEmp = null, lhRows = [];
+async function fetchAllLeaves(){
+    if(allLeaves) return allLeaves;
+    const r = await apiFetch("/admin/leaves");
+    if(!r.ok) throw new Error(await errMsg(r));
+    return allLeaves = list(await r.json());
+}
+function openLeaveHistory(id){
+    lhEmp = empById(id); if(!lhEmp) return;
+    $("lhTitle").textContent = lhEmp.name || "Employee";
+    $("lhMeta").textContent = [lhEmp.employeeCode, lhEmp.designation, lhEmp.role, lhEmp.branchName || "No Branch"].filter(Boolean).join("  ·  ");
+    fillMonthYear("lhMonth", "lhYear");
+    allLeaves = null;
+    openModal("lhModal"); loadLeaveHistory();
+}
+function decisionMaker(l){
+    const d = val(l, "decidedByName","approverName","approvedByName","rejectedByName","reviewedByName","decisionMakerName");
+    if(typeof d === "string" && d.trim()) return d.trim();
+    for(const k of ["decidedBy","approver","approvedBy","rejectedBy","reviewer","decisionMaker"]){
+        const p = l && l[k];
+        if(p && typeof p === "object" && !Array.isArray(p)){ const n = val(p, "name","fullName","displayName","email"); if(typeof n === "string" && n.trim()) return n.trim(); }
     }
-
-    function approveLeave(
-        leaveId
-    ) {
-
-        pendingLeaveData = {
-
-            leaveId:
-                leaveId
-
-        };
-
-
-        openActionReasonModal(
-            "LEAVE_APPROVE",
-            false
-        );
-
+    return "—";
+}
+async function loadLeaveHistory(){
+    if(!lhEmp) return;
+    const m = Number($("lhMonth").value), y = Number($("lhYear").value);
+    $("lhBody").innerHTML = `<tr><td colspan="11" class="empty">Loading leave records...</td></tr>`;
+    try{
+        const all = await fetchAllLeaves();
+        lhRows = all.filter(l => {
+            const own = val(l, "employeeId", "employee_id"), nested = val(l, "employee");
+            const id = own !== "" ? own : (nested && typeof nested === "object" ? val(nested, "id") : "");
+            if(String(id) !== String(lhEmp.id)) return false;
+            const d = nd(val(l, "leaveDate", "date")).split("-");
+            return Number(d[0]) === y && Number(d[1]) === m;
+        }).sort((a,b) => nd(val(b,"leaveDate")).localeCompare(nd(val(a,"leaveDate"))));
+        const cnt = s => lhRows.filter(l => up(l.status) === s).length;
+        $("lTotal").textContent = lhRows.length; $("lPending").textContent = cnt("PENDING"); $("lApproved").textContent = cnt("APPROVED");
+        $("lRejected").textContent = cnt("REJECTED") + cnt("CANCELLED");
+        $("lhBody").innerHTML = lhRows.length ? lhRows.map(l => {
+            const s = up(l.status), half = l.halfDaySession ? " (" + l.halfDaySession + ")" : "";
+            const time = l.permissionStart ? fmtHM(l.permissionStart) + " – " + fmtHM(l.permissionEnd) : "—";
+            return `<tr><td class="nowrap">${esc(fmtDate(l.leaveDate))}</td><td>${esc((l.leaveType || "—") + half)}</td>
+              <td>${l.leaveDuration == null ? "—" : num(l.leaveDuration)}</td><td class="nowrap">${esc(time)}</td><td>${num(l.lopDays)}</td>
+              <td class="wrap-cell">${esc(l.reason || "—")}</td>
+              <td>${statusBadge(s)}</td><td>${esc(decisionMaker(l))}</td><td class="wrap-cell">${esc(l.decisionReason || "—")}</td>
+              <td class="nowrap">${esc(fmtDT(l.createdAt))}</td><td class="nowrap">${esc(fmtDT(l.decidedAt))}</td></tr>`;
+        }).join("") : `<tr><td colspan="11" class="empty">No leave or permission records for this month.</td></tr>`;
+    }catch(e){
+        $("lhBody").innerHTML = `<tr><td colspan="11" class="empty">Unable to load leave records.</td></tr>`;
+        notify(e.message || "Unable to load leave records.", "error");
     }
+}
+function exportCsv(){
+    if(!lhRows.length){ notify("No leave records to export for this month.", "error"); return; }
+    const head = ["Employee Code","Employee Name","Leave Type","Leave Date","Duration","Half-Day Session","Permission Start","Permission End","LOP Days","Reason","Status","Decided By","Decision Reason","Requested At","Decided At"];
+    const rows = lhRows.map(l => [lhEmp.employeeCode, lhEmp.name, l.leaveType, fmtDate(l.leaveDate), l.leaveDuration, l.halfDaySession, fmtHM(l.permissionStart), fmtHM(l.permissionEnd), l.lopDays, l.reason, up(l.status), decisionMaker(l), l.decisionReason, fmtDT(l.createdAt), fmtDT(l.decidedAt)]);
+    const cell = v => '"' + String(v ?? "").replace(/"/g, '""') + '"';
+    const csv = [head, ...rows].map(r => r.map(cell).join(",")).join("\r\n");
+    const url = URL.createObjectURL(new Blob(["﻿" + csv], { type:"text/csv;charset=utf-8;" }));
+    const a = document.createElement("a"); a.href = url;
+    a.download = `leave-history-${String(lhEmp.employeeCode || "emp").replace(/[^\w-]/g,"_")}-${MONTHS[Number($("lhMonth").value)-1]}-${$("lhYear").value}.csv`;
+    a.click(); URL.revokeObjectURL(url);
+}
 
-    function rejectLeave(
-        leaveId
-    ) {
+/* =====================================================
+   LEAVE & PERMISSION SETTINGS
+   ===================================================== */
+let settingType = null, chgCtx = null;
+const SHIFT_NAMES = { GENERAL:"General Shift", SHIFT_1:"Shift 1", SHIFT_2:"Shift 2", SHIFT_3:"Shift 3" };
 
-        pendingLeaveData = {
-
-            leaveId:
-                leaveId
-
-        };
-
-
-        openActionReasonModal(
-            "LEAVE_REJECT",
-            true
-        );
-
+async function loadSettings(){
+    try{
+        const r = await apiFetch("/admin/leave-settings");
+        if(!r.ok) throw new Error(await errMsg(r));
+        renderSettings(await r.json());
+    }catch(e){
+        $("setBody").innerHTML = `<tr><td colspan="7" class="empty">Unable to load leave settings.</td></tr>`;
+        notify(e.message || "Unable to load leave settings.", "error");
     }
-
-    async function processLeaveAction(
-        adminEmail,
-        reason
-    ) {
-
-        if (!pendingLeaveData) {
-
-            throw new Error(
-                "Leave data not found."
-            );
-
+}
+function empLabel(id){ const e = empById(id); return e ? (e.name || "") + " (" + (e.employeeCode || id) + ")" : "Employee #" + id; }
+function renderSettings(settings){
+    if(!settings || !settings.length){ $("setBody").innerHTML = `<tr><td colspan="7" class="empty">No leave settings found.</td></tr>`; return; }
+    $("setBody").innerHTML = settings.map(s => {
+        const type = up(s.settingType || "-");
+        const cls = type === "DEFAULT" ? "b-dark" : type === "ROLE" ? "b-teal" : "b-green";
+        let target = "All employees (default)";
+        if(type === "ROLE") target = s.role || "-";
+        if(type === "EMPLOYEE") target = s.employeeId != null ? empLabel(s.employeeId) : "-";
+        const label = type + (s.role ? " - " + s.role : "") + (type === "EMPLOYEE" && s.employeeId != null ? " - " + empLabel(s.employeeId) : "");
+        const args = [s.id, Number(s.sickLeave||0), Number(s.casualLeave||0), Number(s.permissionCount||0), "'" + escJs(label) + "'"].join(", ");
+        return `<tr><td><span class="badge ${cls}">${type}</span> <span class="strong" style="margin-left:6px">${esc(target)}</span></td>
+          <td>${num(s.sickLeave)}</td><td>${num(s.casualLeave)}</td><td>${Number(s.permissionCount || 0)}</td>
+          <td>${esc(SHIFT_NAMES[up(s.shiftType || "GENERAL")] || "General Shift")}</td>
+          <td class="nowrap">${esc(fmtDT(s.updatedAt))}</td>
+          <td class="nowrap"><button class="btn btn-ghost btn-sm" onclick="openChange('edit', ${args})">Edit</button>
+            ${type !== "DEFAULT" ? `<button class="btn btn-danger btn-sm" onclick="openChange('delete', ${args})">Delete</button>` : ""}</td></tr>`;
+    }).join("");
+}
+function openSettingModal(type){
+    settingType = type;
+    $("setTitle").textContent = type === "DEFAULT" ? "Default Leave & Permission Settings" : type === "ROLE" ? "Role-wise Leave & Permission Settings" : "Employee-wise Leave & Permission Settings";
+    $("setRoleBox").classList.toggle("hide", type !== "ROLE");
+    $("setEmpBox").classList.toggle("hide", type !== "EMPLOYEE");
+    $("setRole").value = ""; $("setSick").value = "1"; $("setCasual").value = "1"; $("setPerm").value = "2";
+    $("setEmployee").innerHTML = `<option value="">Select employee</option>` + employees.map(e => `<option value="${e.id}">${esc((e.employeeCode || "EMP-" + e.id) + " - " + (e.name || "Unnamed") + (e.role ? " (" + e.role + ")" : ""))}</option>`).join("");
+    const sh = $("setShift");
+    sh.innerHTML = type === "DEFAULT" ? `<option value="GENERAL">General Shift</option>` : Object.entries(SHIFT_NAMES).map(([k,v]) => `<option value="${k}">${v}</option>`).join("");
+    sh.value = "GENERAL"; sh.disabled = type === "DEFAULT";
+    openModal("setModal");
+}
+async function saveSetting(){
+    if(!settingType){ alert("Setting type not selected."); return; }
+    const sick = $("setSick").value, casual = $("setCasual").value, perm = $("setPerm").value;
+    if(sick === "" || Number(sick) < 0){ alert("Please enter a valid sick leave allowance."); return; }
+    if(casual === "" || Number(casual) < 0){ alert("Please enter a valid casual leave allowance."); return; }
+    if(perm === "" || Number(perm) < 0){ alert("Please enter a valid permission allowance."); return; }
+    const shift = up($("setShift").value || "GENERAL");
+    if(!SHIFT_NAMES[shift]){ alert("Please select a valid shift."); return; }
+    const body = { settingType, shiftType: shift, sickLeave: Number(sick), casualLeave: Number(casual), permissionCount: Number(perm) };
+    if(settingType === "ROLE"){ if(!$("setRole").value){ alert("Please select a role."); return; } body.role = $("setRole").value; }
+    if(settingType === "EMPLOYEE"){ if(!$("setEmployee").value){ alert("Please select an employee."); return; } body.employeeId = Number($("setEmployee").value); }
+    try{
+        const r = await apiFetch("/admin/leave-settings", { method:"POST", headers:{"Content-Type":"application/json"}, body: JSON.stringify(body) });
+        if(!r.ok) throw new Error(await errMsg(r));
+        closeModal("setModal"); await loadSettings(); notify("Settings saved.");
+    }catch(e){ notify(e.message || "Unable to save settings.", "error"); }
+}
+function openChange(mode, id, sick, casual, perm, label){
+    chgCtx = { mode, id };
+    const edit = mode === "edit";
+    $("chgTitle").textContent = edit ? "Edit Setting" : "Delete Setting";
+    $("chgInfo").textContent = (edit ? "Editing: " : "Delete this setting? ") + label;
+    $("chgFields").classList.toggle("hide", !edit);
+    $("chgSick").value = sick; $("chgCasual").value = casual; $("chgPerm").value = perm; $("chgReason").value = "";
+    const b = $("chgSubmit"); b.textContent = edit ? "Save Changes" : "Delete"; b.className = "btn " + (edit ? "btn-primary" : "btn-danger");
+    openModal("chgModal");
+}
+async function submitChange(){
+    if(!chgCtx) return;
+    const adminEmail = adminEmailOrLogout(); if(!adminEmail) return;
+    const reason = $("chgReason").value.trim();
+    if(reason.length < 3){ alert("Please enter a reason (minimum 3 characters)."); return; }
+    const edit = chgCtx.mode === "edit";
+    try{
+        let r;
+        if(edit){
+            const s = $("chgSick").value, c = $("chgCasual").value, p = $("chgPerm").value;
+            if(s === "" || Number(s) < 0 || c === "" || Number(c) < 0 || p === "" || Number(p) < 0){ alert("Please enter valid values."); return; }
+            r = await apiFetch("/admin/leave-settings/" + chgCtx.id, { method:"PUT", headers:{"Content-Type":"application/json"},
+                body: JSON.stringify({ sickLeave:Number(s), casualLeave:Number(c), permissionCount:Number(p), adminEmail, reason }) });
+        }else{
+            r = await apiFetch("/admin/leave-settings/" + chgCtx.id + "?adminEmail=" + encodeURIComponent(adminEmail) + "&reason=" + encodeURIComponent(reason), { method:"DELETE" });
         }
+        if(!r.ok) throw new Error(await errMsg(r));
+        closeModal("chgModal"); await loadSettings(); notify(edit ? "Setting updated." : "Setting deleted.");
+    }catch(e){ alert(e.message || "Unable to complete the action."); }
+}
+async function openSettingHistory(){
+    openModal("logModal");
+    $("logBody").innerHTML = `<tr><td colspan="7" class="empty">Loading...</td></tr>`;
+    try{
+        const r = await apiFetch("/admin/leave-settings/history");
+        if(!r.ok) throw new Error(await errMsg(r));
+        const rows = await r.json();
+        $("logBody").innerHTML = rows && rows.length ? rows.map(i => {
+            let t = String(i.settingType || "-"); if(i.role) t += " - " + i.role; if(i.employeeId != null) t += " - " + empLabel(i.employeeId);
+            return `<tr><td class="nowrap">${esc(fmtDT(i.createdAt))}</td><td>${esc(i.action || "-")}</td><td>${esc(t)}</td><td class="wrap-cell">${esc(i.oldValues || "-")}</td><td class="wrap-cell">${esc(i.newValues || "-")}</td><td class="wrap-cell">${esc(i.reason || "-")}</td><td>${esc(i.adminEmail || "-")}</td></tr>`;
+        }).join("") : `<tr><td colspan="7" class="empty">No history found.</td></tr>`;
+    }catch(e){ $("logBody").innerHTML = `<tr><td colspan="7" class="empty">${esc(e.message || "Unable to load history.")}</td></tr>`; }
+}
 
+/* ---------- init ---------- */
+document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => showTab(t.dataset.tab)));
+document.querySelectorAll("#reqSeg button").forEach(b => b.addEventListener("click", () => {
+    reqFilter = b.dataset.f;
+    document.querySelectorAll("#reqSeg button").forEach(x => x.classList.toggle("on", x === b));
+    renderLeaves();
+}));
+$("reqSearch").addEventListener("input", renderLeaves);
+document.querySelectorAll(".modal").forEach(m => m.addEventListener("click", e => { if(e.target === m) m.classList.remove("show"); }));
+document.addEventListener("keydown", e => { if(e.key === "Escape") document.querySelectorAll(".modal.show").forEach(m => m.classList.remove("show")); });
 
-        const approve =
-            pendingAction ===
-            "LEAVE_APPROVE";
-
-
-        if (
-            !approve &&
-            (
-                !reason ||
-                reason.length < 3
-            )
-        ) {
-
-            throw new Error(
-                "Reject reason is required."
-            );
-
-        }
-
-
-        const body = {
-
-            adminEmail:
-                adminEmail,
-
-            reason:
-                reason || ""
-
-        };
-
-
-        const response =
-            await apiFetch(
-                "/admin/leaves/" +
-                pendingLeaveData.leaveId +
-                "/" +
-                (
-                    approve
-                        ? "approve"
-                        : "reject"
-                ),
-                {
-                    method:
-                        "PUT",
-
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
-
-                    body:
-                        JSON.stringify(
-                            body
-                        )
-                }
-            );
-
-
-        if (!response.ok) {
-
-            throw new Error(
-                await getErrorMessage(
-                    response
-                )
-            );
-
-        }
-
-
-        closeActionReasonModal(
-            false
-        );
-
-
-        pendingLeaveData =
-            null;
-
-        pendingAction =
-            null;
-
-
-        await loadLeaves();
-
-
-
-
-        showMessage(
-            "leaveMessage",
-
-            approve
-                ? "Leave approved successfully."
-                : "Leave rejected successfully.",
-
-            "success"
-        );
-
-    }
-
-    document.querySelectorAll(
-        ".modal"
-    ).forEach(
-        function(modal) {
-
-            modal.addEventListener(
-                "click",
-                function(event) {
-
-                    if (
-                        event.target ===
-                        modal
-                    ) {
-
-                        modal.classList.remove(
-                            "show"
-                        );
-
-                    }
-
-                }
-            );
-
-        }
-    );
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        function() {
-
-            if (typeof lucide !== "undefined") {
-                lucide.createIcons();
-            }
-
-            loadAdminInfo();
-
-            loadLeaves();
-
-        }
-    );
-
+document.addEventListener("DOMContentLoaded", () => {
+    const n = localStorage.getItem("adminName"); if(n) $("adminName").textContent = n;
+    buildDirectory("dirA", "dir-att", openAttendance, "View attendance");
+    buildDirectory("dirL", "dir-lh", openLeaveHistory, "View leave history");
+    icons();
+    loadLeaves();
+    const h = (location.hash || "").replace("#", "");
+    if(["attendance","history","settings"].includes(h)) showTab(h);
+});
 </script>
-
+<script src="admin-sidebar.js" defer></script>
 </body>
-
 </html>

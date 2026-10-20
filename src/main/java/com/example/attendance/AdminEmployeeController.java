@@ -62,7 +62,9 @@ public class AdminEmployeeController {
 
                 String email = request.getEmail().trim();
                 String role = normalizeValue(request.getRole());
-                String technology = request.getTechnology().trim();
+                String technology = request.getTechnology() == null
+                                ? ""
+                                : request.getTechnology().trim();
                 String designation = request.getDesignation().trim();
 
                 boolean emailExists = employeeRepository.findAll()
@@ -84,9 +86,7 @@ public class AdminEmployeeController {
                 // the email was wrong. Use Edit to change the email instead.
 
                 String newName = request.getName().trim();
-                String newContact = request.getContactNumber() == null
-                                ? ""
-                                : request.getContactNumber().trim();
+                String newContact = InputValidator.cleanMobile(request.getContactNumber());
 
                 if (!newContact.isEmpty()) {
 
@@ -115,7 +115,7 @@ public class AdminEmployeeController {
                         }
                 }
 
-                String employeeCode = generateEmployeeCode();
+                String employeeCode = generateEmployeeCode(designation);
 
                 while (employeeCodeExists(employeeCode)) {
                         employeeCode = generateNextEmployeeCode(employeeCode);
@@ -128,10 +128,11 @@ public class AdminEmployeeController {
                 employee.setEmployeeCode(employeeCode);
                 employee.setName(request.getName().trim());
                 employee.setEmail(email);
-                employee.setContactNumber(request.getContactNumber());
+                employee.setContactNumber(InputValidator.cleanMobile(request.getContactNumber()));
                 employee.setRole(role);
                 employee.setTechnology(technology);
                 employee.setDesignation(designation);
+                employee.setEmployeeType(personTypeOf(designation));
 
                 // BRANCH ASSIGNMENT
 
@@ -202,7 +203,9 @@ public class AdminEmployeeController {
 
                 String email = request.getEmail().trim();
                 String role = normalizeValue(request.getRole());
-                String technology = request.getTechnology().trim();
+                String technology = request.getTechnology() == null
+                                ? ""
+                                : request.getTechnology().trim();
                 String designation = request.getDesignation().trim();
 
                 boolean emailExists = employeeRepository.findAll()
@@ -223,7 +226,7 @@ public class AdminEmployeeController {
 
                 if (employeeCode == null || employeeCode.trim().isEmpty()) {
 
-                        employeeCode = generateEmployeeCode();
+                        employeeCode = generateEmployeeCode(designation);
 
                         while (employeeCodeExists(employeeCode, employee.getId())) {
                                 employeeCode = generateNextEmployeeCode(employeeCode);
@@ -235,10 +238,11 @@ public class AdminEmployeeController {
                 employee.setEmployeeCode(employeeCode);
                 employee.setName(request.getName().trim());
                 employee.setEmail(email);
-                employee.setContactNumber(request.getContactNumber());
+                employee.setContactNumber(InputValidator.cleanMobile(request.getContactNumber()));
                 employee.setRole(role);
                 employee.setTechnology(technology);
                 employee.setDesignation(designation);
+                employee.setEmployeeType(personTypeOf(designation));
 
                 // BRANCH ASSIGNMENT
 
@@ -603,6 +607,20 @@ public class AdminEmployeeController {
                                         "Employee email is required");
                 }
 
+                if (!InputValidator.isValidEmail(request.getEmail())) {
+
+                        throw new ResponseStatusException(
+                                        HttpStatus.BAD_REQUEST,
+                                        "Enter a valid email address (example: name@gmail.com)");
+                }
+
+                if (!InputValidator.isValidMobile(request.getContactNumber())) {
+
+                        throw new ResponseStatusException(
+                                        HttpStatus.BAD_REQUEST,
+                                        "Contact number must be exactly 10 digits and start with 6, 7, 8 or 9");
+                }
+
                 if (request.getRole() == null
                                 || request.getRole().trim().isEmpty()) {
 
@@ -611,13 +629,7 @@ public class AdminEmployeeController {
                                         "Employee role is required");
                 }
 
-                if (request.getTechnology() == null
-                                || request.getTechnology().trim().isEmpty()) {
-
-                        throw new ResponseStatusException(
-                                        HttpStatus.BAD_REQUEST,
-                                        "Employee technology is required");
-                }
+                // Technology is optional (Non-IT roles have no technology)
 
                 if (request.getDesignation() == null
                                 || request.getDesignation().trim().isEmpty()) {
@@ -708,8 +720,39 @@ public class AdminEmployeeController {
         // GENERATE EMPLOYEE CODE
         // =====================================================
 
-        private String generateEmployeeCode() {
+        // INTERN -> INT, MANAGER (manager / director / head level) -> MGR, others ->
+        // EMP
+        private String personTypeOf(String designation) {
 
+                String value = designation == null ? "" : designation.trim();
+
+                if (isInternshipDesignation(value)) {
+                        return "INTERN";
+                }
+
+                if (java.util.regex.Pattern
+                                .compile("\\b(manager|director|head)\\b", java.util.regex.Pattern.CASE_INSENSITIVE)
+                                .matcher(value).find()) {
+                        return "MANAGER";
+                }
+
+                return "EMPLOYEE";
+        }
+
+        private String codePrefixOf(String designation) {
+
+                String type = personTypeOf(designation);
+
+                if ("INTERN".equals(type)) {
+                        return "INT";
+                }
+
+                return "MANAGER".equals(type) ? "MGR" : "EMP";
+        }
+
+        private String generateEmployeeCode(String designation) {
+
+                String prefix = codePrefixOf(designation);
                 int highestNumber = 0;
                 List<Employee> allEmployees = employeeRepository.findAll();
 
@@ -723,11 +766,11 @@ public class AdminEmployeeController {
 
                         code = code.trim().toUpperCase();
 
-                        if (!code.startsWith("EMP")) {
+                        if (!code.startsWith(prefix)) {
                                 continue;
                         }
 
-                        String numberPart = code.substring(3);
+                        String numberPart = code.substring(prefix.length());
 
                         try {
                                 int number = Integer.parseInt(numberPart);
@@ -740,7 +783,7 @@ public class AdminEmployeeController {
                         }
                 }
 
-                return String.format("EMP%03d", highestNumber + 1);
+                return String.format("%s%03d", prefix, highestNumber + 1);
         }
 
         // =====================================================
@@ -791,22 +834,17 @@ public class AdminEmployeeController {
 
         private String generateNextEmployeeCode(String currentCode) {
 
-                if (currentCode == null
-                                || !currentCode.trim().toUpperCase().startsWith("EMP")) {
+                String code = currentCode == null ? "" : currentCode.trim().toUpperCase();
 
-                        return generateEmployeeCode();
+                if (!code.matches("^[A-Z]+\\d+$")) {
+
+                        return generateEmployeeCode(null);
                 }
 
-                String code = currentCode.trim().toUpperCase();
-                String numberPart = code.substring(3);
+                String prefix = code.replaceAll("\\d+$", "");
+                int currentNumber = Integer.parseInt(code.substring(prefix.length()));
 
-                try {
-                        int currentNumber = Integer.parseInt(numberPart);
-
-                        return String.format("EMP%03d", currentNumber + 1);
-                } catch (NumberFormatException exception) {
-                        return generateEmployeeCode();
-                }
+                return String.format("%s%03d", prefix, currentNumber + 1);
         }
 
         // =====================================================

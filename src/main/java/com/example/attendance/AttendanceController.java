@@ -3,6 +3,7 @@ package com.example.attendance;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -31,22 +32,13 @@ public class AttendanceController {
         private final LeavePermissionSettingRepository settingRepository;
         private final ShiftSettingRepository shiftSettingRepository;
         private final EmployeeFaceRepository employeeFaceRepository;
+        private final VerificationPolicyRepository verificationPolicyRepository;
 
-        // India Time Zone
         private static final ZoneId INDIA_ZONE = ZoneId.of("Asia/Kolkata");
-
-        // Default fallback timing
         private static final LocalTime DEFAULT_OFFICE_START_TIME = LocalTime.of(9, 0);
-
         private static final LocalTime DEFAULT_OFFICE_END_TIME = LocalTime.of(18, 0);
-
-        // Existing 5-minute grace rule
         private static final int GRACE_MINUTES = 5;
-
-        // GPS distance calculation
         private static final double EARTH_RADIUS_METERS = 6_371_000.0;
-
-        // Existing face similarity threshold
         private static final double FACE_SIMILARITY_THRESHOLD = 0.60;
 
         public AttendanceController(
@@ -56,21 +48,17 @@ public class AttendanceController {
                         EmployeeLeaveBalanceRepository balanceRepository,
                         LeavePermissionSettingRepository settingRepository,
                         ShiftSettingRepository shiftSettingRepository,
-                        EmployeeFaceRepository employeeFaceRepository) {
+                        EmployeeFaceRepository employeeFaceRepository,
+                        VerificationPolicyRepository verificationPolicyRepository) {
 
                 this.attendanceRepository = attendanceRepository;
-
                 this.employeeRepository = employeeRepository;
-
                 this.leaveRequestRepository = leaveRequestRepository;
-
                 this.balanceRepository = balanceRepository;
-
                 this.settingRepository = settingRepository;
-
                 this.shiftSettingRepository = shiftSettingRepository;
-
                 this.employeeFaceRepository = employeeFaceRepository;
+                this.verificationPolicyRepository = verificationPolicyRepository;
         }
 
         // =====================================================
@@ -79,12 +67,329 @@ public class AttendanceController {
 
         @GetMapping("/")
         public String home() {
-
                 return "Attendance API Running Successfully!";
         }
 
         // =====================================================
-        // GET BRANCH VERIFICATION SETTINGS
+        // EFFECTIVE VERIFICATION POLICY
+        // =====================================================
+
+        private static class EffectiveVerification {
+
+                boolean locationRequired;
+                boolean faceRequired;
+                boolean locationCaptureEnabled = true;
+                boolean photoCaptureEnabled;
+                boolean branchActive;
+                String branchName = "No Branch";
+                String policyName = "Branch Settings";
+        }
+
+        private EffectiveVerification getEffectiveVerification(
+                        Employee employee,
+                        LocalDate date,
+                        LocalTime time) {
+
+                EffectiveVerification result = new EffectiveVerification();
+
+                Branch branch = getEmployeeBranch(employee);
+
+                if (branch == null) {
+                        result.branchActive = false;
+                        result.locationRequired = false;
+                        result.faceRequired = false;
+                        result.locationCaptureEnabled = false;
+                        result.branchName = "No Branch";
+                        result.policyName = "No Branch";
+                        return result;
+                }
+
+                result.branchName = branch.getBranchName();
+                result.branchActive = Boolean.TRUE.equals(branch.getActive());
+
+                List<VerificationPolicy> policies = verificationPolicyRepository.findByActiveTrueOrderByIdDesc();
+
+                VerificationPolicy selected = null;
+                int selectedPriority = Integer.MAX_VALUE;
+
+                for (VerificationPolicy policy : policies) {
+
+                        if (!isPolicyInScope(policy, branch)) {
+                                continue;
+                        }
+
+                        if (!isPolicyWithinSchedule(policy, date, time)) {
+                                continue;
+                        }
+
+                        int priority = getPolicyPriority(policy, employee, branch);
+
+                        if (priority < selectedPriority) {
+                                selected = policy;
+                                selectedPriority = priority;
+                        }
+                }
+
+                if (selected != null) {
+
+                        result.policyName = selected.getPolicyName();
+
+                        result.locationRequired = Boolean.TRUE.equals(
+                                        selected.getLocationVerificationEnabled());
+
+                        result.faceRequired = Boolean.TRUE.equals(
+                                        selected.getFaceVerificationEnabled());
+
+                        result.locationCaptureEnabled = Boolean.TRUE.equals(
+                                        selected.getLocationCaptureEnabled());
+
+                        result.photoCaptureEnabled = Boolean.TRUE.equals(
+                                        selected.getPhotoCaptureEnabled());
+
+                } else {
+
+                        result.locationRequired = Boolean.TRUE.equals(
+                                        branch.getLocationVerificationEnabled());
+
+                        result.faceRequired = Boolean.TRUE.equals(
+                                        branch.getFaceVerificationEnabled());
+
+                        result.locationCaptureEnabled = true;
+                        result.photoCaptureEnabled = false;
+                        result.policyName = "Branch Settings";
+                }
+
+                // Inactive branches bypass verification, not photo policy.
+                if (!result.branchActive) {
+                        result.locationRequired = false;
+                        result.faceRequired = false;
+                }
+
+                return result;
+        }
+
+        private boolean isPolicyInScope(
+                        VerificationPolicy policy,
+                        Branch employeeBranch) {
+
+                Branch policyBranch = policy.getBranch();
+
+                if (policyBranch == null) {
+                        return true;
+                }
+
+                return employeeBranch != null
+                                && policyBranch.getId() != null
+                                && policyBranch.getId().equals(employeeBranch.getId());
+        }
+
+        private boolean isPolicyWithinSchedule(
+                        VerificationPolicy policy,
+                        LocalDate date,
+                        LocalTime time) {
+
+                if (policy.getStartDate() != null
+                                && date.isBefore(policy.getStartDate())) {
+                        return false;
+                }
+
+                if (policy.getEndDate() != null
+                                && date.isAfter(policy.getEndDate())) {
+                        return false;
+                }
+
+                LocalTime start = policy.getStartTime();
+                LocalTime end = policy.getEndTime();
+
+                if (start == null && end == null) {
+                        return true;
+                }
+
+                if (start == null || end == null) {
+                        return false;
+                }
+
+                if (start.isAfter(end)) {
+                        return !time.isBefore(start) || !time.isAfter(end);
+                }
+
+                return !time.isBefore(start) && !time.isAfter(end);
+        }
+
+        private int getPolicyPriority(
+                        VerificationPolicy policy,
+                        Employee employee,
+                        Branch branch) {
+
+                String type = normalizeValue(policy.getTargetType());
+                String value = policy.getTargetValue();
+
+                if ("EMPLOYEE".equals(type)) {
+                        return matchesEmployee(employee, value) ? 1 : Integer.MAX_VALUE;
+                }
+
+                // Manager policy is not matched without a confirmed relationship.
+                if ("MANAGER".equals(type)) {
+                        return Integer.MAX_VALUE;
+                }
+
+                if ("DESIGNATION".equals(type)) {
+                        return sameValue(employee.getDesignation(), value)
+                                        ? 3
+                                        : Integer.MAX_VALUE;
+                }
+
+                if ("ROLE".equals(type)) {
+                        return sameValue(employee.getRole(), value)
+                                        ? 4
+                                        : Integer.MAX_VALUE;
+                }
+
+                if ("INTERN".equals(type)) {
+                        return isIntern(employee) ? 5 : Integer.MAX_VALUE;
+                }
+
+                if ("STUDENT".equals(type)) {
+                        return isStudent(employee) ? 5 : Integer.MAX_VALUE;
+                }
+
+                if ("DEFAULT".equals(type)) {
+
+                        if (policy.getBranch() != null
+                                        && branch != null
+                                        && policy.getBranch().getId() != null
+                                        && policy.getBranch().getId().equals(branch.getId())) {
+                                return 6;
+                        }
+
+                        if (policy.getBranch() == null) {
+                                return 7;
+                        }
+                }
+
+                return Integer.MAX_VALUE;
+        }
+
+        private boolean matchesEmployee(Employee employee, String value) {
+
+                if (employee == null || value == null || value.isBlank()) {
+                        return false;
+                }
+
+                return (employee.getId() != null
+                                && value.trim().equals(String.valueOf(employee.getId())))
+                                || sameValue(employee.getEmployeeCode(), value)
+                                || sameValue(employee.getEmail(), value);
+        }
+
+        private boolean isIntern(Employee employee) {
+
+                return sameValue(employee.getEmployeeType(), "INTERN")
+                                || containsIgnoreCase(employee.getDesignation(), "intern")
+                                || containsIgnoreCase(employee.getRole(), "intern")
+                                || employee.getInternshipStartDate() != null
+                                || employee.getInternshipEndDate() != null
+                                || employee.getStipendType() != null;
+        }
+
+        private boolean isStudent(Employee employee) {
+
+                return sameValue(employee.getEmployeeType(), "STUDENT")
+                                || containsIgnoreCase(employee.getDesignation(), "student")
+                                || containsIgnoreCase(employee.getRole(), "student")
+                                || (employee.getCourse() != null
+                                                && !employee.getCourse().isBlank());
+        }
+
+        private boolean sameValue(String first, String second) {
+
+                return first != null
+                                && second != null
+                                && first.trim().equalsIgnoreCase(second.trim());
+        }
+
+        private boolean containsIgnoreCase(String value, String search) {
+
+                return value != null
+                                && value.toLowerCase().contains(search.toLowerCase());
+        }
+
+        private String normalizeValue(String value) {
+                return value == null ? "" : value.trim().toUpperCase();
+        }
+
+        // =====================================================
+        // PHOTO CAPTURE VALIDATION
+        // =====================================================
+
+        private String validatePhotoIfRequired(
+                        EffectiveVerification settings,
+                        String photoData,
+                        String action) {
+
+                if (!settings.photoCaptureEnabled) {
+                        return null;
+                }
+
+                if (photoData == null || photoData.isBlank()) {
+                        return action + " Not Allowed - Photo capture is required";
+                }
+
+                String photo = photoData.trim();
+
+                // Accept a Base64 data URL or raw Base64 content.
+                if (photo.startsWith("data:image/")) {
+
+                        int commaIndex = photo.indexOf(',');
+
+                        if (commaIndex < 0
+                                        || !photo.substring(0, commaIndex)
+                                                        .toLowerCase().contains(";base64")) {
+                                return action + " Not Allowed - Invalid photo data";
+                        }
+
+                        photo = photo.substring(commaIndex + 1);
+                }
+
+                if (photo.isBlank()) {
+                        return action + " Not Allowed - Invalid photo data";
+                }
+
+                // Prevent unreasonably large request payloads.
+                if (photo.length() > 10_000_000) {
+                        return action + " Not Allowed - Photo is too large";
+                }
+
+                try {
+                        java.util.Base64.getDecoder().decode(photo);
+                } catch (IllegalArgumentException ex) {
+                        return action + " Not Allowed - Invalid photo data";
+                }
+
+                return null;
+        }
+
+        private String normalizePhotoData(String photoData) {
+
+                if (photoData == null) {
+                        return null;
+                }
+
+                String photo = photoData.trim();
+
+                if (photo.startsWith("data:image/")) {
+                        int commaIndex = photo.indexOf(',');
+
+                        if (commaIndex >= 0) {
+                                return photo.substring(commaIndex + 1);
+                        }
+                }
+
+                return photo;
+        }
+
+        // =====================================================
+        // GET EFFECTIVE VERIFICATION SETTINGS
         // =====================================================
 
         @GetMapping("/verification-settings")
@@ -94,181 +399,60 @@ public class AttendanceController {
                 Map<String, Object> response = new LinkedHashMap<>();
 
                 Employee employee = employeeRepository
-                                .findByEmailAndActiveTrue(
-                                                email)
+                                .findByEmailAndActiveTrue(email)
                                 .orElse(null);
 
                 if (employee == null) {
-
-                        response.put(
-                                        "success",
-                                        false);
-
-                        response.put(
-                                        "message",
-                                        "Employee Not Found or Employee is Inactive");
-
-                        response.put(
-                                        "locationRequired",
-                                        false);
-
-                        response.put(
-                                        "faceRequired",
-                                        false);
-
-                        response.put(
-                                        "branchActive",
-                                        false);
-
+                        response.put("success", false);
+                        response.put("message", "Employee Not Found or Employee is Inactive");
+                        response.put("locationRequired", false);
+                        response.put("faceRequired", false);
+                        response.put("locationCaptureEnabled", false);
+                        response.put("photoCaptureEnabled", false);
+                        response.put("branchActive", false);
                         return response;
                 }
 
-                Branch branch = getEmployeeBranch(employee);
+                LocalDate today = LocalDate.now(INDIA_ZONE);
+                LocalTime now = LocalTime.now(INDIA_ZONE);
 
-                // =================================================
-                // NO ASSIGNED BRANCH
-                // =================================================
+                EffectiveVerification settings = getEffectiveVerification(employee, today, now);
 
-                if (branch == null) {
-
-                        response.put(
-                                        "success",
-                                        true);
-
-                        response.put(
-                                        "branchActive",
-                                        false);
-
-                        response.put(
-                                        "locationRequired",
-                                        false);
-
-                        response.put(
-                                        "faceRequired",
-                                        false);
-
-                        response.put(
-                                        "branchName",
-                                        "No Branch");
-
-                        return response;
-                }
-
-                boolean branchActive = Boolean.TRUE.equals(
-                                branch.getActive());
-
-                // =================================================
-                // INACTIVE BRANCH
-                //
-                // No GPS
-                // No Face
-                // Direct Attendance
-                // =================================================
-
-                if (!branchActive) {
-
-                        response.put(
-                                        "success",
-                                        true);
-
-                        response.put(
-                                        "branchActive",
-                                        false);
-
-                        response.put(
-                                        "locationRequired",
-                                        false);
-
-                        response.put(
-                                        "faceRequired",
-                                        false);
-
-                        response.put(
-                                        "branchName",
-                                        branch.getBranchName());
-
-                        return response;
-                }
-
-                // =================================================
-                // ACTIVE BRANCH
-                // READ EACH SETTING INDEPENDENTLY
-                // =================================================
-
-                boolean locationRequired = Boolean.TRUE.equals(
-                                branch
-                                                .getLocationVerificationEnabled());
-
-                boolean faceRequired = Boolean.TRUE.equals(
-                                branch
-                                                .getFaceVerificationEnabled());
-
-                response.put(
-                                "success",
-                                true);
-
-                response.put(
-                                "branchActive",
-                                true);
-
-                response.put(
-                                "locationRequired",
-                                locationRequired);
-
-                response.put(
-                                "faceRequired",
-                                faceRequired);
-
-                response.put(
-                                "branchName",
-                                branch.getBranchName());
+                response.put("success", true);
+                response.put("branchActive", settings.branchActive);
+                response.put("branchName", settings.branchName);
+                response.put("locationRequired", settings.locationRequired);
+                response.put("faceRequired", settings.faceRequired);
+                response.put("locationCaptureEnabled", settings.locationCaptureEnabled);
+                response.put("photoCaptureEnabled", settings.photoCaptureEnabled);
+                response.put("policyName", settings.policyName);
 
                 return response;
         }
 
         // =====================================================
         // GET EFFECTIVE SHIFT
-        //
-        // SHIFT PRIORITY:
-        // EMPLOYEE > ROLE > DEFAULT
-        //
-        // Shift type comes from LeavePermissionSetting.
-        // Actual timing comes from ShiftSetting.
+        // PRIORITY: EMPLOYEE > ROLE > DEFAULT
         // =====================================================
 
-        private ShiftSetting getEffectiveShiftSetting(
-                        Employee employee) {
+        private ShiftSetting getEffectiveShiftSetting(Employee employee) {
 
                 String shiftType = "GENERAL";
-
-                // =================================================
-                // 1. EMPLOYEE SETTING
-                // =================================================
 
                 if (employee.getId() != null) {
 
                         var employeeSetting = settingRepository
-                                        .findBySettingTypeAndEmployeeId(
-                                                        "EMPLOYEE",
-                                                        employee.getId());
+                                        .findBySettingTypeAndEmployeeId("EMPLOYEE", employee.getId());
 
                         if (employeeSetting.isPresent()) {
 
-                                String configuredShift = employeeSetting.get()
-                                                .getShiftType();
+                                String configuredShift = employeeSetting.get().getShiftType();
 
-                                if (configuredShift != null
-                                                && !configuredShift.isBlank()) {
-
-                                        shiftType = normalizeShiftType(
-                                                        configuredShift);
+                                if (configuredShift != null && !configuredShift.isBlank()) {
+                                        shiftType = normalizeShiftType(configuredShift);
                                 }
                         }
                 }
-
-                // =================================================
-                // 2. ROLE SETTING
-                // =================================================
 
                 if ("GENERAL".equals(shiftType)
                                 && employee.getRole() != null
@@ -276,137 +460,77 @@ public class AttendanceController {
 
                         var roleSetting = settingRepository
                                         .findBySettingTypeAndRole(
-                                                        "ROLE",
-                                                        employee.getRole()
-                                                                        .trim()
-                                                                        .toUpperCase());
+                                                        "ROLE", employee.getRole().trim().toUpperCase());
 
                         if (roleSetting.isPresent()) {
 
-                                String configuredShift = roleSetting.get()
-                                                .getShiftType();
+                                String configuredShift = roleSetting.get().getShiftType();
 
-                                if (configuredShift != null
-                                                && !configuredShift.isBlank()) {
-
-                                        shiftType = normalizeShiftType(
-                                                        configuredShift);
+                                if (configuredShift != null && !configuredShift.isBlank()) {
+                                        shiftType = normalizeShiftType(configuredShift);
                                 }
                         }
                 }
-
-                // =================================================
-                // 3. DEFAULT SETTING
-                // =================================================
 
                 if ("GENERAL".equals(shiftType)) {
 
-                        var defaultSetting = settingRepository
-                                        .findBySettingType(
-                                                        "DEFAULT");
+                        var defaultSetting = settingRepository.findBySettingType("DEFAULT");
 
                         if (defaultSetting.isPresent()) {
 
-                                String configuredShift = defaultSetting.get()
-                                                .getShiftType();
+                                String configuredShift = defaultSetting.get().getShiftType();
 
-                                if (configuredShift != null
-                                                && !configuredShift.isBlank()) {
-
-                                        shiftType = normalizeShiftType(
-                                                        configuredShift);
+                                if (configuredShift != null && !configuredShift.isBlank()) {
+                                        shiftType = normalizeShiftType(configuredShift);
                                 }
                         }
                 }
 
-                // =================================================
-                // GET ACTUAL SHIFT TIMING
-                // =================================================
-
-                return shiftSettingRepository
-                                .findByShiftType(shiftType)
+                return shiftSettingRepository.findByShiftType(shiftType)
                                 .orElseGet(() -> shiftSettingRepository
                                                 .findByShiftType("GENERAL")
                                                 .orElse(null));
         }
 
-        // =====================================================
-        // NORMALIZE SHIFT TYPE
-        // =====================================================
+        private String normalizeShiftType(String shiftType) {
 
-        private String normalizeShiftType(
-                        String shiftType) {
-
-                if (shiftType == null
-                                || shiftType.isBlank()) {
-
+                if (shiftType == null || shiftType.isBlank()) {
                         return "GENERAL";
                 }
 
-                return shiftType
-                                .trim()
-                                .toUpperCase()
+                return shiftType.trim().toUpperCase()
                                 .replace("-", "_")
                                 .replace(" ", "_");
         }
 
-        // =====================================================
-        // GET EFFECTIVE START TIME
-        //
-        // IMPORTANT:
-        // Timing comes from ShiftSetting.
-        // =====================================================
+        private LocalTime getOfficeStartTime(Employee employee) {
 
-        private LocalTime getOfficeStartTime(
-                        Employee employee) {
+                ShiftSetting shift = getEffectiveShiftSetting(employee);
 
-                ShiftSetting shift = getEffectiveShiftSetting(
-                                employee);
-
-                if (shift != null
-                                && shift.getStartTime() != null) {
-
+                if (shift != null && shift.getStartTime() != null) {
                         return shift.getStartTime();
                 }
 
                 return DEFAULT_OFFICE_START_TIME;
         }
 
-        // =====================================================
-        // GET EFFECTIVE END TIME
-        //
-        // IMPORTANT:
-        // Timing comes from ShiftSetting.
-        // =====================================================
+        private LocalTime getOfficeEndTime(Employee employee) {
 
-        private LocalTime getOfficeEndTime(
-                        Employee employee) {
+                ShiftSetting shift = getEffectiveShiftSetting(employee);
 
-                ShiftSetting shift = getEffectiveShiftSetting(
-                                employee);
-
-                if (shift != null
-                                && shift.getEndTime() != null) {
-
+                if (shift != null && shift.getEndTime() != null) {
                         return shift.getEndTime();
                 }
 
                 return DEFAULT_OFFICE_END_TIME;
         }
 
-        // =====================================================
-        // GET EMPLOYEE ASSIGNED BRANCH
-        // =====================================================
-
-        private Branch getEmployeeBranch(
-                        Employee employee) {
-
+        private Branch getEmployeeBranch(Employee employee) {
                 return employee.getBranch();
         }
 
         // =====================================================
-        // CHECK LOCATION AGAINST
-        // EMPLOYEE ASSIGNED BRANCH
+        // LOCATION VALIDATION
         // =====================================================
 
         private boolean isInsideAssignedBranch(
@@ -417,26 +541,21 @@ public class AttendanceController {
                 if (branch == null
                                 || employeeLatitude == null
                                 || employeeLongitude == null) {
-
                         return false;
                 }
 
-                if (employeeLatitude < -90
-                                || employeeLatitude > 90) {
-
-                        return false;
-                }
-
-                if (employeeLongitude < -180
+                if (!Double.isFinite(employeeLatitude)
+                                || !Double.isFinite(employeeLongitude)
+                                || employeeLatitude < -90
+                                || employeeLatitude > 90
+                                || employeeLongitude < -180
                                 || employeeLongitude > 180) {
-
                         return false;
                 }
 
                 if (branch.getLatitude() == null
                                 || branch.getLongitude() == null
                                 || branch.getAllowedRadiusMeters() == null) {
-
                         return false;
                 }
 
@@ -449,10 +568,6 @@ public class AttendanceController {
                 return distance <= branch.getAllowedRadiusMeters();
         }
 
-        // =====================================================
-        // HAVERSINE DISTANCE
-        // =====================================================
-
         private double calculateDistanceInMeters(
                         double latitude1,
                         double longitude1,
@@ -460,129 +575,134 @@ public class AttendanceController {
                         double longitude2) {
 
                 double lat1Radians = Math.toRadians(latitude1);
-
                 double lat2Radians = Math.toRadians(latitude2);
+                double latitudeDifference = Math.toRadians(latitude2 - latitude1);
+                double longitudeDifference = Math.toRadians(longitude2 - longitude1);
 
-                double latitudeDifference = Math.toRadians(
-                                latitude2 - latitude1);
+                double a = Math.sin(latitudeDifference / 2)
+                                * Math.sin(latitudeDifference / 2)
+                                + Math.cos(lat1Radians)
+                                                * Math.cos(lat2Radians)
+                                                * Math.sin(longitudeDifference / 2)
+                                                * Math.sin(longitudeDifference / 2);
 
-                double longitudeDifference = Math.toRadians(
-                                longitude2 - longitude1);
-
-                double a = Math.sin(
-                                latitudeDifference / 2)
-                                * Math.sin(
-                                                latitudeDifference / 2)
-                                +
-                                Math.cos(lat1Radians)
-                                                *
-                                                Math.cos(lat2Radians)
-                                                *
-                                                Math.sin(
-                                                                longitudeDifference / 2)
-                                                *
-                                                Math.sin(
-                                                                longitudeDifference / 2);
-
-                double c = 2 *
-                                Math.atan2(
-                                                Math.sqrt(a),
-                                                Math.sqrt(1 - a));
+                double c = 2 * Math.atan2(
+                                Math.sqrt(a),
+                                Math.sqrt(Math.max(0.0, 1.0 - a)));
 
                 return EARTH_RADIUS_METERS * c;
+        }
+
+        private boolean isValidCoordinate(Double latitude, Double longitude) {
+
+                return latitude != null
+                                && longitude != null
+                                && Double.isFinite(latitude)
+                                && Double.isFinite(longitude)
+                                && latitude >= -90
+                                && latitude <= 90
+                                && longitude >= -180
+                                && longitude <= 180;
+        }
+
+        private void captureCheckInLocation(
+                        Attendance attendance,
+                        EffectiveVerification settings,
+                        Double latitude,
+                        Double longitude) {
+
+                if (!settings.locationCaptureEnabled
+                                || !isValidCoordinate(latitude, longitude)) {
+                        return;
+                }
+
+                attendance.setCheckInLatitude(
+                                new BigDecimal(Double.toString(latitude)));
+
+                attendance.setCheckInLongitude(
+                                new BigDecimal(Double.toString(longitude)));
+        }
+
+        private void captureCheckOutLocation(
+                        Attendance attendance,
+                        EffectiveVerification settings,
+                        Double latitude,
+                        Double longitude) {
+
+                if (!settings.locationCaptureEnabled
+                                || !isValidCoordinate(latitude, longitude)) {
+                        return;
+                }
+
+                attendance.setCheckOutLatitude(
+                                new BigDecimal(Double.toString(latitude)));
+
+                attendance.setCheckOutLongitude(
+                                new BigDecimal(Double.toString(longitude)));
         }
 
         // =====================================================
         // FACE VERIFICATION
         // =====================================================
 
-        private String verifyEmployeeFace(
-                        Employee employee,
-                        String faceData) {
+        private String verifyEmployeeFace(Employee employee, String faceData) {
 
-                if (faceData == null
-                                || faceData.trim().isEmpty()) {
-
+                if (faceData == null || faceData.trim().isEmpty()) {
                         return "FACE_DATA_REQUIRED";
                 }
 
                 EmployeeFace registeredFace = employeeFaceRepository
-                                .findByEmployeeIdAndActiveTrue(
-                                                employee.getId()
-                                                                .longValue())
+                                .findByEmployeeIdAndActiveTrue(employee.getId().longValue())
                                 .orElse(null);
 
                 if (registeredFace == null) {
-
                         return "FACE_NOT_REGISTERED";
                 }
 
                 try {
 
-                        List<Double> registeredEmbedding = parseFaceEmbedding(
-                                        registeredFace.getFaceData());
+                        List<Double> registeredEmbedding = parseFaceEmbedding(registeredFace.getFaceData());
 
-                        List<Double> currentEmbedding = parseFaceEmbedding(
-                                        faceData);
+                        List<Double> currentEmbedding = parseFaceEmbedding(faceData);
 
                         if (registeredEmbedding.isEmpty()
                                         || currentEmbedding.isEmpty()) {
-
                                 return "INVALID_FACE_DATA";
                         }
 
                         if (registeredEmbedding.size() != currentEmbedding.size()) {
-
                                 return "FACE_DATA_FORMAT_MISMATCH";
                         }
 
                         double similarity = calculateCosineSimilarity(
-                                        registeredEmbedding,
-                                        currentEmbedding);
+                                        registeredEmbedding, currentEmbedding);
 
-                        if (similarity >= FACE_SIMILARITY_THRESHOLD) {
-
-                                return "FACE_MATCH";
-                        }
-
-                        return "FACE_MISMATCH";
+                        return similarity >= FACE_SIMILARITY_THRESHOLD
+                                        ? "FACE_MATCH"
+                                        : "FACE_MISMATCH";
 
                 } catch (Exception ex) {
-
                         return "INVALID_FACE_DATA";
                 }
         }
 
-        // =====================================================
-        // PARSE FACE EMBEDDING
-        // =====================================================
-
-        private List<Double> parseFaceEmbedding(
-                        String faceData) {
+        private List<Double> parseFaceEmbedding(String faceData) {
 
                 List<Double> values = new ArrayList<>();
 
-                if (faceData == null
-                                || faceData.trim().isEmpty()) {
-
+                if (faceData == null || faceData.trim().isEmpty()) {
                         return values;
                 }
 
                 String data = faceData.trim();
 
-                if (!data.startsWith("[")
-                                || !data.endsWith("]")) {
-
+                if (!data.startsWith("[") || !data.endsWith("]")) {
                         return values;
                 }
 
-                data = data.substring(
-                                1,
-                                data.length() - 1)
-                                .trim();
+                data = data.substring(1, data.length() - 1).trim();
 
                 if (data.isEmpty()) {
-
                         return values;
                 }
 
@@ -593,153 +713,130 @@ public class AttendanceController {
                         String value = number.trim();
 
                         if (value.isEmpty()) {
-
                                 return List.of();
                         }
 
-                        values.add(
-                                        Double.parseDouble(
-                                                        value));
+                        double parsed = Double.parseDouble(value);
+
+                        if (!Double.isFinite(parsed)) {
+                                return List.of();
+                        }
+
+                        values.add(parsed);
                 }
 
                 return values;
         }
-
-        // =====================================================
-        // COSINE SIMILARITY
-        // =====================================================
 
         private double calculateCosineSimilarity(
                         List<Double> first,
                         List<Double> second) {
 
                 double dotProduct = 0.0;
-
                 double firstMagnitude = 0.0;
-
                 double secondMagnitude = 0.0;
 
                 for (int i = 0; i < first.size(); i++) {
 
                         double firstValue = first.get(i);
-
                         double secondValue = second.get(i);
 
-                        dotProduct += firstValue *
-                                        secondValue;
-
-                        firstMagnitude += firstValue *
-                                        firstValue;
-
-                        secondMagnitude += secondValue *
-                                        secondValue;
+                        dotProduct += firstValue * secondValue;
+                        firstMagnitude += firstValue * firstValue;
+                        secondMagnitude += secondValue * secondValue;
                 }
 
-                if (firstMagnitude == 0.0
-                                || secondMagnitude == 0.0) {
-
+                if (firstMagnitude == 0.0 || secondMagnitude == 0.0) {
                         return 0.0;
                 }
 
-                return dotProduct /
-                                (Math.sqrt(firstMagnitude)
-                                                *
-                                                Math.sqrt(secondMagnitude));
+                return dotProduct
+                                / (Math.sqrt(firstMagnitude) * Math.sqrt(secondMagnitude));
+        }
+
+        private String validateFaceIfRequired(
+                        Employee employee,
+                        EffectiveVerification settings,
+                        String faceData,
+                        String action) {
+
+                if (!settings.branchActive || !settings.faceRequired) {
+                        return null;
+                }
+
+                String faceResult = verifyEmployeeFace(employee, faceData);
+
+                switch (faceResult) {
+
+                        case "FACE_DATA_REQUIRED":
+                                return action + " Not Allowed - Face verification is required";
+
+                        case "FACE_NOT_REGISTERED":
+                                return action + " Not Allowed - Face is not registered. "
+                                                + "Please complete face registration";
+
+                        case "FACE_MISMATCH":
+                                return action + " Not Allowed - Face verification failed";
+
+                        case "FACE_MATCH":
+                                return null;
+
+                        default:
+                                return action + " Not Allowed - Invalid face verification data";
+                }
         }
 
         // =====================================================
         // FORMAT DURATION
         // =====================================================
 
-        private String formatDuration(
-                        long totalMinutes) {
+        private String formatDuration(long totalMinutes) {
 
                 if (totalMinutes <= 0) {
-
                         return "0 mins";
                 }
 
                 long hours = totalMinutes / 60;
-
                 long minutes = totalMinutes % 60;
 
                 if (hours > 0 && minutes > 0) {
-
-                        return hours
-                                        + (hours == 1
-                                                        ? " hr "
-                                                        : " hrs ")
-                                        + minutes
-                                        + " mins";
+                        return hours + (hours == 1 ? " hr " : " hrs ")
+                                        + minutes + " mins";
                 }
 
                 if (hours > 0) {
-
-                        return hours
-                                        + (hours == 1
-                                                        ? " hr"
-                                                        : " hrs");
+                        return hours + (hours == 1 ? " hr" : " hrs");
                 }
 
                 return minutes + " mins";
         }
 
-        // =====================================================
-        // CALCULATE LATE MINUTES
-        // =====================================================
-
         private long calculateLateMinutes(
                         LocalTime officeStartTime,
                         LocalTime checkInTime) {
 
-                if (checkInTime == null
-                                || officeStartTime == null) {
-
+                if (checkInTime == null || officeStartTime == null
+                                || !checkInTime.isAfter(officeStartTime)) {
                         return 0;
                 }
 
-                if (!checkInTime.isAfter(
-                                officeStartTime)) {
-
-                        return 0;
-                }
-
-                return Duration.between(
-                                officeStartTime,
-                                checkInTime)
-                                .toMinutes();
+                return Duration.between(officeStartTime, checkInTime).toMinutes();
         }
-
-        // =====================================================
-        // CALCULATE EARLY CHECK-OUT MINUTES
-        // =====================================================
 
         private long calculateEarlyCheckoutMinutes(
                         LocalTime checkOutTime,
                         LocalTime officeEndTime) {
 
-                if (checkOutTime == null
-                                || officeEndTime == null) {
-
+                if (checkOutTime == null || officeEndTime == null
+                                || !checkOutTime.isBefore(officeEndTime)) {
                         return 0;
                 }
 
-                if (!checkOutTime.isBefore(
-                                officeEndTime)) {
-
-                        return 0;
-                }
-
-                return Duration.between(
-                                checkOutTime,
-                                officeEndTime)
-                                .toMinutes();
+                return Duration.between(checkOutTime, officeEndTime).toMinutes();
         }
 
         // =====================================================
-        // CHECK-IN
-        //
-        // MULTIPLE CHECK-IN / CHECK-OUT SUPPORT
+        // CHECK-IN / RE-ENTRY
         // =====================================================
 
         @PostMapping("/check-in")
@@ -748,126 +845,62 @@ public class AttendanceController {
                         @RequestParam String email,
                         @RequestParam(required = false) Double latitude,
                         @RequestParam(required = false) Double longitude,
-                        @RequestParam(required = false) String faceData) {
+                        @RequestParam(required = false) String faceData,
+                        @RequestParam(required = false) String checkInPhoto) {
 
                 Employee employee = employeeRepository
-                                .findByEmailAndActiveTrue(
-                                                email)
+                                .findByEmailAndActiveTrue(email)
                                 .orElse(null);
 
                 if (employee == null) {
-
                         return "Employee Not Found or Employee is Inactive";
+                }
+
+                LocalDate today = LocalDate.now(INDIA_ZONE);
+                LocalTime currentTime = LocalTime.now(INDIA_ZONE);
+
+                EffectiveVerification settings = getEffectiveVerification(employee, today, currentTime);
+
+                // Validate required photo before changing attendance or leave data.
+                String photoError = validatePhotoIfRequired(
+                                settings, checkInPhoto, "Check In");
+
+                if (photoError != null) {
+                        return photoError;
                 }
 
                 Branch assignedBranch = getEmployeeBranch(employee);
 
-                // =================================================
-                // BRANCH VERIFICATION
-                // =================================================
+                if (settings.branchActive && settings.locationRequired
+                                && !isInsideAssignedBranch(
+                                                assignedBranch, latitude, longitude)) {
 
-                if (assignedBranch != null
-                                && Boolean.TRUE.equals(
-                                                assignedBranch.getActive())) {
-
-                        // Location ON -> GPS verification
-                        if (Boolean.TRUE.equals(
-                                        assignedBranch
-                                                        .getLocationVerificationEnabled())) {
-
-                                if (!isInsideAssignedBranch(
-                                                assignedBranch,
-                                                latitude,
-                                                longitude)) {
-
-                                        return "Attendance Not Allowed - "
-                                                        + "You are outside your assigned branch location";
-                                }
-                        }
-
-                        // Face ON -> Face verification
-                        if (Boolean.TRUE.equals(
-                                        assignedBranch
-                                                        .getFaceVerificationEnabled())) {
-
-                                String faceResult = verifyEmployeeFace(
-                                                employee,
-                                                faceData);
-
-                                if ("FACE_DATA_REQUIRED"
-                                                .equals(faceResult)) {
-
-                                        return "Attendance Not Allowed - "
-                                                        + "Face verification is required";
-                                }
-
-                                if ("FACE_NOT_REGISTERED"
-                                                .equals(faceResult)) {
-
-                                        return "Attendance Not Allowed - "
-                                                        + "Face is not registered. "
-                                                        + "Please complete face registration";
-                                }
-
-                                if ("FACE_MISMATCH"
-                                                .equals(faceResult)) {
-
-                                        return "Attendance Not Allowed - "
-                                                        + "Face verification failed";
-                                }
-
-                                if (!"FACE_MATCH"
-                                                .equals(faceResult)) {
-
-                                        return "Attendance Not Allowed - "
-                                                        + "Invalid face verification data";
-                                }
-                        }
+                        return "Attendance Not Allowed - "
+                                        + "You are outside your assigned branch location";
                 }
 
-                LocalDate today = LocalDate.now(
-                                INDIA_ZONE);
+                String faceError = validateFaceIfRequired(
+                                employee, settings, faceData, "Attendance");
 
-                LocalTime currentTime = LocalTime.now(
-                                INDIA_ZONE);
-
-                // =================================================
-                // CHECK FOR OPEN SESSION
-                // =================================================
+                if (faceError != null) {
+                        return faceError;
+                }
 
                 var openAttendance = attendanceRepository
                                 .findFirstByEmployeeIdAndAttendanceDateAndCheckOutIsNullOrderByCheckInDesc(
-                                                employee.getId(),
-                                                today);
+                                                employee.getId(), today);
 
                 if (openAttendance.isPresent()) {
-
-                        return "Already Checked In - "
-                                        + "Please Check Out First";
+                        return "Already Checked In - Please Check Out First";
                 }
-
-                // =================================================
-                // MAXIMUM 2 ATTENDANCE SESSIONS PER DAY
-                //
-                // Logout is never a check-out, so only real
-                // check-in rows are counted here.
-                // =================================================
 
                 long todaySessionCount = attendanceRepository
-                                .countByEmployeeIdAndAttendanceDate(
-                                                employee.getId(),
-                                                today);
+                                .countByEmployeeIdAndAttendanceDate(employee.getId(), today);
 
                 if (todaySessionCount >= 2) {
-
-                        return "Check In Not Allowed - "
-                                        + "Maximum 2 attendance sessions per day "
+                        return "Check In Not Allowed - Maximum 2 attendance sessions per day "
                                         + "are already completed";
                 }
-
-                // =================================================
-                // CHECK FIRST SESSION OF DAY
-                // =================================================
 
                 boolean firstSessionOfDay = true;
 
@@ -877,183 +910,140 @@ public class AttendanceController {
 
                 for (Attendance existingAttendance : employeeAttendance) {
 
-                        if (today.equals(
-                                        existingAttendance
-                                                        .getAttendanceDate())) {
-
+                        if (today.equals(existingAttendance.getAttendanceDate())) {
                                 firstSessionOfDay = false;
-
                                 break;
                         }
                 }
 
-                // =================================================
-                // CANCEL APPROVED LEAVE
-                // =================================================
-
                 if (firstSessionOfDay) {
-
-                        cancelApprovedLeaveForCheckIn(
-                                        employee.getId(),
-                                        today);
+                        cancelApprovedLeaveForCheckIn(employee.getId(), today);
                 }
-
-                // =================================================
-                // CREATE NEW ATTENDANCE SESSION
-                // =================================================
 
                 Attendance attendance = new Attendance();
 
-                attendance.setEmployeeId(
-                                employee.getId());
+                attendance.setEmployeeId(employee.getId());
+                attendance.setAttendanceDate(today);
+                attendance.setCheckIn(currentTime);
 
-                attendance.setAttendanceDate(
-                                today);
+                captureCheckInLocation(
+                                attendance, settings, latitude, longitude);
 
-                attendance.setCheckIn(
-                                currentTime);
-
-                // =================================================
-                // FIRST SESSION STATUS
-                // =================================================
+                if (settings.photoCaptureEnabled) {
+                        attendance.setCheckInPhoto(normalizePhotoData(checkInPhoto));
+                }
 
                 if (firstSessionOfDay) {
 
-                        LocalTime officeStartTime = getOfficeStartTime(
-                                        employee);
+                        LocalTime officeStartTime = getOfficeStartTime(employee);
+                        LocalTime graceEndTime = officeStartTime.plusMinutes(GRACE_MINUTES);
 
-                        LocalTime graceEndTime = officeStartTime
-                                        .plusMinutes(
-                                                        GRACE_MINUTES);
-
-                        if (!currentTime.isAfter(
-                                        graceEndTime)) {
-
-                                attendance.setStatus(
-                                                "PRESENT");
-
+                        if (!currentTime.isAfter(graceEndTime)) {
+                                attendance.setStatus("PRESENT");
                         } else {
-
                                 long lateMinutes = calculateLateMinutes(
-                                                officeStartTime,
-                                                currentTime);
+                                                officeStartTime, currentTime);
 
                                 attendance.setStatus(
-                                                "LATE - "
-                                                                + formatDuration(
-                                                                                lateMinutes));
+                                                "LATE - " + formatDuration(lateMinutes));
                         }
 
                 } else {
-
-                        attendance.setStatus(
-                                        "RE-ENTRY");
+                        attendance.setStatus("RE-ENTRY");
                 }
 
-                attendanceRepository.save(
-                                attendance);
+                attendanceRepository.save(attendance);
 
                 String branchName = assignedBranch != null
                                 ? assignedBranch.getBranchName()
                                 : "No Branch";
 
                 if (attendance.getStatus() != null
-                                && attendance.getStatus()
-                                                .startsWith("LATE")) {
+                                && attendance.getStatus().startsWith("LATE")) {
 
-                        return "Check In Successful - "
-                                        + employee.getName()
-                                        + " ("
-                                        + attendance.getStatus()
-                                        + ") - "
-                                        + branchName;
+                        return "Check In Successful - " + employee.getName()
+                                        + " (" + attendance.getStatus() + ") - " + branchName;
                 }
 
                 if (!firstSessionOfDay) {
-
-                        return "Check In Successful - "
-                                        + employee.getName()
-                                        + " (RE-ENTRY) - "
-                                        + branchName;
+                        return "Check In Successful - " + employee.getName()
+                                        + " (RE-ENTRY) - " + branchName;
                 }
 
-                return "Check In Successful - "
-                                + employee.getName()
-                                + " - "
-                                + branchName;
+                return "Check In Successful - " + employee.getName()
+                                + " - " + branchName;
         }
 
         // =====================================================
-        // CANCEL APPROVED LEAVE
+        // AUTO-CANCEL LEAVE WHEN EMPLOYEE CHECKS IN
+        // Sick / Casual / Half-day leave of the day is cancelled (kept as
+        // history with status CANCELLED + reason), balance is given back,
+        // so neither leave balance nor salary is affected.
+        // Permission is never cancelled.
         // =====================================================
+
+        private static final String CHECK_IN_CANCEL_REASON = "Cancelled automatically - employee came to office that day";
 
         private void cancelApprovedLeaveForCheckIn(
                         Integer employeeId,
                         LocalDate today) {
 
-                List<LeaveRequest> leaveRequests = leaveRequestRepository
-                                .findByEmployeeIdAndLeaveDate(
-                                                employeeId,
-                                                today);
+                List<LeaveRequest> leaveRequests = leaveRequestRepository.findByEmployeeIdAndLeaveDate(
+                                employeeId, today);
 
-                if (leaveRequests == null
-                                || leaveRequests.isEmpty()) {
-
+                if (leaveRequests == null || leaveRequests.isEmpty()) {
                         return;
                 }
 
+                LocalDateTime now = LocalDateTime.now(INDIA_ZONE);
+
                 for (LeaveRequest leave : leaveRequests) {
 
-                        if (!"APPROVED".equalsIgnoreCase(
-                                        leave.getStatus())) {
+                        String status = leave.getStatus() == null
+                                        ? ""
+                                        : leave.getStatus().trim().toUpperCase();
 
+                        // Only live requests; rejected / already cancelled are left as they are.
+                        if (!status.equals("APPROVED") && !status.equals("PENDING")) {
                                 continue;
                         }
 
                         String leaveType = leave.getLeaveType();
 
                         if (leaveType == null
-                                        || leaveType.equalsIgnoreCase(
-                                                        "PERMISSION")) {
-
+                                        || leaveType.equalsIgnoreCase("PERMISSION")) {
                                 continue;
                         }
 
+                        // Balance is taken at APPLY time (pending too), so give it back for
+                        // both PENDING and APPROVED. LOP rows never took any balance.
                         if (leaveType.equalsIgnoreCase("SICK")
                                         || leaveType.equalsIgnoreCase("CASUAL")) {
-
-                                restorePaidLeaveBalance(
-                                                leave);
+                                restorePaidLeaveBalance(leave);
                         }
 
-                        leaveRequestRepository.delete(
-                                        leave);
+                        leave.setStatus("CANCELLED");
+                        leave.setDecisionReason(CHECK_IN_CANCEL_REASON);
+                        leave.setDecidedAt(now);
+                        leave.setEmployeeDecisionSeen(false);
+
+                        leaveRequestRepository.save(leave);
                 }
         }
 
-        // =====================================================
-        // RESTORE SICK / CASUAL BALANCE
-        // =====================================================
+        private void restorePaidLeaveBalance(LeaveRequest leave) {
 
-        private void restorePaidLeaveBalance(
-                        LeaveRequest leave) {
-
-                if (leave.getEmployeeId() == null
-                                || leave.getLeaveDate() == null) {
-
+                if (leave.getEmployeeId() == null || leave.getLeaveDate() == null) {
                         return;
                 }
 
-                LocalDate month = leave.getLeaveDate()
-                                .withDayOfMonth(1);
+                LocalDate month = leave.getLeaveDate().withDayOfMonth(1);
 
                 var balanceOptional = balanceRepository
                                 .findByEmployeeIdAndBalanceMonth(
-                                                leave.getEmployeeId(),
-                                                month);
+                                                leave.getEmployeeId(), month);
 
                 if (balanceOptional.isEmpty()) {
-
                         return;
                 }
 
@@ -1063,42 +1053,40 @@ public class AttendanceController {
                                 ? leave.getLeaveDuration()
                                 : 1.0;
 
+                // Only the paid part was taken from the balance; LOP days never were.
+                double lop = leave.getLopDays() != null ? leave.getLopDays() : 0.0;
+                double giveBack = Math.max(0.0, duration - lop);
+
+                if (giveBack <= 0) {
+                        return;
+                }
+
                 String leaveType = leave.getLeaveType();
 
-                if (leaveType.equalsIgnoreCase(
-                                "SICK")) {
+                if (leaveType.equalsIgnoreCase("SICK")) {
 
-                        double currentBalance = balance.getSickBalance() != null
+                        double current = balance.getSickBalance() != null
                                         ? balance.getSickBalance()
                                         : 0.0;
 
-                        balance.setSickBalance(
-                                        currentBalance +
-                                                        duration);
+                        balance.setSickBalance(current + giveBack);
                 }
 
-                if (leaveType.equalsIgnoreCase(
-                                "CASUAL")) {
+                if (leaveType.equalsIgnoreCase("CASUAL")) {
 
-                        double currentBalance = balance.getCasualBalance() != null
+                        double current = balance.getCasualBalance() != null
                                         ? balance.getCasualBalance()
                                         : 0.0;
 
-                        balance.setCasualBalance(
-                                        currentBalance +
-                                                        duration);
+                        balance.setCasualBalance(current + giveBack);
                 }
 
-                balance.setUpdatedAt(
-                                LocalDateTime.now(
-                                                INDIA_ZONE));
-
-                balanceRepository.save(
-                                balance);
+                balance.setUpdatedAt(LocalDateTime.now(INDIA_ZONE));
+                balanceRepository.save(balance);
         }
 
         // =====================================================
-        // CHECK OUT
+        // CHECK-OUT
         // =====================================================
 
         @PostMapping("/check-out")
@@ -1107,220 +1095,130 @@ public class AttendanceController {
                         @RequestParam String email,
                         @RequestParam(required = false) Double latitude,
                         @RequestParam(required = false) Double longitude,
-                        @RequestParam(required = false) String faceData) {
+                        @RequestParam(required = false) String faceData,
+                        @RequestParam(required = false) String checkOutPhoto) {
 
                 Employee employee = employeeRepository
-                                .findByEmailAndActiveTrue(
-                                                email)
+                                .findByEmailAndActiveTrue(email)
                                 .orElse(null);
 
                 if (employee == null) {
-
                         return "Employee Not Found or Employee is Inactive";
+                }
+
+                LocalDate today = LocalDate.now(INDIA_ZONE);
+                LocalTime currentTime = LocalTime.now(INDIA_ZONE);
+
+                EffectiveVerification settings = getEffectiveVerification(employee, today, currentTime);
+
+                // Validate required photo before changing the checkout record.
+                String photoError = validatePhotoIfRequired(
+                                settings, checkOutPhoto, "Check Out");
+
+                if (photoError != null) {
+                        return photoError;
                 }
 
                 Branch assignedBranch = getEmployeeBranch(employee);
 
-                // =================================================
-                // BRANCH VERIFICATION
-                // =================================================
+                if (settings.branchActive && settings.locationRequired
+                                && !isInsideAssignedBranch(
+                                                assignedBranch, latitude, longitude)) {
 
-                if (assignedBranch != null
-                                && Boolean.TRUE.equals(
-                                                assignedBranch.getActive())) {
-
-                        // Location ON -> GPS verification
-                        if (Boolean.TRUE.equals(
-                                        assignedBranch.getLocationVerificationEnabled())) {
-
-                                if (!isInsideAssignedBranch(
-                                                assignedBranch,
-                                                latitude,
-                                                longitude)) {
-
-                                        return "Check-out Not Allowed - "
-                                                        + "You are outside your assigned branch location";
-                                }
-                        }
-
-                        // Face ON -> Face verification
-                        if (Boolean.TRUE.equals(
-                                        assignedBranch.getFaceVerificationEnabled())) {
-
-                                String faceResult = verifyEmployeeFace(
-                                                employee,
-                                                faceData);
-
-                                if ("FACE_DATA_REQUIRED"
-                                                .equals(faceResult)) {
-
-                                        return "Check-out Not Allowed - "
-                                                        + "Face verification is required";
-                                }
-
-                                if ("FACE_NOT_REGISTERED"
-                                                .equals(faceResult)) {
-
-                                        return "Check-out Not Allowed - "
-                                                        + "Face is not registered. "
-                                                        + "Please complete face registration";
-                                }
-
-                                if ("FACE_MISMATCH"
-                                                .equals(faceResult)) {
-
-                                        return "Check-out Not Allowed - "
-                                                        + "Face verification failed";
-                                }
-
-                                if (!"FACE_MATCH"
-                                                .equals(faceResult)) {
-
-                                        return "Check-out Not Allowed - "
-                                                        + "Invalid face verification data";
-                                }
-                        }
+                        return "Check-out Not Allowed - "
+                                        + "You are outside your assigned branch location";
                 }
 
-                LocalDate today = LocalDate.now(
-                                INDIA_ZONE);
+                String faceError = validateFaceIfRequired(
+                                employee, settings, faceData, "Check-out");
 
-                LocalTime currentTime = LocalTime.now(
-                                INDIA_ZONE);
-
-                // =================================================
-                // FIND CURRENT OPEN SESSION
-                // =================================================
+                if (faceError != null) {
+                        return faceError;
+                }
 
                 Attendance attendance = attendanceRepository
                                 .findFirstByEmployeeIdAndAttendanceDateAndCheckOutIsNullOrderByCheckInDesc(
-                                                employee.getId(),
-                                                today)
+                                                employee.getId(), today)
                                 .orElse(null);
 
                 if (attendance == null) {
-
                         return "Please Check In First";
                 }
 
-                attendance.setCheckOut(
-                                currentTime);
+                attendance.setCheckOut(currentTime);
 
-                // =================================================
-                // DYNAMIC OFFICE END TIME
-                // =================================================
+                captureCheckOutLocation(
+                                attendance, settings, latitude, longitude);
 
-                LocalTime officeEndTime = getOfficeEndTime(
-                                employee);
+                if (settings.photoCaptureEnabled) {
+                        attendance.setCheckOutPhoto(normalizePhotoData(checkOutPhoto));
+                }
 
-                // =================================================
-                // EARLY CHECK-OUT
-                // =================================================
+                LocalTime officeEndTime = getOfficeEndTime(employee);
 
-                if (currentTime.isBefore(
-                                officeEndTime)) {
+                if (currentTime.isBefore(officeEndTime)) {
 
                         long earlyMinutes = calculateEarlyCheckoutMinutes(
-                                        currentTime,
-                                        officeEndTime);
+                                        currentTime, officeEndTime);
 
-                        String earlyDuration = formatDuration(
-                                        earlyMinutes);
-
+                        String earlyDuration = formatDuration(earlyMinutes);
                         String currentStatus = attendance.getStatus();
 
-                        if (currentStatus != null
-                                        && currentStatus.startsWith(
-                                                        "LATE - ")) {
-
+                        if (currentStatus != null && currentStatus.startsWith("LATE - ")) {
                                 attendance.setStatus(
-                                                currentStatus
-                                                                + " / EARLY CHECK-OUT - "
-                                                                + earlyDuration);
+                                                currentStatus + " / EARLY CHECK-OUT - " + earlyDuration);
 
-                        } else if ("RE-ENTRY".equalsIgnoreCase(
-                                        currentStatus)) {
-
+                        } else if ("RE-ENTRY".equalsIgnoreCase(currentStatus)) {
                                 attendance.setStatus(
-                                                "RE-ENTRY / EARLY CHECK-OUT - "
-                                                                + earlyDuration);
+                                                "RE-ENTRY / EARLY CHECK-OUT - " + earlyDuration);
 
                         } else {
-
-                                attendance.setStatus(
-                                                "EARLY CHECK-OUT - "
-                                                                + earlyDuration);
+                                attendance.setStatus("EARLY CHECK-OUT - " + earlyDuration);
                         }
 
                 } else {
 
-                        // =========================
-                        // OFFICE END TIME REACHED
-                        // =========================
-
                         if (attendance.getStatus() != null
-                                        && attendance.getStatus()
-                                                        .startsWith("LATE - ")) {
+                                        && attendance.getStatus().startsWith("LATE - ")) {
+                                // Preserve late status.
 
-                                attendance.setStatus(
-                                                attendance.getStatus());
-
-                        } else if ("RE-ENTRY".equalsIgnoreCase(
-                                        attendance.getStatus())) {
-
-                                attendance.setStatus(
-                                                "RE-ENTRY");
+                        } else if ("RE-ENTRY".equalsIgnoreCase(attendance.getStatus())) {
+                                attendance.setStatus("RE-ENTRY");
 
                         } else {
-
-                                attendance.setStatus(
-                                                "PRESENT");
+                                attendance.setStatus("PRESENT");
                         }
                 }
 
-                attendanceRepository.save(
-                                attendance);
+                attendanceRepository.save(attendance);
 
                 String branchName = assignedBranch != null
                                 ? assignedBranch.getBranchName()
                                 : "No Branch";
 
-                if (currentTime.isBefore(
-                                officeEndTime)) {
+                if (currentTime.isBefore(officeEndTime)) {
 
                         long earlyMinutes = calculateEarlyCheckoutMinutes(
-                                        currentTime,
-                                        officeEndTime);
+                                        currentTime, officeEndTime);
 
-                        return "Check Out Successful - "
-                                        + employee.getName()
+                        return "Check Out Successful - " + employee.getName()
                                         + " (EARLY CHECK-OUT - "
-                                        + formatDuration(
-                                                        earlyMinutes)
-                                        + ") - "
-                                        + branchName;
+                                        + formatDuration(earlyMinutes) + ") - " + branchName;
                 }
 
                 if (attendance.getStatus() != null
-                                && attendance.getStatus()
-                                                .startsWith("LATE - ")) {
+                                && attendance.getStatus().startsWith("LATE - ")) {
 
-                        return "Check Out Successful - "
-                                        + employee.getName()
-                                        + " ("
-                                        + attendance.getStatus()
-                                        + ") - "
-                                        + branchName;
+                        return "Check Out Successful - " + employee.getName()
+                                        + " (" + attendance.getStatus() + ") - " + branchName;
                 }
 
-                return "Check Out Successful - "
-                                + employee.getName()
-                                + " - "
-                                + branchName;
+                return "Check Out Successful - " + employee.getName()
+                                + " - " + branchName;
         }
 
         // =====================================================
-        // ATTENDANCE HISTORY
+        // EMPLOYEE ATTENDANCE HISTORY
         // =====================================================
 
         @GetMapping("/history")
@@ -1328,12 +1226,10 @@ public class AttendanceController {
                         @RequestParam String email) {
 
                 Employee employee = employeeRepository
-                                .findByEmailAndActiveTrue(
-                                                email)
+                                .findByEmailAndActiveTrue(email)
                                 .orElse(null);
 
                 if (employee == null) {
-
                         return List.of();
                 }
 
@@ -1353,11 +1249,6 @@ public class AttendanceController {
 
         // =====================================================
         // ADMIN - SELECTED EMPLOYEE MONTHLY ATTENDANCE
-        //
-        // Fetches attendance records for one employee
-        // and the selected month/year only.
-        //
-        // Existing Check-In / Check-Out logic is unchanged.
         // =====================================================
 
         @GetMapping("/admin/employee-month")
@@ -1366,12 +1257,8 @@ public class AttendanceController {
                         @RequestParam int month,
                         @RequestParam int year) {
 
-                // Validate the selected month and year.
-                if (month < 1 || month > 12
-                                || year < 1900 || year > 9999) {
-
-                        throw new IllegalArgumentException(
-                                        "Invalid month or year");
+                if (month < 1 || month > 12 || year < 1900 || year > 9999) {
+                        throw new IllegalArgumentException("Invalid month or year");
                 }
 
                 Employee employee = employeeRepository
@@ -1379,21 +1266,16 @@ public class AttendanceController {
                                 .orElse(null);
 
                 if (employee == null) {
-
                         return List.of();
                 }
 
                 YearMonth selectedMonth = YearMonth.of(year, month);
-
                 LocalDate startDate = selectedMonth.atDay(1);
-
                 LocalDate endDate = selectedMonth.atEndOfMonth();
 
                 return attendanceRepository
                                 .findByEmployeeIdAndAttendanceDateBetweenOrderByAttendanceDateDescCheckInDesc(
-                                                employeeId,
-                                                startDate,
-                                                endDate)
+                                                employeeId, startDate, endDate)
                                 .stream()
                                 .map(attendance -> new AttendanceResponse(
                                                 attendance.getId(),
@@ -1413,8 +1295,7 @@ public class AttendanceController {
         public List<Attendance> getAllAttendance(
                         @RequestParam(required = false) String date) {
 
-                if (date != null
-                                && !date.isBlank()) {
+                if (date != null && !date.isBlank()) {
 
                         LocalDate attendanceDate = LocalDate.parse(date);
 

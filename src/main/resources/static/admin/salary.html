@@ -378,6 +378,210 @@
         }
     }
 
+    /* =====================================================
+       POPUP STYLES (black / green / white)
+       Shared by: Payslip Preview, Edit Salary, Confirm Action
+       ===================================================== */
+
+    .hidden { display: none !important; }
+
+    .payroll-alert { display: none; background: #171717; color: #FFFFFF; border-left: 6px solid #16803C; border-radius: 10px; padding: 14px 18px; margin: 0 0 14px; font-size: 14px; line-height: 1.6; }
+    .payroll-alert.show { display: block; }
+    .payroll-alert b { color: #4ade80; }
+    .payroll-actions { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin: 0 0 14px; }
+    .payroll-actions .btn { display: inline-flex; align-items: center; gap: 7px; }
+    .payroll-hint { font-size: 12px; color: #475569; max-width: 560px; }
+    .late-chip { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; background: #E8F5EC; color: #0B2E1A; }
+    .late-chip.warn { background: #171717; color: #FFFFFF; }
+    .status-chip { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; border: 1px solid #C8D8CC; color: #171717; background: #FFFFFF; }
+    .status-chip.paid { background: #16803C; color: #FFFFFF; border-color: #16803C; }
+    .adjust-info { background: #F4F7F5; border: 1px solid #D9E7DD; border-radius: 10px; padding: 12px 14px; margin-bottom: 14px; font-size: 13px; line-height: 1.7; color: #171717; }
+    .adjust-select { width: 100%; padding: 11px 12px; border: 1px solid #C8D8CC; border-radius: 8px; font-size: 14px; background: #FFFFFF; }
+    .adjust-small { color: #475569; font-size: 12px; }
+    .pay-list { max-height: 320px; overflow: auto; border: 1px solid #D9E7DD; border-radius: 10px; margin-top: 8px; }
+    .pay-row { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-bottom: 1px solid #E3ECE6; font-size: 14px; cursor: pointer; }
+    .pay-row.pay-all { border: 1px solid #D9E7DD; border-radius: 10px; background: #F4F7F5; }
+    .pay-row input { width: 16px; height: 16px; accent-color: #16803C; }
+    .pay-row span.amt { margin-left: auto; font-weight: 700; color: #0B2E1A; }
+    .adjust-days-wrap { max-height: 210px; overflow: auto; border: 1px solid #D9E7DD; border-radius: 10px; margin-bottom: 14px; }
+    .adjust-days { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .adjust-days th { position: sticky; top: 0; background: #0B2E1A; color: #FFFFFF; text-align: left; padding: 7px 9px; }
+    .adjust-days td { padding: 7px 9px; border-bottom: 1px solid #E3ECE6; vertical-align: top; }
+    .adjust-days tr.cut td { background: #F4F7F5; font-weight: 600; }
+    .modal-box { width: 100%; max-width: 650px; background: #FFFFFF; border-radius: 16px; padding: 25px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.30); }
+    .modal-box.small { max-width: 450px; }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+    .modal-header h2 { font-size: 20px; color: #171717; }
+    .close-btn { border: none; background: #F0F7F1; color: #171717; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .close-btn:hover { background: #DCFCE7; color: #0F642E; }
+    .close-btn svg { width: 18px; height: 18px; }
+    .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; }
+    .info-box { background: #F0F7F1; border: 1px solid #BBDCC5; color: #0B2E1A; border-radius: 10px; padding: 13px 15px; font-size: 13px; line-height: 1.6; margin-bottom: 18px; }
+    .form-group { display: flex; flex-direction: column; gap: 7px; }
+    .form-group label { font-size: 13px; font-weight: 600; color: #171717; }
+    .form-group input, .form-group textarea { width: 100%; padding: 11px 12px; border: 1px solid #C8D8CC; border-radius: 8px; outline: none; font-size: 14px; background: #FFFFFF; color: #171717; }
+    .form-group textarea { resize: vertical; }
+    .form-group input:focus, .form-group textarea:focus { border-color: #16803C; box-shadow: 0 0 0 3px rgba(22, 128, 60, 0.12); }
+    .readonly { background: #F0F4F1 !important; cursor: not-allowed; }
+
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-secondary { background: #171717; color: #FFFFFF; }
+    .btn-secondary:hover { background: #0B2E1A; }
+    .btn-success { background: #FFFFFF; color: #16803C; border: 1.5px solid #16803C; }
+    .btn-success:hover { background: #F0F7F1; }
+    .modal .btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; }
+    .modal .btn svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    @keyframes payslipSpin { to { transform: rotate(360deg); } }
+
+    /* ---------- PAYSLIP POPUP ---------- */
+
+    .payslip-box { max-width: 880px; padding: 0; overflow: hidden; display: flex; flex-direction: column; max-height: 92vh; }
+    .payslip-box > .modal-header { margin: 0; padding: 16px 22px; background: #FFFFFF; border-bottom: 1px solid #D9E7DD; }
+
+    .payslip-loading { display: none; text-align: center; padding: 60px 20px; color: #647568; font-size: 14px; }
+    .payslip-loading.show { display: block; }
+    .payslip-loading svg { width: 32px; height: 32px; color: #16803C; animation: payslipSpin 1s linear infinite; }
+
+    .payslip-error { display: none; margin: 20px 22px; padding: 14px 16px; border-radius: 10px; background: #FEE2E2; color: #991B1B; font-size: 14px; font-weight: 600; }
+    .payslip-error.show { display: block; }
+
+    .payslip-preview-wrapper { flex: 1; min-height: 0; overflow-y: auto; padding: 22px; background: #EEF3EE; }
+    .payslip-document { background: #FFFFFF; border: 1px solid #D9E7DD; border-radius: 14px; overflow: hidden; box-shadow: 0 6px 20px rgba(11, 46, 26, 0.08); }
+
+    .payslip-document-header { background: linear-gradient(135deg, #0B2E1A, #171717); padding: 24px 28px; border-bottom: 4px solid #16803C; }
+    .company-header { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .company-name { font-size: 28px; font-weight: 800; letter-spacing: 1px; color: #FFFFFF; }
+    .company-location { margin-top: 4px; color: #C7D8CC; font-size: 13px; }
+    .statement-block { text-align: right; }
+    .salary-statement-title { font-size: 18px; font-weight: 700; color: #4ADE80; }
+    .salary-statement-subtitle { margin-top: 4px; font-size: 12px; color: #C7D8CC; letter-spacing: 0.4px; }
+
+    .payslip-body { padding: 24px 28px; }
+
+    .payslip-period-banner { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; background: #F0F7F1; border: 1px solid #BBDCC5; border-radius: 12px; padding: 14px 18px; margin-bottom: 22px; }
+    .period-label { font-size: 11px; font-weight: 700; color: #647568; text-transform: uppercase; letter-spacing: 0.8px; }
+    .period-value { font-size: 16px; font-weight: 700; color: #0B2E1A; margin-top: 3px; }
+    .payslip-status { display: inline-flex; align-items: center; gap: 6px; background: #16803C; color: #FFFFFF; padding: 7px 14px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+    .payslip-status svg { width: 15px; height: 15px; }
+
+    .payslip-section { margin-bottom: 22px; }
+    .payslip-section-title { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; color: #0B2E1A; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 2px solid #E2EBE4; }
+    .payslip-section-title svg { width: 17px; height: 17px; color: #16803C; }
+
+    .employee-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px 28px; }
+    .employee-item { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px dashed #E2EBE4; font-size: 13px; }
+    .employee-label { color: #647568; }
+    .employee-value { font-weight: 600; color: #171717; text-align: right; word-break: break-word; }
+
+    .attendance-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+    .attendance-card { background: #F8FBF8; border: 1px solid #E2EBE4; border-radius: 10px; padding: 12px 8px; text-align: center; }
+    .attendance-card.lop { background: #FEF2F2; border-color: #FECACA; }
+    .attendance-card-label { font-size: 11px; color: #647568; font-weight: 600; margin-bottom: 6px; }
+    .attendance-card-value { font-size: 20px; font-weight: 800; color: #0B2E1A; }
+    .attendance-card.lop .attendance-card-value { color: #B91C1C; }
+
+    .salary-table { width: 100%; min-width: 0; border-collapse: collapse; border: 1px solid #E2EBE4; }
+    .salary-table th { background: #0B2E1A; color: #FFFFFF; padding: 11px 14px; font-size: 13px; text-align: left; }
+    .salary-table td { padding: 11px 14px; border-top: 1px solid #E2EBE4; font-size: 13.5px; white-space: normal; }
+    .salary-table td.amount { text-align: right; font-weight: 600; }
+    .salary-table td.deduction { color: #B91C1C; }
+    .salary-table tr.subtotal td { background: #F0F7F1; font-weight: 800; color: #0B2E1A; }
+
+    .ot-section { margin-bottom: 22px; }
+    .ot-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+    .ot-item { display: flex; flex-direction: column; gap: 4px; background: #F8FBF8; border: 1px solid #E2EBE4; border-radius: 10px; padding: 12px 14px; }
+    .ot-label { font-size: 11px; color: #647568; font-weight: 600; }
+    .ot-value { font-size: 16px; font-weight: 800; color: #0B2E1A; }
+
+    .net-salary-box { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; background: linear-gradient(135deg, #0B2E1A, #16803C); color: #FFFFFF; border-radius: 14px; padding: 20px 24px; margin-top: 6px; }
+    .net-salary-label { font-size: 15px; font-weight: 700; }
+    .net-salary-note { font-size: 12px; color: #C7D8CC; margin-top: 4px; max-width: 420px; line-height: 1.5; }
+    .net-salary-value { font-size: 30px; font-weight: 800; }
+
+    .payslip-footer-note { margin-top: 18px; padding-top: 14px; border-top: 1px dashed #C8D8CC; font-size: 11.5px; color: #647568; text-align: center; line-height: 1.6; }
+
+    /* BUTTONS: fixed at the bottom of the popup */
+    .payslip-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 10px; padding: 14px 22px; background: #FFFFFF; border-top: 1px solid #D9E7DD; }
+
+    @media (max-width: 700px) {
+        .employee-grid { grid-template-columns: 1fr; }
+        .attendance-grid { grid-template-columns: repeat(3, 1fr); }
+        .ot-grid { grid-template-columns: 1fr; }
+        .payslip-body { padding: 18px; }
+        .payslip-preview-wrapper { padding: 14px; }
+        .statement-block { text-align: left; }
+        .payslip-actions .btn { flex: 1 1 100%; }
+    }
+
+
+/* ===== GROWBYTEE UI v2 (black / green / white) ===== */
+:root{--g:#16803C;--gd:#0B2E1A;--gl:#E8F5EC;--k:#171717;--line:#E1E8E3;--mut:#6B7A70;--bg:#F4F6F5;--red:#DC2626}
+*{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif!important}
+body{background:var(--bg)!important;color:var(--k);font-size:14px}
+.sidebar{display:none!important}
+.header{height:60px!important;background:#fff!important;border-bottom:1px solid var(--line)!important;padding:0 28px!important;box-shadow:none!important}
+.header h1{font-size:17px!important;font-weight:700!important}
+.admin-info{color:var(--mut)!important;font-size:13px!important}
+.admin-badge{background:var(--gd)!important;color:#fff!important;padding:4px 10px!important;border-radius:99px!important;font-size:11px!important;letter-spacing:.4px;border:0!important}
+.content{padding:22px 28px!important;max-width:1400px}
+.section{background:transparent!important;border:0!important;padding:0!important;min-height:0!important}
+.section-title h2,h2.section-title{display:none!important}
+.page-heading h2{display:none!important}
+.section-title{margin-bottom:14px!important}
+.section-subtitle{color:var(--mut)!important;font-size:13px!important;margin:0 0 14px!important;max-width:none!important}
+.section-title .section-subtitle,.page-heading .section-subtitle{margin:0!important}
+.btn{border:1px solid transparent;border-radius:8px!important;padding:9px 16px!important;font-size:13px!important;font-weight:600!important}
+.btn-primary,.btn-weekly,.btn-success.solid{background:var(--g)!important;color:#fff!important;border-color:var(--g)!important}
+.btn-primary:hover,.btn-weekly:hover{background:var(--gd)!important;border-color:var(--gd)!important}
+.btn-secondary{background:#fff!important;color:var(--k)!important;border:1px solid var(--line)!important}
+.btn-secondary:hover{background:var(--gl)!important;border-color:#BFE0CB!important}
+.btn-danger{background:#fff!important;color:var(--red)!important;border:1px solid #F3C5C5!important}
+.btn-danger:hover{background:#FEF2F2!important}
+.btn-small{padding:6px 12px!important;font-size:12px!important}
+.top-bar{background:#fff!important;border:1px solid var(--line)!important;border-radius:12px!important;box-shadow:none!important;padding:12px 14px!important;margin-bottom:14px!important}
+.table-card,.calendar-card,.weekly-off-summary{background:#fff!important;border:1px solid var(--line)!important;border-radius:12px!important;box-shadow:none!important}
+th{background:#F7F9F8!important;color:var(--mut)!important;font-size:11px!important;letter-spacing:.5px;text-transform:uppercase;padding:12px 14px!important;border-bottom:1px solid var(--line)}
+td{padding:12px 14px!important;border-top:1px solid #EEF1EF!important;border-bottom:0!important;font-size:13px!important}
+tbody tr:first-child td{border-top:0!important}
+tr:hover td,tbody tr:hover td{background:#F7FAF8!important}
+.empty-row{color:var(--mut)!important}
+.form-group label,.filter-item label{font-size:12px!important;font-weight:700!important;color:#33433A!important}
+.form-group input,.form-group select,.form-group textarea,.filter-item select,.filter-box input,.filter-box select,.adjust-select{border:1px solid #CBD8CF!important;border-radius:8px!important;padding:10px 12px!important;font-size:14px!important;background:#fff}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus,.filter-item select:focus,.filter-box select:focus{border-color:var(--g)!important;box-shadow:0 0 0 3px rgba(22,128,60,.12)!important;outline:0}
+.modal{background:rgba(15,26,20,.55)!important;z-index:100}
+.modal-box{border-radius:14px!important;box-shadow:0 20px 50px rgba(0,0,0,.25)!important}
+.modal-header{border-bottom:1px solid var(--line)!important;padding-bottom:14px!important;margin-bottom:18px!important}
+.modal-header h2,.modal-header h3{font-size:17px!important}
+.close-btn{border-radius:8px!important;background:#EEF1EF!important;color:var(--k)!important;width:32px!important;height:32px!important}
+.close-btn:hover{background:#DDE5DF!important}
+.modal-footer{border-top:1px solid var(--line)!important;padding-top:14px!important;margin-top:20px!important}
+.message{border-radius:8px!important;font-size:13px!important}
+.info-box,.setting-help,.weekly-off-modal-help{background:var(--gl)!important;border:1px solid #BFE0CB!important;color:#14532D!important;border-radius:10px!important}
+@media(max-width:800px){.header{padding:0 16px 0 60px!important}.content{padding:16px!important}}
+@media(max-width:600px){.admin-info{display:none!important}}
+
+.payroll-alert{background:#fff!important;color:var(--k)!important;border:1px solid var(--line)!important;border-left:4px solid var(--g)!important;border-radius:10px!important;font-size:13px!important}
+.payroll-alert b{color:var(--g)!important}
+.payroll-actions{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:14px!important}
+.payroll-hint{font-size:12px!important;color:var(--mut)!important}
+.working-days-info{display:inline-flex;align-items:center;gap:7px;background:var(--gl);color:var(--gd);padding:8px 12px;border-radius:8px;font-size:13px;font-weight:600}
+.working-days-info svg{width:15px;height:15px;color:var(--g)}
+.late-chip{background:var(--gl)!important;color:#166534!important}.late-chip.warn{background:var(--k)!important;color:#fff!important}
+.status-chip{border:1px solid var(--line)!important;color:var(--mut)!important}.status-chip.paid{background:#DDF3E4!important;color:#0B5A2B!important;border-color:#DDF3E4!important}
+.adjust-info{background:#F7FAF8!important;border:1px solid var(--line)!important}
+.adjust-days th{background:#F7F9F8!important;color:var(--mut)!important}
+.pay-row.pay-all,.pay-list{background:#F7FAF8;border-color:var(--line)!important}
+.btn-success{background:#fff!important;color:var(--g)!important;border:1px solid var(--g)!important}
+.salary-table th{background:#F7F9F8!important;color:var(--mut)!important}
+.salary-table tr.subtotal td{background:var(--gl)!important}
+.period-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-left:3px solid var(--g);border-radius:12px;padding:12px 14px;margin-bottom:14px}
+.period-bar b{font-size:13px;color:var(--k)}
+.period-bar input[type=date]{border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-size:13px;background:#fff}
+.period-bar input[type=date]:disabled{background:#F1F5F2;color:var(--mut)}
+.period-bar .period-to{color:var(--mut);font-size:13px}
+.period-bar .period-info{margin-left:auto;white-space:nowrap;font-size:12px;font-weight:600;color:var(--gd);background:var(--gl);border-radius:999px;padding:5px 12px}
+.period-bar .period-info.locked{background:#EEF1EF;color:var(--mut)}
 </style>
 
 </head>
@@ -386,131 +590,9 @@
 
 <div class="container">
 
-    <aside class="sidebar">
-
-        <div class="logo">
-            GROWBYTEE
-        </div>
-
-        <div class="admin-title">
-            Admin / CEO Dashboard
-        </div>
-
-        <div class="menu">
-
-            <button class="menu-btn"
-                    onclick="window.location.href='/admin-dashboard.html'">
-                <i data-lucide="layout-dashboard"></i>
-                Dashboard
-            </button>
-
-            <button class="menu-btn"
-                    onclick="window.location.href='employees.html'">
-                <i data-lucide="users"></i>
-                Employees
-            </button>
-
-            <button class="menu-btn"
-                    onclick="window.location.href='leave.html'">
-                <i data-lucide="clipboard-list"></i>
-                Leave
-            </button>
-
-            <button class="menu-btn"
-                    onclick="window.location.href='ai-assistant.html'">
-                <i data-lucide="sparkles"></i>
-                AI Assistant
-            </button>
-
-            <button class="menu-btn"
-                    onclick="window.location.href='working-day-settings.html'">
-                <i data-lucide="calendar-days"></i>
-                Working Day Settings
-            </button>
-
-            <button class="menu-btn"
-                    onclick="window.location.href='shift-settings.html'">
-                <i data-lucide="clock-3"></i>
-                Shift Settings
-            </button>
-
-            <button class="menu-btn"
-                    onclick="window.location.href='branch-management.html'">
-                <i data-lucide="building-2"></i>
-                Branch Management
-            </button>
-
-            <button class="menu-btn"
-                    onclick="window.location.href='leave-permission-settings.html'">
-                <i data-lucide="settings"></i>
-                Leave & Permission Settings
-            </button>
-
-            <button class="menu-btn active"
-                    onclick="window.location.href='salary.html'">
-                <i data-lucide="wallet"></i>
-                Salary
-            </button>
-
-            <button class="menu-btn"
-                    onclick="window.location.href='monthly-report.html'">
-                <i data-lucide="calendar-days"></i>
-                Monthly Report
-            </button>
-
-            
-<button class="menu-btn"
-        onclick="window.location.href='attendance-history.html'">
-    <i data-lucide="calendar-clock"></i>
-    Attendance History
-</button>
-
-<button class="menu-btn"
-        onclick="window.location.href='leave-history.html'">
-    <i data-lucide="file-clock"></i>
-    Leave History
-</button>
-
-            <button class="menu-btn"
-                    onclick="window.location.href='history.html'">
-                <i data-lucide="history"></i>
-                History
-            </button>
-
-            <button class="menu-btn logout-btn"
-                    onclick="logout()">
-                <i data-lucide="log-out"></i>
-                Logout
-            </button>
-
-        </div>
-
-    </aside>
-
-
     <main class="main">
 
-        <header class="header">
-
-            <h1>
-                GROWBYTEE - Admin Dashboard
-            </h1>
-
-            <div class="admin-info"
-                 id="adminInfo"
-                 style="display: none;">
-
-                <span id="loggedAdminName">
-                    Welcome, Admin
-                </span>
-
-                <span class="admin-badge">
-                    ADMIN
-                </span>
-
-            </div>
-
-        </header>
+        <header class="header"><h1>Salary</h1><div class="admin-info" id="adminInfo" style="display:flex"><span id="loggedAdminName">Welcome, Admin</span><span class="admin-badge">ADMIN</span></div></header>
 
 
         <div class="content">
@@ -519,11 +601,11 @@
                      class="section active">
 
                 <h2 class="section-title">
-                    Salary Management
+                    Salary
                 </h2>
 
                 <p class="section-subtitle">
-                    Manage employee salary separately from employee creation
+                    Review monthly salary, record decisions for late or short time, and pay with payslips.
                 </p>
 
                 <div id="salaryMessage"
@@ -570,6 +652,30 @@
                 </div>
 
 
+                <div class="period-bar" id="periodBar">
+                    <b>Salary Period</b>
+                    <input type="date" id="periodStart">
+                    <span class="period-to">to</span>
+                    <input type="date" id="periodEnd">
+                    <button type="button" class="btn btn-primary" id="periodSaveBtn" onclick="savePayPeriod()">Save Dates</button>
+                    <button type="button" class="btn btn-secondary" id="periodResetBtn" onclick="resetPayPeriod()">Use Calendar Month</button>
+                    <span class="period-info" id="periodInfo"></span>
+                </div>
+
+                <div id="payrollAlert" class="payroll-alert"></div>
+
+                <div class="payroll-actions">
+                    <button type="button" class="btn btn-secondary" onclick="openAdjustModal()">
+                        <i data-lucide="sliders-horizontal"></i>
+                        Decision
+                    </button>
+                    <button type="button" class="btn btn-primary" onclick="openPayModal()">
+                        <i data-lucide="wallet"></i>
+                        Pay &amp; Send Payslips
+                    </button>
+                    <span class="payroll-hint">Everyone is paid for all present days unless you set a <b>Decision</b>. <b>Pay</b> marks the selected employees as paid and e-mails the payslip.</span>
+                </div>
+
                 <div class="table-card">
 
                     <div class="table-wrapper">
@@ -585,7 +691,9 @@
                                 <th>Present Days</th>
                                 <th>Leave Days</th>
                                 <th>LOP</th>
+                                <th>Late / Short</th>
                                 <th>Final Salary</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
 
@@ -594,10 +702,10 @@
                             <tbody id="salaryTableBody">
 
                             <tr>
-                                <td colspan="8"
+                                <td colspan="10"
                                     class="empty-row">
 
-                                    Select year and month to view salary details
+                                    Loading salary details...
 
                                 </td>
                             </tr>
@@ -616,6 +724,80 @@
 
     </main>
 
+</div>
+
+
+<!-- =========================================
+     PAYROLL ADJUST MODAL (late time / full pay)
+     ========================================= -->
+
+<div id="adjustModal" class="modal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h2 id="adjustTitle">Salary Decision</h2>
+            <button type="button" class="close-btn" onclick="closeAdjustModal()">&times;</button>
+        </div>
+
+        <div class="form-group" style="margin-bottom:14px;">
+            <label>Employee name</label>
+            <select id="adjustEmployeeSelect" class="adjust-select" onchange="selectAdjustEmployee(this.value)"></select>
+        </div>
+
+        <div id="adjustInfo" class="adjust-info">Select an employee to see the details.</div>
+
+        <div class="adjust-days-wrap">
+            <table class="adjust-days">
+                <thead><tr><th>Date</th><th>Sessions</th><th>Worked</th><th>Short</th><th>Result</th></tr></thead>
+                <tbody id="adjustDaysBody"><tr><td colspan="5">Loading...</td></tr></tbody>
+            </table>
+        </div>
+
+        <div class="form-group" style="margin-bottom:14px;">
+            <label>How should the late / short time be treated?</label>
+            <select id="adjustMode" onchange="refreshAdjustMode()" class="adjust-select">
+                <option value="NONE">Do not cut - pay all present days (default)</option>
+                <option value="SHORT">Cut the short time (exact late / early hours)</option>
+                <option value="CUSTOM">Cut a number of hours / minutes</option>
+                <option value="FULL">Full salary / stipend (ignore leave and absence)</option>
+            </select>
+        </div>
+
+        <div id="adjustMinutesGroup" class="form-group" style="margin-bottom:14px;display:none;">
+            <label>Minutes to cut from salary</label>
+            <input type="number" id="adjustMinutes" min="0" step="1" placeholder="Minutes">
+            <small id="adjustMinutesHint" class="adjust-small"></small>
+        </div>
+
+        <div class="form-group">
+            <label>Reason (shown to the employee on the payslip) <span style="color:#dc2626">*</span></label>
+            <textarea id="adjustReason" rows="3" placeholder="Enter reason..."></textarea>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeAdjustModal()">Cancel</button>
+            <button type="button" class="btn btn-primary" onclick="saveAdjust()">Save</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- =========================================
+     PAY MODAL (choose names)
+     ========================================= -->
+
+<div id="payModal" class="modal">
+    <div class="modal-box small">
+        <div class="modal-header">
+            <h2>Pay &amp; Send Payslips</h2>
+            <button type="button" class="close-btn" onclick="closePayModal()">&times;</button>
+        </div>
+        <label class="pay-row pay-all"><input type="checkbox" id="payCheckAll" onchange="togglePayAll(this.checked)" checked> <b>Select all</b></label>
+        <div id="payList" class="pay-list"></div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closePayModal()">Cancel</button>
+            <button type="button" class="btn btn-primary" onclick="confirmPay()">Pay &amp; Send</button>
+        </div>
+    </div>
 </div>
 
 
@@ -886,15 +1068,17 @@
                         </div>
 
 
-                        <div id="payslipStatementTitle"
-     class="salary-statement-title">
-    Salary Statement
-</div>
+                        <div class="statement-block">
 
-<div id="payslipStatementSubtitle"
-     class="salary-statement-subtitle">
-    Official Employee Payslip
-</div>
+                            <div id="payslipStatementTitle"
+                                 class="salary-statement-title">
+                                Salary Statement
+                            </div>
+
+                            <div id="payslipStatementSubtitle"
+                                 class="salary-statement-subtitle">
+                                Official Employee Payslip
+                            </div>
 
                         </div>
 
@@ -954,7 +1138,7 @@
 
                             <div class="employee-item">
 
-                                <span class="employee-label">
+                                <span class="employee-label" id="payslipLabelName">
                                     Employee Name
                                 </span>
 
@@ -968,7 +1152,7 @@
 
                             <div class="employee-item">
 
-                                <span class="employee-label">
+                                <span class="employee-label" id="payslipLabelCode">
                                     Employee Code
                                 </span>
 
@@ -1376,7 +1560,7 @@
                     </div>
 
 
-                    <div class="payslip-footer-note">
+                    <div class="payslip-footer-note" id="payslipFooterNote">
 
                         This is a system-generated salary statement
                         based on the attendance and payroll records
@@ -1727,7 +1911,14 @@ function saveSalaryEdit() {
     openActionReasonModal("SALARY_UPDATE", true);
 }
 
+let currentPayPeriod = null;
+
 function getPayslipPeriod(year, month) {
+    /* Dates saved by the admin for this pay month are used first */
+    if (currentPayPeriod && currentPayPeriod.year === Number(year) && currentPayPeriod.month === Number(month)) {
+        return { start: fmtDmy(currentPayPeriod.startDate), end: fmtDmy(currentPayPeriod.endDate) };
+    }
+
     const firstDay = new Date(Number(year), Number(month) - 1, 1);
     const lastDay = new Date(Number(year), Number(month), 0);
 
@@ -1806,6 +1997,9 @@ function resetPayslipSections() {
     setVisible("payslipStipendSection", false);
     setVisible("payslipOtSection", false);
 
+    setText("payslipLabelName", "Employee Name");
+    setText("payslipLabelCode", "Employee Code");
+    setText("payslipFooterNote", "This is a system-generated salary statement based on the attendance and payroll records maintained by GROWBYTEE.");
     setText("payslipStatementTitle", "Salary Statement");
     setText("payslipStatementSubtitle", "Official Employee Payslip");
     setText("payslipStatusText", "Salary Statement");
@@ -1872,9 +2066,14 @@ async function openPayslipModal(employeeId) {
             selectedPayslipIsStipend = true;
             selectedStipendRecord = stipendRecord;
 
-            const employee = salaryEmployeesCache.find(item =>
-                String(item.employeeId) === String(employeeId)
-            ) || {};
+            const employee = await enrichInternForPayslip(
+                salaryEmployeesCache.find(item =>
+                    String(item.employeeId) === String(employeeId)
+                ) || {},
+                employeeId
+            );
+
+            if (requestId !== payslipRequestId) return;
 
             renderStipendPayslipPreview(
                 employee,
@@ -1908,6 +2107,19 @@ async function openPayslipModal(employeeId) {
             renderPayslipPreview(data);
         }
 
+        /* Admin decision (late hours / full pay) is shown with its reason on the payslip screen. */
+        const decided = salaryEmployeesCache.find(row => String(row.employeeId) === String(employeeId));
+        if (decided && decided.adjustmentReason) {
+            const noteElement = document.getElementById("payslipNetNote");
+            const baseNote = noteElement ? noteElement.textContent : "";
+            setText(
+                "payslipNetNote",
+                (baseNote && baseNote !== "-" ? baseNote + " " : "") +
+                (decided.payFull ? "Full pay by admin" : "Admin decision") +
+                ": " + decided.adjustmentReason
+            );
+        }
+
         preview.classList.remove("hidden");
         actions.classList.remove("hidden");
     } catch (error) {
@@ -1926,6 +2138,69 @@ async function openPayslipModal(employeeId) {
             }
         }
     }
+}
+
+/* Stipend after attendance: payable = stipend x (present + leave days) / working days.
+   If the server already calculated a ratio for this person (monthlySalary > 0) that ratio is used. */
+function internStipendCalc(item, stipendAmount) {
+    const workingDays = Number(item.workingDays || (salaryEmployeesCache[0] && salaryEmployeesCache[0].workingDays) || 26) || 26;
+    const present = Number(item.presentDays || 0);
+    const leave = Number(item.leaveDays || 0);
+    let ratio;
+
+    if (item.payFull) {
+        ratio = 1;
+    } else if (Number(item.monthlySalary) > 0 && item.finalSalary !== undefined && item.finalSalary !== null) {
+        ratio = Number(item.finalSalary) / Number(item.monthlySalary);
+    } else {
+        ratio = (present + leave) / workingDays;
+    }
+
+    ratio = Math.min(Math.max(ratio, 0), 1);
+
+    const payable = Math.round(Number(stipendAmount || 0) * ratio * 100) / 100;
+
+    return {
+        present,
+        leave,
+        final: payable,
+        lop: Math.round((Number(stipendAmount || 0) - payable) * 100) / 100
+    };
+}
+
+/* Intern payslip: make sure name, code, email, designation, technology and joining date are filled
+   (the salary list may not carry them) by reading the employee record. */
+async function enrichInternForPayslip(employee, employeeId) {
+    const merged = Object.assign({}, employee);
+
+    if (merged.email && merged.technology && merged.joiningDate && merged.employeeName && merged.employeeCode) {
+        return merged;
+    }
+
+    try {
+        const response = await apiFetch("/admin/employees");
+
+        if (response.ok) {
+            const list = await response.json();
+            const found = (Array.isArray(list) ? list : []).find(item =>
+                String(item.id) === String(employeeId) ||
+                (merged.employeeCode && String(item.employeeCode) === String(merged.employeeCode))
+            );
+
+            if (found) {
+                merged.employeeName = merged.employeeName || found.name;
+                merged.employeeCode = merged.employeeCode || found.employeeCode;
+                merged.email = merged.email || found.email;
+                merged.designation = merged.designation || found.designation;
+                merged.technology = merged.technology || found.technology;
+                merged.joiningDate = merged.joiningDate || found.joiningDate;
+            }
+        }
+    } catch (error) {
+        console.warn("Intern details lookup failed:", error);
+    }
+
+    return merged;
 }
 
 function renderStipendPayslipPreview(employee, stipend, year, month) {
@@ -1953,7 +2228,20 @@ function renderStipendPayslipPreview(employee, stipend, year, month) {
     setText("payslipEmployeeEmail", employee.email);
     setText("payslipDesignation", employee.designation || "Intern");
     setText("payslipTechnology", employee.technology);
-    setText("payslipJoiningDate", employee.joiningDate);
+    setText("payslipJoiningDate", String(employee.joiningDate || "").split("-").length === 3 && String(employee.joiningDate).length === 10 && String(employee.joiningDate).indexOf("-") === 4 ? String(employee.joiningDate).split("-").reverse().join("-") : employee.joiningDate);
+
+    /* Intern wording + stipend after leave / LOP deduction (same day-based rule as the salary list). */
+    setText("payslipLabelName", "Intern Name");
+    setText("payslipLabelCode", "Intern Code");
+    setText(
+        "payslipFooterNote",
+        "This is a system-generated stipend statement based on the attendance records maintained by GROWBYTEE."
+    );
+
+    const calc = internStipendCalc(
+        salaryEmployeesCache.find(row => String(row.employeeId) === String(selectedPayslipEmployeeId)) || {},
+        stipendAmount
+    );
 
     setVisible("payslipAttendanceSection", false);
     setVisible("payslipSalaryBreakdownSection", false);
@@ -1965,11 +2253,12 @@ function renderStipendPayslipPreview(employee, stipend, year, month) {
     setText("payslipStatusText", "PAID");
     setText("payslipStipendType", "PAID");
     setText("payslipStipendAmount", "₹" + formatNumber(stipendAmount));
-    setText("payslipFinalSalary", "₹" + formatNumber(stipendAmount));
+    setText("payslipFinalSalary", "₹" + formatNumber(calc.final));
     setText("payslipNetLabel", "Monthly Stipend Payable");
     setText(
         "payslipNetNote",
-        "Stipend amount recorded for the selected internship month."
+        "Present " + formatDays(calc.present) + " day(s), leave " + formatDays(calc.leave) +
+        " day(s). Deduction for leave / absence: ₹" + formatNumber(calc.lop) + "."
     );
 
     if (typeof lucide !== "undefined") {
@@ -2202,15 +2491,76 @@ async function sendPayslipEmail() {
     }
 }
 
+/* ===== SALARY PERIOD (admin sets start date and end date, both included) ===== */
+function fmtDmy(v) { const p = String(v || "").split("-"); return p.length === 3 ? p[2] + "-" + p[1] + "-" + p[0] : v; }
+
+async function loadPayPeriod() {
+    const year = document.getElementById("salaryYear").value;
+    const month = document.getElementById("salaryMonth").value;
+    if (!year || !month) return;
+    try {
+        const response = await apiFetch(`/admin/payroll/period?year=${year}&month=${month}`);
+        if (!response.ok) throw new Error(await getErrorMessage(response));
+        const p = await response.json();
+        currentPayPeriod = { year: Number(year), month: Number(month), startDate: p.startDate, endDate: p.endDate };
+        document.getElementById("periodStart").value = p.startDate;
+        document.getElementById("periodEnd").value = p.endDate;
+        ["periodStart", "periodEnd", "periodSaveBtn", "periodResetBtn"].forEach(id => { document.getElementById(id).disabled = !!p.locked; });
+        const info = document.getElementById("periodInfo");
+        info.textContent = fmtDmy(p.startDate) + " to " + fmtDmy(p.endDate) + " | " + p.days + " days | " + (p.locked ? "Paid - locked" : p.custom ? "Custom dates" : "Calendar month");
+        info.classList.toggle("locked", !!p.locked);
+    } catch (error) {
+        console.error("Salary period error:", error);
+    }
+}
+
+async function savePayPeriod() {
+    const year = document.getElementById("salaryYear").value;
+    const month = document.getElementById("salaryMonth").value;
+    const startDate = document.getElementById("periodStart").value;
+    const endDate = document.getElementById("periodEnd").value;
+    if (!startDate || !endDate) { showMessage("salaryMessage", "Select the start date and the end date.", "error"); return; }
+    if (endDate < startDate) { showMessage("salaryMessage", "End date cannot be before the start date.", "error"); return; }
+    if (!confirm("Salary for this month will be calculated from " + fmtDmy(startDate) + " to " + fmtDmy(endDate) + " (both days included). Save?")) return;
+    try {
+        const response = await apiFetch("/admin/payroll/period", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ adminEmail: localStorage.getItem("adminEmail"), year: Number(year), month: Number(month), startDate, endDate })
+        });
+        if (!response.ok) throw new Error(await getErrorMessage(response));
+        showMessage("salaryMessage", "Salary period saved.", "success");
+        await calculateSalary();
+    } catch (error) {
+        showMessage("salaryMessage", error.message || "Unable to save the salary period.", "error");
+    }
+}
+
+async function resetPayPeriod() {
+    const year = document.getElementById("salaryYear").value;
+    const month = document.getElementById("salaryMonth").value;
+    if (!confirm("Use the normal calendar month (1st to last day) for this salary?")) return;
+    try {
+        const response = await apiFetch(`/admin/payroll/period?adminEmail=${encodeURIComponent(localStorage.getItem("adminEmail") || "")}&year=${year}&month=${month}`, { method: "DELETE" });
+        if (!response.ok) throw new Error(await getErrorMessage(response));
+        showMessage("salaryMessage", "Calendar month is used now.", "success");
+        await calculateSalary();
+    } catch (error) {
+        showMessage("salaryMessage", error.message || "Unable to reset the salary period.", "error");
+    }
+}
+
 async function calculateSalary() {
     const year = document.getElementById("salaryYear").value;
     const month = document.getElementById("salaryMonth").value;
 
     if (!year || !month) return;
 
+    loadPayPeriod();
+
     try {
         const response = await apiFetch(
-            `/admin/salary/calculate?year=${year}&month=${month}`
+            `/admin/payroll/month?year=${year}&month=${month}`
         );
 
         if (!response.ok) {
@@ -2243,7 +2593,7 @@ async function renderSalary(data) {
         if (workingDaysValue) workingDaysValue.textContent = "Working Days: -";
 
         tbody.innerHTML = `
-            <tr><td colspan="8" class="empty-row">No salary data found</td></tr>
+            <tr><td colspan="10" class="empty-row">No salary data found</td></tr>
         `;
         return;
     }
@@ -2294,7 +2644,7 @@ async function renderSalary(data) {
 
     if (visibleResults.length === 0) {
         tbody.innerHTML = `
-            <tr><td colspan="8" class="empty-row">
+            <tr><td colspan="10" class="empty-row">
                 No payable salary or paid stipend records found for this month.
             </td></tr>
         `;
@@ -2313,8 +2663,9 @@ async function renderSalary(data) {
         const lossOfPay = Number(item.lossOfPay || 0);
         const finalSalary = Number(item.finalSalary || 0);
 
+        const internCalc = isStipend ? internStipendCalc(item, stipendAmount) : null;
         const displayedAmount = isStipend ? stipendAmount : monthlySalary;
-        const displayedFinal = isStipend ? stipendAmount : finalSalary;
+        const displayedFinal = isStipend ? internCalc.final : finalSalary;
 
         return `
             <tr>
@@ -2325,31 +2676,22 @@ async function renderSalary(data) {
                         ? `PAID Stipend<br>₹${formatNumber(displayedAmount)}`
                         : `₹${formatNumber(displayedAmount)}`}
                 </td>
-                <td>${isStipend ? "-" : escapeHtml(formatDays(presentDays))}</td>
-                <td>${isStipend ? "-" : escapeHtml(formatDays(leaveDays))}</td>
-                <td>${isStipend ? "-" : formatNumber(lossOfPay)}</td>
+                <td>${escapeHtml(formatDays(isStipend ? internCalc.present : presentDays))}</td>
+                <td>${escapeHtml(formatDays(isStipend ? internCalc.leave : leaveDays))}</td>
+                <td>${formatNumber(isStipend ? internCalc.lop : lossOfPay)}</td>
+                <td>${lateCellHtml(item)}</td>
                 <td>₹${formatNumber(displayedFinal)}</td>
+                <td>${item.paid
+                    ? '<span class="status-chip paid">Paid</span>'
+                    : '<span class="status-chip">Pending</span>'}</td>
                 <td>
-                    <div style="display:flex;gap:8px;align-items:center;">
+                    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
                         <button
                             class="btn btn-primary"
                             onclick="openPayslipModal('${escapeJs(item.employeeId)}')">
                             <i data-lucide="file-text"></i>
                             Generate Payslip
                         </button>
-
-                        ${isStipend ? "" : `
-                            <button
-                                class="btn btn-secondary"
-                                onclick="openSalaryModal(
-                                    '${escapeJs(item.employeeId)}',
-                                    '${escapeJs(item.employeeName || "")}',
-                                    ${monthlySalary}
-                                )">
-                                <i data-lucide="pencil"></i>
-                                Edit Salary
-                            </button>
-                        `}
                     </div>
                 </td>
             </tr>
@@ -2360,8 +2702,297 @@ async function renderSalary(data) {
 
     tbody.innerHTML = rows.join("");
 
+    updatePayrollAlert(data);
+
     if (typeof lucide !== "undefined") {
         lucide.createIcons();
+    }
+}
+
+/* ===== LATE / SHORT TIME, ADMIN DECISION, PAY ===== */
+
+function fmtMinutes(total) {
+    total = Math.max(0, Math.round(Number(total) || 0));
+    const h = Math.floor(total / 60);
+    const m = total % 60;
+    return h > 0 ? h + " h " + (m ? m + " m" : "") : m + " m";
+}
+
+function lateCellHtml(item) {
+    const short = Number(item.shortMinutes || 0);
+    const tolerated = Number(item.toleratedMinutes || 0);
+
+    if (item.payFull) {
+        return '<span class="late-chip">Full pay</span>';
+    }
+
+    if (short <= 0 && tolerated <= 0) {
+        return "-";
+    }
+
+    let html = "";
+
+    if (short > 0) {
+        const cut = Number(item.appliedDeductMinutes || 0);
+        html += '<span class="late-chip ' + (item.adjusted ? "" : "warn") + '">' +
+            fmtMinutes(short) + " short (" + item.shortDays + " day" + (item.shortDays === 1 ? "" : "s") + ")</span>" +
+            '<br><small>' + (cut > 0 ? "Cut: " + fmtMinutes(cut) : "Not cut (default)") + "</small>";
+    }
+
+    if (tolerated > 0) {
+        html += "<br><small>Within 30 min rule: " + fmtMinutes(tolerated) + "</small>";
+    }
+
+    return html;
+}
+
+/* Intimation for the admin: who crossed the 30 minute rule and still has no decision. */
+function updatePayrollAlert(data) {
+    const box = document.getElementById("payrollAlert");
+    if (!box) return;
+
+    const list = (Array.isArray(data) ? data : []).filter(item => item.needsAttention);
+
+    if (list.length === 0) {
+        box.classList.remove("show");
+        box.innerHTML = "";
+        return;
+    }
+
+    box.innerHTML = "<b>Attention:</b> " + list.length + " employee(s) were late / left early by more than 30 minutes on some days: " +
+        list.map(item => escapeHtml(item.employeeName || "") + " (" + fmtMinutes(item.shortMinutes) + ")").join(", ") +
+        ". Salary is <b>not cut</b> by default. Use <b>Decision</b> and select the name if the hours must be cut.";
+    box.classList.add("show");
+}
+
+let adjustEmployee = null;
+
+/* Decision popup: choose the employee by name first. Default for everyone = no cut. */
+function openAdjustModal() {
+    const select = document.getElementById("adjustEmployeeSelect");
+    const list = salaryEmployeesCache.filter(row => !row.paid);
+
+    select.innerHTML = '<option value="">Select employee name</option>' +
+        list.map(row => '<option value="' + escapeHtml(String(row.employeeId)) + '">' +
+            escapeHtml((row.employeeName || "") + " (" + (row.employeeCode || "") + ")") + "</option>").join("");
+
+    adjustEmployee = null;
+    document.getElementById("adjustTitle").textContent = "Salary Decision";
+    document.getElementById("adjustInfo").textContent = "Select an employee to see the details.";
+    document.getElementById("adjustDaysBody").innerHTML = '<tr><td colspan="5">Select an employee.</td></tr>';
+    document.getElementById("adjustMode").value = "NONE";
+    document.getElementById("adjustReason").value = "";
+    refreshAdjustMode();
+    document.getElementById("adjustModal").classList.add("show");
+}
+
+function selectAdjustEmployee(employeeId) {
+    const item = salaryEmployeesCache.find(row => String(row.employeeId) === String(employeeId));
+
+    if (!item) {
+        adjustEmployee = null;
+        return;
+    }
+
+    adjustEmployee = item;
+
+    document.getElementById("adjustInfo").innerHTML =
+        "Monthly salary / stipend: <b>₹" + formatNumber(item.monthlySalary) + "</b><br>" +
+        "Present days: <b>" + formatDays(item.presentDays) + "</b> of " + item.workingDays + " working days<br>" +
+        "Late / early time over the 30 minute rule: <b>" + fmtMinutes(item.shortMinutes) + "</b> on " + item.shortDays + " day(s)<br>" +
+        "Time within the rule: <b>" + fmtMinutes(item.toleratedMinutes) + "</b><br>" +
+        "Sick / casual leave and approved permission hours are never cut.";
+
+    const short = Number(item.shortMinutes || 0);
+    const applied = Number(item.appliedDeductMinutes || 0);
+
+    let mode = "NONE";
+    if (item.payFull) mode = "FULL";
+    else if (applied > 0 && applied === short) mode = "SHORT";
+    else if (applied > 0) mode = "CUSTOM";
+
+    document.getElementById("adjustMode").value = mode;
+    document.getElementById("adjustMinutes").value = applied > 0 ? applied : short;
+    document.getElementById("adjustMinutesHint").textContent = "The exact short time is " + fmtMinutes(short) + ". Enter fewer minutes to cut less.";
+    document.getElementById("adjustReason").value = item.adjustmentReason || "";
+
+    refreshAdjustMode();
+    loadAdjustDays(item.employeeId);
+}
+
+/* Day-wise view: shows exactly why a day is cut (worked hours vs shift, missing check-out, leave...). */
+async function loadAdjustDays(employeeId) {
+    const body = document.getElementById("adjustDaysBody");
+    body.innerHTML = '<tr><td colspan="5">Loading...</td></tr>';
+
+    try {
+        const year = document.getElementById("salaryYear").value;
+        const month = document.getElementById("salaryMonth").value;
+        const response = await apiFetch("/admin/payroll/" + encodeURIComponent(employeeId) + "/days?year=" + year + "&month=" + month);
+
+        if (!response.ok) throw new Error(await getErrorMessage(response));
+
+        const rows = await response.json();
+
+        if (!Array.isArray(rows) || rows.length === 0) {
+            body.innerHTML = '<tr><td colspan="5">No attendance in this month.</td></tr>';
+            return;
+        }
+
+        body.innerHTML = rows.map(row =>
+            '<tr class="' + (Number(row.shortMinutes) > 30 ? "cut" : "") + '">' +
+            "<td>" + escapeHtml(String(row.date).split("-").reverse().join("-")) + "</td>" +
+            "<td>" + escapeHtml(row.sessions) + "</td>" +
+            "<td>" + fmtMinutes(row.workedMinutes) + " / " + fmtMinutes(row.requiredMinutes) + "</td>" +
+            "<td>" + (Number(row.shortMinutes) > 0 ? fmtMinutes(row.shortMinutes) : "-") + "</td>" +
+            "<td>" + escapeHtml(row.note) + "</td></tr>"
+        ).join("");
+    } catch (error) {
+        body.innerHTML = '<tr><td colspan="5">' + escapeHtml(error.message || "Unable to load day-wise details.") + "</td></tr>";
+    }
+}
+
+function refreshAdjustMode() {
+    const mode = document.getElementById("adjustMode").value;
+    document.getElementById("adjustMinutesGroup").style.display = mode === "CUSTOM" ? "flex" : "none";
+}
+
+function closeAdjustModal() {
+    document.getElementById("adjustModal").classList.remove("show");
+    adjustEmployee = null;
+}
+
+async function saveAdjust() {
+    if (!adjustEmployee) {
+        alert("Please select the employee name.");
+        return;
+    }
+
+    const adminEmail = localStorage.getItem("adminEmail");
+    if (!adminEmail) {
+        alert("Admin login information not found. Please login again.");
+        return;
+    }
+
+    const mode = document.getElementById("adjustMode").value;
+    const reason = document.getElementById("adjustReason").value.trim();
+    const reset = mode === "NONE";
+
+    if (!reset && reason.length < 3) {
+        alert("Please enter a reason (minimum 3 characters).");
+        return;
+    }
+
+    let deductMinutes = null;
+
+    if (mode === "SHORT") deductMinutes = Number(adjustEmployee.shortMinutes || 0);
+
+    if (mode === "CUSTOM") {
+        deductMinutes = Number(document.getElementById("adjustMinutes").value);
+        if (!Number.isFinite(deductMinutes) || deductMinutes < 0) {
+            alert("Please enter valid minutes.");
+            return;
+        }
+    }
+
+    try {
+        const response = await apiFetch("/admin/payroll/adjust/" + encodeURIComponent(adjustEmployee.employeeId), {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                adminEmail,
+                year: Number(document.getElementById("salaryYear").value),
+                month: Number(document.getElementById("salaryMonth").value),
+                deductMinutes: reset ? null : deductMinutes,
+                payFull: mode === "FULL",
+                reason: reset ? null : reason,
+                reset: reset
+            })
+        });
+
+        if (!response.ok) throw new Error(await getErrorMessage(response));
+
+        const name = adjustEmployee.employeeName;
+        closeAdjustModal();
+        await calculateSalary();
+        showMessage("salaryMessage", "Decision saved for " + name + ".", "success");
+    } catch (error) {
+        console.error("Adjust error:", error);
+        alert(error.message || "Unable to save the decision.");
+    }
+}
+
+/* ===== PAY (choose names) ===== */
+
+function openPayModal() {
+    const list = salaryEmployeesCache.filter(row => !row.paid);
+
+    if (list.length === 0) {
+        showMessage("salaryMessage", "Everyone is already paid for this month.", "success");
+        return;
+    }
+
+    document.getElementById("payList").innerHTML = list.map(row =>
+        '<label class="pay-row"><input type="checkbox" class="pay-check" value="' + escapeHtml(String(row.employeeId)) + '" checked> ' +
+        escapeHtml((row.employeeName || "") + " (" + (row.employeeCode || "") + ")") +
+        '<span class="amt">₹' + formatNumber(row.paySalary !== undefined ? row.paySalary : row.finalSalary) + "</span></label>"
+    ).join("");
+
+    document.getElementById("payCheckAll").checked = true;
+    document.getElementById("payModal").classList.add("show");
+}
+
+function closePayModal() {
+    document.getElementById("payModal").classList.remove("show");
+}
+
+function togglePayAll(checked) {
+    document.querySelectorAll(".pay-check").forEach(box => { box.checked = checked; });
+}
+
+async function confirmPay() {
+    const ids = Array.from(document.querySelectorAll(".pay-check:checked")).map(box => Number(box.value));
+
+    if (ids.length === 0) {
+        alert("Please select at least one employee.");
+        return;
+    }
+
+    const adminEmail = localStorage.getItem("adminEmail");
+    if (!adminEmail) {
+        alert("Admin login information not found. Please login again.");
+        return;
+    }
+
+    const year = Number(document.getElementById("salaryYear").value);
+    const month = Number(document.getElementById("salaryMonth").value);
+    const now = new Date();
+    const monthOver = year < now.getFullYear() || (year === now.getFullYear() && month < now.getMonth() + 1);
+
+    let text = "Mark " + ids.length + " employee(s) as paid and e-mail their payslips?";
+    if (!monthOver) text += "\n\nThis month is not over yet, so attendance may still change.";
+
+    if (!confirm(text)) return;
+
+    try {
+        const response = await apiFetch("/admin/payroll/pay", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ adminEmail, year, month, employeeIds: ids, sendEmail: true })
+        });
+
+        if (!response.ok) throw new Error(await getErrorMessage(response));
+
+        const result = await response.json();
+        closePayModal();
+        await calculateSalary();
+
+        let message = "Paid: " + result.paid + ", payslips e-mailed: " + result.emailed + ", skipped: " + result.skipped + ".";
+        if (result.messages && result.messages.length) message += " " + result.messages.join(" | ");
+        showMessage("salaryMessage", message, result.messages && result.messages.length ? "error" : "success");
+    } catch (error) {
+        console.error("Pay error:", error);
+        showMessage("salaryMessage", error.message || "Unable to complete payment.", "error");
     }
 }
 
@@ -2397,6 +3028,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 
 
+<script src="/admin/admin-sidebar.js" defer></script>
 </body>
 
 </html>

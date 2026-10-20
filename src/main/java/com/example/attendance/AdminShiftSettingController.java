@@ -1,3 +1,4 @@
+
 package com.example.attendance;
 
 import jakarta.annotation.PostConstruct;
@@ -9,675 +10,334 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Locale;
 
 @RestController
 @RequestMapping("/admin/shift-settings")
 @CrossOrigin
 public class AdminShiftSettingController {
 
-
-private final ShiftSettingRepository shiftSettingRepository;
-
-public AdminShiftSettingController(
-        ShiftSettingRepository shiftSettingRepository) {
-    this.shiftSettingRepository = shiftSettingRepository;
-}
-
-// =========================
-// DEFAULT SHIFT SETTINGS
-// =========================
-
-@PostConstruct
-public void createDefaultShiftSettings() {
-
-    createDefaultIfMissing(
-            "GENERAL",
-            LocalTime.of(9, 0),
-            LocalTime.of(18, 0)
-    );
-
-    createDefaultIfMissing(
-            "SHIFT_1",
-            LocalTime.of(9, 0),
-            LocalTime.of(18, 0)
-    );
-
-    createDefaultIfMissing(
-            "SHIFT_2",
-            LocalTime.of(10, 0),
-            LocalTime.of(19, 0)
-    );
-
-    createDefaultIfMissing(
-            "SHIFT_3",
-            LocalTime.of(13, 0),
-            LocalTime.of(22, 0)
-    );
-}
-
-private void createDefaultIfMissing(
-        String shiftType,
-        LocalTime startTime,
-        LocalTime endTime) {
-
-    if (shiftSettingRepository
-            .findByShiftType(shiftType)
-            .isPresent()) {
-
-        return;
-    }
-
-    ShiftSetting setting =
-            new ShiftSetting();
-
-    setting.setShiftType(shiftType);
-    setting.setStartTime(startTime);
-    setting.setEndTime(endTime);
-
-    setting.setGraceMinutes(5);
-
-    setting.setLateAfter(
-            startTime.plusMinutes(5));
-
-    setting.setSalaryDeductionAfter(
-            startTime.plusMinutes(30));
-
-    setting.setEarlyDeductionBefore(
-            endTime.minusMinutes(30));
-
-    setting.setHalfDayBoundary(
-            calculateMidpoint(
-                    startTime,
-                    endTime));
-
-    setting.setWorkingHours(
-            calculateWorkingHours(
-                    startTime,
-                    endTime));
-
-    LocalDateTime now =
-            LocalDateTime.now();
-
-    setting.setCreatedAt(now);
-    setting.setUpdatedAt(now);
-
-    shiftSettingRepository.save(setting);
-}
-
-// =========================
-// GET ALL SHIFT SETTINGS
-// =========================
-
-@GetMapping
-public List<ShiftSetting> getAllShiftSettings() {
-
-    return shiftSettingRepository.findAll();
-}
-
-// =========================
-// GET ONE SHIFT SETTING
-// =========================
-
-@GetMapping("/{shiftType}")
-public ShiftSetting getShiftSetting(
-        @PathVariable String shiftType) {
-
-    String normalizedShiftType =
-            normalizeShiftType(shiftType);
-
-    return shiftSettingRepository
-            .findByShiftType(normalizedShiftType)
-            .orElseThrow(() ->
-                    new ResponseStatusException(
-                            HttpStatus.NOT_FOUND,
-                            "Shift setting not found"));
-}
-
-// =========================
-// CREATE / UPDATE SHIFT
-// =========================
-
-@PostMapping
-public ShiftSetting saveShiftSetting(
-        @RequestBody ShiftSettingRequest request) {
-
-    validateRequest(request);
-
-    String shiftType =
-            normalizeShiftType(
-                    request.getShiftType());
-
-    ShiftSetting setting =
-            shiftSettingRepository
-                    .findByShiftType(shiftType)
-                    .orElseGet(ShiftSetting::new);
-
-    LocalTime oldStartTime =
-            setting.getStartTime();
-
-    LocalTime oldEndTime =
-            setting.getEndTime();
-
-    Integer oldGraceMinutes =
-            setting.getGraceMinutes();
-
-    LocalTime oldLateAfter =
-            setting.getLateAfter();
-
-    LocalTime oldSalaryDeductionAfter =
-            setting.getSalaryDeductionAfter();
-
-    LocalTime oldEarlyDeductionBefore =
-            setting.getEarlyDeductionBefore();
-
-    LocalTime oldHalfDayBoundary =
-            setting.getHalfDayBoundary();
-
-    Double oldWorkingHours =
-            setting.getWorkingHours();
-
-    LocalTime newStartTime =
-            request.getStartTime();
-
-    LocalTime newEndTime =
-            request.getEndTime();
-
-    setting.setShiftType(shiftType);
-
-    setting.setStartTime(newStartTime);
-    setting.setEndTime(newEndTime);
-
-    // =========================
-    // GRACE
-    // =========================
-
-    Integer graceMinutes =
-            request.getGraceMinutes();
-
-    if (graceMinutes == null) {
-        graceMinutes = 5;
-    }
-
-    setting.setGraceMinutes(graceMinutes);
-
-    // =========================
-    // LATE AFTER
-    // =========================
-
-    LocalTime lateAfter =
-            request.getLateAfter();
-
-    boolean lateWasAutomatic =
-            isAutomaticLateAfter(
-                    oldStartTime,
-                    oldGraceMinutes,
-                    oldLateAfter);
-
-    if (lateAfter == null
-            || lateWasAutomatic) {
-
-        lateAfter =
-                newStartTime.plusMinutes(
-                        graceMinutes);
-    }
-
-    setting.setLateAfter(lateAfter);
-
-    // =========================
-    // SALARY / PERMISSION
-    // DEDUCTION AFTER
-    // =========================
-
-    LocalTime salaryDeductionAfter =
-            request.getSalaryDeductionAfter();
-
-    boolean salaryDeductionWasAutomatic =
-            isAutomaticSalaryDeduction(
-                    oldStartTime,
-                    oldSalaryDeductionAfter);
-
-    if (salaryDeductionAfter == null
-            || salaryDeductionWasAutomatic) {
-
-        salaryDeductionAfter =
-                newStartTime.plusMinutes(30);
-    }
-
-    setting.setSalaryDeductionAfter(
-            salaryDeductionAfter);
-
-    // =========================
-    // EARLY CHECKOUT
-    // =========================
-
-    LocalTime earlyDeductionBefore =
-            request.getEarlyDeductionBefore();
-
-    boolean earlyDeductionWasAutomatic =
-            isAutomaticEarlyDeduction(
-                    oldEndTime,
-                    oldEarlyDeductionBefore);
-
-    if (earlyDeductionBefore == null
-            || earlyDeductionWasAutomatic) {
-
-        earlyDeductionBefore =
-                newEndTime.minusMinutes(30);
-    }
-
-    setting.setEarlyDeductionBefore(
-            earlyDeductionBefore);
-
-    // =========================
-    // HALF DAY
-    // =========================
-
-    LocalTime halfDayBoundary =
-            request.getHalfDayBoundary();
-
-    boolean halfDayWasAutomatic =
-            isAutomaticHalfDay(
-                    oldStartTime,
-                    oldEndTime,
-                    oldHalfDayBoundary);
-
-    if (halfDayBoundary == null
-            || halfDayWasAutomatic) {
-
-        halfDayBoundary =
-                calculateMidpoint(
-                        newStartTime,
-                        newEndTime);
-    }
-
-    setting.setHalfDayBoundary(
-            halfDayBoundary);
-
-    // =========================
-    // WORKING HOURS
-    // =========================
-
-    Double workingHours =
-            request.getWorkingHours();
-
-    boolean workingHoursWasAutomatic =
-            isAutomaticWorkingHours(
-                    oldStartTime,
-                    oldEndTime,
-                    oldWorkingHours);
-
-    if (workingHours == null
-            || workingHoursWasAutomatic) {
-
-        workingHours =
-                calculateWorkingHours(
-                        newStartTime,
-                        newEndTime);
-    }
-
-    setting.setWorkingHours(
-            workingHours);
-
-    // =========================
-    // TIMESTAMPS
-    // =========================
-
-    if (setting.getCreatedAt() == null) {
-
-        setting.setCreatedAt(
-                LocalDateTime.now());
-    }
-
-    setting.setUpdatedAt(
-            LocalDateTime.now());
-
-    return shiftSettingRepository.save(
-            setting);
-}
-
-// =========================
-// DELETE SHIFT SETTING
-// =========================
-
-@DeleteMapping("/{shiftType}")
-public void deleteShiftSetting(
-        @PathVariable String shiftType) {
-
-    String normalizedShiftType =
-            normalizeShiftType(shiftType);
-
-    ShiftSetting setting =
-            shiftSettingRepository
-                    .findByShiftType(
-                            normalizedShiftType)
-                    .orElseThrow(() ->
-                            new ResponseStatusException(
-                                    HttpStatus.NOT_FOUND,
-                                    "Shift setting not found"));
-
-    shiftSettingRepository.delete(setting);
-}
-
-// =========================
-// VALIDATION
-// =========================
-
-private void validateRequest(
-        ShiftSettingRequest request) {
-
-    if (request == null) {
-
-        throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "Request is required");
-    }
-
-    String shiftType =
-            normalizeShiftType(
-                    request.getShiftType());
-
-    if (!shiftType.equals("GENERAL")
-            && !shiftType.equals("SHIFT_1")
-            && !shiftType.equals("SHIFT_2")
-            && !shiftType.equals("SHIFT_3")) {
-
-        throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "Shift type must be GENERAL, SHIFT_1, SHIFT_2 or SHIFT_3");
-    }
-
-    // =========================
-    // START TIME
-    // =========================
-
-    if (request.getStartTime() == null) {
-
-        throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "Start time is required");
-    }
-
-    // =========================
-    // END TIME
-    // =========================
-
-    if (request.getEndTime() == null) {
-
-        throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "End time is required");
-    }
-
-    // =========================
-    // END AFTER START
-    // =========================
-
-    if (!request.getEndTime()
-            .isAfter(
-                    request.getStartTime())) {
-
-        throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "End time must be after start time");
-    }
-
-    // =========================
-    // GRACE
-    // =========================
-
-    if (request.getGraceMinutes() != null
-            && request.getGraceMinutes() < 0) {
-
-        throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "Grace minutes cannot be negative");
-    }
-
-    // =========================
-    // WORKING HOURS
-    // =========================
-
-    if (request.getWorkingHours() != null
-            && request.getWorkingHours() <= 0) {
-
-        throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "Working hours must be greater than zero");
-    }
-
-    // =========================
-    // LATE TIME
-    // =========================
-
-    if (request.getLateAfter() != null
-            && request.getLateAfter()
-            .isBefore(
-                    request.getStartTime())) {
-
-        throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "Late time cannot be before start time");
-    }
-
-    // =========================
-    // SALARY DEDUCTION TIME
-    // =========================
-
-    if (request.getSalaryDeductionAfter() != null
-            && request.getSalaryDeductionAfter()
-            .isBefore(
-                    request.getStartTime())) {
-
-        throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "Salary deduction time cannot be before start time");
-    }
-
-    // =========================
-    // EARLY DEDUCTION
-    // =========================
-
-    if (request.getEarlyDeductionBefore() != null
-            && request.getEarlyDeductionBefore()
-            .isAfter(
-                    request.getEndTime())) {
-
-        throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "Early deduction time cannot be after end time");
-    }
-
-    // =========================
-    // HALF DAY
-    // =========================
-
-    if (request.getHalfDayBoundary() != null) {
-
-        LocalTime boundary =
-                request.getHalfDayBoundary();
-
-        if (!boundary.isAfter(
-                request.getStartTime())
-                || !boundary.isBefore(
-                request.getEndTime())) {
-
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Half-day boundary must be between start and end time");
+        private final ShiftSettingRepository shiftSettingRepository;
+
+        public AdminShiftSettingController(
+                        ShiftSettingRepository shiftSettingRepository) {
+                this.shiftSettingRepository = shiftSettingRepository;
         }
-    }
-}
 
-// =========================
-// AUTOMATIC LATE CHECK
-// =========================
+        // Create only the default General Shift if it does not exist.
+        // Existing shift settings are never overwritten during startup.
+        @PostConstruct
+        public void createDefaultShiftSettings() {
+                createDefaultIfMissing(
+                                "GENERAL",
+                                LocalTime.of(9, 0),
+                                LocalTime.of(18, 0));
+        }
 
-private boolean isAutomaticLateAfter(
-        LocalTime oldStart,
-        Integer oldGrace,
-        LocalTime oldLateAfter) {
+        private void createDefaultIfMissing(
+                        String shiftType,
+                        LocalTime startTime,
+                        LocalTime endTime) {
 
-    if (oldStart == null
-            || oldLateAfter == null) {
+                if (shiftSettingRepository.findByShiftType(shiftType).isPresent()) {
+                        return;
+                }
 
-        return true;
-    }
+                ShiftSetting setting = new ShiftSetting();
+                setting.setShiftType(shiftType);
+                setting.setStartTime(startTime);
+                setting.setEndTime(endTime);
+                setting.setGraceMinutes(5);
+                setting.setLateAfter(startTime.plusMinutes(5));
+                setting.setSalaryDeductionAfter(startTime.plusMinutes(30));
+                setting.setEarlyDeductionBefore(endTime.minusMinutes(30));
+                setting.setHalfDayBoundary(calculateMidpoint(startTime, endTime));
+                setting.setWorkingHours(calculateWorkingHours(startTime, endTime));
 
-    int grace =
-            oldGrace == null
-                    ? 5
-                    : oldGrace;
+                LocalDateTime now = LocalDateTime.now();
+                setting.setCreatedAt(now);
+                setting.setUpdatedAt(now);
 
-    LocalTime expected =
-            oldStart.plusMinutes(grace);
+                shiftSettingRepository.save(setting);
+        }
 
-    return oldLateAfter.equals(expected);
-}
+        @GetMapping
+        public List<ShiftSetting> getAllShiftSettings() {
+                return shiftSettingRepository.findAll();
+        }
 
-// =========================
-// AUTOMATIC SALARY CHECK
-// =========================
+        @GetMapping("/{shiftType}")
+        public ShiftSetting getShiftSetting(@PathVariable String shiftType) {
+                String normalized = normalizeShiftType(shiftType);
 
-private boolean isAutomaticSalaryDeduction(
-        LocalTime oldStart,
-        LocalTime oldSalaryDeduction) {
+                return shiftSettingRepository.findByShiftType(normalized)
+                                .orElseThrow(() -> new ResponseStatusException(
+                                                HttpStatus.NOT_FOUND,
+                                                "Shift setting not found"));
+        }
 
-    if (oldStart == null
-            || oldSalaryDeduction == null) {
+        @PostMapping
+        public ShiftSetting saveShiftSetting(
+                        @RequestBody ShiftSettingRequest request) {
 
-        return true;
-    }
+                validateRequest(request);
 
-    LocalTime expected =
-            oldStart.plusMinutes(30);
+                String shiftType = normalizeShiftType(request.getShiftType());
 
-    return oldSalaryDeduction.equals(expected);
-}
+                ShiftSetting setting = shiftSettingRepository
+                                .findByShiftType(shiftType)
+                                .orElseGet(ShiftSetting::new);
 
-// =========================
-// AUTOMATIC EARLY CHECK
-// =========================
+                LocalTime oldStart = setting.getStartTime();
+                LocalTime oldEnd = setting.getEndTime();
+                Integer oldGrace = setting.getGraceMinutes();
+                LocalTime oldLateAfter = setting.getLateAfter();
+                LocalTime oldSalaryDeduction = setting.getSalaryDeductionAfter();
+                LocalTime oldEarlyDeduction = setting.getEarlyDeductionBefore();
+                LocalTime oldHalfDay = setting.getHalfDayBoundary();
+                Double oldWorkingHours = setting.getWorkingHours();
 
-private boolean isAutomaticEarlyDeduction(
-        LocalTime oldEnd,
-        LocalTime oldEarlyDeduction) {
+                LocalTime start = request.getStartTime();
+                LocalTime end = request.getEndTime();
 
-    if (oldEnd == null
-            || oldEarlyDeduction == null) {
+                setting.setShiftType(shiftType);
+                setting.setStartTime(start);
+                setting.setEndTime(end);
 
-        return true;
-    }
+                int grace = request.getGraceMinutes() == null
+                                ? 5
+                                : request.getGraceMinutes();
 
-    LocalTime expected =
-            oldEnd.minusMinutes(30);
+                setting.setGraceMinutes(grace);
 
-    return oldEarlyDeduction.equals(expected);
-}
+                LocalTime lateAfter = request.getLateAfter();
+                if (lateAfter == null
+                                || isAutomaticLateAfter(oldStart, oldGrace, oldLateAfter)) {
+                        lateAfter = start.plusMinutes(grace);
+                }
+                setting.setLateAfter(lateAfter);
 
-// =========================
-// AUTOMATIC HALF DAY CHECK
-// =========================
+                LocalTime salaryDeduction = request.getSalaryDeductionAfter();
+                if (salaryDeduction == null
+                                || isAutomaticSalaryDeduction(oldStart, oldSalaryDeduction)) {
+                        salaryDeduction = start.plusMinutes(30);
+                }
+                setting.setSalaryDeductionAfter(salaryDeduction);
 
-private boolean isAutomaticHalfDay(
-        LocalTime oldStart,
-        LocalTime oldEnd,
-        LocalTime oldHalfDay) {
+                LocalTime earlyDeduction = request.getEarlyDeductionBefore();
+                if (earlyDeduction == null
+                                || isAutomaticEarlyDeduction(oldEnd, oldEarlyDeduction)) {
+                        earlyDeduction = end.minusMinutes(30);
+                }
+                setting.setEarlyDeductionBefore(earlyDeduction);
 
-    if (oldStart == null
-            || oldEnd == null
-            || oldHalfDay == null) {
+                LocalTime halfDay = request.getHalfDayBoundary();
+                if (halfDay == null
+                                || isAutomaticHalfDay(oldStart, oldEnd, oldHalfDay)) {
+                        halfDay = calculateMidpoint(start, end);
+                }
+                setting.setHalfDayBoundary(halfDay);
 
-        return true;
-    }
+                Double workingHours = request.getWorkingHours();
+                if (workingHours == null
+                                || isAutomaticWorkingHours(oldStart, oldEnd, oldWorkingHours)) {
+                        workingHours = calculateWorkingHours(start, end);
+                }
+                setting.setWorkingHours(workingHours);
 
-    LocalTime expected =
-            calculateMidpoint(
-                    oldStart,
-                    oldEnd);
+                LocalDateTime now = LocalDateTime.now();
+                if (setting.getCreatedAt() == null) {
+                        setting.setCreatedAt(now);
+                }
+                setting.setUpdatedAt(now);
 
-    return oldHalfDay.equals(expected);
-}
+                return shiftSettingRepository.save(setting);
+        }
 
-// =========================
-// AUTOMATIC WORKING HOURS CHECK
-// =========================
+        @DeleteMapping("/{shiftType}")
+        public void deleteShiftSetting(@PathVariable String shiftType) {
+                String normalized = normalizeShiftType(shiftType);
 
-private boolean isAutomaticWorkingHours(
-        LocalTime oldStart,
-        LocalTime oldEnd,
-        Double oldWorkingHours) {
+                if ("GENERAL".equals(normalized)) {
+                        throw new ResponseStatusException(
+                                        HttpStatus.BAD_REQUEST,
+                                        "General Shift cannot be deleted");
+                }
 
-    if (oldStart == null
-            || oldEnd == null
-            || oldWorkingHours == null) {
+                ShiftSetting setting = shiftSettingRepository
+                                .findByShiftType(normalized)
+                                .orElseThrow(() -> new ResponseStatusException(
+                                                HttpStatus.NOT_FOUND,
+                                                "Shift setting not found"));
 
-        return true;
-    }
+                shiftSettingRepository.delete(setting);
+        }
 
-    double expected =
-            calculateWorkingHours(
-                    oldStart,
-                    oldEnd);
+        private void validateRequest(ShiftSettingRequest request) {
+                if (request == null) {
+                        throw new ResponseStatusException(
+                                        HttpStatus.BAD_REQUEST, "Request is required");
+                }
 
-    return Math.abs(
-            oldWorkingHours - expected) < 0.0001;
-}
+                String shiftType = normalizeShiftType(request.getShiftType());
 
-// =========================
-// CALCULATE MIDPOINT
-// =========================
+                if (shiftType.length() > 100) {
+                        throw new ResponseStatusException(
+                                        HttpStatus.BAD_REQUEST,
+                                        "Shift name must not exceed 100 characters");
+                }
 
-private LocalTime calculateMidpoint(
-        LocalTime start,
-        LocalTime end) {
+                if (request.getStartTime() == null) {
+                        throw new ResponseStatusException(
+                                        HttpStatus.BAD_REQUEST, "Start time is required");
+                }
 
-    long seconds =
-            Duration.between(
-                    start,
-                    end)
-                    .getSeconds();
+                if (request.getEndTime() == null) {
+                        throw new ResponseStatusException(
+                                        HttpStatus.BAD_REQUEST, "End time is required");
+                }
 
-    return start.plusSeconds(
-            seconds / 2);
-}
+                if (!request.getEndTime().isAfter(request.getStartTime())) {
+                        throw new ResponseStatusException(
+                                        HttpStatus.BAD_REQUEST,
+                                        "End time must be after start time");
+                }
 
-// =========================
-// CALCULATE WORKING HOURS
-// =========================
+                if (request.getGraceMinutes() != null
+                                && request.getGraceMinutes() < 0) {
+                        throw new ResponseStatusException(
+                                        HttpStatus.BAD_REQUEST,
+                                        "Grace minutes cannot be negative");
+                }
 
-private double calculateWorkingHours(
-        LocalTime start,
-        LocalTime end) {
+                if (request.getWorkingHours() != null
+                                && request.getWorkingHours() <= 0) {
+                        throw new ResponseStatusException(
+                                        HttpStatus.BAD_REQUEST,
+                                        "Working hours must be greater than zero");
+                }
 
-    long seconds =
-            Duration.between(
-                    start,
-                    end)
-                    .getSeconds();
+                if (request.getLateAfter() != null
+                                && request.getLateAfter().isBefore(request.getStartTime())) {
+                        throw new ResponseStatusException(
+                                        HttpStatus.BAD_REQUEST,
+                                        "Late time cannot be before start time");
+                }
 
-    return seconds / 3600.0;
-}
+                if (request.getSalaryDeductionAfter() != null
+                                && request.getSalaryDeductionAfter()
+                                                .isBefore(request.getStartTime())) {
+                        throw new ResponseStatusException(
+                                        HttpStatus.BAD_REQUEST,
+                                        "Salary deduction time cannot be before start time");
+                }
 
-// =========================
-// NORMALIZE SHIFT TYPE
-// =========================
+                if (request.getEarlyDeductionBefore() != null
+                                && request.getEarlyDeductionBefore()
+                                                .isAfter(request.getEndTime())) {
+                        throw new ResponseStatusException(
+                                        HttpStatus.BAD_REQUEST,
+                                        "Early deduction time cannot be after end time");
+                }
 
-private String normalizeShiftType(
-        String shiftType) {
+                if (request.getHalfDayBoundary() != null) {
+                        LocalTime boundary = request.getHalfDayBoundary();
 
-    if (shiftType == null) {
+                        if (!boundary.isAfter(request.getStartTime())
+                                        || !boundary.isBefore(request.getEndTime())) {
+                                throw new ResponseStatusException(
+                                                HttpStatus.BAD_REQUEST,
+                                                "Half-day boundary must be between start and end time");
+                        }
+                }
+        }
 
-        throw new ResponseStatusException(
-                HttpStatus.BAD_REQUEST,
-                "Shift type is required");
-    }
+        private boolean isAutomaticLateAfter(
+                        LocalTime oldStart,
+                        Integer oldGrace,
+                        LocalTime oldLateAfter) {
 
-    return shiftType
-            .trim()
-            .toUpperCase()
-            .replace("-", "_")
-            .replace(" ", "_");
-}
+                if (oldStart == null || oldLateAfter == null) {
+                        return true;
+                }
 
+                int grace = oldGrace == null ? 5 : oldGrace;
+                return oldLateAfter.equals(oldStart.plusMinutes(grace));
+        }
 
+        private boolean isAutomaticSalaryDeduction(
+                        LocalTime oldStart,
+                        LocalTime oldSalaryDeduction) {
+
+                if (oldStart == null || oldSalaryDeduction == null) {
+                        return true;
+                }
+
+                return oldSalaryDeduction.equals(oldStart.plusMinutes(30));
+        }
+
+        private boolean isAutomaticEarlyDeduction(
+                        LocalTime oldEnd,
+                        LocalTime oldEarlyDeduction) {
+
+                if (oldEnd == null || oldEarlyDeduction == null) {
+                        return true;
+                }
+
+                return oldEarlyDeduction.equals(oldEnd.minusMinutes(30));
+        }
+
+        private boolean isAutomaticHalfDay(
+                        LocalTime oldStart,
+                        LocalTime oldEnd,
+                        LocalTime oldHalfDay) {
+
+                if (oldStart == null || oldEnd == null || oldHalfDay == null) {
+                        return true;
+                }
+
+                return oldHalfDay.equals(calculateMidpoint(oldStart, oldEnd));
+        }
+
+        private boolean isAutomaticWorkingHours(
+                        LocalTime oldStart,
+                        LocalTime oldEnd,
+                        Double oldWorkingHours) {
+
+                if (oldStart == null || oldEnd == null || oldWorkingHours == null) {
+                        return true;
+                }
+
+                return Math.abs(
+                                oldWorkingHours - calculateWorkingHours(oldStart, oldEnd)) < 0.0001;
+        }
+
+        private LocalTime calculateMidpoint(LocalTime start, LocalTime end) {
+                long seconds = Duration.between(start, end).getSeconds();
+                return start.plusSeconds(seconds / 2);
+        }
+
+        private double calculateWorkingHours(LocalTime start, LocalTime end) {
+                long seconds = Duration.between(start, end).getSeconds();
+                return seconds / 3600.0;
+        }
+
+        private String normalizeShiftType(String shiftType) {
+                if (shiftType == null || shiftType.trim().isEmpty()) {
+                        throw new ResponseStatusException(
+                                        HttpStatus.BAD_REQUEST, "Shift name is required");
+                }
+
+                String normalized = shiftType.trim()
+                                .toUpperCase(Locale.ROOT)
+                                .replaceAll("[\\s-]+", "_");
+
+                if (!normalized.matches("[A-Z0-9_]+")) {
+                        throw new ResponseStatusException(
+                                        HttpStatus.BAD_REQUEST,
+                                        "Shift name can contain only letters, numbers, spaces and hyphens");
+                }
+
+                return normalized;
+        }
 }

@@ -30,6 +30,32 @@ public class Attendance {
     private String status;
 
     // =====================================================
+    // GPS LOCATION CAPTURE
+    // =====================================================
+
+    @Column(name = "check_in_latitude", precision = 10, scale = 7)
+    private java.math.BigDecimal checkInLatitude;
+
+    @Column(name = "check_in_longitude", precision = 10, scale = 7)
+    private java.math.BigDecimal checkInLongitude;
+
+    @Column(name = "check_out_latitude", precision = 10, scale = 7)
+    private java.math.BigDecimal checkOutLatitude;
+
+    @Column(name = "check_out_longitude", precision = 10, scale = 7)
+    private java.math.BigDecimal checkOutLongitude;
+
+    // =====================================================
+    // ATTENDANCE PHOTO CAPTURE
+    // =====================================================
+
+    @Column(name = "check_in_photo", columnDefinition = "TEXT")
+    private String checkInPhoto;
+
+    @Column(name = "check_out_photo", columnDefinition = "TEXT")
+    private String checkOutPhoto;
+
+    // =====================================================
     // MISSING CHECK-OUT REQUEST - EMPLOYEE SIDE
     // =====================================================
 
@@ -94,6 +120,38 @@ public class Attendance {
     }
 
     // =====================================================
+    // GPS GETTERS
+    // =====================================================
+
+    public java.math.BigDecimal getCheckInLatitude() {
+        return checkInLatitude;
+    }
+
+    public java.math.BigDecimal getCheckInLongitude() {
+        return checkInLongitude;
+    }
+
+    public java.math.BigDecimal getCheckOutLatitude() {
+        return checkOutLatitude;
+    }
+
+    public java.math.BigDecimal getCheckOutLongitude() {
+        return checkOutLongitude;
+    }
+
+    // =====================================================
+    // ATTENDANCE PHOTO GETTERS
+    // =====================================================
+
+    public String getCheckInPhoto() {
+        return checkInPhoto;
+    }
+
+    public String getCheckOutPhoto() {
+        return checkOutPhoto;
+    }
+
+    // =====================================================
     // EXISTING SETTERS
     // =====================================================
 
@@ -119,6 +177,38 @@ public class Attendance {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    // =====================================================
+    // GPS SETTERS
+    // =====================================================
+
+    public void setCheckInLatitude(java.math.BigDecimal checkInLatitude) {
+        this.checkInLatitude = checkInLatitude;
+    }
+
+    public void setCheckInLongitude(java.math.BigDecimal checkInLongitude) {
+        this.checkInLongitude = checkInLongitude;
+    }
+
+    public void setCheckOutLatitude(java.math.BigDecimal checkOutLatitude) {
+        this.checkOutLatitude = checkOutLatitude;
+    }
+
+    public void setCheckOutLongitude(java.math.BigDecimal checkOutLongitude) {
+        this.checkOutLongitude = checkOutLongitude;
+    }
+
+    // =====================================================
+    // ATTENDANCE PHOTO SETTERS
+    // =====================================================
+
+    public void setCheckInPhoto(String checkInPhoto) {
+        this.checkInPhoto = checkInPhoto;
+    }
+
+    public void setCheckOutPhoto(String checkOutPhoto) {
+        this.checkOutPhoto = checkOutPhoto;
     }
 
     // =====================================================

@@ -1,2638 +1,1291 @@
-
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>GROWBYTEE - Branch Management</title>
-
-    <script src="https://unpkg.com/lucide@latest"></script>
-
-    <style>
-    * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        font-family: Arial, Helvetica, sans-serif;
-    }
-
-    :root {
-        --gb-green: #16803C;
-        --gb-dark: #0B2E1A;
-        --gb-light: #E8F5EC;
-        --gb-black: #171717;
-        --gb-white: #FFFFFF;
-        --gb-border: #D9E7DD;
-        --gb-text: #26352B;
-        --gb-muted: #647568;
-    }
-
-    body {
-        background: #F4F8F5;
-        color: var(--gb-text);
-    }
-
-    .container {
-        display: flex;
-        min-height: 100vh;
-    }
-
-    /* SIDEBAR */
-    .sidebar {
-        width: 250px;
-        background: linear-gradient(180deg, #0B2E1A 0%, #171717 100%);
-        color: white;
-        position: fixed;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        padding: 25px 15px;
-        overflow-y: auto;
-        border-right: 1px solid #245638;
-    }
-
-    .logo {
-        text-align: center;
-        font-size: 25px;
-        font-weight: bold;
-        margin-bottom: 8px;
-        color: #FFFFFF;
-        letter-spacing: 0.4px;
-    }
-
-    .admin-title {
-        text-align: center;
-        color: #B9D9C2;
-        font-size: 13px;
-        margin-bottom: 30px;
-    }
-
-    .menu {
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-    }
-
-    .menu button {
-        border: none;
-        background: transparent;
-        color: #E0EAE3;
-        text-align: left;
-        padding: 14px 15px;
-        border-radius: 10px;
-        cursor: pointer;
-        font-size: 15px;
-        transition: 0.2s;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
-
-    .menu button svg {
-        width: 18px;
-        height: 18px;
-        flex-shrink: 0;
-    }
-
-    .menu button:hover,
-    .menu button.active {
-        background: var(--gb-green);
-        color: white;
-        box-shadow: 0 4px 12px rgba(22, 128, 60, 0.2);
-    }
-
-    .logout-btn {
-        margin-top: 25px;
-        background: #DC2626 !important;
-        color: white !important;
-        text-align: center !important;
-    }
-
-    .logout-btn:hover {
-        background: #B91C1C !important;
-    }
-
-    /* MAIN */
-    .main {
-        margin-left: 250px;
-        width: calc(100% - 250px);
-        min-height: 100vh;
-    }
-
-    .header {
-        height: 75px;
-        background: white;
-        border-bottom: 2px solid var(--gb-green);
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 0 30px;
-        position: sticky;
-        top: 0;
-        z-index: 20;
-        box-shadow: 0 2px 10px rgba(11, 46, 26, 0.04);
-    }
-
-    .header h1 {
-        font-size: 23px;
-        color: var(--gb-black);
-    }
-
-    .admin-info {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        color: #47594C;
-        font-size: 14px;
-    }
-
-    .admin-badge {
-        background: var(--gb-dark);
-        color: white;
-        padding: 8px 13px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: bold;
-        border: 1px solid var(--gb-green);
-    }
-
-    .content {
-        padding: 30px;
-    }
-
-    .section {
-        display: none;
-        padding: 24px;
-        border-radius: 16px;
-        min-height: calc(100vh - 135px);
-        border: 1px solid var(--gb-border);
-        background: white;
-        box-shadow: 0 4px 16px rgba(11, 46, 26, 0.035);
-    }
-
-    .section.active {
-        display: block;
-    }
-
-    #branchManagement {
-        background: #FFFFFF;
-    }
-
-    .section-title {
-        font-size: 25px;
-        margin-bottom: 8px;
-        color: var(--gb-dark);
-        display: flex;
-        align-items: flex-start;
-        justify-content: space-between;
-        gap: 20px;
-    }
-
-    .section-subtitle {
-        color: var(--gb-muted);
-        margin-bottom: 25px;
-        font-size: 14px;
-    }
-
-    /* BUTTONS */
-    .btn {
-        border: none;
-        border-radius: 8px;
-        padding: 10px 16px;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: 600;
-        transition: 0.2s;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 7px;
-    }
-
-    .btn svg {
-        width: 16px;
-        height: 16px;
-    }
-
-    .btn-primary {
-        background: var(--gb-green);
-        color: white;
-    }
-
-    .btn-primary:hover {
-        background: #11652F;
-        box-shadow: 0 4px 10px rgba(22, 128, 60, 0.16);
-    }
-
-    .btn-warning {
-        background: #B7791F;
-        color: white;
-    }
-
-    .btn-warning:hover {
-        background: #925F16;
-    }
-
-    .btn-secondary {
-        background: #E8EEE9;
-        color: #26352B;
-        border: 1px solid #D6E4D9;
-    }
-
-    .btn-secondary:hover {
-        background: #D6E4D9;
-    }
-
-    /* TABLE */
-    .table-card {
-        background: white;
-        border-radius: 14px;
-        box-shadow: 0 5px 20px rgba(11, 46, 26, 0.05);
-        overflow: hidden;
-        border: 1px solid var(--gb-border);
-    }
-
-    .table-wrapper {
-        overflow-x: auto;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        min-width: 1050px;
-    }
-
-    th {
-        background: var(--gb-dark);
-        color: white;
-        font-size: 13px;
-        text-align: left;
-        padding: 14px;
-        white-space: nowrap;
-    }
-
-    td {
-        padding: 13px 14px;
-        border-top: 1px solid #E1EAE3;
-        font-size: 13px;
-        white-space: nowrap;
-    }
-
-    tr:hover td {
-        background: #F0F8F2;
-    }
-
-    .empty-row {
-        text-align: center;
-        color: var(--gb-muted);
-        padding: 30px;
-    }
-
-    /* FORMS */
-    .form-group {
-        display: flex;
-        flex-direction: column;
-        gap: 7px;
-        margin-bottom: 18px;
-    }
-
-    .form-group label {
-        font-size: 13px;
-        font-weight: 600;
-        color: #35483A;
-    }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-        width: 100%;
-        padding: 11px 12px;
-        border: 1px solid #C9D9CC;
-        border-radius: 8px;
-        outline: none;
-        font-size: 14px;
-        background: white;
-        color: var(--gb-text);
-    }
-
-    .form-group textarea {
-        resize: vertical;
-        min-height: 90px;
-    }
-
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-        border-color: var(--gb-green);
-        box-shadow: 0 0 0 3px rgba(22, 128, 60, 0.10);
-    }
-
-    /* PRIORITY */
-    .priority-box {
-        background: var(--gb-light);
-        border: 1px solid #B9DCC2;
-        color: var(--gb-dark);
-        border-radius: 10px;
-        padding: 13px 15px;
-        font-size: 13px;
-        line-height: 1.7;
-        margin-bottom: 20px;
-    }
-
-    /* VERIFICATION SETTINGS */
-    .verification-box {
-        background: #F7FAF7;
-        border: 1px solid var(--gb-border);
-        border-radius: 10px;
-        padding: 15px;
-        margin-bottom: 18px;
-    }
-
-    .verification-title {
-        font-size: 14px;
-        font-weight: 700;
-        color: var(--gb-dark);
-        margin-bottom: 12px;
-    }
-
-    .verification-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 15px;
-        padding: 10px 0;
-        border-top: 1px solid #E1EAE3;
-    }
-
-    .verification-row:first-of-type {
-        border-top: none;
-        padding-top: 0;
-    }
-
-    .verification-label {
-        display: flex;
-        flex-direction: column;
-        gap: 3px;
-    }
-
-    .verification-label strong {
-        font-size: 13px;
-        color: #35483A;
-    }
-
-    .verification-label span {
-        font-size: 12px;
-        color: var(--gb-muted);
-    }
-
-    /* SWITCH */
-    .switch {
-        position: relative;
-        display: inline-block;
-        width: 48px;
-        height: 26px;
-        flex-shrink: 0;
-    }
-
-    .switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-    }
-
-    .slider {
-        position: absolute;
-        cursor: pointer;
-        inset: 0;
-        background: #C8D5CB;
-        border-radius: 26px;
-        transition: 0.2s;
-    }
-
-    .slider::before {
-        content: "";
-        position: absolute;
-        height: 20px;
-        width: 20px;
-        left: 3px;
-        top: 3px;
-        background: white;
-        border-radius: 50%;
-        transition: 0.2s;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-    }
-
-    .switch input:checked + .slider {
-        background: var(--gb-green);
-    }
-
-    .switch input:checked + .slider::before {
-        transform: translateX(22px);
-    }
-
-    /* VERIFICATION STATUS */
-    .verification-status {
-        display: inline-flex;
-        align-items: center;
-        padding: 5px 9px;
-        border-radius: 20px;
-        font-size: 11px;
-        font-weight: 700;
-    }
-
-    .verification-status.on {
-        background: #DCFCE7;
-        color: #166534;
-    }
-
-    .verification-status.off {
-        background: #E8EEE9;
-        color: #526457;
-    }
-
-    /* MODAL */
-    .modal {
-        display: none;
-        position: fixed;
-        inset: 0;
-        background: rgba(10, 25, 15, 0.68);
-        z-index: 100;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-    }
-
-    .modal.show {
-        display: flex;
-    }
-
-    .modal-box {
-        width: 100%;
-        max-width: 650px;
-        background: white;
-        border: 1px solid var(--gb-border);
-        border-radius: 16px;
-        padding: 25px;
-        max-height: 90vh;
-        overflow-y: auto;
-        box-shadow: 0 20px 50px rgba(11, 46, 26, 0.2);
-    }
-
-    .modal-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin-bottom: 22px;
-    }
-
-    .modal-header h2,
-    .modal-header h3 {
-        font-size: 20px;
-        color: var(--gb-dark);
-    }
-
-    .close-btn {
-        border: 1px solid var(--gb-border);
-        background: #F0F6F1;
-        color: var(--gb-dark);
-        width: 34px;
-        height: 34px;
-        border-radius: 50%;
-        cursor: pointer;
-        font-size: 18px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .close-btn:hover {
-        background: var(--gb-light);
-    }
-
-    .modal-footer {
-        display: flex;
-        justify-content: flex-end;
-        gap: 10px;
-        margin-top: 25px;
-    }
-
-    /* MESSAGES */
-    .message {
-        display: none;
-        margin-bottom: 18px;
-        padding: 12px 15px;
-        border-radius: 9px;
-        font-size: 13px;
-        font-weight: 600;
-    }
-
-    .message.show {
-        display: block;
-    }
-
-    .message.success {
-        background: #DCFCE7;
-        color: #166534;
-    }
-
-    .message.error {
-        background: #FEE2E2;
-        color: #991B1B;
-    }
-
-    /* RESPONSIVE */
-    @media (max-width: 800px) {
-        .sidebar {
-            width: 210px;
-        }
-
-        .main {
-            margin-left: 210px;
-            width: calc(100% - 210px);
-        }
-
-        .header {
-            padding: 0 15px;
-        }
-
-        .content {
-            padding: 20px 15px;
-        }
-
-        .section {
-            padding: 18px;
-        }
-
-        .section-title {
-            flex-direction: column;
-        }
-    }
-
-    @media (max-width: 600px) {
-        .sidebar {
-            position: relative;
-            width: 100%;
-            min-height: auto;
-        }
-
-        .container {
-            display: block;
-        }
-
-        .main {
-            margin-left: 0;
-            width: 100%;
-        }
-
-        .header {
-            position: relative;
-        }
-
-        .admin-info {
-            display: none;
-        }
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GROWBYTEE - Branches &amp; Check-in Rules</title>
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+:root{--g:#16803C;--gd:#0B2E1A;--gl:#E8F5EC;--k:#171717;--line:#E1E8E3;--mut:#6B7A70;--bg:#F4F6F5;--red:#DC2626}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;background:var(--bg);color:var(--k);font-size:14px}
+button,input,select,textarea{font-family:inherit}
+.main{min-height:100vh}
+.header{height:60px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:20}
+.header h1{font-size:17px;font-weight:700}
+.admin-info{display:flex;align-items:center;gap:10px;color:var(--mut);font-size:13px}
+.admin-badge{background:var(--gd);color:#fff;padding:4px 10px;border-radius:99px;font-size:11px;font-weight:700;letter-spacing:.4px}
+.content{padding:22px 28px;max-width:1280px}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);margin-bottom:16px}
+.tab{border:0;border-bottom:2px solid transparent;background:transparent;color:var(--mut);padding:10px 16px;font-weight:600;font-size:14px;cursor:pointer;margin-bottom:-1px}
+.tab:hover{color:var(--k)}.tab.active{color:var(--g);border-bottom-color:var(--g)}
+.tab span{background:#EEF1EF;color:var(--mut);border-radius:99px;padding:1px 8px;margin-left:7px;font-size:11px}.tab.active span{background:var(--gl);color:var(--g)}
+.panel{display:none}.panel.active{display:block}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.card-head{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.card-head h3{font-size:15px}.card-head p{color:var(--mut);font-size:12px;margin-top:2px}
+.btn{border:1px solid transparent;border-radius:8px;padding:9px 16px;cursor:pointer;font-size:13px;font-weight:600;transition:.15s;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn svg{width:15px;height:15px}
+.btn-primary{background:var(--g);color:#fff}.btn-primary:hover{background:var(--gd)}
+.btn-secondary{background:#fff;color:var(--k);border-color:var(--line)}.btn-secondary:hover{background:var(--gl);border-color:#BFE0CB}
+.btn-warning{background:#fff;color:var(--red);border-color:#F3C5C5}.btn-warning:hover{background:#FEF2F2}
+.btn-danger{background:var(--red);color:#fff}.btn-danger:hover{background:#B91C1C}
+.table-wrapper{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:820px}
+th{background:#F7F9F8;color:var(--mut);font-size:11px;letter-spacing:.5px;text-transform:uppercase;text-align:left;padding:11px 16px;white-space:nowrap;border-bottom:1px solid var(--line)}
+td{padding:12px 16px;border-top:1px solid #EEF1EF;font-size:13px;vertical-align:middle}
+tbody tr:first-child td{border-top:0}tr:hover td{background:#F7FAF8}
+.empty-row,.policy-empty{text-align:center;color:var(--mut);padding:30px}
+.mut{color:var(--mut)}small.mut{font-size:11px}
+.verification-status{display:inline-flex;padding:3px 10px;border-radius:99px;font-size:11px;font-weight:700}
+.verification-status.on{background:#DDF3E4;color:#0B5A2B}.verification-status.off{background:#EEF1EF;color:#55655B}
+.chip{display:inline-block;margin-right:4px;padding:2px 8px;border-radius:99px;background:var(--gl);color:#166534;font-size:11px;font-weight:700}
+.policy-actions{display:flex;gap:6px}.policy-actions .btn{padding:6px 12px;font-size:12px}
+.info{display:flex;gap:8px;background:var(--gl);border:1px solid #BFE0CB;color:#14532D;border-radius:10px;padding:11px 14px;font-size:13px;margin:14px 18px}
+.message{display:none;margin:12px 18px 0;padding:10px 14px;border-radius:8px;font-size:13px;font-weight:600}
+.message.show{display:block}.message.success{background:#DCFCE7;color:#166534}.message.error{background:#FEE2E2;color:#991B1B}
+.form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+.form-group label{font-size:12px;font-weight:700;color:#33433A}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 12px;border:1px solid #CBD8CF;border-radius:8px;outline:none;font-size:14px;background:#fff;color:var(--k)}
+.form-group textarea{resize:vertical;min-height:80px}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(22,128,60,.12)}
+.required-mark{color:var(--red)}
+.verification-box{background:#F7FAF8;border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:14px}
+.verification-title{font-size:13px;font-weight:700;margin-bottom:10px}
+.verification-row{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:10px 0;border-top:1px solid var(--line)}
+.verification-row:first-of-type{border-top:0;padding-top:0}
+.verification-label{display:flex;flex-direction:column;gap:3px}.verification-label strong{font-size:13px}.verification-label span{font-size:12px;color:var(--mut)}
+.switch{position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0}.switch input{opacity:0;width:0;height:0}
+.slider{position:absolute;cursor:pointer;inset:0;background:#C8D5CB;border-radius:24px;transition:.2s}
+.slider:before{content:"";position:absolute;height:18px;width:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px #0003}
+.switch input:checked+.slider{background:var(--g)}.switch input:checked+.slider:before{transform:translateX(20px)}
+.policy-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 16px}
+.policy-toggle-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.policy-toggle{border:1px solid var(--line);border-radius:10px;padding:12px;background:#fff;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.policy-toggle strong{display:block;font-size:13px;margin-bottom:3px}.policy-toggle small{font-size:11px;line-height:1.5;color:var(--mut);display:block}
+.policy-note{background:#F7FAF8;border:1px solid var(--line);color:var(--mut);border-radius:8px;padding:10px 12px;font-size:12px;margin:12px 0}
+.policy-description{font-size:12px;color:var(--mut);margin-bottom:6px}
+.policy-form-section{border-top:1px solid var(--line);padding-top:16px;margin-top:6px;margin-bottom:6px}
+.policy-form-section h4{font-size:14px;margin-bottom:12px}
+.modal{display:none;position:fixed;inset:0;background:rgba(15,26,20,.55);z-index:100;align-items:center;justify-content:center;padding:16px}
+.modal.show{display:flex}
+.modal-box{width:100%;max-width:640px;background:#fff;border-radius:14px;padding:22px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+.modal-box.small{max-width:440px}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.modal-header h3{font-size:17px}
+.close-btn{border:0;background:#EEF1EF;width:32px;height:32px;border-radius:8px;cursor:pointer;display:grid;place-items:center}.close-btn:hover{background:#DDE5DF}
+.modal-footer{display:flex;justify-content:flex-end;gap:10px;margin-top:18px;padding-top:14px;border-top:1px solid var(--line);flex-wrap:wrap}
+#toastBox{position:fixed;top:16px;right:16px;z-index:300;display:flex;flex-direction:column;gap:8px}
+.toast{padding:11px 16px;border-radius:8px;font-size:13px;font-weight:600;box-shadow:0 6px 20px rgba(0,0,0,.15);max-width:340px}
+.toast.ok{background:var(--gd);color:#fff}.toast.err{background:#FEE2E2;color:#991B1B;border:1px solid #FECACA}
+@media(max-width:800px){.header{padding:0 16px 0 60px}.content{padding:16px}.policy-grid,.policy-toggle-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.admin-info{display:none}.modal-box{padding:16px}}
 </style>
-
-
 </head>
-
 <body>
+<main class="main">
+<header class="header">
+  <h1>Branches &amp; Check-in Rules</h1>
+  <div class="admin-info" id="adminInfo" style="display:none"><span id="loggedAdminName">Welcome, Admin</span><span class="admin-badge">ADMIN</span></div>
+</header>
 
-<div class="container">
+<div class="content">
+  <nav class="tabs">
+    <button class="tab active" data-tab="branches" onclick="switchTab('branches')">Branches<span id="branchCount">0</span></button>
+    <button class="tab" data-tab="rules" onclick="switchTab('rules')">Check-in Rules<span id="ruleCount">0</span></button>
+  </nav>
 
-    <aside class="sidebar">
+  <!-- BRANCHES -->
+  <section class="panel active" id="panel-branches">
+    <div class="card">
+      <div class="card-head">
+        <div><h3>Company branches</h3><p>Location and face check applied to everyone checking in at a branch.</p></div>
+        <button class="btn btn-primary" onclick="openBranchModal()">+ Add Branch</button>
+      </div>
+      <div id="branchMessage" class="message"></div>
+      <div class="table-wrapper" style="margin-top:12px">
+        <table>
+          <thead><tr><th>Branch</th><th>Coordinates</th><th>Radius</th><th>Location check</th><th>Face check</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="branchTableBody"><tr><td colspan="7" class="empty-row">Loading branches...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
 
-        <div class="logo">
-            GROWBYTEE
+  <!-- RULES -->
+  <section class="panel" id="panel-rules">
+    <div class="card" id="verificationPolicyPanel">
+      <div class="card-head">
+        <div><h3>Check-in rules</h3><p>Exceptions to the branch settings for a role, designation, employee, interns or a time window.</p></div>
+        <button type="button" class="btn btn-primary" onclick="openPolicyModal()">+ Add Rule</button>
+      </div>
+      <div id="policyMessage" class="message"></div>
+      <div class="table-wrapper" style="margin-top:12px">
+        <table style="min-width:960px">
+          <thead><tr><th>Rule</th><th>Applies to</th><th>Schedule</th><th>Location check</th><th>Face check</th><th>Records</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody id="verificationPolicyTableBody"><tr><td colspan="8" class="policy-empty">Loading rules...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+<!-- EXISTING BRANCH ADD / EDIT MODAL -->
+<div id="branchModal" class="modal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3 id="branchModalTitle">Add Branch</h3>
+            <button type="button" class="close-btn" onclick="closeBranchModal()"><i data-lucide="x"></i></button>
         </div>
 
-        <div class="admin-title">
-            Admin / CEO Dashboard
+        <input type="hidden" id="branchId">
+
+        <div class="form-group">
+            <label for="branchName">Branch Name</label>
+            <input type="text" id="branchName" placeholder="Enter branch name" maxlength="150" required>
+        </div>
+        <div class="form-group">
+            <label for="branchLatitude">Latitude</label>
+            <input type="number" id="branchLatitude" placeholder="GPS latitude" step="0.0000001" min="-90" max="90" required>
+        </div>
+        <div class="form-group">
+            <label for="branchLongitude">Longitude</label>
+            <input type="number" id="branchLongitude" placeholder="GPS longitude" step="0.0000001" min="-180" max="180" required>
+        </div>
+        <div style="display:flex;justify-content:flex-start;margin-top:-5px;margin-bottom:18px">
+            <button type="button" class="btn btn-secondary" onclick="getBranchCurrentLocation()">
+                <i data-lucide="map-pin"></i>Get Current Location
+            </button>
+        </div>
+        <div id="branchLocationMessage" class="message"></div>
+        <div class="form-group">
+            <label for="branchRadius">Allowed Radius (Meters)</label>
+            <input type="number" id="branchRadius" value="150" min="1" required>
         </div>
 
-        <div class="menu">
-
-          <button class="menu-btn"
-        onclick="window.location.href='/admin-dashboard.html'">
-    <i data-lucide="layout-dashboard"></i>
-    Dashboard
-</button>
-
-            <button class="menu-btn"
-                    onclick="window.location.href='employees.html'">
-                <i data-lucide="users"></i>
-                Employees
-            </button>
-
-            <button class="menu-btn"
-                    onclick="window.location.href='leave.html'">
-                <i data-lucide="clipboard-list"></i>
-                Leave
-            </button>
-
-            <button class="menu-btn"
-                    onclick="window.location.href='ai-assistant.html'">
-                <i data-lucide="sparkles"></i>
-                AI Assistant
-            </button>
-
-            <button class="menu-btn"
-                    onclick="window.location.href='working-day-settings.html'">
-                <i data-lucide="calendar-days"></i>
-                Working Day Settings
-            </button>
-
-            <button class="menu-btn"
-                    onclick="window.location.href='shift-settings.html'">
-                <i data-lucide="clock-3"></i>
-                Shift Settings
-            </button>
-
-            <button class="menu-btn active"
-                    onclick="window.location.href='branch-management.html'">
-                <i data-lucide="building-2"></i>
-                Branch Management
-            </button>
-
-            <button class="menu-btn"
-                    onclick="window.location.href='leave-permission-settings.html'">
-                <i data-lucide="settings"></i>
-                Leave & Permission Settings
-            </button>
-
-            <button class="menu-btn"
-                    onclick="window.location.href='salary.html'">
-                <i data-lucide="wallet"></i>
-                Salary
-            </button>
-
-            <button class="menu-btn"
-                    onclick="window.location.href='monthly-report.html'">
-                <i data-lucide="calendar-days"></i>
-                Monthly Report
-            </button>
-
-            
-<button class="menu-btn"
-        onclick="window.location.href='attendance-history.html'">
-    <i data-lucide="calendar-clock"></i>
-    Attendance History
-</button>
-
-<button class="menu-btn"
-        onclick="window.location.href='leave-history.html'">
-    <i data-lucide="file-clock"></i>
-    Leave History
-</button>
-
-            <button class="menu-btn"
-                    onclick="window.location.href='history.html'">
-                <i data-lucide="history"></i>
-                History
-            </button>
-
-            <button class="menu-btn logout-btn"
-                    onclick="logout()">
-                <i data-lucide="log-out"></i>
-                Logout
-            </button>
-
-        </div>
-
-    </aside>
-
-    <main class="main">
-
-        <header class="header">
-
-            <h1>
-                GROWBYTEE - Admin Dashboard
-            </h1>
-
-            <div class="admin-info" id="adminInfo" style="display: none;">
-
-                <span id="loggedAdminName">
-                    Welcome, Admin
-                </span>
-
-                <span class="admin-badge">
-                    ADMIN
-                </span>
-
+        <div class="verification-box">
+            <div class="verification-title">Check-in verification for this branch</div>
+            <div class="verification-row">
+                <div class="verification-label">
+                    <strong>Location Verification</strong>
+                    <span>Require employees to be inside the branch GPS radius.</span>
+                </div>
+                <label class="switch" aria-label="Branch location verification">
+                    <input type="checkbox" id="locationVerificationEnabled"><span class="slider"></span>
+                </label>
             </div>
-
-        </header>
-
-        <div class="content">
-
-            <section id="branchManagement" class="section active">
-
-                <div class="section-title">
-
-                    <div>
-
-                        <h2>
-                            Branch Management
-                        </h2>
-
-                        <p class="section-subtitle">
-                            Manage company branches and attendance verification settings.
-                        </p>
-
-                    </div>
-
-                    <button
-                        class="btn btn-primary"
-                        onclick="openBranchModal()">
-
-                        <i data-lucide="plus"></i>
-
-                        Add Branch
-
-                    </button>
-
+            <div class="verification-row">
+                <div class="verification-label">
+                    <strong>Face Verification</strong>
+                    <span>Require face verification before attendance.</span>
                 </div>
-
-
-                <div
-                    id="branchMessage"
-                    class="message">
-                </div>
-
-
-                <div class="priority-box">
-
-                    <strong>Attendance Verification:</strong>
-
-                    <br>
-
-                    Location Verification controls whether employees must be
-                    inside the configured GPS radius.
-
-                    <br>
-
-                    Face Verification controls whether employees must complete
-                    face verification before attendance.
-
-                    <br>
-
-                    Both settings are controlled independently for each branch.
-
-                </div>
-
-
-                <div class="table-card">
-
-                    <div class="table-wrapper">
-
-                        <table>
-
-                            <thead>
-
-                                <tr>
-
-                                    <th>
-                                        Branch Name
-                                    </th>
-
-                                    <th>
-                                        Latitude
-                                    </th>
-
-                                    <th>
-                                        Longitude
-                                    </th>
-
-                                    <th>
-                                        Radius
-                                    </th>
-
-                                    <th>
-                                        Location
-                                    </th>
-
-                                    <th>
-                                        Face
-                                    </th>
-
-                                    <th>
-                                        Status
-                                    </th>
-
-                                    <th>
-                                        Action
-                                    </th>
-
-                                </tr>
-
-                            </thead>
-
-
-                            <tbody id="branchTableBody">
-
-                                <tr>
-
-                                    <td
-                                        colspan="8"
-                                        class="empty-row">
-
-                                        Loading branches...
-
-                                    </td>
-
-                                </tr>
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-                </div>
-
-            </section>
-
-
-            <!-- ================= BRANCH MANAGEMENT MODAL ================= -->
-
-            <div
-                id="branchModal"
-                class="modal">
-
-                <div class="modal-box">
-
-                    <div class="modal-header">
-
-                        <h3 id="branchModalTitle">
-                            Add Branch
-                        </h3>
-
-                        <button
-                            type="button"
-                            class="close-btn"
-                            onclick="closeBranchModal()">
-
-                            <i data-lucide="x"></i>
-
-                        </button>
-
-                    </div>
-
-
-                    <input
-                        type="hidden"
-                        id="branchId">
-
-
-                    <div class="form-group">
-
-                        <label for="branchName">
-                            Branch Name
-                        </label>
-
-                        <input
-                            type="text"
-                            id="branchName"
-                            placeholder="Enter branch name"
-                            maxlength="150"
-                            required>
-
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <label for="branchLatitude">
-                            Latitude
-                        </label>
-
-                        <input
-                            type="number"
-                            id="branchLatitude"
-                            placeholder="GPS latitude"
-                            step="0.0000001"
-                            min="-90"
-                            max="90"
-                            required>
-
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <label for="branchLongitude">
-                            Longitude
-                        </label>
-
-                        <input
-                            type="number"
-                            id="branchLongitude"
-                            placeholder="GPS longitude"
-                            step="0.0000001"
-                            min="-180"
-                            max="180"
-                            required>
-
-                    </div>
-
-
-                    <div
-                        style="
-                            display: flex;
-                            justify-content: flex-start;
-                            margin-top: -5px;
-                            margin-bottom: 18px;
-                        ">
-
-                        <button
-                            type="button"
-                            class="btn btn-secondary"
-                            onclick="getBranchCurrentLocation()">
-
-                            <i data-lucide="map-pin"></i>
-
-                            Get Current Location
-
-                        </button>
-
-                    </div>
-
-
-                    <div
-                        id="branchLocationMessage"
-                        class="message">
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <label for="branchRadius">
-
-                            Allowed Radius
-                            (Meters)
-
-                        </label>
-
-                        <input
-                            type="number"
-                            id="branchRadius"
-                            value="150"
-                            min="1"
-                            required>
-
-                    </div>
-
-
-                    <!-- ================= VERIFICATION SETTINGS ================= -->
-
-                    <div class="verification-box">
-
-                        <div class="verification-title">
-                            Attendance Verification Settings
-                        </div>
-
-
-                        <div class="verification-row">
-
-                            <div class="verification-label">
-
-                                <strong>
-                                    Location Verification
-                                </strong>
-
-                                <span>
-                                    Require employees to be inside the branch GPS radius.
-                                </span>
-
-                            </div>
-
-
-                            <label class="switch">
-
-                                <input
-                                    type="checkbox"
-                                    id="locationVerificationEnabled">
-
-                                <span class="slider"></span>
-
-                            </label>
-
-                        </div>
-
-
-                        <div class="verification-row">
-
-                            <div class="verification-label">
-
-                                <strong>
-                                    Face Verification
-                                </strong>
-
-                                <span>
-                                    Require face verification before attendance.
-                                </span>
-
-                            </div>
-
-
-                            <label class="switch">
-
-                                <input
-                                    type="checkbox"
-                                    id="faceVerificationEnabled">
-
-                                <span class="slider"></span>
-
-                            </label>
-
-                        </div>
-
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <label for="branchReason">
-                            Reason
-                        </label>
-
-                        <textarea
-                            id="branchReason"
-                            rows="3"
-                            placeholder="Enter reason for this branch operation"
-                            required></textarea>
-
-                    </div>
-
-
-                    <div class="modal-footer">
-
-                        <button
-                            type="button"
-                            class="btn btn-secondary"
-                            onclick="closeBranchModal()">
-
-                            Cancel
-
-                        </button>
-
-
-                        <button
-                            type="button"
-                            class="btn btn-primary"
-                            onclick="saveBranch()">
-
-                            Save Branch
-
-                        </button>
-
-                    </div>
-
-                </div>
-
+                <label class="switch" aria-label="Branch face verification">
+                    <input type="checkbox" id="faceVerificationEnabled"><span class="slider"></span>
+                </label>
             </div>
-
         </div>
 
-    </main>
-
+        <div class="form-group">
+            <label for="branchReason">Reason</label>
+            <textarea id="branchReason" rows="3" placeholder="Enter reason for this branch operation" required></textarea>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closeBranchModal()">Cancel</button>
+            <button type="button" class="btn btn-primary" onclick="saveBranch()">Save Branch</button>
+        </div>
+    </div>
 </div>
+
+<!-- NEW: POLICY ADD / EDIT MODAL -->
+<div id="policyModal" class="modal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3 id="policyModalTitle">Add Check-in Rule</h3>
+            <button type="button" class="close-btn" onclick="closePolicyModal()" aria-label="Close policy form">
+                <i data-lucide="x"></i>
+            </button>
+        </div>
+
+        <input type="hidden" id="policyId">
+
+                <div class="policy-grid">
+            <div class="form-group">
+                <label for="policyName">Rule Name <span class="required-mark">*</span></label>
+                <input id="policyName" type="text" maxlength="150" placeholder="e.g. Field Work - Video Shooter" required>
+            </div>
+            <div class="form-group">
+                <label for="policyBranch">Branch Scope</label>
+                <select id="policyBranch">
+                    <option value="">All branches / Default</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="policyTargetType">Apply To <span class="required-mark">*</span></label>
+                <select id="policyTargetType" onchange="refreshPolicyTargetFields()" required>
+                    <option value="DEFAULT">Everyone (default)</option>
+                    <option value="ROLE">Role</option>
+                    <option value="DESIGNATION">Designation</option>
+                    <!-- Manager-wise rule: enable when employee-manager mapping exists
+                    <option value="MANAGER">Manager-wise</option> -->
+                    <option value="INTERN">Interns</option>
+                    <option value="STUDENT">Students</option>
+                    <option value="EMPLOYEE">Specific Employee</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="policyRoleGroup" style="display:none">
+                <label for="policyRole">Role</label>
+                <select id="policyRole">
+                    <option value="">Select Role</option>
+                    <option value="EMPLOYEE">Employee</option>
+                    <option value="DEVELOPER">Developer</option>
+                    <option value="HR">HR</option>
+                    <option value="TEAM_LEAD">Team Lead</option>
+                    <option value="MANAGER">Manager</option>
+                    <option value="ADMIN">Admin</option>
+                </select>
+            </div>
+            <div class="form-group" id="policyDesignationGroup" style="display:none">
+                <label for="policyDesignation">Designation</label>
+                <select id="policyDesignation">
+                    <option value="">Select Designation</option>
+                </select>
+            </div>
+            <div class="form-group" id="policyManagerGroup" style="display:none">
+                <label for="policyManager">Manager</label>
+                <select id="policyManager">
+                    <option value="">Select Manager</option>
+                </select>
+            </div>
+            <div class="form-group" id="policyEmployeeGroup" style="display:none">
+                <label for="policyEmployee">Employee</label>
+                <select id="policyEmployee">
+                    <option value="">Select Employee</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="policy-form-section">
+            <h4>Schedule (optional)</h4>
+            <div class="policy-grid">
+                <div class="form-group">
+                    <label for="policyStartDate">Start Date</label>
+                    <input type="date" id="policyStartDate">
+                </div>
+                <div class="form-group">
+                    <label for="policyEndDate">End Date</label>
+                    <input type="date" id="policyEndDate">
+                </div>
+                <div class="form-group">
+                    <label for="policyStartTime">Start Time</label>
+                    <input type="time" id="policyStartTime">
+                </div>
+                <div class="form-group">
+                    <label for="policyEndTime">End Time</label>
+                    <input type="time" id="policyEndTime">
+                </div>
+            </div>
+            <p class="policy-description">Leave blank if the rule should apply at all times.</p>
+        </div>
+
+        <div class="policy-form-section">
+            <h4>Attendance Controls</h4>
+            <div class="policy-toggle-grid">
+                <div class="policy-toggle">
+                    <div><strong>Location Verification</strong><small>Require the employee to be within the branch GPS radius.</small></div>
+                    <label class="switch" aria-label="Rule location verification">
+                        <input type="checkbox" id="policyLocationVerification"><span class="slider"></span>
+                    </label>
+                </div>
+                <div class="policy-toggle">
+                    <div><strong>Face Verification</strong><small>Require the configured face-match process.</small></div>
+                    <label class="switch" aria-label="Rule face verification">
+                        <input type="checkbox" id="policyFaceVerification"><span class="slider"></span>
+                    </label>
+                </div>
+                <div class="policy-toggle">
+                    <div><strong>Record GPS location</strong><small>Record available GPS coordinates at check-in and check-out, even when radius verification is off.</small></div>
+                    <label class="switch" aria-label="Capture GPS location">
+                        <input type="checkbox" id="policyLocationCapture" checked><span class="slider"></span>
+                    </label>
+                </div>
+                <div class="policy-toggle">
+                    <div><strong>Record photo</strong><small>Request a photo during the attendance flow, subject to backend support.</small></div>
+                    <label class="switch" aria-label="Capture attendance photo">
+                        <input type="checkbox" id="policyPhotoCapture"><span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="policy-note">GPS capture and GPS verification are different: a rule can skip the radius check and still record location.</div>
+        </div>
+
+        <div class="form-group">
+            <label for="policyReason">Reason for Rule <span class="required-mark">*</span></label>
+            <textarea id="policyReason" rows="3" maxlength="1000" placeholder="Explain why this rule is needed" required></textarea>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" onclick="closePolicyModal()">Cancel</button>
+            <button type="button" class="btn btn-primary" id="policySaveBtn" onclick="saveVerificationPolicy()">Save Rule</button>
+        </div>
+    </div>
+</div>
+
+<!-- REASON MODAL (replaces browser prompt) -->
+<div id="reasonModal" class="modal"><div class="modal-box small">
+  <div class="modal-header"><h3 id="reasonTitle">Reason</h3><button type="button" class="close-btn" onclick="window._reasonDone && window._reasonDone(null)" aria-label="Close"><i data-lucide="x"></i></button></div>
+  <p class="policy-description" id="reasonHint" style="margin-bottom:12px"></p>
+  <div class="form-group" style="margin-bottom:6px"><label for="reasonInput">Reason <span class="required-mark">*</span></label><textarea id="reasonInput" rows="3" maxlength="1000" placeholder="Enter reason"></textarea></div>
+  <div id="reasonError" style="color:var(--red);font-size:12px;min-height:16px"></div>
+  <div class="modal-footer"><button type="button" class="btn btn-secondary" id="reasonCancel">Cancel</button><button type="button" class="btn btn-primary" id="reasonOk">Confirm</button></div>
+</div></div>
+</div>
+</main>
 
 <script>
 
-    const API_BASE_URL =
-        window.location.hostname === "localhost" ||
-            window.location.hostname === "127.0.0.1"
-            ? "http://localhost:8080"
-            : "https://attendance-management-d5h6.onrender.com";
+const API_BASE_URL =
+    ["localhost", "127.0.0.1"].includes(window.location.hostname)
+        ? "http://localhost:8080"
+        : "https://attendance-management-d5h6.onrender.com";
 
+let editingBranchId = null;
+let branchesCache = [];
+let editingPolicyId = null;
 
-    function loadAdminInfo() {
+function loadAdminInfo() {
+    const adminName = localStorage.getItem("adminName");
+    const nameElement = document.getElementById("loggedAdminName");
 
-        const adminEmail =
-            localStorage.getItem(
-                "adminEmail"
-            );
-
-        const adminName =
-            localStorage.getItem(
-                "adminName"
-            );
-
-
-        if (adminName) {
-
-            const adminNameElement =
-                document.getElementById(
-                    "loggedAdminName"
-                );
-
-            if (adminNameElement) {
-
-                adminNameElement.textContent =
-                    "Welcome, " + adminName;
-
-            }
-
-        }
-
-
-        if (adminEmail) {
-
-            const emailField =
-                document.getElementById(
-                    "verifyAdminEmail"
-                );
-
-            if (emailField) {
-
-                emailField.value =
-                    adminEmail;
-
-            }
-
-        }
-
+    if (adminName && nameElement) {
+        nameElement.textContent = "Welcome, " + adminName;
+        document.getElementById("adminInfo").style.display = "flex";
     }
+}
 
+function escapeHtml(value) {
+    if (value === null || value === undefined) return "";
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
 
-    function escapeHtml(
-        value
-    ) {
+function getVerificationStatus(enabled) {
+    return enabled
+        ? '<span class="verification-status on">On</span>'
+        : '<span class="verification-status off">Off</span>';
+}
 
-        if (
-            value === null ||
-            value === undefined
-        ) {
+function logout() {
+    if (!confirm("Are you sure you want to logout?")) return;
 
-            return "";
+    localStorage.removeItem("adminEmail");
+    localStorage.removeItem("adminName");
+    window.location.href = "/admin/admin-login.html";
+}
 
-        }
+function showBranchMessage(message, type) {
+    showMessage("branchMessage", message, type);
+}
 
+function showMessage(id, message, type) {
+    const element = document.getElementById(id);
+    if (!element) return;
 
-        return String(value)
-            .replaceAll(
-                "&",
-                "&amp;"
-            )
-            .replaceAll(
-                "<",
-                "&lt;"
-            )
-            .replaceAll(
-                ">",
-                "&gt;"
-            )
-            .replaceAll(
-                '"',
-                "&quot;"
-            )
-            .replaceAll(
-                "'",
-                "&#039;"
-            );
+    element.textContent = message;
+    element.className = "message show " + (type === "success" ? "success" : "error");
+}
 
+function clearMessage(id) {
+    const element = document.getElementById(id);
+    if (element) {
+        element.textContent = "";
+        element.className = "message";
     }
+}
 
+/* ===================== BRANCH LIST ===================== */
 
-    function getVerificationStatus(
-        enabled
-    ) {
+async function loadBranches() {
+    const tableBody = document.getElementById("branchTableBody");
+    if (!tableBody) return;
 
-        return Boolean(enabled)
-            ? `<span class="verification-status on">ON</span>`
-            : `<span class="verification-status off">OFF</span>`;
+    tableBody.innerHTML =
+        '<tr><td colspan="7" class="empty-row">Loading branches...</td></tr>';
 
-    }
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/branches/all`);
+        if (!response.ok) throw new Error("Failed to load branches.");
 
+        const branches = await response.json();
+        branchesCache = Array.isArray(branches) ? branches : [];
 
-    function logout() {
-
-        const confirmed =
-            confirm(
-                "Are you sure you want to logout?"
-            );
-
-
-        if (!confirmed) {
-            return;
-        }
-
-
-        localStorage.removeItem(
-            "adminEmail"
-        );
-
-
-        localStorage.removeItem(
-            "adminName"
-        );
-
-
-        window.location.href =
-            "admin-login.html";
-
-    }
-
-
-    let editingBranchId = null;
-
-
-    async function loadBranches() {
-
-        const tableBody =
-            document.getElementById(
-                "branchTableBody"
-            );
-
-        if (!tableBody) {
-            return;
-        }
-
-
-        tableBody.innerHTML = `
-            <tr>
-                <td
-                    colspan="8"
-                    class="empty-row">
-                    Loading branches...
-                </td>
-            </tr>
-        `;
-
-
-        try {
-
-            const response =
-                await fetch(
-                    `${API_BASE_URL}/admin/branches/all`
-                );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    "Failed to load branches"
-                );
-
-            }
-
-
-            const branches =
-                await response.json();
-
-
-            if (
-                !branches ||
-                branches.length === 0
-            ) {
-
-                tableBody.innerHTML = `
-                    <tr>
-                        <td
-                            colspan="8"
-                            class="empty-row">
-                            No branches found
-                        </td>
-                    </tr>
-                `;
-
-                return;
-            }
-
-
+        if (!branchesCache.length) {
             tableBody.innerHTML =
-                branches.map(
-                    function(branch) {
+                '<tr><td colspan="7" class="empty-row">No branches found.</td></tr>';
+        } else {
+            tableBody.innerHTML = branchesCache.map(branch => {
+                const active = Boolean(branch.active);
 
-                        const isActive =
-                            Boolean(
-                                branch.active
-                            );
+                const actions = active
+                    ? `<button type="button" class="btn btn-secondary" onclick="editBranch(${Number(branch.id)})">Edit</button>
+                       <button type="button" class="btn btn-warning" onclick="deleteBranch(${Number(branch.id)})">Deactivate</button>`
+                    : `<button type="button" class="btn btn-secondary" onclick="editBranch(${Number(branch.id)})">Edit</button>
+                       <button type="button" class="btn btn-primary" onclick="activateBranch(${Number(branch.id)})">Activate</button>`;
 
-
-                        const statusText =
-                            isActive
-                                ? `<span style="color: green; font-weight: 600;">Active</span>`
-                                : `<span style="color: red; font-weight: 600;">Inactive</span>`;
-
-
-                        const actionButtons =
-                            isActive
-                                ? `
-                                    <button
-                                        type="button"
-                                        class="btn btn-secondary"
-                                        onclick="editBranch(${branch.id})">
-
-                                        <i data-lucide="pencil"></i>
-
-                                        Edit
-
-                                    </button>
-
-
-                                    <button
-                                        type="button"
-                                        class="btn btn-warning"
-                                        onclick="deleteBranch(${branch.id})">
-
-                                        <i data-lucide="power"></i>
-
-                                        Deactivate
-
-                                    </button>
-                                `
-                                : `
-                                    <button
-                                        type="button"
-                                        class="btn btn-secondary"
-                                        onclick="editBranch(${branch.id})">
-
-                                        <i data-lucide="pencil"></i>
-
-                                        Edit
-
-                                    </button>
-
-
-                                    <button
-                                        type="button"
-                                        class="btn btn-primary"
-                                        onclick="activateBranch(${branch.id})">
-
-                                        <i data-lucide="power"></i>
-
-                                        Activate
-
-                                    </button>
-                                `;
-
-
-                        return `
-                            <tr>
-
-                                <td>
-                                    ${escapeHtml(
-                                        branch.branchName || "-"
-                                    )}
-                                </td>
-
-
-                                <td>
-                                    ${branch.latitude ?? "-"}
-                                </td>
-
-
-                                <td>
-                                    ${branch.longitude ?? "-"}
-                                </td>
-
-
-                                <td>
-                                    ${branch.allowedRadiusMeters ?? "-"}
-                                    m
-                                </td>
-
-
-                                <td>
-                                    ${getVerificationStatus(
-                                        branch.locationVerificationEnabled
-                                    )}
-                                </td>
-
-
-                                <td>
-                                    ${getVerificationStatus(
-                                        branch.faceVerificationEnabled
-                                    )}
-                                </td>
-
-
-                                <td>
-                                    ${statusText}
-                                </td>
-
-
-                                <td>
-                                    ${actionButtons}
-                                </td>
-
-                            </tr>
-                        `;
-
-                    }
-                ).join("");
-
-
-            if (
-                typeof lucide !== "undefined"
-            ) {
-
-                lucide.createIcons();
-
-            }
-
-        }
-        catch (error) {
-
-            console.error(
-                "loadBranches error:",
-                error
-            );
-
-
-            tableBody.innerHTML = `
-                <tr>
-                    <td
-                        colspan="8"
-                        class="empty-row">
-
-                        Failed to load branches
-
-                    </td>
-                </tr>
-            `;
-
+                return `<tr>
+                    <td><strong>${escapeHtml(branch.branchName || "-")}</strong></td>
+                    <td class="mut">${escapeHtml(branch.latitude ?? "-")}, ${escapeHtml(branch.longitude ?? "-")}</td>
+                    <td>${escapeHtml(branch.allowedRadiusMeters ?? "-")} m</td>
+                    <td>${getVerificationStatus(branch.locationVerificationEnabled)}</td>
+                    <td>${getVerificationStatus(branch.faceVerificationEnabled)}</td>
+                    <td><span class="verification-status ${active ? "on" : "off"}">${active ? "Active" : "Inactive"}</span></td>
+                    <td><div class="policy-actions">${actions}</div></td>
+                </tr>`;
+            }).join("");
         }
 
+        setText("branchCount", branchesCache.length);
+        populatePolicyBranches();
+        loadPolicyOptions();
+        loadVerificationPolicies();
+        refreshIcons();
+    } catch (error) {
+        console.error("loadBranches error:", error);
+        tableBody.innerHTML =
+            '<tr><td colspan="7" class="empty-row">Failed to load branches. Please try again.</td></tr>';
+    }
+}
+
+function populatePolicyBranches() {
+    const select = document.getElementById("policyBranch");
+    if (!select) return;
+
+    const previousValue = select.value;
+    select.innerHTML = '<option value="">All branches / Default</option>';
+
+    branchesCache.forEach(branch => {
+        const option = document.createElement("option");
+        option.value = String(branch.id);
+        option.textContent = branch.branchName || `Branch ${branch.id}`;
+        select.appendChild(option);
+    });
+
+    if ([...select.options].some(option => option.value === previousValue)) {
+        select.value = previousValue;
+    }
+}
+
+/* ===================== BRANCH GPS ===================== */
+
+function getBranchCurrentLocation() {
+    const latitudeField = document.getElementById("branchLatitude");
+    const longitudeField = document.getElementById("branchLongitude");
+    const message = document.getElementById("branchLocationMessage");
+
+    if (!navigator.geolocation) {
+        showMessage("branchLocationMessage",
+            "Geolocation is not supported by this browser.", "error");
+        return;
     }
 
-
-    function getBranchCurrentLocation() {
-
-        const latitudeField =
-            document.getElementById(
-                "branchLatitude"
-            );
-
-        const longitudeField =
-            document.getElementById(
-                "branchLongitude"
-            );
-
-        const message =
-            document.getElementById(
-                "branchLocationMessage"
-            );
-
-
-        if (
-            !latitudeField ||
-            !longitudeField
-        ) {
-
-            return;
-
-        }
-
-
-        if (
-            !navigator.geolocation
-        ) {
-
-            if (message) {
-
-                message.textContent =
-                    "Geolocation is not supported by this browser.";
-
-                message.className =
-                    "message error";
-
-            }
-
-            return;
-
-        }
-
-
-        if (message) {
-
-            message.textContent =
-                "Getting current location...";
-
-            message.className =
-                "message";
-
-        }
-
-
-        navigator.geolocation.getCurrentPosition(
-
-            function(position) {
-
-                const latitude =
-                    position.coords.latitude;
-
-                const longitude =
-                    position.coords.longitude;
-
-
-                latitudeField.value =
-                    latitude.toFixed(7);
-
-
-                longitudeField.value =
-                    longitude.toFixed(7);
-
-
-                if (message) {
-
-                    message.textContent =
-                        "Current location captured successfully.";
-
-                    message.className =
-                        "message success";
-
-                }
-
-            },
-
-            function(error) {
-
-                console.error(
-                    "Branch GPS error:",
-                    error
-                );
-
-
-                let errorMessage =
-                    "Unable to get current location.";
-
-
-                if (
-                    error.code ===
-                    error.PERMISSION_DENIED
-                ) {
-
-                    errorMessage =
-                        "Location permission was denied.";
-
-                }
-                else if (
-                    error.code ===
-                    error.POSITION_UNAVAILABLE
-                ) {
-
-                    errorMessage =
-                        "Current location is unavailable.";
-
-                }
-                else if (
-                    error.code ===
-                    error.TIMEOUT
-                ) {
-
-                    errorMessage =
-                        "Location request timed out.";
-
-                }
-
-
-                if (message) {
-
-                    message.textContent =
-                        errorMessage;
-
-                    message.className =
-                        "message error";
-
-                }
-
-            },
-
-            {
-                enableHighAccuracy: true,
-                timeout: 15000,
-                maximumAge: 0
-            }
-
-        );
-
+    if (message) {
+        message.textContent = "Getting current location...";
+        message.className = "message show";
     }
 
-
-    function openBranchModal() {
-
-        editingBranchId = null;
-
-
-        const modalTitle =
-            document.getElementById(
-                "branchModalTitle"
-            );
-
-        const branchId =
-            document.getElementById(
-                "branchId"
-            );
-
-        const branchName =
-            document.getElementById(
-                "branchName"
-            );
-
-        const latitude =
-            document.getElementById(
-                "branchLatitude"
-            );
-
-        const longitude =
-            document.getElementById(
-                "branchLongitude"
-            );
-
-        const radius =
-            document.getElementById(
-                "branchRadius"
-            );
-
-        const locationVerification =
-            document.getElementById(
-                "locationVerificationEnabled"
-            );
-
-        const faceVerification =
-            document.getElementById(
-                "faceVerificationEnabled"
-            );
-
-        const reason =
-            document.getElementById(
-                "branchReason"
-            );
-
-
-        if (modalTitle) {
-
-            modalTitle.textContent =
-                "Add Branch";
-
-        }
-
-
-        if (branchId) {
-
-            branchId.value = "";
-
-        }
-
-
-        if (branchName) {
-
-            branchName.value = "";
-
-        }
-
-
-        if (latitude) {
-
-            latitude.value = "";
-
-        }
-
-
-        if (longitude) {
-
-            longitude.value = "";
-
-        }
-
-
-        if (radius) {
-
-            radius.value = "150";
-
-        }
-
-
-        if (locationVerification) {
-
-            locationVerification.checked =
-                false;
-
-        }
-
-
-        if (faceVerification) {
-
-            faceVerification.checked =
-                false;
-
-        }
-
-
-        if (reason) {
-
-            reason.value = "";
-
-        }
-
-
-        const locationMessage =
-            document.getElementById(
-                "branchLocationMessage"
-            );
-
-        if (locationMessage) {
-
-            locationMessage.textContent =
-                "";
-
-            locationMessage.className =
-                "message";
-
-        }
-
-
-        const modal =
-            document.getElementById(
-                "branchModal"
-            );
-
-
-        if (modal) {
-
-            modal.classList.add(
-                "show"
-            );
-
-        }
-
-
-        if (
-            typeof lucide !== "undefined"
-        ) {
-
-            lucide.createIcons();
-
-        }
-
-    }
-
-
-    function closeBranchModal() {
-
-        const modal =
-            document.getElementById(
-                "branchModal"
-            );
-
-
-        if (modal) {
-
-            modal.classList.remove(
-                "show"
-            );
-
-        }
-
-
-        editingBranchId = null;
-
-    }
-
-
-    async function editBranch(
-        branchId
-    ) {
-
-        try {
-
-            const response =
-                await fetch(
-                    `${API_BASE_URL}/admin/branches`
-                );
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    "Failed to load branch"
-                );
-
-            }
-
-
-            const branches =
-                await response.json();
-
-
-            const branch =
-                branches.find(
-                    function(item) {
-
-                        return Number(item.id) ===
-                            Number(branchId);
-
-                    }
-                );
-
-
-            if (!branch) {
-
-                alert(
-                    "Branch not found"
-                );
-
-                return;
-
-            }
-
-
-            editingBranchId =
-                branch.id;
-
-
-            const modalTitle =
-                document.getElementById(
-                    "branchModalTitle"
-                );
-
-            const branchIdField =
-                document.getElementById(
-                    "branchId"
-                );
-
-            const branchName =
-                document.getElementById(
-                    "branchName"
-                );
-
-            const latitude =
-                document.getElementById(
-                    "branchLatitude"
-                );
-
-            const longitude =
-                document.getElementById(
-                    "branchLongitude"
-                );
-
-            const radius =
-                document.getElementById(
-                    "branchRadius"
-                );
-
-            const locationVerification =
-                document.getElementById(
-                    "locationVerificationEnabled"
-                );
-
-            const faceVerification =
-                document.getElementById(
-                    "faceVerificationEnabled"
-                );
-
-            const reason =
-                document.getElementById(
-                    "branchReason"
-                );
-
-
-            if (modalTitle) {
-
-                modalTitle.textContent =
-                    "Edit Branch";
-
-            }
-
-
-            if (branchIdField) {
-
-                branchIdField.value =
-                    branch.id;
-
-            }
-
-
-            if (branchName) {
-
-                branchName.value =
-                    branch.branchName || "";
-
-            }
-
-
-            if (latitude) {
-
-                latitude.value =
-                    branch.latitude ?? "";
-
-            }
-
-
-            if (longitude) {
-
-                longitude.value =
-                    branch.longitude ?? "";
-
-            }
-
-
-            if (radius) {
-
-                radius.value =
-                    branch.allowedRadiusMeters ?? 150;
-
-            }
-
-
-            if (locationVerification) {
-
-                locationVerification.checked =
-                    Boolean(
-                        branch.locationVerificationEnabled
-                    );
-
-            }
-
-
-            if (faceVerification) {
-
-                faceVerification.checked =
-                    Boolean(
-                        branch.faceVerificationEnabled
-                    );
-
-            }
-
-
-            if (reason) {
-
-                reason.value = "";
-
-            }
-
-
-            const locationMessage =
-                document.getElementById(
-                    "branchLocationMessage"
-                );
-
-            if (locationMessage) {
-
-                locationMessage.textContent =
-                    "";
-
-                locationMessage.className =
-                    "message";
-
-            }
-
-
-            const modal =
-                document.getElementById(
-                    "branchModal"
-                );
-
-
-            if (modal) {
-
-                modal.classList.add(
-                    "show"
-                );
-
-            }
-
-
-            if (
-                typeof lucide !== "undefined"
-            ) {
-
-                lucide.createIcons();
-
-            }
-
-        }
-        catch (error) {
-
-            console.error(
-                "editBranch error:",
-                error
-            );
-
-
-            alert(
-                "Failed to load branch details"
-            );
-
-        }
-
-    }
-
-
-    async function saveBranch() {
-
-        const branchName =
-            document.getElementById(
-                "branchName"
-            ).value.trim();
-
-
-        const latitude =
-            document.getElementById(
-                "branchLatitude"
-            ).value;
-
-
-        const longitude =
-            document.getElementById(
-                "branchLongitude"
-            ).value;
-
-
-        const radius =
-            document.getElementById(
-                "branchRadius"
-            ).value;
-
-
-        const locationVerification =
-            document.getElementById(
-                "locationVerificationEnabled"
-            ).checked;
-
-
-        const faceVerification =
-            document.getElementById(
-                "faceVerificationEnabled"
-            ).checked;
-
-
-        const reason =
-            document.getElementById(
-                "branchReason"
-            ).value.trim();
-
-
-        const adminEmail =
-            localStorage.getItem(
-                "adminEmail"
-            );
-
-
-        if (!branchName) {
-
-            alert(
-                "Branch name is required"
-            );
-
-            return;
-
-        }
-
-
-        if (!latitude) {
-
-            alert(
-                "Latitude is required"
-            );
-
-            return;
-
-        }
-
-
-        if (!longitude) {
-
-            alert(
-                "Longitude is required"
-            );
-
-            return;
-
-        }
-
-
-        if (!radius) {
-
-            alert(
-                "Allowed radius is required"
-            );
-
-            return;
-
-        }
-
-
-        if (!reason) {
-
-            alert(
-                "Reason is required"
-            );
-
-            return;
-
-        }
-
-
-        if (!adminEmail) {
-
-            alert(
-                "Admin login required"
-            );
-
-            return;
-
-        }
-
-
-        const requestBody = {
-
-            branchName:
-                branchName,
-
-            latitude:
-                Number(latitude),
-
-            longitude:
-                Number(longitude),
-
-            allowedRadiusMeters:
-                Number(radius),
-
-            locationVerificationEnabled:
-                locationVerification,
-
-            faceVerificationEnabled:
-                faceVerification,
-
-            adminEmail:
-                adminEmail,
-
-            reason:
-                reason
-
+    navigator.geolocation.getCurrentPosition(position => {
+        latitudeField.value = position.coords.latitude.toFixed(7);
+        longitudeField.value = position.coords.longitude.toFixed(7);
+        showMessage("branchLocationMessage",
+            "Current location captured successfully.", "success");
+    }, error => {
+        const messages = {
+            1: "Location permission was denied.",
+            2: "Current location is unavailable.",
+            3: "Location request timed out."
         };
 
+        showMessage("branchLocationMessage",
+            messages[error.code] || "Unable to get current location.", "error");
+    }, {
+        enableHighAccuracy: true,
+        timeout: 15000,
+        maximumAge: 0
+    });
+}
 
-        const url =
-            editingBranchId
-                ? `${API_BASE_URL}/admin/branches/${editingBranchId}`
-                : `${API_BASE_URL}/admin/branches`;
+/* ===================== ADD / EDIT BRANCH ===================== */
 
+function openBranchModal() {
+    editingBranchId = null;
 
-        const method =
-            editingBranchId
-                ? "PUT"
-                : "POST";
+    document.getElementById("branchModalTitle").textContent = "Add Branch";
+    document.getElementById("branchId").value = "";
+    document.getElementById("branchName").value = "";
+    document.getElementById("branchLatitude").value = "";
+    document.getElementById("branchLongitude").value = "";
+    document.getElementById("branchRadius").value = "150";
+    document.getElementById("locationVerificationEnabled").checked = false;
+    document.getElementById("faceVerificationEnabled").checked = false;
+    document.getElementById("branchReason").value = "";
 
+    clearMessage("branchLocationMessage");
+    document.getElementById("branchModal").classList.add("show");
+    refreshIcons();
+}
 
-        try {
+function closeBranchModal() {
+    document.getElementById("branchModal").classList.remove("show");
+    editingBranchId = null;
+}
 
-            const response =
-                await fetch(
-                    url,
-                    {
-                        method:
-                            method,
+async function editBranch(branchId) {
+    try {
+        let branch = branchesCache.find(item => Number(item.id) === Number(branchId));
 
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
+        if (!branch) {
+            const response = await fetch(`${API_BASE_URL}/admin/branches`);
+            if (!response.ok) throw new Error("Failed to load branch.");
 
-                        body:
-                            JSON.stringify(
-                                requestBody
-                            )
-                    }
-                );
-
-
-            const responseText =
-                await response.text();
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    responseText ||
-                    "Failed to save branch"
-                );
-
-            }
-
-
-            const wasEditing =
-                Boolean(
-                    editingBranchId
-                );
-
-
-            closeBranchModal();
-
-
-            showBranchMessage(
-                wasEditing
-                    ? "Branch updated successfully"
-                    : "Branch added successfully",
-                "success"
-            );
-
-
-            await loadBranches();
-
-        }
-        catch (error) {
-
-            console.error(
-                "saveBranch error:",
-                error
-            );
-
-
-            showBranchMessage(
-                error.message ||
-                "Failed to save branch",
-                "error"
-            );
-
+            const branches = await response.json();
+            branch = branches.find(item => Number(item.id) === Number(branchId));
         }
 
+        if (!branch) {
+            toast("Branch not found.");
+            return;
+        }
+
+        editingBranchId = branch.id;
+        document.getElementById("branchModalTitle").textContent = "Edit Branch";
+        document.getElementById("branchId").value = branch.id;
+        document.getElementById("branchName").value = branch.branchName || "";
+        document.getElementById("branchLatitude").value = branch.latitude ?? "";
+        document.getElementById("branchLongitude").value = branch.longitude ?? "";
+        document.getElementById("branchRadius").value = branch.allowedRadiusMeters ?? 150;
+        document.getElementById("locationVerificationEnabled").checked =
+            Boolean(branch.locationVerificationEnabled);
+        document.getElementById("faceVerificationEnabled").checked =
+            Boolean(branch.faceVerificationEnabled);
+        document.getElementById("branchReason").value = "";
+
+        clearMessage("branchLocationMessage");
+        document.getElementById("branchModal").classList.add("show");
+        refreshIcons();
+    } catch (error) {
+        console.error("editBranch error:", error);
+        toast(error.message || "Failed to load branch details.");
+    }
+}
+
+async function saveBranch() {
+    const branchName = document.getElementById("branchName").value.trim();
+    const latitude = document.getElementById("branchLatitude").value;
+    const longitude = document.getElementById("branchLongitude").value;
+    const radius = document.getElementById("branchRadius").value;
+    const locationVerification =
+        document.getElementById("locationVerificationEnabled").checked;
+    const faceVerification =
+        document.getElementById("faceVerificationEnabled").checked;
+    const reason = document.getElementById("branchReason").value.trim();
+    const adminEmail = localStorage.getItem("adminEmail");
+
+    if (!branchName) return toast("Branch name is required.");
+    if (latitude === "" || !Number.isFinite(Number(latitude)) ||
+        Number(latitude) < -90 || Number(latitude) > 90) {
+        return toast("Enter a valid latitude.");
+    }
+    if (longitude === "" || !Number.isFinite(Number(longitude)) ||
+        Number(longitude) < -180 || Number(longitude) > 180) {
+        return toast("Enter a valid longitude.");
+    }
+    if (radius === "" || !Number.isFinite(Number(radius)) || Number(radius) <= 0) {
+        return toast("Enter a valid allowed radius.");
+    }
+    if (reason.length < 3) return toast("Reason must contain at least 3 characters.");
+    if (!adminEmail) return toast("Admin login required. Please login again.");
+
+    const requestBody = {
+        branchName,
+        latitude: Number(latitude),
+        longitude: Number(longitude),
+        allowedRadiusMeters: Number(radius),
+        locationVerificationEnabled: locationVerification,
+        faceVerificationEnabled: faceVerification,
+        adminEmail,
+        reason
+    };
+
+    const wasEditing = Boolean(editingBranchId);
+    const url = wasEditing
+        ? `${API_BASE_URL}/admin/branches/${editingBranchId}`
+        : `${API_BASE_URL}/admin/branches`;
+
+    try {
+        const response = await fetch(url, {
+            method: wasEditing ? "PUT" : "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(requestBody)
+        });
+
+        const responseText = await response.text();
+        if (!response.ok) throw new Error(responseText || "Failed to save branch.");
+
+        closeBranchModal();
+        showBranchMessage(
+            wasEditing ? "Branch updated successfully." : "Branch added successfully.",
+            "success"
+        );
+        await loadBranches();
+    } catch (error) {
+        console.error("saveBranch error:", error);
+        showBranchMessage(error.message || "Failed to save branch.", "error");
+    }
+}
+
+/* ===================== ACTIVATE / DEACTIVATE ===================== */
+
+async function deleteBranch(branchId) {
+    const adminEmail = localStorage.getItem("adminEmail");
+    if (!adminEmail) return toast("Admin login required.");
+    const reason = await askReason("Deactivate branch", "Employees cannot check in to a deactivated branch. Enter the reason.", "Deactivate", true);
+    if (reason === null) return;
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/branches/${branchId}`, {
+            method: "DELETE",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({adminEmail, reason})
+        });
+        const text = await response.text();
+        if (!response.ok) throw new Error(text || "Failed to deactivate branch.");
+        showBranchMessage("Branch deactivated successfully.", "success");
+        await loadBranches();
+    } catch (error) {
+        console.error("deleteBranch error:", error);
+        showBranchMessage(error.message || "Failed to deactivate branch.", "error");
+    }
+}
+
+async function activateBranch(branchId) {
+    const adminEmail = localStorage.getItem("adminEmail");
+    if (!adminEmail) return toast("Admin login required.");
+    const reason = await askReason("Activate branch", "Enter the reason for activating this branch.", "Activate", false);
+    if (reason === null) return;
+    try {
+        const response = await fetch(`${API_BASE_URL}/admin/branches/${branchId}/activate`, {
+            method: "PUT",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({adminEmail, reason})
+        });
+        const text = await response.text();
+        if (!response.ok) throw new Error(text || "Failed to activate branch.");
+        showBranchMessage("Branch activated successfully.", "success");
+        await loadBranches();
+    } catch (error) {
+        console.error("activateBranch error:", error);
+        showBranchMessage(error.message || "Failed to activate branch.", "error");
+    }
+}
+
+
+/* ===================== POLICY FORM ===================== */
+
+function getPolicyAdminEmail() {
+    return localStorage.getItem("adminEmail") || "";
+}
+
+async function policyApi(url, options = {}) {
+    const response = await fetch(API_BASE_URL + url, {
+        ...options,
+        headers: {
+            "Content-Type": "application/json",
+            ...(options.headers || {})
+        }
+    });
+
+    const text = await response.text();
+    let result = text;
+
+    try {
+        result = text ? JSON.parse(text) : null;
+    } catch (_) {}
+
+    if (!response.ok) {
+        throw new Error(
+            result && typeof result === "object"
+                ? result.message || "Rule request failed."
+                : result || "Rule request failed."
+        );
     }
 
+    return result;
+}
 
-    async function deleteBranch(
-        branchId
-    ) {
+async function loadVerificationPolicies() {
+    const body = document.getElementById("verificationPolicyTableBody");
+    const adminEmail = getPolicyAdminEmail();
 
-        const adminEmail =
-            localStorage.getItem(
-                "adminEmail"
-            );
+    if (!body) return;
 
-
-        if (!adminEmail) {
-
-            alert(
-                "Admin login required"
-            );
-
-            return;
-
-        }
-
-
-        const reason =
-            prompt(
-                "Enter reason for deactivating this branch:"
-            );
-
-
-        if (
-            reason === null ||
-            reason.trim() === ""
-        ) {
-
-            return;
-
-        }
-
-
-        if (
-            reason.trim().length < 3
-        ) {
-
-            alert(
-                "Please enter a valid reason"
-            );
-
-            return;
-
-        }
-
-
-        const confirmed =
-            confirm(
-                "Are you sure you want to deactivate this branch?"
-            );
-
-
-        if (!confirmed) {
-
-            return;
-
-        }
-
-
-        try {
-
-            const response =
-                await fetch(
-                    `${API_BASE_URL}/admin/branches/${branchId}`,
-                    {
-                        method:
-                            "DELETE",
-
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-
-                        body:
-                            JSON.stringify({
-
-                                adminEmail:
-                                    adminEmail,
-
-                                reason:
-                                    reason.trim()
-
-                            })
-                    }
-                );
-
-
-            const responseText =
-                await response.text();
-
-
-            if (!response.ok) {
-
-                throw new Error(
-                    responseText ||
-                    "Failed to deactivate branch"
-                );
-
-            }
-
-
-            showBranchMessage(
-                "Branch deactivated successfully",
-                "success"
-            );
-
-
-            await loadBranches();
-
-        }
-        catch (error) {
-
-            console.error(
-                "deleteBranch error:",
-                error
-            );
-
-
-            showBranchMessage(
-                error.message ||
-                "Failed to deactivate branch",
-                "error"
-            );
-
-        }
-
+    if (!adminEmail) {
+        body.innerHTML =
+            '<tr><td colspan="8" class="policy-empty">Admin login required.</td></tr>';
+        return;
     }
 
-
-    async function activateBranch(
-        branchId
-    ) {
-
-        const adminEmail =
-            localStorage.getItem(
-                "adminEmail"
-            );
-
-
-        if (!adminEmail) {
-
-            alert(
-                "Admin login required"
-            );
-
-            return;
-        }
-
-
-        const reason =
-            prompt(
-                "Enter reason for activating this branch:"
-            );
-
-
-        if (
-            reason === null
-        ) {
-
-            return;
-        }
-
-
-        if (
-            reason.trim().length < 3
-        ) {
-
-            alert(
-                "Please enter a valid reason"
-            );
-
-            return;
-        }
-
-
-        const confirmed =
-            confirm(
-                "Are you sure you want to activate this branch?"
-            );
-
-
-        if (!confirmed) {
-
-            return;
-        }
-
-
-        try {
-
-            const response =
-                await fetch(
-                    `${API_BASE_URL}/admin/branches/${branchId}/activate`,
-                    {
-                        method: "PUT",
-
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-
-                        body: JSON.stringify({
-                            adminEmail:
-                                adminEmail,
-
-                            reason:
-                                reason.trim()
-                        })
-                    }
-                );
-
-
-            if (!response.ok) {
-
-                let errorMessage =
-                    "Failed to activate branch";
-
-                try {
-
-                    const errorData =
-                        await response.json();
-
-                    if (
-                        errorData &&
-                        errorData.message
-                    ) {
-
-                        errorMessage =
-                            errorData.message;
-                    }
-
-                }
-                catch (ignore) {
-                }
-
-
-                throw new Error(
-                    errorMessage
-                );
-            }
-
-
-            showBranchMessage(
-                "Branch activated successfully.",
-                "success"
-            );
-
-
-            await loadBranches();
-
-        }
-        catch (error) {
-
-            console.error(
-                "activateBranch error:",
-                error
-            );
-
-
-            showBranchMessage(
-                error.message ||
-                "Failed to activate branch.",
-                "error"
-            );
-
-        }
-
-    }
-
-
-    function showBranchMessage(
-        message,
-        type
-    ) {
-
-        const element =
-            document.getElementById(
-                "branchMessage"
-            );
-
-
-        if (!element) {
-            return;
-        }
-
-
-        element.textContent =
-            message;
-
-
-        element.className =
-            "message";
-
-
-        if (type === "success") {
-
-            element.classList.add(
-                "success"
-            );
-
-        }
-        else {
-
-            element.classList.add(
-                "error"
-            );
-
-        }
-
-
-        setTimeout(
-            function() {
-
-                element.textContent = "";
-
-                element.className =
-                    "message";
-
-            },
-            4000
+    body.innerHTML =
+        '<tr><td colspan="8" class="policy-empty">Loading rules...</td></tr>';
+
+    try {
+        const policies = await policyApi(
+            "/admin/verification-policies?adminEmail=" +
+            encodeURIComponent(adminEmail)
         );
 
+        const list = Array.isArray(policies) ? policies : [];
+        setText("ruleCount", list.length);
+
+        if (!list.length) {
+            body.innerHTML =
+                '<tr><td colspan="8" class="policy-empty">No check-in rules yet. Click Add Rule to create one.</td></tr>';
+            return;
+        }
+
+        body.innerHTML = list.map(policy => {
+            const branchName = policy.branch
+                ? policy.branch.branchName || ("Branch " + policy.branch.id)
+                : "All branches";
+
+            const targetLabels = {
+                DEFAULT: "Everyone", ROLE: "Role", DESIGNATION: "Designation",
+                MANAGER: "Manager", INTERN: "Interns", STUDENT: "Students", EMPLOYEE: "Employee"
+            };
+            const targetType = String(policy.targetType || "DEFAULT").toUpperCase();
+            const targetLabel = targetLabels[targetType] || targetType;
+            const targetValue = policy.targetValue ? String(policy.targetValue).replace(/_/g, " ") : "";
+
+            const dates = policy.startDate || policy.endDate
+                ? (policy.startDate || "Any") + (policy.endDate ? " to " + policy.endDate : " onwards")
+                : "";
+            const times = policy.startTime || policy.endTime
+                ? String(policy.startTime || "").slice(0, 5) + " - " + String(policy.endTime || "").slice(0, 5)
+                : "";
+            const schedule = [dates, times].filter(Boolean).map(escapeHtml).join("<br>") || '<span class="mut">Always</span>';
+
+            const capture = [
+                policy.locationCaptureEnabled ? '<span class="chip">GPS</span>' : "",
+                policy.photoCaptureEnabled ? '<span class="chip">Photo</span>' : ""
+            ].join("") || '<span class="mut">-</span>';
+
+            return `<tr>
+                <td><strong>${escapeHtml(policy.policyName || "-")}</strong><br><small class="mut">${escapeHtml(branchName)}</small></td>
+                <td>${escapeHtml(targetLabel)}${targetValue ? '<br><small class="mut">' + escapeHtml(targetValue) + '</small>' : ""}</td>
+                <td>${schedule}</td>
+                <td>${getVerificationStatus(policy.locationVerificationEnabled)}</td>
+                <td>${getVerificationStatus(policy.faceVerificationEnabled)}</td>
+                <td>${capture}</td>
+                <td><span class="verification-status on">Active</span></td>
+                <td><div class="policy-actions">
+                    <button type="button" class="btn btn-secondary" onclick="editVerificationPolicy(${Number(policy.id)})">Edit</button>
+                    <button type="button" class="btn btn-warning" onclick="deactivateVerificationPolicy(${Number(policy.id)})">Deactivate</button>
+                </div></td>
+            </tr>`;
+        }).join("");
+    } catch (error) {
+        console.error("loadVerificationPolicies error:", error);
+        body.innerHTML =
+            '<tr><td colspan="8" class="policy-empty">Failed to load rules. ' +
+            escapeHtml(error.message) + '</td></tr>';
+    }
+}
+
+
+async function loadPolicyOptions() {
+    const adminEmail = getPolicyAdminEmail();
+
+    if (!adminEmail) {
+        console.error("Admin email not found.");
+        return;
     }
 
+    try {
+        // Reuse the existing policyApi helper.
+        // policyApi already parses the response JSON.
+        const data = await policyApi(
+            "/admin/verification-policies/options?adminEmail=" +
+            encodeURIComponent(adminEmail)
+        );
 
-    document.querySelectorAll(
-        ".modal"
-    ).forEach(
-        function(modal) {
+        function fillSelect(id, values, getValue, getLabel, placeholder) {
+            const select = document.getElementById(id);
+            if (!select) return;
 
-            modal.addEventListener(
-                "click",
-                function(event) {
+            const previousValue = select.value;
+            select.innerHTML = "";
 
-                    if (
-                        event.target ===
-                        modal
-                    ) {
+            const firstOption = document.createElement("option");
+            firstOption.value = "";
+            firstOption.textContent = placeholder;
+            select.appendChild(firstOption);
 
-                        modal.classList.remove(
-                            "show"
-                        );
+            (Array.isArray(values) ? values : []).forEach(item => {
+                const value = getValue(item);
 
-                    }
-
+                if (value == null || String(value).trim() === "") {
+                    return;
                 }
-            );
 
-        }
-    );
+                const option = document.createElement("option");
+                option.value = String(value);
+                option.textContent = String(getLabel(item) ?? value);
+                select.appendChild(option);
+            });
 
-
-    document.addEventListener(
-        "DOMContentLoaded",
-        function() {
-
-            if (typeof lucide !== "undefined") {
-
-                lucide.createIcons();
-
+            // Preserve an existing saved target if it is not in the
+            // current options returned by the backend.
+            if (
+                previousValue &&
+                !Array.from(select.options).some(
+                    option => option.value === previousValue
+                )
+            ) {
+                const savedOption = document.createElement("option");
+                savedOption.value = previousValue;
+                savedOption.textContent = previousValue;
+                select.appendChild(savedOption);
             }
 
-            loadAdminInfo();
-
-            loadBranches();
-
+            if (previousValue) {
+                select.value = previousValue;
+            }
         }
-    );
+
+        fillSelect(
+            "policyRole",
+            data.roles,
+            value => value,
+            value => value,
+            "Select Role"
+        );
+
+        fillSelect(
+            "policyDesignation",
+            data.designations,
+            value => value,
+            value => value,
+            "Select Designation"
+        );
+
+        fillSelect(
+            "policyEmployee",
+            data.employees,
+            employee => employee.employeeCode || employee.id,
+            employee =>
+                (employee.employeeCode || employee.id) +
+                " - " +
+                (employee.name || "Unnamed Employee"),
+            "Select Employee"
+        );
+
+        // A manager-to-employee relationship is not configured yet.
+        const managerSelect = document.getElementById("policyManager");
+
+        if (managerSelect) {
+            managerSelect.innerHTML =
+                '<option value="">Manager mapping not configured</option>';
+
+            managerSelect.disabled = true;
+            managerSelect.title =
+                "Manager-wise targeting requires an employee-manager relationship.";
+        }
+
+    } catch (error) {
+        console.error("Policy options load error:", error);
+        showMessage(
+            "policyMessage",
+            error.message || "Unable to load dropdown options.",
+            "error"
+        );
+    }
+}
+
+
+function setPolicyTargetValue(type, value) {
+    const ids = {
+        ROLE: "policyRole",
+        DESIGNATION: "policyDesignation",
+        MANAGER: "policyManager",
+        EMPLOYEE: "policyEmployee"
+    };
+
+    Object.values(ids).forEach(id => {
+        const field = document.getElementById(id);
+        if (field && field.tagName === "SELECT") {
+            field.value = "";
+        }
+    });
+
+    const id = ids[type];
+    const field = id ? document.getElementById(id) : null;
+
+    if (!field || !value) return;
+
+    // Allow an existing saved value to be displayed even if the option
+    // is not currently present in the dropdown.
+    if (field.tagName === "SELECT" &&
+        !Array.from(field.options).some(option => option.value === String(value))) {
+        const option = document.createElement("option");
+        option.value = String(value);
+        option.textContent = String(value);
+        field.appendChild(option);
+    }
+
+    field.value = String(value);
+}
+
+function getPolicyTargetValue(type) {
+    const ids = {
+        ROLE: "policyRole",
+        DESIGNATION: "policyDesignation",
+        MANAGER: "policyManager",
+        EMPLOYEE: "policyEmployee"
+    };
+
+    const id = ids[type];
+    return id ? document.getElementById(id).value.trim() : null;
+}
+
+function openPolicyModal() {
+    editingPolicyId = null;
+
+    document.getElementById("policyModalTitle").textContent =
+        "Add Check-in Rule";
+    document.getElementById("policyId").value = "";
+    document.getElementById("policyName").value = "";
+    document.getElementById("policyBranch").value = "";
+    document.getElementById("policyTargetType").value = "DEFAULT";
+
+    setPolicyTargetValue("ROLE", "");
+    setPolicyTargetValue("DESIGNATION", "");
+    setPolicyTargetValue("MANAGER", "");
+    setPolicyTargetValue("EMPLOYEE", "");
+
+    document.getElementById("policyStartDate").value = "";
+    document.getElementById("policyEndDate").value = "";
+    document.getElementById("policyStartTime").value = "";
+    document.getElementById("policyEndTime").value = "";
+    document.getElementById("policyLocationVerification").checked = false;
+    document.getElementById("policyFaceVerification").checked = false;
+    document.getElementById("policyLocationCapture").checked = true;
+    document.getElementById("policyPhotoCapture").checked = false;
+    document.getElementById("policyReason").value = "";
+
+    clearMessage("policyMessage");
+    refreshPolicyTargetFields();
+    document.getElementById("policyModal").classList.add("show");
+    refreshIcons();
+}
+
+function closePolicyModal() {
+    document.getElementById("policyModal").classList.remove("show");
+    editingPolicyId = null;
+}
+
+function refreshPolicyTargetFields() {
+    const type = document.getElementById("policyTargetType").value;
+
+    document.getElementById("policyRoleGroup").style.display =
+        type === "ROLE" ? "flex" : "none";
+    document.getElementById("policyDesignationGroup").style.display =
+        type === "DESIGNATION" ? "flex" : "none";
+    document.getElementById("policyManagerGroup").style.display =
+        type === "MANAGER" ? "flex" : "none";
+    document.getElementById("policyEmployeeGroup").style.display =
+        type === "EMPLOYEE" ? "flex" : "none";
+}
+
+
+function validatePolicyForm() {
+    const name = document.getElementById("policyName").value.trim();
+    const type = document.getElementById("policyTargetType").value;
+    const reason = document.getElementById("policyReason").value.trim();
+    const startDate = document.getElementById("policyStartDate").value;
+    const endDate = document.getElementById("policyEndDate").value;
+    const startTime = document.getElementById("policyStartTime").value;
+    const endTime = document.getElementById("policyEndTime").value;
+
+    if (!name) {
+        return "Rule name is required.";
+    }
+
+    if (reason.length < 3) {
+        return "Reason must contain at least 3 characters.";
+    }
+
+    if (startDate && endDate && endDate < startDate) {
+        return "End Date cannot be before Start Date.";
+    }
+
+    if (Boolean(startTime) !== Boolean(endTime)) {
+        return "Enter both Start Time and End Time, or leave both blank.";
+    }
+
+    if (type === "ROLE" && !getPolicyTargetValue(type)) {
+        return "Please select a role.";
+    }
+
+    if (type === "DESIGNATION" && !getPolicyTargetValue(type)) {
+        return "Please select a designation.";
+    }
+
+    // Manager mapping is not configured yet.
+    // Prevent saving a manager policy without a real manager relationship.
+    if (type === "MANAGER") {
+        return "Manager-wise rules are not available yet.";
+    }
+
+    if (type === "EMPLOYEE" && !getPolicyTargetValue(type)) {
+        return "Please select an employee.";
+    }
+
+    return "";
+}
+
+async function saveVerificationPolicy() {
+    const validationError = validatePolicyForm();
+
+    if (validationError) {
+        toast(validationError);
+        return;
+    }
+
+    const adminEmail = getPolicyAdminEmail();
+    if (!adminEmail) {
+        toast("Admin login required. Please login again.");
+        return;
+    }
+
+    const type = document.getElementById("policyTargetType").value;
+    const saveButton = document.getElementById("policySaveBtn");
+
+    const requestBody = {
+        adminEmail,
+        policyName: document.getElementById("policyName").value.trim(),
+        branchId: document.getElementById("policyBranch").value
+            ? Number(document.getElementById("policyBranch").value)
+            : null,
+        targetType: type,
+        targetValue: getPolicyTargetValue(type),
+        startDate: document.getElementById("policyStartDate").value || null,
+        endDate: document.getElementById("policyEndDate").value || null,
+        startTime: document.getElementById("policyStartTime").value || null,
+        endTime: document.getElementById("policyEndTime").value || null,
+        locationVerificationEnabled:
+            document.getElementById("policyLocationVerification").checked,
+        faceVerificationEnabled:
+            document.getElementById("policyFaceVerification").checked,
+        locationCaptureEnabled:
+            document.getElementById("policyLocationCapture").checked,
+        photoCaptureEnabled:
+            document.getElementById("policyPhotoCapture").checked,
+        reason: document.getElementById("policyReason").value.trim()
+    };
+
+    const wasEditing = editingPolicyId !== null;
+    const url = wasEditing
+        ? "/admin/verification-policies/" + encodeURIComponent(editingPolicyId)
+        : "/admin/verification-policies";
+
+    saveButton.disabled = true;
+
+    try {
+        await policyApi(url, {
+            method: wasEditing ? "PUT" : "POST",
+            body: JSON.stringify(requestBody)
+        });
+
+        closePolicyModal();
+        showMessage(
+            "policyMessage",
+            wasEditing ? "Rule updated successfully." : "Rule created successfully.",
+            "success"
+        );
+
+        await loadVerificationPolicies();
+    } catch (error) {
+        console.error("saveVerificationPolicy error:", error);
+        showMessage("policyMessage", error.message || "Failed to save rule.", "error");
+    } finally {
+        saveButton.disabled = false;
+    }
+}
+
+async function editVerificationPolicy(policyId) {
+    try {
+        const adminEmail = getPolicyAdminEmail();
+        if (!adminEmail) throw new Error("Admin login required.");
+
+        const policies = await policyApi(
+            "/admin/verification-policies?adminEmail=" +
+            encodeURIComponent(adminEmail)
+        );
+
+        const policy = (Array.isArray(policies) ? policies : [])
+            .find(item => Number(item.id) === Number(policyId));
+
+        if (!policy) throw new Error("Rule not found. Refresh the list.");
+
+        editingPolicyId = policy.id;
+        document.getElementById("policyModalTitle").textContent =
+            "Edit Check-in Rule";
+        document.getElementById("policyId").value = policy.id;
+        document.getElementById("policyName").value = policy.policyName || "";
+        document.getElementById("policyBranch").value =
+            policy.branch && policy.branch.id ? String(policy.branch.id) : "";
+
+        const type = String(policy.targetType || "DEFAULT").toUpperCase();
+        document.getElementById("policyTargetType").value = type;
+
+        setPolicyTargetValue(type, policy.targetValue || "");
+
+        document.getElementById("policyStartDate").value = policy.startDate || "";
+        document.getElementById("policyEndDate").value = policy.endDate || "";
+        document.getElementById("policyStartTime").value =
+            policy.startTime ? String(policy.startTime).slice(0, 5) : "";
+        document.getElementById("policyEndTime").value =
+            policy.endTime ? String(policy.endTime).slice(0, 5) : "";
+
+        document.getElementById("policyLocationVerification").checked =
+            Boolean(policy.locationVerificationEnabled);
+        document.getElementById("policyFaceVerification").checked =
+            Boolean(policy.faceVerificationEnabled);
+        document.getElementById("policyLocationCapture").checked =
+            policy.locationCaptureEnabled !== false;
+        document.getElementById("policyPhotoCapture").checked =
+            Boolean(policy.photoCaptureEnabled);
+        document.getElementById("policyReason").value = "";
+
+        clearMessage("policyMessage");
+        refreshPolicyTargetFields();
+        document.getElementById("policyModal").classList.add("show");
+        refreshIcons();
+    } catch (error) {
+        console.error("editVerificationPolicy error:", error);
+        showMessage("policyMessage", error.message || "Unable to edit rule.", "error");
+    }
+}
+
+async function deactivateVerificationPolicy(policyId) {
+    const adminEmail = getPolicyAdminEmail();
+    if (!adminEmail) return toast("Admin login required.");
+    const reason = await askReason("Deactivate rule", "This rule will stop applying to employees. Enter the reason.", "Deactivate", true);
+    if (reason === null) return;
+    try {
+        const query = new URLSearchParams({adminEmail, reason});
+        await policyApi("/admin/verification-policies/" + encodeURIComponent(policyId) + "?" + query.toString(), { method: "DELETE" });
+        showMessage("policyMessage", "Rule deactivated successfully.", "success");
+        await loadVerificationPolicies();
+    } catch (error) {
+        console.error("deactivateVerificationPolicy error:", error);
+        showMessage("policyMessage", error.message || "Unable to deactivate rule.", "error");
+    }
+}
+
+/* ===================== MODAL EVENTS ===================== */
+
+document.querySelectorAll(".modal").forEach(modal => {
+    modal.addEventListener("click", event => {
+        if (event.target !== modal) return;
+
+        modal.classList.remove("show");
+        if (modal.id === "reasonModal" && window._reasonDone) window._reasonDone(null);
+
+        if (modal.id === "branchModal") editingBranchId = null;
+        if (modal.id === "policyModal") editingPolicyId = null;
+    });
+});
+
+document.addEventListener("keydown", event => {
+    if (event.key !== "Escape") return;
+
+    document.querySelectorAll(".modal.show").forEach(modal => {
+        modal.classList.remove("show");
+    });
+    if (window._reasonDone) window._reasonDone(null);
+
+    editingBranchId = null;
+    editingPolicyId = null;
+});
+
+
+
+/* ===================== UI HELPERS ===================== */
+function setText(id, value) { const e = document.getElementById(id); if (e) e.textContent = value; }
+
+function toast(message, type) {
+    let box = document.getElementById("toastBox");
+    if (!box) { box = document.createElement("div"); box.id = "toastBox"; document.body.appendChild(box); }
+    const t = document.createElement("div");
+    t.className = "toast " + (type === "success" ? "ok" : "err");
+    t.textContent = message;
+    box.appendChild(t);
+    setTimeout(() => t.remove(), 4000);
+}
+
+function switchTab(name) {
+    document.querySelectorAll(".tab").forEach(b => b.classList.toggle("active", b.dataset.tab === name));
+    document.querySelectorAll(".panel").forEach(p => p.classList.toggle("active", p.id === "panel-" + name));
+    try { history.replaceState(null, "", "#" + name); } catch (e) {}
+}
+
+function askReason(title, hint, confirmText, danger) {
+    return new Promise(resolve => {
+        const modal = document.getElementById("reasonModal");
+        const input = document.getElementById("reasonInput");
+        const ok = document.getElementById("reasonOk");
+        document.getElementById("reasonTitle").textContent = title;
+        document.getElementById("reasonHint").textContent = hint;
+        document.getElementById("reasonError").textContent = "";
+        ok.textContent = confirmText;
+        ok.className = "btn " + (danger ? "btn-danger" : "btn-primary");
+        input.value = "";
+        modal.classList.add("show");
+        input.focus();
+        const done = value => { window._reasonDone = null; modal.classList.remove("show"); resolve(value); };
+        window._reasonDone = done;
+        document.getElementById("reasonCancel").onclick = () => done(null);
+        ok.onclick = () => {
+            const v = input.value.trim();
+            if (v.length < 3) { document.getElementById("reasonError").textContent = "Reason must contain at least 3 characters."; return; }
+            done(v);
+        };
+    });
+}
+
+/* Refresh Lucide icons safely */
+function refreshIcons() {
+    if (
+        window.lucide &&
+        typeof window.lucide.createIcons === "function"
+    ) {
+        window.lucide.createIcons();
+    }
+}
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    refreshIcons();
+    loadAdminInfo();
+    loadBranches();
+    refreshPolicyTargetFields();
+    const h = (location.hash || "").replace("#", "");
+    if (h === "rules") switchTab("rules");
+});
 
 </script>
-
+<script src="/admin/admin-sidebar.js" defer></script>
 </body>
-
 </html>
-

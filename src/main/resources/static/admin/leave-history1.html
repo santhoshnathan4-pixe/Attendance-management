@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -818,106 +818,28 @@ body.modal-open {
 
 <!-- SIDEBAR — SAME STRUCTURE AS HISTORY.HTML -->
 
-<aside class="sidebar">
-
-    <div class="logo">
-        GROWBYTEE
-    </div>
-
-    <div class="admin-title">
-        Admin / CEO Dashboard
-    </div>
-
-    <div class="menu">
-
-        <button class="menu-btn"
-                onclick="window.location.href='/admin/admin-dashboard.html'">
-            <i data-lucide="layout-dashboard"></i>
-            Dashboard
-        </button>
-
-        <button class="menu-btn"
-                onclick="window.location.href='/admin/employees.html'">
-            <i data-lucide="users"></i>
-            Employees
-        </button>
-
-        <button class="menu-btn"
-                onclick="window.location.href='/admin/leave.html'">
-            <i data-lucide="clipboard-list"></i>
-            Leave
-        </button>
-
-        <button class="menu-btn"
-                onclick="window.location.href='/admin/ai-assistant.html'">
-            <i data-lucide="sparkles"></i>
-            AI Assistant
-        </button>
-
-        <button class="menu-btn"
-                onclick="window.location.href='/admin/working-day-settings.html'">
-            <i data-lucide="calendar-days"></i>
-            Working Day Settings
-        </button>
-
-        <button class="menu-btn"
-                onclick="window.location.href='/admin/shift-settings.html'">
-            <i data-lucide="clock-3"></i>
-            Shift Settings
-        </button>
-
-        <button class="menu-btn"
-                onclick="window.location.href='/admin/branch-management.html'">
-            <i data-lucide="building-2"></i>
-            Branch Management
-        </button>
-
-        <button class="menu-btn"
-                onclick="window.location.href='/admin/leave-permission-settings.html'">
-            <i data-lucide="settings"></i>
-            Leave & Permission Settings
-        </button>
-
-        <button class="menu-btn"
-                onclick="window.location.href='/admin/salary.html'">
-            <i data-lucide="wallet"></i>
-            Salary
-        </button>
-
-        <button class="menu-btn"
-                onclick="window.location.href='/admin/monthly-report.html'">
-            <i data-lucide="calendar-days"></i>
-            Monthly Report
-        </button>
-
-       
-
-        <button class="menu-btn"
-                onclick="window.location.href='/admin/attendance-history.html'">
-            <i data-lucide="calendar-clock"></i>
-            Attendance History
-        </button>
-
-        <button class="menu-btn active"
-                onclick="window.location.href='/admin/leave-history.html'">
-            <i data-lucide="file-clock"></i>
-            Leave History
-        </button>
-
-         <button class="menu-btn"
-                onclick="window.location.href='/admin/history.html'">
-            <i data-lucide="history"></i>
-            History
-        </button>
-
-        <button class="menu-btn logout-btn"
-                onclick="logout()">
-            <i data-lucide="log-out"></i>
-            Logout
-        </button>
-
-    </div>
-</aside>
+<!-- SIDEBAR: EXISTING LINKS PRESERVED -->
+    <aside class="sidebar">
+        <div class="logo">GROWBYTEE</div>
+        <div class="admin-title">Admin / CEO Dashboard</div>
+        <div class="menu">
+           
+            <button class="menu-btn" onclick="window.location.href='/admin-dashboard.html'"><i data-lucide="layout-dashboard"></i>Dashboard</button> 
+            <button class="menu-btn" onclick="window.location.href='employees.html'"><i data-lucide="users"></i>Employees</button>
+            <button class="menu-btn" onclick="window.location.href='leave.html'"><i data-lucide="clipboard-list"></i>Leave</button>
+            <button class="menu-btn" onclick="window.location.href='ai-assistant.html'"><i data-lucide="sparkles"></i>AI Assistant</button>
+            <button class="menu-btn" onclick="window.location.href='working-day-settings.html'"><i data-lucide="calendar-days"></i>Working Day Settings</button>
+            <button class="menu-btn" onclick="window.location.href='shift-settings.html'"><i data-lucide="clock-3"></i>Shift Settings</button>
+            <button class="menu-btn" onclick="window.location.href='branch-management.html'"><i data-lucide="building-2"></i>Branch Management</button>
+            <button class="menu-btn" onclick="window.location.href='leave-permission-settings.html'"><i data-lucide="settings"></i>Leave & Permission Settings</button>
+            <button class="menu-btn" onclick="window.location.href='salary.html'"><i data-lucide="wallet"></i>Salary</button>
+            <button class="menu-btn" onclick="window.location.href='monthly-report.html'"><i data-lucide="calendar-days"></i>Monthly Report</button>
+            <button class="menu-btn active" onclick="window.location.href='attendance-history.html'"><i data-lucide="calendar-check"></i>Attendance History</button>
+            <button class="menu-btn" onclick="window.location.href='leave-history.html'"><i data-lucide="file-clock"></i>Leave History</button>
+            <button class="menu-btn" onclick="window.location.href='history.html'"><i data-lucide="history"></i>History</button>
+            <button class="menu-btn logout-btn" onclick="logout()"><i data-lucide="log-out"></i>Logout</button>
+        </div>
+    </aside>
 
 <main class="main">
 
@@ -2089,4 +2011,4 @@ body.modal-open {
 </script>
 
 </body>
-</html>
+</html> 

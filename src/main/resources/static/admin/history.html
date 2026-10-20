@@ -617,6 +617,64 @@ td:nth-child(10) {
 
 }
 
+
+/* ===== GROWBYTEE UI v2 (black / green / white) ===== */
+:root{--g:#16803C;--gd:#0B2E1A;--gl:#E8F5EC;--k:#171717;--line:#E1E8E3;--mut:#6B7A70;--bg:#F4F6F5;--red:#DC2626}
+*{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif!important}
+body{background:var(--bg)!important;color:var(--k);font-size:14px}
+.sidebar{display:none!important}
+.header{height:60px!important;background:#fff!important;border-bottom:1px solid var(--line)!important;padding:0 28px!important;box-shadow:none!important}
+.header h1{font-size:17px!important;font-weight:700!important}
+.admin-info{color:var(--mut)!important;font-size:13px!important}
+.admin-badge{background:var(--gd)!important;color:#fff!important;padding:4px 10px!important;border-radius:99px!important;font-size:11px!important;letter-spacing:.4px;border:0!important}
+.content{padding:22px 28px!important;max-width:1400px}
+.section{background:transparent!important;border:0!important;padding:0!important;min-height:0!important}
+.section-title h2,h2.section-title{display:none!important}
+.page-heading h2{display:none!important}
+.section-title{margin-bottom:14px!important}
+.section-subtitle{color:var(--mut)!important;font-size:13px!important;margin:0 0 14px!important;max-width:none!important}
+.section-title .section-subtitle,.page-heading .section-subtitle{margin:0!important}
+.btn{border:1px solid transparent;border-radius:8px!important;padding:9px 16px!important;font-size:13px!important;font-weight:600!important}
+.btn-primary,.btn-weekly,.btn-success.solid{background:var(--g)!important;color:#fff!important;border-color:var(--g)!important}
+.btn-primary:hover,.btn-weekly:hover{background:var(--gd)!important;border-color:var(--gd)!important}
+.btn-secondary{background:#fff!important;color:var(--k)!important;border:1px solid var(--line)!important}
+.btn-secondary:hover{background:var(--gl)!important;border-color:#BFE0CB!important}
+.btn-danger{background:#fff!important;color:var(--red)!important;border:1px solid #F3C5C5!important}
+.btn-danger:hover{background:#FEF2F2!important}
+.btn-small{padding:6px 12px!important;font-size:12px!important}
+.top-bar{background:#fff!important;border:1px solid var(--line)!important;border-radius:12px!important;box-shadow:none!important;padding:12px 14px!important;margin-bottom:14px!important}
+.table-card,.calendar-card,.weekly-off-summary{background:#fff!important;border:1px solid var(--line)!important;border-radius:12px!important;box-shadow:none!important}
+th{background:#F7F9F8!important;color:var(--mut)!important;font-size:11px!important;letter-spacing:.5px;text-transform:uppercase;padding:12px 14px!important;border-bottom:1px solid var(--line)}
+td{padding:12px 14px!important;border-top:1px solid #EEF1EF!important;border-bottom:0!important;font-size:13px!important}
+tbody tr:first-child td{border-top:0!important}
+tr:hover td,tbody tr:hover td{background:#F7FAF8!important}
+.empty-row{color:var(--mut)!important}
+.form-group label,.filter-item label{font-size:12px!important;font-weight:700!important;color:#33433A!important}
+.form-group input,.form-group select,.form-group textarea,.filter-item select,.filter-box input,.filter-box select,.adjust-select{border:1px solid #CBD8CF!important;border-radius:8px!important;padding:10px 12px!important;font-size:14px!important;background:#fff}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus,.filter-item select:focus,.filter-box select:focus{border-color:var(--g)!important;box-shadow:0 0 0 3px rgba(22,128,60,.12)!important;outline:0}
+.modal{background:rgba(15,26,20,.55)!important;z-index:100}
+.modal-box{border-radius:14px!important;box-shadow:0 20px 50px rgba(0,0,0,.25)!important}
+.modal-header{border-bottom:1px solid var(--line)!important;padding-bottom:14px!important;margin-bottom:18px!important}
+.modal-header h2,.modal-header h3{font-size:17px!important}
+.close-btn{border-radius:8px!important;background:#EEF1EF!important;color:var(--k)!important;width:32px!important;height:32px!important}
+.close-btn:hover{background:#DDE5DF!important}
+.modal-footer{border-top:1px solid var(--line)!important;padding-top:14px!important;margin-top:20px!important}
+.message{border-radius:8px!important;font-size:13px!important}
+.info-box,.setting-help,.weekly-off-modal-help{background:var(--gl)!important;border:1px solid #BFE0CB!important;color:#14532D!important;border-radius:10px!important}
+@media(max-width:800px){.header{padding:0 16px 0 60px!important}.content{padding:16px!important}}
+@media(max-width:600px){.admin-info{display:none!important}}
+
+.history-scroll-area{height:auto!important;min-height:0!important;max-height:calc(100vh - 230px)!important;overflow:auto!important}
+table{table-layout:auto!important;min-width:1100px!important;border-collapse:separate!important;border-spacing:0}
+th,td{width:auto!important}
+thead th{position:sticky;top:0;z-index:2}
+td{white-space:normal!important;vertical-align:top;line-height:1.5}
+.history-action{font-weight:700}
+.value-cell,.reason-cell{color:#475569;max-width:260px}
+.top-bar{justify-content:flex-start!important;gap:10px!important;flex-wrap:wrap}
+.hist-spacer{flex:1}
+#historySearch{padding:10px 12px;border:1px solid #CBD8CF;border-radius:8px;min-width:260px;font-size:13px;outline:0}
+#historySearch:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(22,128,60,.12)}
 </style>
 
 </head>
@@ -625,129 +683,9 @@ td:nth-child(10) {
 
 <div class="container">
 
-```
-<aside class="sidebar">
-
-    <div class="logo">
-        GROWBYTEE
-    </div>
-
-    <div class="admin-title">
-        Admin / CEO Dashboard
-    </div>
-
-    <div class="menu">
-
-        <button class="menu-btn"
-                onclick="window.location.href='/admin-dashboard.html'">
-            <i data-lucide="layout-dashboard"></i>
-            Dashboard
-        </button>
-
-        <button class="menu-btn"
-                onclick="window.location.href='employees.html'">
-            <i data-lucide="users"></i>
-            Employees
-        </button>
-
-        <button class="menu-btn"
-                onclick="window.location.href='leave.html'">
-            <i data-lucide="clipboard-list"></i>
-            Leave
-        </button>
-
-        <button class="menu-btn"
-                onclick="window.location.href='ai-assistant.html'">
-            <i data-lucide="sparkles"></i>
-            AI Assistant
-        </button>
-
-        <button class="menu-btn"
-                onclick="window.location.href='working-day-settings.html'">
-            <i data-lucide="calendar-days"></i>
-            Working Day Settings
-        </button>
-
-        <button class="menu-btn"
-                onclick="window.location.href='shift-settings.html'">
-            <i data-lucide="clock-3"></i>
-            Shift Settings
-        </button>
-
-        <button class="menu-btn"
-                onclick="window.location.href='branch-management.html'">
-            <i data-lucide="building-2"></i>
-            Branch Management
-        </button>
-
-        <button class="menu-btn"
-                onclick="window.location.href='leave-permission-settings.html'">
-            <i data-lucide="settings"></i>
-            Leave & Permission Settings
-        </button>
-
-        <button class="menu-btn"
-                onclick="window.location.href='salary.html'">
-            <i data-lucide="wallet"></i>
-            Salary
-        </button>
-
-        <button class="menu-btn"
-                onclick="window.location.href='monthly-report.html'">
-            <i data-lucide="calendar-days"></i>
-            Monthly Report
-        </button>
-
-        
-<button class="menu-btn"
-        onclick="window.location.href='attendance-history.html'">
-    <i data-lucide="calendar-clock"></i>
-    Attendance History
-</button>
-
-<button class="menu-btn"
-        onclick="window.location.href='leave-history.html'">
-    <i data-lucide="file-clock"></i>
-    Leave History
-</button>
-
-        <button class="menu-btn active"
-                onclick="window.location.href='history.html'">
-            <i data-lucide="history"></i>
-            History
-        </button>
-
-        <button class="menu-btn logout-btn"
-                onclick="logout()">
-            <i data-lucide="log-out"></i>
-            Logout
-        </button>
-
-    </div>
-
-</aside>
-
 <main class="main">
 
-    <header class="header">
-
-        <h1>
-            GROWBYTEE - Admin Dashboard
-        </h1>
-
-        <div class="admin-info" id="adminInfo">
-
-            <span id="loggedAdminName">
-                Welcome, Admin
-            </span>
-
-            <span class="admin-badge">
-                ADMIN
-            </span>
-
-        </div>
-
-    </header>
+    <header class="header"><h1>History</h1><div class="admin-info" id="adminInfo" style="display:flex"><span id="loggedAdminName">Welcome, Admin</span><span class="admin-badge">ADMIN</span></div></header>
 
     <div class="content">
 
@@ -759,7 +697,7 @@ td:nth-child(10) {
             </h2>
 
             <p class="section-subtitle">
-                Admin action history
+                Every change made by an admin, with the old value, new value and reason.
             </p>
 
             <div id="historyMessage"
@@ -767,141 +705,37 @@ td:nth-child(10) {
             </div>
 
             <div class="top-bar">
-
                 <div class="filter-box">
-
-                    <select id="historyYear">
-
-                        <option value="">
-                            All Years
-                        </option>
-
+                    <select id="historyYear" onchange="loadHistory()"><option value="">All Years</option></select>
+                    <select id="historyMonth" onchange="loadHistory()">
+                        <option value="">All Months</option>
+                        <option value="1">January</option><option value="2">February</option><option value="3">March</option>
+                        <option value="4">April</option><option value="5">May</option><option value="6">June</option>
+                        <option value="7">July</option><option value="8">August</option><option value="9">September</option>
+                        <option value="10">October</option><option value="11">November</option><option value="12">December</option>
                     </select>
-
-                    <select id="historyMonth">
-
-                        <option value="">
-                            All Months
-                        </option>
-
-                        <option value="1">January</option>
-                        <option value="2">February</option>
-                        <option value="3">March</option>
-                        <option value="4">April</option>
-                        <option value="5">May</option>
-                        <option value="6">June</option>
-                        <option value="7">July</option>
-                        <option value="8">August</option>
-                        <option value="9">September</option>
-                        <option value="10">October</option>
-                        <option value="11">November</option>
-                        <option value="12">December</option>
-
-                    </select>
-
                 </div>
-
-                <button class="btn btn-primary"
-                        type="button"
-                        onclick="loadHistory()">
-
-                    Load History
-
-                </button>
-
+                <span class="hist-spacer"></span>
+                <input type="text" id="historySearch" placeholder="Search admin, employee, action..." oninput="filterHistoryRows()">
+                <button class="btn btn-secondary" type="button" onclick="loadHistory()">Refresh</button>
             </div>
 
             <div class="table-card">
 
-                <div class="history-scroll-area"
-                     id="historyScrollArea">
-
-                    <!--
-                        STICKY HEADER AREA
-
-                        Heading stays at the top.
-                        Horizontal scrollbar stays directly below it.
-                    -->
-                    <div class="history-sticky-header">
-
-                        <!-- Sticky heading -->
-                        <div class="history-header-scroll"
-                             id="historyHeaderScroll">
-
-                            <table id="historyHeaderTable">
-
-                                <thead>
-
-                                <tr>
-
-                                    <th>Action Date</th>
-                                    <th>Action Time</th>
-                                    <th>Admin Name</th>
-                                    <th>Action</th>
-                                    <th>Employee Code</th>
-                                    <th>Employee Name</th>
-                                    <th>Field Name</th>
-                                    <th>Old Value</th>
-                                    <th>New Value</th>
-                                    <th>Reason</th>
-
-                                </tr>
-
-                                </thead>
-
-                            </table>
-
-                        </div>
-
-                        <!--
-                            VISIBLE HORIZONTAL SCROLLBAR
-
-                            This is directly below the heading.
-                        -->
-                        <div class="history-horizontal-scroll"
-                             id="historyHorizontalScroll">
-
-                            <div class="history-horizontal-scroll-content"
-                                 id="historyHorizontalScrollContent">
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    <!--
-                        DATA AREA
-
-                        Vertical scrolling is controlled by
-                        the parent history-scroll-area.
-                        Horizontal scrollbar is hidden here.
-                    -->
-                    <div class="history-body-scroll"
-                         id="historyBodyScroll">
-
-                        <table id="historyBodyTable">
-
-                            <tbody id="historyTableBody">
-
+                <div class="history-scroll-area" id="historyScrollArea">
+                    <table id="historyBodyTable">
+                        <thead>
                             <tr>
-
-                                <td colspan="10"
-                                    class="empty-row">
-
-                                    Loading history...
-
-                                </td>
-
+                                <th>Date</th><th>Time</th><th>Admin</th><th>Action</th>
+                                <th>Emp. Code</th><th>Employee</th><th>Field</th>
+                                <th>Old Value</th><th>New Value</th><th>Reason</th>
                             </tr>
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
+                        </thead>
+                        <tbody id="historyTableBody">
+                            <tr><td colspan="10" class="empty-row">Loading history...</td></tr>
+                        </tbody>
+                    </table>
                 </div>
-
             </div>
 
         </section>
@@ -909,7 +743,6 @@ td:nth-child(10) {
     </div>
 
 </main>
-```
 
 </div>
 
@@ -1149,161 +982,6 @@ td:nth-child(10) {
     }
 
 
-    /*
-     * Synchronize:
-     *
-     * 1. Visible horizontal scrollbar
-     * 2. Header horizontal position
-     * 3. Data horizontal position
-     */
-    function setupHorizontalScroll() {
-
-        const horizontalScroll =
-            document.getElementById(
-                "historyHorizontalScroll"
-            );
-
-        const horizontalContent =
-            document.getElementById(
-                "historyHorizontalScrollContent"
-            );
-
-        const headerScroll =
-            document.getElementById(
-                "historyHeaderScroll"
-            );
-
-        const bodyScroll =
-            document.getElementById(
-                "historyBodyScroll"
-            );
-
-        const headerTable =
-            document.getElementById(
-                "historyHeaderTable"
-            );
-
-        const bodyTable =
-            document.getElementById(
-                "historyBodyTable"
-            );
-
-
-        if (
-            !horizontalScroll ||
-            !horizontalContent ||
-            !headerScroll ||
-            !bodyScroll ||
-            !headerTable ||
-            !bodyTable
-        ) {
-
-            return;
-
-        }
-
-
-        function updateHorizontalWidth() {
-
-            const headerWidth =
-                headerTable.scrollWidth;
-
-            const bodyWidth =
-                bodyTable.scrollWidth;
-
-            const width =
-                Math.max(
-                    headerWidth,
-                    bodyWidth,
-                    headerScroll.clientWidth
-                );
-
-            horizontalContent.style.width =
-                width + "px";
-
-        }
-
-
-        let syncing = false;
-
-
-        horizontalScroll.addEventListener(
-            "scroll",
-            function() {
-
-                if (syncing) {
-                    return;
-                }
-
-                syncing = true;
-
-                headerScroll.scrollLeft =
-                    horizontalScroll.scrollLeft;
-
-                bodyScroll.scrollLeft =
-                    horizontalScroll.scrollLeft;
-
-                syncing = false;
-
-            }
-        );
-
-
-        headerScroll.addEventListener(
-            "scroll",
-            function() {
-
-                if (syncing) {
-                    return;
-                }
-
-                syncing = true;
-
-                horizontalScroll.scrollLeft =
-                    headerScroll.scrollLeft;
-
-                bodyScroll.scrollLeft =
-                    headerScroll.scrollLeft;
-
-                syncing = false;
-
-            }
-        );
-
-
-        bodyScroll.addEventListener(
-            "scroll",
-            function() {
-
-                if (syncing) {
-                    return;
-                }
-
-                syncing = true;
-
-                horizontalScroll.scrollLeft =
-                    bodyScroll.scrollLeft;
-
-                headerScroll.scrollLeft =
-                    bodyScroll.scrollLeft;
-
-                syncing = false;
-
-            }
-        );
-
-
-        window.addEventListener(
-            "resize",
-            updateHorizontalWidth
-        );
-
-
-        updateHorizontalWidth();
-
-    }
-
-
     async function loadHistory() {
 
         const year =
@@ -1412,14 +1090,7 @@ td:nth-child(10) {
             renderHistory(data);
 
 
-            setTimeout(
-                function() {
-
-                    setupHorizontalScroll();
-
-                },
-                50
-            );
+            filterHistoryRows();
 
         }
         catch (error) {
@@ -1451,6 +1122,14 @@ td:nth-child(10) {
 
     }
 
+
+    function filterHistoryRows() {
+        const q = (document.getElementById("historySearch").value || "").trim().toLowerCase();
+        document.querySelectorAll("#historyTableBody tr").forEach(function(row) {
+            if (row.querySelector(".empty-row")) return;
+            row.style.display = !q || row.textContent.toLowerCase().includes(q) ? "" : "none";
+        });
+    }
 
     function renderHistory(data) {
 
@@ -1586,8 +1265,6 @@ td:nth-child(10) {
 
             setupYears();
 
-            setupHorizontalScroll();
-
             loadHistory();
 
         }
@@ -1596,6 +1273,7 @@ td:nth-child(10) {
 </script>
 
 
+<script src="/admin/admin-sidebar.js" defer></script>
 </body>
 
 </html>

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -431,6 +430,41 @@ body {
     background: #f2faf4;
 }
 
+.pw-rules {
+    list-style: none;
+    margin: -8px 0 16px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #f8faf8;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 12px;
+    font-size: 12px;
+    color: #6b786f;
+}
+
+.pw-rules li::before {
+    content: "○";
+    display: inline-block;
+    width: 16px;
+    color: #a1ada3;
+}
+
+.pw-rules li.ok {
+    color: #15803d;
+    font-weight: 600;
+}
+
+.pw-rules li.ok::before {
+    content: "✓";
+    color: #15803d;
+}
+
+@media (max-width: 480px) {
+    .pw-rules { grid-template-columns: 1fr; }
+}
+
 #passwordMatchMessage {
     min-height: 16px;
     margin-top: -8px;
@@ -750,6 +784,15 @@ body {
                     </button>
                 </div>
             </div>
+
+            <ul class="pw-rules" id="pwRules" aria-live="polite">
+                <li data-rule="len">At least 8 characters</li>
+                <li data-rule="upper">One uppercase letter</li>
+                <li data-rule="lower">One lowercase letter</li>
+                <li data-rule="digit">One number</li>
+                <li data-rule="special">One special character (@ # $ % !)</li>
+                <li data-rule="space">No spaces</li>
+            </ul>
 
             <div class="input-group">
                 <label for="confirmPassword">Confirm Password</label>
@@ -1272,9 +1315,13 @@ body {
 
 
         fetch(
-            `${API_BASE_URL}/employee/login?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
+            `${API_BASE_URL}/employee/login`,
             {
-                method: "POST"
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: new URLSearchParams({ email: email, password: password })
             }
         )
 
@@ -1415,6 +1462,62 @@ body {
     // PASSWORD MATCH
     // ==========================================
 
+    // Same rules as the server (InputValidator.passwordError)
+    function passwordRuleStatus(password) {
+
+        return {
+            len: password.length >= 8 && password.length <= 64,
+            upper: /[A-Z]/.test(password),
+            lower: /[a-z]/.test(password),
+            digit: /[0-9]/.test(password),
+            special: /[^A-Za-z0-9\s]/.test(password),
+            space: password.length > 0 && !/\s/.test(password)
+        };
+
+    }
+
+
+    function passwordError(password, email) {
+
+        const status = passwordRuleStatus(password);
+
+        if (!Object.values(status).every(Boolean)) {
+
+            return "Password must be at least 8 characters and include an " +
+                "uppercase letter, a lowercase letter, a number and a " +
+                "special character, with no spaces.";
+
+        }
+
+        const local = (email || "").split("@")[0].toLowerCase();
+
+        if (local.length >= 4 && password.toLowerCase().includes(local)) {
+
+            return "Password must not contain your email name.";
+
+        }
+
+        return null;
+
+    }
+
+
+    function renderPasswordRules(password) {
+
+        const status = passwordRuleStatus(password);
+
+        document.querySelectorAll("#pwRules li").forEach(item => {
+
+            item.classList.toggle(
+                "ok",
+                !!status[item.dataset.rule]
+            );
+
+        });
+
+    }
+
+
     function checkPasswordMatch() {
 
         const email =
@@ -1451,6 +1554,9 @@ body {
             true;
 
 
+        renderPasswordRules(newPassword);
+
+
         if (
             newPassword === "" &&
             confirmPassword === ""
@@ -1466,11 +1572,11 @@ body {
 
         if (
             newPassword.length > 0 &&
-            newPassword.length < 6
+            passwordError(newPassword, email)
         ) {
 
             matchMessage.innerText =
-                "Password must contain at least 6 characters.";
+                passwordError(newPassword, email);
 
             matchMessage.style.color =
                 "red";
@@ -1506,7 +1612,7 @@ body {
 
             if (
                 email !== "" &&
-                newPassword.length >= 6
+                !passwordError(newPassword, email)
             ) {
 
                 continueBtn.disabled =
@@ -1584,11 +1690,11 @@ body {
 
 
         if (
-            newPassword.length < 6
+            passwordError(newPassword, email)
         ) {
 
             setupMessage.innerText =
-                "Password must contain at least 6 characters.";
+                passwordError(newPassword, email);
 
             setupMessage.style.color =
                 "red";
@@ -2308,4 +2414,3 @@ body {
 </body>
 
 </html>
-

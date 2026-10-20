@@ -1123,6 +1123,219 @@ textarea:focus-visible {
         transition-duration: .01ms !important;
     }
 }
+/* ===== MY CALENDAR (month-wise, own leaves only) ===== */
+.cal-card { background: #fff; border: 1px solid #D9E7DD; border-radius: 15px; padding: 24px; margin-bottom: 25px; box-shadow: 0 5px 20px rgba(11,46,26,.08); }
+.cal-card h3 { color: #0B2E1A; margin-bottom: 4px; }
+.cal-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin: 12px 0; }
+.cal-head b { font-size: 17px; color: #171717; }
+.cal-nav button { border: 1px solid #16803C; background: #fff; color: #16803C; border-radius: 8px; padding: 7px 14px; font-weight: 700; cursor: pointer; }
+.cal-nav button:hover { background: #16803C; color: #fff; }
+.cal-legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: #475569; margin-bottom: 12px; }
+.cal-legend i { display: inline-block; width: 11px; height: 11px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+.cal-dow { text-align: center; font-size: 12px; font-weight: 700; color: #0B2E1A; padding: 4px 0; }
+.cal-day { min-height: 64px; border: 1px solid #E3ECE6; border-radius: 8px; padding: 5px 6px; font-size: 12px; background: #fff; cursor: default; overflow: hidden; }
+.cal-day.empty { border: none; background: transparent; }
+.cal-day .n { font-weight: 700; color: #171717; }
+.cal-day .t { display: block; margin-top: 3px; font-size: 10px; line-height: 1.25; font-weight: 600; word-break: break-word; }
+.cal-day.today { border: 2px solid #16803C; }
+.cal-day.off { background: #171717; color: #fff; } .cal-day.off .n { color: #fff; }
+.cal-day.holiday { background: #0B2E1A; color: #fff; } .cal-day.holiday .n { color: #fff; }
+.cal-day.work { background: #E8F5EC; }
+.cal-day.ann { box-shadow: inset 0 -5px 0 #2563eb; background-image: linear-gradient(#eff6ff, #eff6ff); }
+.cal-day.ann .t { color: #1d4ed8; }
+.cal-day.leave { background: #dc2626; color: #fff; } .cal-day.leave .n { color: #fff; }
+.cal-day.pending { background: #fee2e2; border: 2px dashed #dc2626; color: #991b1b; }
+.cal-status { font-size: 12px; color: #dc2626; margin-top: 8px; }
+.cal-sum { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
+.cal-sum span { background: #E8F5EC; color: #0B2E1A; border-radius: 999px; padding: 6px 14px; font-size: 13px; font-weight: 700; }
+.cal-list { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 13px; }
+.cal-list th { text-align: left; background: #0B2E1A; color: #fff; padding: 8px 10px; }
+.cal-list td { padding: 8px 10px; border-bottom: 1px solid #E3ECE6; }
+@media (max-width: 640px) { .cal-day { min-height: 48px; padding: 3px; } .cal-day .t { display: none; } }
+
+/* ===== PROFESSIONAL REDESIGN (matches admin dashboard) ===== */
+:root{--g:#16803C;--gd:#0B2E1A;--gl:#E8F5EC;--k:#171717;--line:#E1E8E3;--mut:#6B7A70;--bg:#F4F6F5;--radius:12px;--shadow:none;--primary-light:#E8F5EC}
+body{background:var(--bg);font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif}
+.header{position:sticky;top:0;z-index:50;min-height:60px;height:60px;padding:0 max(20px,calc((100% - 1168px)/2 + 24px));border-bottom:1px solid var(--line);box-shadow:none;background:#fff}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-mark{width:32px;height:32px;border-radius:9px;background:var(--gd);color:#fff;display:grid;place-items:center;font-weight:800;font-size:16px}
+.brand-name{font-size:16px;font-weight:800;letter-spacing:1.2px;color:var(--gd)}
+.head-right{display:flex;align-items:center;gap:16px}
+.who{display:flex;align-items:center;gap:10px}
+.who .nm{font-size:13px;font-weight:600;line-height:1.25;text-align:right}
+.who .nm span{display:block;font-size:11px;color:var(--mut);font-weight:400}
+.avatar{width:34px;height:34px;border-radius:50%;background:var(--g);color:#fff;display:grid;place-items:center;font-weight:700;font-size:14px}
+.logout-btn{display:inline-flex;align-items:center;gap:7px;background:#fff;color:var(--k);border:1px solid var(--line);padding:8px 14px;border-radius:8px;font-weight:600;font-size:13px}
+.logout-btn svg,.logout-btn i{width:15px;height:15px}
+.logout-btn:hover{background:#FEE9E9;border-color:#F5B5B5;color:#B91C1C}
+.container{max-width:1168px;margin:24px auto;padding:0 24px 40px}
+.welcome{background:none;box-shadow:none;border-radius:0;padding:0;margin-bottom:18px}
+.welcome h2{color:var(--k);font-size:22px;font-weight:700;letter-spacing:0;margin:0}
+.welcome p{color:var(--mut);font-size:13px;margin-top:4px}
+.attendance-card,.balance-card,.leave-form-container,.my-leave-card,.cal-card{border:1px solid var(--line);border-radius:var(--radius);box-shadow:none}
+.attendance-card,.cal-card,.my-leave-card{padding:20px 22px;margin-bottom:18px}
+.attendance-card h3,.cal-card h3,.my-leave-card h3{font-size:15px;font-weight:700;color:var(--k);margin-bottom:12px}
+.today-info{gap:12px;margin-bottom:14px}
+.today-box{background:#fff;border:1px solid var(--line);border-left:3px solid var(--g);border-radius:10px;padding:12px 16px}
+.today-box strong{font-size:12px;color:var(--mut);font-weight:600}
+.today-box p{font-size:20px;font-weight:700;color:var(--gd);margin-top:2px}
+.attendance-btn{border-radius:8px;padding:10px 22px;font-weight:600}
+.check-in{background:var(--g)}.check-in:hover:not(:disabled){background:#12692F}
+.check-out{background:var(--k)}.check-out:hover:not(:disabled){background:#000}
+.attendance-btn:disabled{background:#D5DBD7;color:#8A968E}
+.balance-title{font-size:15px;font-weight:700;margin:6px 0 12px;color:var(--k)}
+.balance-container{gap:12px;margin-bottom:18px}
+.balance-card{padding:16px 18px;border-left:3px solid var(--g)}
+.balance-card h3{font-size:12px;font-weight:600;color:var(--mut)}
+.balance-number{font-size:26px;font-weight:700;color:var(--gd);margin:4px 0 2px}
+.balance-label{font-size:11px;color:var(--mut)}
+/* alerts */
+#workingDayAlert{margin-bottom:16px}
+#workingDayAlert>div{padding:14px 18px!important;border-radius:12px!important;margin-bottom:10px!important;box-shadow:none!important;border:0!important;animation:none!important;gap:14px!important}
+#workingDayAlert>div>div:first-child{min-width:40px!important;width:40px!important;height:40px!important;border-radius:10px!important}
+#workingDayAlert>div>div:last-child>div:nth-child(1){font-size:10px!important}
+#workingDayAlert>div>div:last-child>div:nth-child(2){font-size:15px!important;margin-bottom:2px!important}
+#workingDayAlert>div>div:last-child>div:nth-child(3){font-size:13px!important}
+#workingDayAlert>div>div:last-child>div:nth-child(4){margin-top:4px!important;font-size:11px!important}
+/* calendar */
+.cal-head{margin:0 0 12px}
+.cal-head b{font-size:16px;color:var(--k)}
+.cal-nav{display:flex;gap:6px}
+.cal-nav button{border:1px solid var(--line);background:#fff;color:var(--k);padding:6px 12px;font-weight:600;font-size:13px;border-radius:8px}
+.cal-nav button:hover{background:var(--gl);border-color:#BFE0CB;color:var(--gd)}
+.cal-legend{gap:16px;font-size:12px;color:var(--mut);margin-bottom:12px}
+.cal-legend i{width:13px;height:13px;border-radius:4px;margin-right:6px;vertical-align:-2px;border:1px solid transparent}
+.lg-off{background:#E4E7E5;border-color:#C9CFCB!important}
+.lg-hol{background:var(--g)}
+.lg-work{background:var(--gl);border-color:var(--g)!important}
+.lg-leave{background:var(--k)}
+.lg-pend{background:#fff;border:1.5px dashed var(--k)!important}
+.lg-ann{background:#fff;box-shadow:inset 0 -4px 0 var(--g);border-color:var(--line)!important}
+.cal-grid{gap:6px}
+.cal-dow{font-size:11px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.5px}
+.cal-day{min-height:68px;border:1px solid var(--line);border-radius:10px;padding:6px 8px;background:#fff}
+.cal-day .n{font-size:13px;font-weight:700;color:var(--k)}
+.cal-day .t{font-size:10px;font-weight:600;color:var(--mut);margin-top:4px}
+.cal-day.off{background:#E4E7E5;color:#4B554F;border-color:#D3D8D5}
+.cal-day.off .n{color:#4B554F}.cal-day.off .t{color:#6B7A70}
+.cal-day.holiday{background:var(--g);color:#fff;border-color:var(--g)}
+.cal-day.holiday .n,.cal-day.holiday .t{color:#fff}
+.cal-day.work{background:var(--gl);border-color:#9ED2B1}
+.cal-day.work .t{color:var(--gd)}
+.cal-day.leave{background:var(--k);color:#fff;border-color:var(--k)}
+.cal-day.leave .n,.cal-day.leave .t{color:#fff}
+.cal-day.pending{background:#fff;border:1.5px dashed var(--k);color:var(--k)}
+.cal-day.pending .t{color:var(--k)}
+.cal-day.ann{box-shadow:inset 0 -5px 0 var(--g);background-image:none}
+.cal-day.ann .t{color:var(--gd)}
+.cal-day.today{border:2px solid var(--g);outline:2px solid rgba(22,128,60,.18)}
+.cal-day.today .n{background:var(--g);color:#fff;border-radius:50%;display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 4px}
+.cal-day.holiday.today .n{background:#fff;color:var(--g)}
+.cal-day.leave.today .n{background:var(--g)}
+.cal-status{color:#B91C1C}
+.cal-sum{gap:8px}
+.cal-sum span{background:var(--gl);color:var(--gd);font-size:12px;font-weight:600;padding:5px 12px}
+.cal-list th{background:#F1F5F2;color:var(--mut);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--line)}
+.cal-list td{font-size:13px}
+.my-leave-table th{background:#F1F5F2;color:var(--mut);font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.4px}
+.apply-btn{border-radius:8px;font-weight:600}
+@media (max-width:640px){
+ .header{padding:0 14px}.brand-name{display:none}.who .nm{display:none}
+ .container{padding:0 14px 30px;margin-top:16px}
+ .cal-grid{gap:3px}.cal-day{min-height:44px;padding:4px}
+ .cal-legend{gap:10px}
+ .logout-btn{padding:8px 10px}
+}
+/* ===== v3: stats, red check-out, apply leave under buttons, compact calendar ===== */
+.att-actions{display:flex;flex-direction:column;gap:10px;max-width:340px}
+.att-row{display:flex;gap:10px}
+.att-row .attendance-btn{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;margin:0}
+.attendance-btn svg,.apply-btn svg{width:16px;height:16px}
+.check-out{background:#DC2626!important}.check-out:hover:not(:disabled){background:#B91C1C!important}
+.attendance-btn:disabled{background:#D5DBD7!important;color:#8A968E!important}
+.apply-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;width:100%;background:#fff;color:var(--g);border:1.5px solid var(--g);padding:10px 16px;margin:0}
+.apply-btn:hover:not(:disabled){background:var(--gl);color:var(--gd)}
+#attendanceMessage{margin-top:10px}
+.leave-form-container{margin-bottom:18px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:12px;margin-bottom:18px}
+.stat{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.stat-top{display:flex;justify-content:space-between;align-items:center;color:var(--mut);font-size:13px;font-weight:600}
+.stat-ic{width:32px;height:32px;border-radius:9px;display:grid;place-items:center}
+.stat-ic svg{width:17px;height:17px}
+.stat-ic.k{background:#EEF1EF;color:var(--k)}.stat-ic.g{background:var(--gl);color:var(--g)}.stat-ic.r{background:#FEE9E9;color:#DC2626}
+.stat-val{font-size:28px;font-weight:700;margin:8px 0 4px;line-height:1;color:var(--k)}
+.stat-sub{font-size:12px;color:var(--mut)}
+.balance-container{display:contents}
+.balance-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;position:static}
+.balance-card::before{display:none}
+.balance-card h3{font-size:13px;font-weight:600;color:var(--mut);margin:0}
+.balance-number{font-size:28px;font-weight:700;color:var(--gd);margin:8px 0 4px;line-height:1}
+.balance-label{font-size:12px;color:var(--mut)}
+.two-col{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:18px;align-items:start;margin-bottom:18px}
+.two-col .cal-card,.two-col .my-leave-card{margin-bottom:0}
+.cal-card{padding:16px 18px}
+.cal-card h3{margin-bottom:8px}
+.cal-head{margin:0 0 8px}
+.cal-nav button{padding:4px 10px;font-size:12px}
+.cal-legend{gap:10px;font-size:11px;margin-bottom:8px}
+.cal-legend i{width:11px;height:11px;margin-right:4px}
+.cal-grid{gap:4px}
+.cal-dow{font-size:10px;padding:2px 0}
+.cal-day{min-height:46px;padding:4px 5px;border-radius:8px}
+.cal-day .n{font-size:12px}
+.cal-day .t{font-size:9px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal-day.off{background:#F3B9B9;border-color:#E99A9A;color:#8E1B1B}.cal-day.off .n,.cal-day.off .t{color:#8E1B1B}
+.cal-day.leave{background:#FDE6E6;border-color:#F4AEAE;color:#B42318}.cal-day.leave .n,.cal-day.leave .t{color:#B42318}
+.cal-day.pending{background:#fff;border:1.5px dashed #E26D66;color:#B42318}.cal-day.pending .n,.cal-day.pending .t{color:#B42318}
+.cal-day.holiday{background:#CDEBD7;border-color:#9ED2B1;color:var(--gd)}.cal-day.holiday .n,.cal-day.holiday .t{color:var(--gd)}
+.cal-day.work{background:#fff;border:1px solid var(--g)}.cal-day.work .t{color:var(--g)}
+.cal-day.holiday.today .n,.cal-day.off.today .n,.cal-day.leave.today .n{background:var(--g);color:#fff}
+.lg-off{background:#F3B9B9!important;border-color:#E99A9A!important}
+.lg-hol{background:#CDEBD7!important;border-color:#9ED2B1!important}
+.lg-work{background:#fff!important;border-color:var(--g)!important}
+.lg-leave{background:#FDE6E6!important;border-color:#F4AEAE!important}
+.lg-pend{background:#fff!important;border:1.5px dashed #E26D66!important}
+.cal-sum{margin-top:10px}
+.cal-sum span{font-size:11px;padding:4px 10px}
+.cal-list{font-size:12px;margin-top:10px}
+.cal-list th,.cal-list td{padding:6px 8px}
+@media (max-width:980px){.two-col{grid-template-columns:1fr}.att-actions{max-width:none}}
+@media (max-width:640px){.cal-day{min-height:40px;padding:3px}.cal-day .t{display:none}}
+/* ===== v4: clickable cards + detail popup, bigger calendar ===== */
+.stat.clickable,.balance-card.clickable{cursor:pointer;transition:border-color .15s,box-shadow .15s,transform .15s}
+.stat.clickable:hover,.balance-card.clickable:hover,.stat.clickable:focus-visible,.balance-card.clickable:focus-visible{border-color:var(--g);box-shadow:0 4px 14px rgba(22,128,60,.12);transform:translateY(-1px);outline:0}
+.stat-more{font-size:11px;color:var(--g);font-weight:600;margin-top:6px}
+.sm-back{display:none;position:fixed;inset:0;background:rgba(15,26,20,.55);z-index:3000;align-items:center;justify-content:center;padding:18px}
+.sm-back.show{display:flex}
+.sm-box{background:#fff;border-radius:14px;width:100%;max-width:520px;max-height:84vh;display:flex;flex-direction:column;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+.sm-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:18px 20px 12px;border-bottom:1px solid var(--line)}
+.sm-head h3{font-size:17px;margin:0;color:var(--k)}
+.sm-head p{font-size:12px;color:var(--mut);margin-top:3px}
+.sm-close{border:1px solid var(--line);background:#fff;border-radius:8px;width:32px;height:32px;font-size:18px;line-height:1;color:var(--k)}
+.sm-close:hover{background:var(--gl)}
+.sm-body{padding:12px 20px 18px;overflow-y:auto}
+.sm-sum{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.sm-sum span{background:var(--gl);color:var(--gd);border-radius:999px;padding:4px 12px;font-size:12px;font-weight:600}
+.sm-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #EEF2EF}
+.sm-row:last-child{border-bottom:0}
+.sm-date{width:48px;flex-shrink:0;text-align:center;background:#F4F6F5;border-radius:10px;padding:5px 0}
+.sm-date b{display:block;font-size:17px;line-height:1.1;color:var(--k)}
+.sm-date small{font-size:10px;color:var(--mut);text-transform:uppercase}
+.sm-main{flex:1;min-width:0}
+.sm-main strong{display:block;font-size:13px;color:var(--k)}
+.sm-main span{display:block;font-size:12px;color:var(--mut);margin-top:2px;word-break:break-word}
+.sm-badge{font-size:11px;font-weight:700;border-radius:999px;padding:3px 10px;white-space:nowrap}
+.sm-badge.ok{background:#DDF3E4;color:#0B5A2B}.sm-badge.pend{background:#FEF3C7;color:#92400E}.sm-badge.bad{background:#FEE2E2;color:#991B1B}
+.sm-empty{padding:26px 0;text-align:center;color:var(--mut);font-size:13px}
+.two-col{grid-template-columns:1fr}
+.cal-card{padding:20px 22px}
+.cal-grid{gap:6px}
+.cal-day{min-height:62px;padding:6px 8px}
+.cal-day .n{font-size:13px}
+.cal-day .t{font-size:10px}
+.cal-nav button{padding:6px 12px;font-size:13px}
+.cal-legend{font-size:12px;gap:14px}
 </style>
 
 
@@ -1132,15 +1345,18 @@ textarea:focus-visible {
 <body>
 
 <div class="header">
-    <h1>GROWBYTEE</h1>
-    <button class="logout-btn" onclick="logout()">Logout</button>
+    <div class="brand"><span class="brand-mark">G</span><span class="brand-name">GROWBYTEE</span></div>
+    <div class="head-right">
+        <div class="who"><div class="nm" id="topName">Employee<span id="topDate"></span></div><div class="avatar" id="topAvatar">E</div></div>
+        <button class="logout-btn" onclick="logout()"><i data-lucide="log-out"></i>Logout</button>
+    </div>
 </div>
 
 <div class="container">
 
     <div class="welcome">
         <h2 id="welcomeText">Welcome</h2>
-        <p>Employee Attendance Management System</p>
+        <p id="welcomeSub"></p>
     </div>
 
     <!-- WORKING DAY ALERT -->
@@ -1162,38 +1378,15 @@ textarea:focus-visible {
             <div class="today-box"><strong>Latest Check Out</strong><p id="todayCheckOut">--:--</p></div>
             <div class="today-box"><strong>Status</strong><p id="todayStatus">Not Checked In</p></div>
         </div>
-        <button id="checkInBtn" class="attendance-btn check-in" onclick="checkIn()">Check In</button>
-        <button id="checkOutBtn" class="attendance-btn check-out" onclick="checkOut()" disabled>Check Out</button>
+        <div class="att-actions">
+            <div class="att-row">
+                <button id="checkInBtn" class="attendance-btn check-in" onclick="checkIn()"><i data-lucide="log-in"></i>Check In</button>
+                <button id="checkOutBtn" class="attendance-btn check-out" onclick="checkOut()" disabled><i data-lucide="log-out"></i>Check Out</button>
+            </div>
+            <button class="apply-btn" onclick="showLeaveForm()"><i data-lucide="calendar-plus"></i>Apply Leave</button>
+        </div>
         <p id="attendanceMessage"></p>
     </div>
-
-    <!-- LEAVE BALANCE -->
-    <h2 class="balance-title">This Month Leave Balance</h2>
-    <div class="balance-container">
-        <div class="balance-card"><h3>Sick Leave</h3><div class="balance-number" id="sickBalance">0 / 0</div><div class="balance-label">Remaining / Total</div></div>
-        <div class="balance-card"><h3>Casual Leave</h3><div class="balance-number" id="casualBalance">0 / 0</div><div class="balance-label">Remaining / Total</div></div>
-        <div class="balance-card"><h3>Permission</h3><div class="balance-number" id="permissionBalance">0 / 0</div><div class="balance-label">Remaining / Total</div></div>
-    </div>
-
-    <!-- MY LEAVE / PERMISSION REQUESTS (visible until the leave date ends) -->
-    <div class="my-leave-card" id="myLeaveCard">
-        <h3>My Leave &amp; Permission Requests</h3>
-        <p class="my-leave-sub">Your applied leave / permission with the admin's decision and reason. Each request is shown until its last date ends.</p>
-        <div id="myLeaveNotifications"
-     class="my-leave-notifications"
-     aria-live="polite"></div>
-        
-        
-        <div class="my-leave-scroll">
-            <table class="my-leave-table">
-                <thead><tr><th>Date</th><th>Type</th><th>Status</th><th>Admin Reason</th></tr></thead>
-                <tbody id="myLeaveBody"></tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- APPLY LEAVE -->
-    <div class="apply-section"><button class="apply-btn" onclick="showLeaveForm()">Apply Leave</button></div>
 
     <div class="leave-form-container" id="leaveForm">
         <h2>Apply Leave</h2>
@@ -1241,7 +1434,55 @@ textarea:focus-visible {
         <p id="leaveMessage"></p>
     </div>
 
-    <!-- EMPLOYEE AI ASSISTANT -->
+    <!-- MY MONTH + LEAVE BALANCE -->
+    <div class="stats" id="empStats">
+        <div class="stat"><div class="stat-top"><span>Present Days</span><span class="stat-ic g"><i data-lucide="user-check"></i></span></div><div class="stat-val" id="stPresent">0</div><div class="stat-sub st-month">This month</div></div>
+        <div class="stat"><div class="stat-top"><span>Leave Days</span><span class="stat-ic r"><i data-lucide="calendar-x"></i></span></div><div class="stat-val" id="stLeave">0</div><div class="stat-sub st-month">This month</div></div>
+        <div class="stat"><div class="stat-top"><span>Absent Days</span><span class="stat-ic k"><i data-lucide="user-x"></i></span></div><div class="stat-val" id="stAbsent">0</div><div class="stat-sub">No check-in, no leave</div></div>
+        <div class="balance-container">
+        <div class="balance-card"><h3>Sick Leave</h3><div class="balance-number" id="sickBalance">0 / 0</div><div class="balance-label">Remaining / Total</div></div>
+        <div class="balance-card"><h3>Casual Leave</h3><div class="balance-number" id="casualBalance">0 / 0</div><div class="balance-label">Remaining / Total</div></div>
+        <div class="balance-card"><h3>Permission</h3><div class="balance-number" id="permissionBalance">0 / 0</div><div class="balance-label">Remaining / Total</div></div>
+    </div>
+    </div>
+
+    <div class="two-col">
+
+    <!-- MY CALENDAR: weekly off / holidays / announcements + my own leaves, month-wise -->
+    <div class="cal-card" id="calCard">
+        <h3>My Calendar</h3>
+        
+        <div class="cal-head">
+            <div class="cal-nav"><button type="button" onclick="calMove(-1)">&lt; Prev</button> <button type="button" onclick="calToday()">Today</button> <button type="button" onclick="calMove(1)">Next &gt;</button></div>
+            <b id="calTitle"></b>
+        </div>
+        <div class="cal-legend"><span><i class="lg-off"></i>Weekly Off</span><span><i class="lg-hol"></i>Holiday</span><span><i class="lg-work"></i>Working Day</span><span><i class="lg-leave"></i>Leave</span><span><i class="lg-pend"></i>Pending</span><span><i class="lg-ann"></i>Announcement</span></div>
+        <div class="cal-grid" id="calGrid"></div>
+        <div class="cal-status" id="calStatus"></div>
+        <div class="cal-sum" id="calSummary"></div>
+        <div style="overflow-x:auto"><table class="cal-list" id="calList" style="display:none"><thead><tr><th>Date</th><th>Type</th><th>Details</th></tr></thead><tbody id="calListBody"></tbody></table></div>
+    </div>
+
+    <!-- MY LEAVE / PERMISSION REQUESTS (visible until the leave date ends) -->
+    <div class="my-leave-card" id="myLeaveCard">
+        <h3>My Leave &amp; Permission Requests</h3>
+        
+        <div id="myLeaveNotifications"
+     class="my-leave-notifications"
+     aria-live="polite"></div>
+        
+        
+        <div class="my-leave-scroll">
+            <table class="my-leave-table">
+                <thead><tr><th>Date</th><th>Type</th><th>Status</th><th>Admin Reason</th></tr></thead>
+                <tbody id="myLeaveBody"></tbody>
+            </table>
+        </div>
+
+    </div><!-- /two-col -->
+    </div>
+
+<!-- EMPLOYEE AI ASSISTANT (paused - may be enabled later with Gemini)
     <div class="employee-ai-card">
         <div class="employee-ai-header">
             <i class="employee-ai-header-icon" data-lucide="sparkles"></i>
@@ -1259,9 +1500,18 @@ textarea:focus-visible {
         <div id="employeeAiResponse" class="employee-ai-response">உங்கள் Attendance, Leave, Permission அல்லது Shift பற்றிய கேள்வியை கேளுங்கள்.</div>
         <button type="button" id="employeeAiSpeakButton" class="employee-ai-speak-btn" onclick="speakEmployeeAiResponse()"><i data-lucide="volume-2"></i>Speak</button>
     </div>
+-->
 
 </div>
 
+
+<!-- STAT DETAILS POPUP -->
+<div id="statModal" class="sm-back" onclick="if(event.target===this)closeStat()">
+    <div class="sm-box" role="dialog" aria-modal="true" aria-labelledby="smTitle">
+        <div class="sm-head"><div><h3 id="smTitle"></h3><p id="smSub"></p></div><button type="button" class="sm-close" onclick="closeStat()" aria-label="Close">&times;</button></div>
+        <div class="sm-body" id="smBody"></div>
+    </div>
+</div>
 
 <!-- ADMIN ATTENDANCE CORRECTION NOTIFICATION -->
 <div id="attendanceCorrectionModal" role="dialog"
@@ -1333,6 +1583,24 @@ textarea:focus-visible {
 </div>
 
 <script>
+(function(){
+  var w=document.getElementById("welcomeText");
+  var d=new Date().toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+  function sync(){
+    var n=(w.textContent||"").replace(/^Welcome,?\s*/,"").trim();
+    var h=new Date().getHours(), g=h<12?"Good morning":h<17?"Good afternoon":"Good evening";
+    if(n){
+      w.textContent=g+", "+n.split(" ")[0];
+      document.getElementById("topName").firstChild.nodeValue=n;
+      document.getElementById("topAvatar").textContent=n.charAt(0).toUpperCase();
+    }
+  }
+  document.getElementById("welcomeSub").textContent=d;
+  document.getElementById("topDate").textContent="Employee";
+  new MutationObserver(function(){ if(/^Welcome,/.test(w.textContent)) sync(); }).observe(w,{childList:true,characterData:true,subtree:true});
+})();
+</script>
+<script>
 const API_BASE_URL = (location.hostname === "localhost" || location.hostname === "127.0.0.1") ? "" : "https://attendance-management-d5h6.onrender.com";
 const employeeEmail = localStorage.getItem("employeeEmail");
 if (!employeeEmail) location.href = "login.html";
@@ -1354,27 +1622,57 @@ async function fetchText(url, errMsg, options) {
 let currentSickRemaining = 0, currentCasualRemaining = 0, currentPermissionRemaining = 0;
 
 /* ===== VERIFICATION SETTINGS ===== */
-const NO_VERIFICATION = { branchActive: false, locationRequired: false, faceRequired: false, branchName: "" };
+
+
+
+const NO_VERIFICATION = {
+    branchActive: false,
+    locationRequired: false,
+    faceRequired: false,
+    locationCaptureEnabled: false,
+    photoCaptureEnabled: false,
+    branchName: ""
+};
+
 let attendanceVerificationSettings = { ...NO_VERIFICATION };
 
 async function loadAttendanceVerificationSettings() {
     try {
-        const text = await fetchText(`${API_BASE_URL}/attendance/verification-settings?email=${enc}`, "Verification settings request failed");
+        const enc = encodeURIComponent(employeeEmail);
+
+        const text = await fetchText(
+            `${API_BASE_URL}/attendance/verification-settings?email=${enc}`,
+            "Verification settings request failed"
+        );
+
         const d = text ? JSON.parse(text) : {};
-        attendanceVerificationSettings = { branchActive: Boolean(d.branchActive), locationRequired: Boolean(d.locationRequired), faceRequired: Boolean(d.faceRequired), branchName: d.branchName || "" };
-        console.log("ATTENDANCE VERIFICATION SETTINGS:", attendanceVerificationSettings);
+
+        attendanceVerificationSettings = {
+            branchActive: Boolean(d.branchActive),
+            locationRequired: Boolean(d.locationRequired),
+            faceRequired: Boolean(d.faceRequired),
+            locationCaptureEnabled: Boolean(d.locationCaptureEnabled),
+            photoCaptureEnabled: Boolean(d.photoCaptureEnabled),
+            branchName: d.branchName || ""
+        };
+
+        console.log(
+            "ATTENDANCE VERIFICATION SETTINGS:",
+            attendanceVerificationSettings
+        );
     } catch (error) {
         console.error("VERIFICATION SETTINGS ERROR:", error);
-        /* Do not request GPS when settings cannot be loaded. Backend still validates the real request. */
         attendanceVerificationSettings = { ...NO_VERIFICATION };
     }
+
     return attendanceVerificationSettings;
 }
+
 
 /* ===== EMPLOYEE DETAILS ===== */
 function loadEmployeeDetails() {
     fetchText(`${API_BASE_URL}/employee/details?email=${enc}`, "Employee details request failed")
-        .then(text => { const data = text ? JSON.parse(text) : null; if (data) $("welcomeText").innerText = "Welcome, " + data.name; })
+        .then(text => { const data = text ? JSON.parse(text) : null; if (data) { $("welcomeText").innerText = "Welcome, " + data.name; empJoinDate = data.joiningDate ? calDate(data.joiningDate) : ""; if (calLoaded) renderCalendar(); } })
         .catch(error => console.error("EMPLOYEE DETAILS ERROR:", error));
 }
 
@@ -1403,11 +1701,11 @@ async function loadEmployeeAnnouncements() {
 
 /* ===== WORKING DAY + HOLIDAY + WEEKLY OFF + ANNOUNCEMENT ALERT ===== */
 const ALERT_STYLES = {
-    ANNOUNCEMENT:       { bg: "linear-gradient(135deg, #7c3aed, #db2777, #f97316)", iconBg: "rgba(255,255,255,0.20)", icon: "bell-ring",       label: "Important Announcement", datePrefix: "Valid until: " },
-    WEEKLY_OFF:         { bg: "linear-gradient(135deg, #475569, #64748b, #94a3b8)", iconBg: "rgba(255,255,255,0.18)", icon: "calendar-off",    label: "Schedule Notice",        datePrefix: "Date: " },
-    WORKING_DAY:        { bg: "linear-gradient(135deg, #0369a1, #0284c7, #0ea5e9)", iconBg: "rgba(255,255,255,0.18)", icon: "calendar-check-2", label: "Attendance Notice",      datePrefix: "Date: " },
-    COMPANY_HOLIDAY:    { bg: "linear-gradient(135deg, #047857, #059669, #10b981)", iconBg: "rgba(255,255,255,0.18)", icon: "building-2",      label: "Holiday Notice",         datePrefix: "Date: " },
-    GOVERNMENT_HOLIDAY: { bg: "linear-gradient(135deg, #b45309, #d97706, #f59e0b)", iconBg: "rgba(255,255,255,0.18)", icon: "landmark",        label: "Holiday Notice",         datePrefix: "Date: " }
+    ANNOUNCEMENT:       { bg: "linear-gradient(135deg, #0B2E1A, #16803C)", iconBg: "rgba(255,255,255,0.20)", icon: "bell-ring",       label: "Important Announcement", datePrefix: "Valid until: " },
+    WEEKLY_OFF:         { bg: "linear-gradient(135deg, #171717, #3a3a3a)", iconBg: "rgba(255,255,255,0.18)", icon: "calendar-off",    label: "Schedule Notice",        datePrefix: "Date: " },
+    WORKING_DAY:        { bg: "linear-gradient(135deg, #16803C, #2fa35a)", iconBg: "rgba(255,255,255,0.18)", icon: "calendar-check-2", label: "Attendance Notice",      datePrefix: "Date: " },
+    COMPANY_HOLIDAY:    { bg: "linear-gradient(135deg, #0B2E1A, #1c6b3a)", iconBg: "rgba(255,255,255,0.18)", icon: "building-2",      label: "Holiday Notice",         datePrefix: "Date: " },
+    GOVERNMENT_HOLIDAY: { bg: "linear-gradient(135deg, #0B2E1A, #16803C)", iconBg: "rgba(255,255,255,0.18)", icon: "landmark",        label: "Holiday Notice",         datePrefix: "Date: " }
 };
 
 function makeEl(tag, style, text) {
@@ -2037,6 +2335,8 @@ async function loadMyLeaveRequests() {
 
 /* ===== TODAY ATTENDANCE (multiple session + late / early support) ===== */
 function updateTodayAttendance(data) {
+    calAttendance = Array.isArray(data) ? data : [];
+    if (typeof calLoaded !== "undefined" && calLoaded) renderCalendar();
     const checkInBtn = $("checkInBtn"), checkOutBtn = $("checkOutBtn");
     const todayCheckIn = $("todayCheckIn"), todayCheckOut = $("todayCheckOut"), todayStatus = $("todayStatus");
     const today = getTodayDate();
@@ -2240,74 +2540,74 @@ async function submitMissingCheckout() {
 /* Popup cannot be dismissed with Esc */
 document.addEventListener("keydown", e => { if (e.key === "Escape" && missingCheckoutItem) e.preventDefault(); });
 
-/* ===== EMPLOYEE AI ===== */
-let employeeAiRecognition = null, employeeAiListening = false;
+// ===== EMPLOYEE AI (paused - may be enabled later with Gemini) =====
+// let employeeAiRecognition = null, employeeAiListening = false;
 
-function setEmployeeAiListening(on) {
-    employeeAiListening = on;
-    const button = $("employeeAiVoiceButton"), status = $("employeeAiVoiceStatus");
-    if (button) button.classList.toggle("listening", on);
-    if (status) { status.style.display = on ? "block" : "none"; if (on) status.innerText = "Listening..."; }
-}
+// function setEmployeeAiListening(on) {
+//     employeeAiListening = on;
+//     const button = $("employeeAiVoiceButton"), status = $("employeeAiVoiceStatus");
+//     if (button) button.classList.toggle("listening", on);
+//     if (status) { status.style.display = on ? "block" : "none"; if (on) status.innerText = "Listening..."; }
+// }
 
-function setupEmployeeAiVoice() {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) return;
-    employeeAiRecognition = new SpeechRecognition();
-    employeeAiRecognition.lang = "en-IN";
-    employeeAiRecognition.continuous = false;
-    employeeAiRecognition.interimResults = false;
-    employeeAiRecognition.onstart = () => setEmployeeAiListening(true);
-    employeeAiRecognition.onresult = event => { const input = $("employeeAiQuestion"); if (input) input.value = event.results[0][0].transcript; };
-    employeeAiRecognition.onend = () => setEmployeeAiListening(false);
-    employeeAiRecognition.onerror = event => { console.error("EMPLOYEE AI VOICE ERROR:", event); setEmployeeAiListening(false); };
-}
+// function setupEmployeeAiVoice() {
+//     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+//     if (!SpeechRecognition) return;
+//     employeeAiRecognition = new SpeechRecognition();
+//     employeeAiRecognition.lang = "en-IN";
+//     employeeAiRecognition.continuous = false;
+//     employeeAiRecognition.interimResults = false;
+//     employeeAiRecognition.onstart = () => setEmployeeAiListening(true);
+//     employeeAiRecognition.onresult = event => { const input = $("employeeAiQuestion"); if (input) input.value = event.results[0][0].transcript; };
+//     employeeAiRecognition.onend = () => setEmployeeAiListening(false);
+//     employeeAiRecognition.onerror = event => { console.error("EMPLOYEE AI VOICE ERROR:", event); setEmployeeAiListening(false); };
+// }
 
-function toggleEmployeeAiVoice() {
-    if (!employeeAiRecognition) setupEmployeeAiVoice();
-    if (!employeeAiRecognition) { alert("Voice input இந்த browser-ல் support செய்யப்படவில்லை."); return; }
-    if (employeeAiListening) { employeeAiRecognition.stop(); return; }
-    employeeAiRecognition.start();
-}
+// function toggleEmployeeAiVoice() {
+//     if (!employeeAiRecognition) setupEmployeeAiVoice();
+//     if (!employeeAiRecognition) { alert("Voice input இந்த browser-ல் support செய்யப்படவில்லை."); return; }
+//     if (employeeAiListening) { employeeAiRecognition.stop(); return; }
+//     employeeAiRecognition.start();
+// }
 
-async function askEmployeeAI() {
-    const input = $("employeeAiQuestion"), responseBox = $("employeeAiResponse"), askButton = $("employeeAiButton"), speakButton = $("employeeAiSpeakButton");
-    const question = input ? input.value.trim() : "";
-    if (!employeeEmail) { responseBox.innerText = "Employee login session கிடைக்கவில்லை."; return; }
-    if (!question) { responseBox.innerText = "முதலில் உங்கள் கேள்வியை உள்ளிடுங்கள்."; return; }
+// async function askEmployeeAI() {
+//     const input = $("employeeAiQuestion"), responseBox = $("employeeAiResponse"), askButton = $("employeeAiButton"), speakButton = $("employeeAiSpeakButton");
+//     const question = input ? input.value.trim() : "";
+//     if (!employeeEmail) { responseBox.innerText = "Employee login session கிடைக்கவில்லை."; return; }
+//     if (!question) { responseBox.innerText = "முதலில் உங்கள் கேள்வியை உள்ளிடுங்கள்."; return; }
 
-    askButton.disabled = true;
-    responseBox.innerText = "AI பதில் தயாராகிறது...";
-    speakButton.style.display = "none";
-    try {
-        const response = await fetch(`${API_BASE_URL}/api/ai/employee/ask`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ employeeEmail, question }) });
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error || "Employee AI request failed");
-        responseBox.innerText = data.response || "AI response கிடைக்கவில்லை.";
-        speakButton.style.display = "inline-flex";
-        initializeLucideIcons();
-    } catch (error) {
-        console.error("EMPLOYEE AI ERROR:", error);
-        responseBox.innerText = "AI service தற்போது கிடைக்கவில்லை. சிறிது நேரம் கழித்து முயற்சி செய்யுங்கள்.";
-    } finally { askButton.disabled = false; }
-}
+//     askButton.disabled = true;
+//     responseBox.innerText = "AI பதில் தயாராகிறது...";
+//     speakButton.style.display = "none";
+//     try {
+//         const response = await fetch(`${API_BASE_URL}/api/ai/employee/ask`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ employeeEmail, question }) });
+//         const data = await response.json();
+//         if (!response.ok) throw new Error(data.error || "Employee AI request failed");
+//         responseBox.innerText = data.response || "AI response கிடைக்கவில்லை.";
+//         speakButton.style.display = "inline-flex";
+//         initializeLucideIcons();
+//     } catch (error) {
+//         console.error("EMPLOYEE AI ERROR:", error);
+//         responseBox.innerText = "AI service தற்போது கிடைக்கவில்லை. சிறிது நேரம் கழித்து முயற்சி செய்யுங்கள்.";
+//     } finally { askButton.disabled = false; }
+// }
 
-function speakEmployeeAiResponse() {
-    const responseBox = $("employeeAiResponse");
-    if (!responseBox || !window.speechSynthesis) return;
-    const text = responseBox.innerText.trim();
-    if (!text) return;
-    window.speechSynthesis.cancel();
-    const speech = new SpeechSynthesisUtterance(text);
-    speech.lang = /[\u0B80-\u0BFF]/.test(text) ? "ta-IN" : "en-IN";
-    speech.rate = 0.95; speech.pitch = 1;
-    window.speechSynthesis.speak(speech);
-}
+// function speakEmployeeAiResponse() {
+//     const responseBox = $("employeeAiResponse");
+//     if (!responseBox || !window.speechSynthesis) return;
+//     const text = responseBox.innerText.trim();
+//     if (!text) return;
+//     window.speechSynthesis.cancel();
+//     const speech = new SpeechSynthesisUtterance(text);
+//     speech.lang = /[\u0B80-\u0BFF]/.test(text) ? "ta-IN" : "en-IN";
+//     speech.rate = 0.95; speech.pitch = 1;
+//     window.speechSynthesis.speak(speech);
+// }
 
-function setupEmployeeAiInput() {
-    const input = $("employeeAiQuestion");
-    if (input) input.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); askEmployeeAI(); } });
-}
+// function setupEmployeeAiInput() {
+//     const input = $("employeeAiQuestion");
+//     if (input) input.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); askEmployeeAI(); } });
+// }
 
 /* ===== EMPLOYMENT CHANGE POPUP (Increment / Promotion / Year complete / Intern extend / Intern complete / Intern conversion) ===== */
 let employmentChangeQueue = [], employmentChangeBusy = false;
@@ -2374,14 +2674,189 @@ function pollNotifications() {
     if (!employmentChangeBusy && employmentChangeQueue.length === 0) checkEmploymentChanges();
     if (!attendanceCorrectionBusy && !attendanceCorrectionItem) loadAttendanceCorrectionNotifications();
     loadMyLeaveRequests();
+    loadCalendarData();
 }
 setInterval(pollNotifications, 30000);
 document.addEventListener("visibilitychange", () => { if (!document.hidden) pollNotifications(); });
 
+/* ===== MY CALENDAR (month-wise). Settings are shared; leaves come from this employee's own history only ===== */
+let calYear = new Date().getFullYear(), calMonth = new Date().getMonth();
+let calSettings = [], calAnnouncements = [], calLeaves = [], calAttendance = [], empJoinDate = "", calLoaded = false;
+const CAL_MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const CAL_LABEL = { WEEKLY_OFF: "Weekly Off", COMPANY_HOLIDAY: "Company Holiday", GOVERNMENT_HOLIDAY: "Government Holiday", WORKING_DAY: "Working Day", WORKING_SATURDAY: "Working Day" };
+const escCal = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+/* Date from the server can be "2026-10-15" or [2026,10,15]; always return yyyy-mm-dd. */
+function calDate(v) {
+    if (Array.isArray(v) && v.length >= 3) return `${v[0]}-${pad(v[1])}-${pad(v[2])}`;
+    return String(v ?? "").slice(0, 10);
+}
+
+/* Each source is loaded on its own, so one failing request never hides the others. */
+async function calFetchList(url, label, problems) {
+    try {
+        const text = await fetchText(url, label + " request failed");
+        const data = text ? JSON.parse(text) : [];
+        return Array.isArray(data) ? data : [];
+    } catch (e) {
+        console.error("CALENDAR " + label + " ERROR:", e);
+        problems.push(label);
+        return [];
+    }
+}
+
+async function loadCalendarData() {
+    const problems = [];
+    const first = `${calYear}-${pad(calMonth + 1)}-01`;
+    const [month, upcoming, an, lv] = await Promise.all([
+        calFetchList(`${API_BASE_URL}/employee/calendar?year=${calYear}&month=${calMonth + 1}`, "Weekly off / holidays", problems),
+        calFetchList(`${API_BASE_URL}/employee/working-days/upcoming`, "Working day settings", []),
+        calFetchList(`${API_BASE_URL}/admin/announcements/active?fromDate=${first}`, "Announcements", problems),
+        calFetchList(`${API_BASE_URL}/leave/history?email=${enc}`, "My leave", problems)
+    ]);
+    /* /employee/calendar gives the whole month (weekly off included); the old list only adds extra rows. */
+    calSettings = month.concat(upcoming);
+    calAnnouncements = an;
+    calLeaves = lv;
+    calLoaded = true;
+    renderCalendar();
+    const note = $("calStatus");
+    if (note) note.textContent = problems.length ? "Could not load: " + problems.join(", ") + "." : "";
+}
+function calMove(step) { calMonth += step; if (calMonth < 0) { calMonth = 11; calYear--; } if (calMonth > 11) { calMonth = 0; calYear++; } loadCalendarData(); }
+function calToday() { const n = new Date(); calYear = n.getFullYear(); calMonth = n.getMonth(); loadCalendarData(); }
+
+function renderCalendar() {
+    const grid = $("calGrid"); if (!grid) return;
+    $("calTitle").textContent = `${CAL_MONTHS[calMonth]} ${calYear}`;
+    const today = getTodayDate(), prefix = `${calYear}-${pad(calMonth + 1)}-`;
+    const byDate = {}, push = (d, o) => (byDate[d] = byDate[d] || []).push(o);
+    const offWeekdays = new Set();
+    calSettings.forEach(s => {
+        if (!s || !s.settingDate) return;
+        const type = String(s.settingType || "").toUpperCase(), d = calDate(s.settingDate);
+        if (type === "WEEKLY_OFF") offWeekdays.add(new Date(d + "T00:00:00").getDay());
+        if (d.startsWith(prefix) && CAL_LABEL[type] && !(byDate[d] || []).some(x => x.label === CAL_LABEL[type])) push(d, { kind: type === "WEEKLY_OFF" ? "off" : type.endsWith("HOLIDAY") ? "holiday" : "work", label: CAL_LABEL[type], text: s.reason || "" });
+    });
+    /* Recurring weekly off: any weekday that the server marked as Weekly Off repeats in every month. */
+    const days = new Date(calYear, calMonth + 1, 0).getDate();
+    for (let i = 1; i <= days; i++) {
+        const d = prefix + pad(i);
+        if (offWeekdays.has(new Date(d + "T00:00:00").getDay()) && !(byDate[d] || []).some(x => x.kind === "off" || x.kind === "work" || x.kind === "holiday")) push(d, { kind: "off", label: "Weekly Off", text: "" });
+    }
+    calAnnouncements.forEach(a => { if (a && a.announcementDate && calDate(a.announcementDate).startsWith(prefix)) push(calDate(a.announcementDate), { kind: "ann", label: "Announcement", text: (a.title || "") + (a.message ? " - " + a.message : "") }); });
+    const leaveDays = { APPROVED: 0, PENDING: 0 };
+    const leaveRows = [];
+    calLeaves.forEach(r => {
+        if (!r || !r.leaveDate || !calDate(r.leaveDate).startsWith(prefix)) return;
+        const st = String(r.status || "PENDING").toUpperCase();
+        if (st === "REJECTED" || st === "CANCELLED") return;
+        const ld = calDate(r.leaveDate);
+        const dur = Number(r.leaveDuration ?? 1) || 1, type = String(r.leaveType || "").replace(/_/g, " ");
+        const isPerm = type.toUpperCase() === "PERMISSION";
+        if (!isPerm) { if (st === "APPROVED") leaveDays.APPROVED += dur; else leaveDays.PENDING += dur; }
+        push(ld, { kind: st === "APPROVED" ? "leave" : "pending", label: (isPerm ? "Permission" : "Leave") + (st === "APPROVED" ? " - Approved" : " - Pending"), text: type });
+        leaveRows.push({ d: ld, label: type + (st === "APPROVED" ? " (approved)" : " (pending)"), text: r.reason || "" });
+    });
+    let html = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"].map(x => `<div class="cal-dow">${x}</div>`).join("");
+    const lead = (new Date(calYear, calMonth, 1).getDay() + 6) % 7;
+    for (let i = 0; i < lead; i++) html += '<div class="cal-day empty"></div>';
+    for (let i = 1; i <= days; i++) {
+        const d = prefix + pad(i), items = byDate[d] || [];
+        const pick = ["leave","pending","holiday","off","work"].find(k => items.some(x => x.kind === k)) || "";
+        const cls = ["cal-day", pick, items.some(x => x.kind === "ann") ? "ann" : "", d === today ? "today" : ""].join(" ");
+        const tip = items.map(x => x.label + (x.text ? ": " + x.text : "")).join("\n");
+        html += `<div class="${cls}" title="${escCal(tip)}"><span class="n">${i}</span>${items.slice(0, 2).map(x => `<span class="t">${escCal(x.label)}</span>`).join("")}</div>`;
+    }
+    grid.innerHTML = html;
+    const count = k => Object.keys(byDate).filter(d => byDate[d].some(x => x.kind === k)).length;
+    $("calSummary").innerHTML = `<span>My leave days: ${leaveDays.APPROVED}</span>${leaveDays.PENDING ? `<span>Pending: ${leaveDays.PENDING}</span>` : ""}<span>Weekly offs: ${count("off")}</span><span>Holidays: ${count("holiday")}</span>`;
+    const rows = [];
+    Object.keys(byDate).sort().forEach(d => byDate[d].filter(x => x.kind === "holiday" || x.kind === "ann" || x.kind === "work").forEach(x => rows.push({ d, label: x.label, text: x.text })));
+    leaveRows.forEach(r => rows.push(r));
+    rows.sort((a, b) => a.d.localeCompare(b.d));
+    $("calList").style.display = rows.length ? "table" : "none";
+    /* My month: present / leave / absent for the month shown in the calendar */
+    const presentSet = new Set();
+    calAttendance.forEach(r => { if (r && r.checkIn && r.attendanceDate && calDate(r.attendanceDate).startsWith(prefix)) presentSet.add(calDate(r.attendanceDate)); });
+    let absent = 0; const absentList = [];
+    for (let i = 1; i <= days; i++) {
+        const d = prefix + pad(i), items = byDate[d] || [];
+        if (d >= today || (empJoinDate && d < empJoinDate) || presentSet.has(d)) continue;
+        if (items.some(x => x.kind === "off" || x.kind === "holiday" || x.kind === "leave" || x.kind === "pending")) continue;
+        absent++; absentList.push(d);
+    }
+    statAbsentDates = absentList;
+    const setN = (id, v) => { const el = $(id); if (el) el.textContent = v; };
+    setN("stPresent", presentSet.size); setN("stLeave", leaveDays.APPROVED); setN("stAbsent", absent);
+    document.querySelectorAll(".st-month").forEach(el => { el.textContent = CAL_MONTHS[calMonth] + " " + calYear; });
+    $("calListBody").innerHTML = rows.map(r => `<tr><td>${r.d.split("-").reverse().join("-")}</td><td>${escCal(r.label)}</td><td>${escCal(r.text)}</td></tr>`).join("");
+}
+
+
+/* ===== STAT CARD DETAILS (click a card -> the dates behind the number) ===== */
+let statAbsentDates = [];
+const SM_MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const SM_DAYS = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+function smDateBox(d) { const dt = new Date(d + "T00:00:00"); return `<div class="sm-date"><b>${dt.getDate()}</b><small>${SM_MONTHS[dt.getMonth()]}</small></div>`; }
+function smDay(d) { return SM_DAYS[new Date(d + "T00:00:00").getDay()] + ", " + d.split("-").reverse().join("-"); }
+function smTime(t) { return t ? String(t).slice(0, 5) : "--:--"; }
+function smBadge(st) { st = String(st || "PENDING").toUpperCase(); const c = st === "APPROVED" ? "ok" : st === "PENDING" ? "pend" : "bad"; return `<span class="sm-badge ${c}">${st.charAt(0) + st.slice(1).toLowerCase()}</span>`; }
+function smLeaveLabel(r) { const t = String(r.leaveType || "").replace(/_/g, " ").toLowerCase().replace(/\b\w/g, c => c.toUpperCase()); return t || "Leave"; }
+function smRow(date, title, sub, badge) { return `<div class="sm-row">${smDateBox(date)}<div class="sm-main"><strong>${escCal(title)}</strong>${sub ? `<span>${escCal(sub)}</span>` : ""}</div>${badge || ""}</div>`; }
+function smLeaveRow(r) {
+    const perm = String(r.leaveType || "").toUpperCase() === "PERMISSION";
+    const sub = (perm && r.permissionStart ? smTime(r.permissionStart) + " - " + smTime(r.permissionEnd) + ". " : "") + (r.reason || "") + (r.decisionReason ? " | Admin: " + r.decisionReason : "");
+    return smRow(calDate(r.leaveDate), smLeaveLabel(r) + (Number(r.leaveDuration) === 0.5 ? " (half day)" : ""), sub, smBadge(r.status));
+}
+
+function openStat(kind) {
+    const shown = `${calYear}-${pad(calMonth + 1)}-`, now = new Date(), cur = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-`;
+    const mName = CAL_MONTHS[calMonth] + " " + calYear, curName = CAL_MONTHS[now.getMonth()] + " " + now.getFullYear();
+    const live = r => { const s = String(r.status || "PENDING").toUpperCase(); return s !== "REJECTED" && s !== "CANCELLED"; };
+    let title = "", sub = "", sum = "", rows = [], empty = "Nothing to show.";
+    if (kind === "present") {
+        title = "Present Days"; sub = mName;
+        const byDate = {};
+        calAttendance.forEach(r => { if (r && r.checkIn && r.attendanceDate) { const d = calDate(r.attendanceDate); if (d.startsWith(shown)) (byDate[d] = byDate[d] || []).push(r); } });
+        Object.keys(byDate).sort().forEach(d => {
+            const s = byDate[d].sort((a, b) => String(a.checkIn).localeCompare(String(b.checkIn)));
+            rows.push(smRow(d, smDay(d), s.map(x => "In " + smTime(x.checkIn) + " - Out " + (x.checkOut ? smTime(x.checkOut) : "not checked out")).join("  |  "), smBadge("APPROVED").replace("Approved", "Present")));
+        });
+        sum = `<span>${rows.length} day(s)</span>`; empty = "No attendance in this month.";
+    } else if (kind === "leave") {
+        title = "Leave Days"; sub = mName;
+        const list = calLeaves.filter(r => r && r.leaveDate && calDate(r.leaveDate).startsWith(shown) && String(r.status || "").toUpperCase() === "APPROVED" && String(r.leaveType || "").toUpperCase() !== "PERMISSION").sort((a, b) => calDate(a.leaveDate).localeCompare(calDate(b.leaveDate)));
+        rows = list.map(smLeaveRow); sum = `<span>${list.reduce((n, r) => n + (Number(r.leaveDuration ?? 1) || 1), 0)} day(s) approved</span>`; empty = "No approved leave in this month.";
+    } else if (kind === "absent") {
+        title = "Absent Days"; sub = mName + " - no check-in and no leave";
+        rows = statAbsentDates.map(d => smRow(d, smDay(d), "No check-in, no leave", '<span class="sm-badge bad">Absent</span>'));
+        sum = `<span>${rows.length} day(s)</span>`; empty = "No absent days. Great!";
+    } else {
+        const cfg = { sick: ["Sick Leave", "SICK", "sickBalance"], casual: ["Casual Leave", "CASUAL", "casualBalance"], permission: ["Permission", "PERMISSION", "permissionBalance"] }[kind];
+        title = cfg[0]; sub = curName + " - used and requested";
+        const list = calLeaves.filter(r => r && r.leaveDate && calDate(r.leaveDate).startsWith(cur) && live(r) && String(r.leaveType || "").toUpperCase().includes(cfg[1])).sort((a, b) => calDate(a.leaveDate).localeCompare(calDate(b.leaveDate)));
+        rows = list.map(smLeaveRow); sum = `<span>Remaining / Total: ${escCal($(cfg[2]).textContent)}</span>`; empty = "Not used this month.";
+    }
+    $("smTitle").textContent = title; $("smSub").textContent = sub;
+    $("smBody").innerHTML = `<div class="sm-sum">${sum}</div>` + (rows.length ? rows.join("") : `<div class="sm-empty">${empty}</div>`);
+    $("statModal").classList.add("show");
+}
+function closeStat() { $("statModal").classList.remove("show"); }
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeStat(); });
+[["stPresent", "present"], ["stLeave", "leave"], ["stAbsent", "absent"], ["sickBalance", "sick"], ["casualBalance", "casual"], ["permissionBalance", "permission"]].forEach(([id, kind]) => {
+    const card = $(id) && $(id).closest(".stat, .balance-card"); if (!card) return;
+    card.classList.add("clickable"); card.tabIndex = 0; card.setAttribute("role", "button");
+    card.addEventListener("click", () => openStat(kind));
+    card.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openStat(kind); } });
+    const more = document.createElement("div"); more.className = "stat-more"; more.textContent = "View dates"; card.appendChild(more);
+});
+
 /* ===== INITIAL LOAD ===== */
+loadCalendarData();
 initializeLucideIcons();
-setupEmployeeAiVoice();
-setupEmployeeAiInput();
+// setupEmployeeAiVoice();
+// setupEmployeeAiInput();
 loadEmployeeDetails();
 loadWorkingDayAlert();
 loadEmployeeAnnouncements();
