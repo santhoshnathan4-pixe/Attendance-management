@@ -19,9 +19,10 @@ public final class InputValidator {
 
     public static final int PASSWORD_MIN_LENGTH = 8;
 
-    public static final String PASSWORD_RULES = "Password must be at least 8 characters and include an uppercase letter, "
-            + "a lowercase letter, a number and a special character, "
-            + "with no spaces.";
+    public static final String PASSWORD_RULES =
+            "Password must be at least 8 characters and include an uppercase letter, "
+                    + "a lowercase letter, a number and a special character, "
+                    + "with no spaces.";
 
     public static boolean isValidEmail(String email) {
         return email != null

@@ -528,8 +528,8 @@ function openBranchModal() {
     document.getElementById("branchLatitude").value = "";
     document.getElementById("branchLongitude").value = "";
     document.getElementById("branchRadius").value = "150";
-    document.getElementById("locationVerificationEnabled").checked = false;
-    document.getElementById("faceVerificationEnabled").checked = false;
+    document.getElementById("locationVerificationEnabled").checked = true;
+    document.getElementById("faceVerificationEnabled").checked = true;
     document.getElementById("branchReason").value = "";
 
     clearMessage("branchLocationMessage");
@@ -1286,6 +1286,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 </script>
-<script src="/admin/admin-sidebar.js" defer></script>
+<script src="/admin/admin-sidebar.js?v=5" defer></script>
 </body>
 </html>

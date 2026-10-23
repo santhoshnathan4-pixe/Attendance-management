@@ -1,3 +1,4 @@
+
 package com.example.attendance;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -530,6 +531,79 @@ public class AttendanceController {
         }
 
         // =====================================================
+        // LOCATION PRE-CHECK (the page asks this BEFORE opening the camera)
+        // check-in / check-out still verify the location again on the server
+        // =====================================================
+
+        @GetMapping("/location-check")
+        public Map<String, Object> locationCheck(
+                        @RequestParam String email,
+                        @RequestParam(required = false) Double latitude,
+                        @RequestParam(required = false) Double longitude) {
+
+                Map<String, Object> response = new LinkedHashMap<>();
+                response.put("allowed", false);
+
+                Employee employee = employeeRepository
+                                .findByEmailAndActiveTrue(email)
+                                .orElse(null);
+
+                if (employee == null) {
+                        response.put("message", "Employee Not Found or Employee is Inactive");
+                        return response;
+                }
+
+                EffectiveVerification settings = getEffectiveVerification(
+                                employee,
+                                LocalDate.now(INDIA_ZONE),
+                                LocalTime.now(INDIA_ZONE));
+
+                if (!settings.branchActive || !settings.locationRequired) {
+                        response.put("allowed", true);
+                        response.put("message", "Location check is not required.");
+                        return response;
+                }
+
+                Branch branch = getEmployeeBranch(employee);
+
+                if (branch == null
+                                || branch.getLatitude() == null
+                                || branch.getLongitude() == null
+                                || branch.getAllowedRadiusMeters() == null) {
+                        response.put("message", "Your branch location is not set. Please contact your admin.");
+                        return response;
+                }
+
+                if (!isValidCoordinate(latitude, longitude)) {
+                        response.put("message", "Your location could not be read. Turn on location and try again.");
+                        return response;
+                }
+
+                double distance = calculateDistanceInMeters(
+                                latitude,
+                                longitude,
+                                branch.getLatitude(),
+                                branch.getLongitude());
+
+                int radius = branch.getAllowedRadiusMeters();
+
+                response.put("distanceMeters", Math.round(distance));
+                response.put("allowedRadiusMeters", radius);
+                response.put("branchName", branch.getBranchName());
+
+                if (distance <= radius) {
+                        response.put("allowed", true);
+                        response.put("message", "You are at " + branch.getBranchName() + ".");
+                } else {
+                        response.put("message", "You are about " + Math.round(distance)
+                                        + " m away from " + branch.getBranchName()
+                                        + ". Attendance is allowed only within " + radius + " m.");
+                }
+
+                return response;
+        }
+
+        // =====================================================
         // LOCATION VALIDATION
         // =====================================================
 
@@ -982,7 +1056,8 @@ public class AttendanceController {
         // Permission is never cancelled.
         // =====================================================
 
-        private static final String CHECK_IN_CANCEL_REASON = "Cancelled automatically - employee came to office that day";
+        private static final String CHECK_IN_CANCEL_REASON =
+                        "Cancelled automatically - employee came to office that day";
 
         private void cancelApprovedLeaveForCheckIn(
                         Integer employeeId,

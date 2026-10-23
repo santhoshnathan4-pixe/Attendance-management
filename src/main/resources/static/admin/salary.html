@@ -575,13 +575,6 @@ tr:hover td,tbody tr:hover td{background:#F7FAF8!important}
 .btn-success{background:#fff!important;color:var(--g)!important;border:1px solid var(--g)!important}
 .salary-table th{background:#F7F9F8!important;color:var(--mut)!important}
 .salary-table tr.subtotal td{background:var(--gl)!important}
-.period-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-left:3px solid var(--g);border-radius:12px;padding:12px 14px;margin-bottom:14px}
-.period-bar b{font-size:13px;color:var(--k)}
-.period-bar input[type=date]{border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-size:13px;background:#fff}
-.period-bar input[type=date]:disabled{background:#F1F5F2;color:var(--mut)}
-.period-bar .period-to{color:var(--mut);font-size:13px}
-.period-bar .period-info{margin-left:auto;white-space:nowrap;font-size:12px;font-weight:600;color:var(--gd);background:var(--gl);border-radius:999px;padding:5px 12px}
-.period-bar .period-info.locked{background:#EEF1EF;color:var(--mut)}
 </style>
 
 </head>
@@ -651,16 +644,6 @@ tr:hover td,tbody tr:hover td{background:#F7FAF8!important}
 
                 </div>
 
-
-                <div class="period-bar" id="periodBar">
-                    <b>Salary Period</b>
-                    <input type="date" id="periodStart">
-                    <span class="period-to">to</span>
-                    <input type="date" id="periodEnd">
-                    <button type="button" class="btn btn-primary" id="periodSaveBtn" onclick="savePayPeriod()">Save Dates</button>
-                    <button type="button" class="btn btn-secondary" id="periodResetBtn" onclick="resetPayPeriod()">Use Calendar Month</button>
-                    <span class="period-info" id="periodInfo"></span>
-                </div>
 
                 <div id="payrollAlert" class="payroll-alert"></div>
 
@@ -1911,14 +1894,7 @@ function saveSalaryEdit() {
     openActionReasonModal("SALARY_UPDATE", true);
 }
 
-let currentPayPeriod = null;
-
 function getPayslipPeriod(year, month) {
-    /* Dates saved by the admin for this pay month are used first */
-    if (currentPayPeriod && currentPayPeriod.year === Number(year) && currentPayPeriod.month === Number(month)) {
-        return { start: fmtDmy(currentPayPeriod.startDate), end: fmtDmy(currentPayPeriod.endDate) };
-    }
-
     const firstDay = new Date(Number(year), Number(month) - 1, 1);
     const lastDay = new Date(Number(year), Number(month), 0);
 
@@ -2491,72 +2467,11 @@ async function sendPayslipEmail() {
     }
 }
 
-/* ===== SALARY PERIOD (admin sets start date and end date, both included) ===== */
-function fmtDmy(v) { const p = String(v || "").split("-"); return p.length === 3 ? p[2] + "-" + p[1] + "-" + p[0] : v; }
-
-async function loadPayPeriod() {
-    const year = document.getElementById("salaryYear").value;
-    const month = document.getElementById("salaryMonth").value;
-    if (!year || !month) return;
-    try {
-        const response = await apiFetch(`/admin/payroll/period?year=${year}&month=${month}`);
-        if (!response.ok) throw new Error(await getErrorMessage(response));
-        const p = await response.json();
-        currentPayPeriod = { year: Number(year), month: Number(month), startDate: p.startDate, endDate: p.endDate };
-        document.getElementById("periodStart").value = p.startDate;
-        document.getElementById("periodEnd").value = p.endDate;
-        ["periodStart", "periodEnd", "periodSaveBtn", "periodResetBtn"].forEach(id => { document.getElementById(id).disabled = !!p.locked; });
-        const info = document.getElementById("periodInfo");
-        info.textContent = fmtDmy(p.startDate) + " to " + fmtDmy(p.endDate) + " | " + p.days + " days | " + (p.locked ? "Paid - locked" : p.custom ? "Custom dates" : "Calendar month");
-        info.classList.toggle("locked", !!p.locked);
-    } catch (error) {
-        console.error("Salary period error:", error);
-    }
-}
-
-async function savePayPeriod() {
-    const year = document.getElementById("salaryYear").value;
-    const month = document.getElementById("salaryMonth").value;
-    const startDate = document.getElementById("periodStart").value;
-    const endDate = document.getElementById("periodEnd").value;
-    if (!startDate || !endDate) { showMessage("salaryMessage", "Select the start date and the end date.", "error"); return; }
-    if (endDate < startDate) { showMessage("salaryMessage", "End date cannot be before the start date.", "error"); return; }
-    if (!confirm("Salary for this month will be calculated from " + fmtDmy(startDate) + " to " + fmtDmy(endDate) + " (both days included). Save?")) return;
-    try {
-        const response = await apiFetch("/admin/payroll/period", {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ adminEmail: localStorage.getItem("adminEmail"), year: Number(year), month: Number(month), startDate, endDate })
-        });
-        if (!response.ok) throw new Error(await getErrorMessage(response));
-        showMessage("salaryMessage", "Salary period saved.", "success");
-        await calculateSalary();
-    } catch (error) {
-        showMessage("salaryMessage", error.message || "Unable to save the salary period.", "error");
-    }
-}
-
-async function resetPayPeriod() {
-    const year = document.getElementById("salaryYear").value;
-    const month = document.getElementById("salaryMonth").value;
-    if (!confirm("Use the normal calendar month (1st to last day) for this salary?")) return;
-    try {
-        const response = await apiFetch(`/admin/payroll/period?adminEmail=${encodeURIComponent(localStorage.getItem("adminEmail") || "")}&year=${year}&month=${month}`, { method: "DELETE" });
-        if (!response.ok) throw new Error(await getErrorMessage(response));
-        showMessage("salaryMessage", "Calendar month is used now.", "success");
-        await calculateSalary();
-    } catch (error) {
-        showMessage("salaryMessage", error.message || "Unable to reset the salary period.", "error");
-    }
-}
-
 async function calculateSalary() {
     const year = document.getElementById("salaryYear").value;
     const month = document.getElementById("salaryMonth").value;
 
     if (!year || !month) return;
-
-    loadPayPeriod();
 
     try {
         const response = await apiFetch(
@@ -3028,7 +2943,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 
 
-<script src="/admin/admin-sidebar.js" defer></script>
+<script src="/admin/admin-sidebar.js?v=5" defer></script>
 </body>
 
 </html>

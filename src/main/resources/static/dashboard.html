@@ -1340,6 +1340,82 @@ body{background:var(--bg);font-family:"Segoe UI",system-ui,-apple-system,Arial,s
 
 
 
+
+<style>
+/* ===== colourful professional look (employee) ===== */
+:root{--bg:#F3F6FB}
+body{background:var(--bg)!important}
+.header{background:#fff!important;border-bottom:1px solid #E6ECF4!important;box-shadow:0 1px 3px rgba(15,23,42,.05)}
+.header .avatar,.avatar{background:linear-gradient(135deg,#16A34A,#2563EB)!important}
+.attendance-card,.cal-card,.my-leave-card,.balance-card,.employee-ai-card,.stat{border:1px solid #E6ECF4!important;border-radius:16px!important;box-shadow:0 1px 3px rgba(15,23,42,.05)!important}
+.today-box{border:1px solid #E6ECF4!important;border-left-width:4px!important;border-radius:12px!important;background:#fff}
+.today-box:nth-child(1){border-left-color:#16A34A!important;background:#F1FBF5}
+.today-box:nth-child(2){border-left-color:#D97706!important;background:#FFF8EC}
+.today-box:nth-child(3){border-left-color:#2563EB!important;background:#EEF4FF}
+.attendance-btn.check-in{background:linear-gradient(135deg,#16A34A,#0F7A35)!important;color:#fff!important;border-color:transparent!important;box-shadow:0 4px 12px rgba(22,163,74,.3)}
+.attendance-btn.check-out{background:linear-gradient(135deg,#F59E0B,#EA580C)!important;color:#fff!important;border-color:transparent!important;box-shadow:0 4px 12px rgba(234,88,12,.3)}
+.attendance-btn:disabled{background:#E8EDF4!important;color:#94A3B8!important;box-shadow:none!important}
+.apply-btn{background:#EEF4FF!important;color:#2563EB!important;border:1.5px solid #B6CBF8!important}.apply-btn:hover{background:#2563EB!important;color:#fff!important}
+.logout-btn{border-color:#F9C9C9!important;color:#DC2626!important}.logout-btn:hover{background:#FDE8E8!important}
+.stat{position:relative;overflow:hidden}
+.stat::after{content:"";position:absolute;left:18px;right:18px;bottom:0;height:3px;border-radius:3px 3px 0 0;background:var(--acc)}
+.stat-ic{background:var(--tint)!important;color:var(--acc)!important}
+.stat:nth-child(1){--acc:#16A34A;--tint:#E3F6EA}
+.stat:nth-child(2){--acc:#DC2626;--tint:#FDE8E8}
+.stat:nth-child(3){--acc:#64748B;--tint:#EAEFF5}
+.stat:nth-child(4){--acc:#2563EB;--tint:#E6EEFF}
+.stat:nth-child(5){--acc:#D97706;--tint:#FEF1DC}
+.stat:nth-child(6){--acc:#7C3AED;--tint:#EFE7FE}
+.stat-more{color:var(--acc)!important}
+.stat-val{color:#0F172A}
+
+/* --- v2: hero welcome, coloured balances and calendar --- */
+.welcome{background:linear-gradient(120deg,#0B3D2A 0%,#16803C 45%,#2563EB 100%)!important;border-radius:18px!important;padding:24px 28px!important;margin-bottom:18px!important;box-shadow:0 10px 26px rgba(37,99,235,.18)!important;position:relative;overflow:hidden}
+.welcome::after{content:"";position:absolute;right:-40px;top:-60px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,.1)}
+.welcome h2{color:#fff!important;font-size:26px!important;font-weight:800!important}
+.welcome p{color:rgba(255,255,255,.85)!important;font-size:14px!important}
+.attendance-card h2,.attendance-card h3,.cal-card h2,.cal-card h3{color:#0F172A}
+.balance-card{position:relative;overflow:hidden;border-top:4px solid var(--acc)!important}
+.balance-container>.balance-card:nth-child(1){--acc:#DC2626;background:#FFF5F5!important}
+.balance-container>.balance-card:nth-child(2){--acc:#D97706;background:#FFFAF0!important}
+.balance-container>.balance-card:nth-child(3){--acc:#7C3AED;background:#F8F4FF!important}
+.balance-card h3{color:var(--acc)!important}.balance-number{color:#0F172A!important}
+.cal-day{border-color:#E1E8F2!important;border-radius:10px!important}
+.cal-day.today{border:2px solid #2563EB!important;box-shadow:0 0 0 3px rgba(37,99,235,.15)}
+.cal-day.today .n{background:#2563EB!important}
+.cal-day.off{background:#E2E8F0!important;color:#475569!important}.cal-day.off .n{color:#334155!important}
+.cal-day.holiday{background:#7C3AED!important}.cal-day.work{background:#E3F6EA!important}
+.cal-day.leave{background:#EF4444!important}
+.cal-day.pending{background:#FEF3C7!important;border-color:#D97706!important;color:#92400E!important}
+.lg-off{background:#E2E8F0!important}.lg-hol{background:#7C3AED!important}.lg-work{background:#E3F6EA!important;border:1px solid #16A34A!important}.lg-leave{background:#EF4444!important}.lg-pend{background:#FEF3C7!important;border:1px dashed #D97706!important}.lg-ann{background:#2563EB!important}
+.cal-sum span:nth-child(1){background:#FDE8E8;color:#B91C1C}.cal-sum span:nth-child(2){background:#E2E8F0;color:#334155}.cal-sum span:nth-child(3){background:#EFE7FE;color:#6D28D9}
+.cal-nav button,.cal-nav .btn{border-radius:10px;border:1.5px solid #D5DEEA}.cal-nav button:hover{background:#E6EEFF;color:#2563EB;border-color:#B6CBF8}
+.brand-mark{background:linear-gradient(135deg,#16A34A,#2563EB)!important}
+
+/* --- v3: pop-ups are compact, coloured and always fit inside the screen --- */
+#attendanceCorrectionModal,#missingCheckoutModal,#employmentChangeModal{padding:12px!important;overflow:hidden!important}
+.ac-box,.mc-box,.ec-box{max-width:460px!important;max-height:calc(100vh - 24px);overflow-y:auto;padding:0!important;border:0!important;border-radius:18px!important;margin:0!important;display:flex;flex-direction:column}
+.ac-box>*,.mc-box>*,.ec-box>*{margin-left:20px;margin-right:20px}
+.ac-box>h2,.mc-box>h2,.ec-box>h2{margin:0!important;padding:14px 20px;font-size:17px!important;color:#fff!important;position:sticky;top:0;z-index:2;letter-spacing:0!important}
+.mc-box>h2{background:linear-gradient(135deg,#DC2626,#EA580C)}
+.ac-box>h2{background:linear-gradient(135deg,#2563EB,#7C3AED)}
+.ec-box>h2{background:linear-gradient(135deg,#16A34A,#2563EB)}
+.mc-box>.mc-sub,.ac-box>p:first-of-type,.ec-box>.ec-sub{margin-top:12px!important;margin-bottom:10px!important;font-size:13px!important;line-height:1.5!important;color:#475569!important}
+.mc-grid{display:grid!important;grid-template-columns:1fr 1fr;gap:8px!important;margin-bottom:10px!important}
+.mc-grid>div{background:#F3F6FB;border:1px solid #E1E8F2;border-radius:10px;padding:8px 10px!important}
+.mc-grid .mc-full{grid-column:1/-1}
+.mc-grid strong{display:block;font-size:10.5px!important;letter-spacing:.05em;text-transform:uppercase;color:#64748B!important;margin-bottom:2px}
+.mc-grid span{font-size:13.5px!important;font-weight:700;color:#0F172A}
+.mc-box .form-group{margin-bottom:10px!important}
+.mc-box label{font-size:11.5px!important;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:#475569}
+.mc-box input[type=time]{padding:9px 11px!important;font-size:14px!important}
+.mc-box textarea{min-height:64px!important;height:64px;padding:9px 11px!important;font-size:13px!important}
+.mc-box>.mc-note{background:#FFF7ED;border:1px solid #FED7AA;color:#9A3412!important;border-radius:10px;padding:8px 10px!important;font-size:12px!important;line-height:1.45!important;margin-bottom:12px!important}
+.mc-box>.submit-btn,.ec-box>.submit-btn,.ac-box .submit-btn{margin-bottom:16px!important}
+.mc-box>.submit-btn{background:linear-gradient(135deg,#DC2626,#EA580C)!important}
+.mc-box>.submit-btn,.ec-box>.submit-btn{width:calc(100% - 40px)!important;box-sizing:border-box}
+@media(max-height:600px){.mc-box>.mc-note{display:none}}
+</style>
 </head>
 
 <body>
@@ -1636,6 +1712,30 @@ const NO_VERIFICATION = {
 
 let attendanceVerificationSettings = { ...NO_VERIFICATION };
 
+
+/* Tell the employee (and the admin who tests) clearly when location / face is NOT being checked */
+function showVerificationNote(d) {
+    let note = document.getElementById("verifyNote");
+    if (!note) {
+        const msg = document.getElementById("attendanceMessage");
+        if (!msg || !msg.parentNode) return;
+        note = document.createElement("div");
+        note.id = "verifyNote";
+        note.style.cssText = "margin-top:10px;padding:10px 12px;border-radius:10px;font-size:13px;line-height:1.5;";
+        msg.parentNode.insertBefore(note, msg);
+    }
+    let text = "", warn = false;
+    if (!d || d.success === false) { text = "Could not read your branch settings. Please refresh the page."; warn = true; }
+    else if (d.branchName === "No Branch") { text = "No branch is assigned to you, so location and face are NOT checked. Ask your admin to assign your branch."; warn = true; }
+    else if (!d.branchActive) { text = "Your branch is inactive, so location and face are NOT checked. Ask your admin."; warn = true; }
+    else if (!d.locationRequired && !d.faceRequired) { text = "Location and face check are OFF for " + (d.branchName || "your branch") + ". Admin can turn them ON in Branches & Rules."; warn = true; }
+    else { text = "Branch: " + (d.branchName || "-") + (d.locationRequired ? " \u2022 Location check ON" : "") + (d.faceRequired ? " \u2022 Face check ON" : ""); }
+    note.textContent = text;
+    note.style.background = warn ? "#FEF3C7" : "#E6EEFF";
+    note.style.color = warn ? "#92400E" : "#1D4ED8";
+    note.style.border = "1px solid " + (warn ? "#F6D98A" : "#C9D9FB");
+}
+
 async function loadAttendanceVerificationSettings() {
     try {
         const enc = encodeURIComponent(employeeEmail);
@@ -1660,6 +1760,7 @@ async function loadAttendanceVerificationSettings() {
             "ATTENDANCE VERIFICATION SETTINGS:",
             attendanceVerificationSettings
         );
+        showVerificationNote(d);
     } catch (error) {
         console.error("VERIFICATION SETTINGS ERROR:", error);
         attendanceVerificationSettings = { ...NO_VERIFICATION };
@@ -1864,27 +1965,7 @@ async function loadAttendanceHuman() {
     return attendanceHuman;
 }
 
-function createAttendanceFaceModal() {
-    let modal = $("attendanceFaceModal");
-    if (modal) return modal;
-    modal = document.createElement("div");
-    modal.id = "attendanceFaceModal";
-    modal.style.cssText = "position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.70);padding:20px;";
-    modal.innerHTML = `
-        <div style="width:100%;max-width:430px;background:#ffffff;border-radius:16px;padding:20px;box-shadow:0 20px 50px rgba(0,0,0,0.30);text-align:center;">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:15px;">
-                <h3 style="margin:0;color:#111827;font-size:20px;">Face Verification</h3>
-                <button type="button" id="attendanceFaceClose" style="border:none;background:transparent;cursor:pointer;font-size:24px;color:#6b7280;line-height:1;" aria-label="Close">&times;</button>
-            </div>
-            <div style="width:100%;aspect-ratio:4/3;background:#111827;border-radius:12px;overflow:hidden;position:relative;">
-                <video id="attendanceFaceVideo" autoplay muted playsinline style="width:100%;height:100%;object-fit:cover;transform:scaleX(-1);"></video>
-            </div>
-            <p id="attendanceFaceStatus" style="margin:15px 0 0;color:#2563eb;font-size:14px;">Starting camera...</p>
-        </div>`;
-    document.body.appendChild(modal);
-    $("attendanceFaceClose").addEventListener("click", () => { stopAttendanceFaceCamera(); modal.style.display = "none"; });
-    return modal;
-}
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 function stopAttendanceFaceCamera() {
     if (attendanceFaceStream) { attendanceFaceStream.getTracks().forEach(track => track.stop()); attendanceFaceStream = null; }
@@ -1892,44 +1973,186 @@ function stopAttendanceFaceCamera() {
     if (video) video.srcObject = null;
 }
 
-const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+/* ===== small friendly dialog (used for location and face help) ===== */
+function uiDialog(opts) {
+    return new Promise(resolve => {
+        const old = document.getElementById("uiDialog"); if (old) old.remove();
+        const tone = opts.tone || "#2563eb";
+        const box = document.createElement("div");
+        box.id = "uiDialog";
+        box.style.cssText = "position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;background:rgba(15,23,42,.6);padding:18px;";
+        box.innerHTML = '<div style="width:100%;max-width:420px;background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.35);font-family:inherit">' +
+            '<div style="background:' + tone + ';color:#fff;padding:16px 20px;font-size:18px;font-weight:800">' + opts.title + '</div>' +
+            '<div style="padding:18px 20px;color:#334155;font-size:14px;line-height:1.6">' + opts.html + '</div>' +
+            '<div id="uiDialogBtns" style="display:flex;gap:10px;justify-content:flex-end;padding:0 20px 18px;flex-wrap:wrap"></div></div>';
+        document.body.appendChild(box);
+        const row = box.querySelector("#uiDialogBtns");
+        (opts.buttons || [{ label: "OK", value: true, primary: true }]).forEach(b => {
+            const btn = document.createElement("button");
+            btn.type = "button"; btn.textContent = b.label;
+            btn.style.cssText = "border-radius:10px;padding:10px 18px;font-size:14px;font-weight:700;cursor:pointer;border:1.5px solid " + (b.primary ? tone : "#D5DEEA") + ";background:" + (b.primary ? tone : "#fff") + ";color:" + (b.primary ? "#fff" : "#334155");
+            btn.onclick = () => { box.remove(); resolve(b.value); };
+            row.appendChild(btn);
+        });
+    });
+}
 
-async function captureCurrentFaceEmbedding() {
-    const modal = createAttendanceFaceModal(), video = $("attendanceFaceVideo"), status = $("attendanceFaceStatus");
+/* ===== LOCATION: ask clearly, help when blocked ===== */
+async function getLocationWithHelp() {
+    while (true) {
+        let state = "prompt";
+        try { if (navigator.permissions) state = (await navigator.permissions.query({ name: "geolocation" })).state; } catch (e) {}
+        if (state === "prompt") {
+            const go = await uiDialog({
+                title: "Allow your location",
+                html: "To mark attendance we need to check that you are at your office branch.<br><br>Press <b>Allow location</b>, then choose <b>Allow</b> in the browser box that appears.",
+                buttons: [{ label: "Not now", value: false }, { label: "Allow location", value: true, primary: true }]
+            });
+            if (!go) throw new Error("Location is needed to mark attendance.");
+        }
+        try {
+            return await getCurrentLocation();
+        } catch (err) {
+            const blocked = /permission/i.test(err.message);
+            const again = await uiDialog({
+                tone: "#dc2626",
+                title: blocked ? "Location is blocked" : "Could not get your location",
+                html: blocked
+                    ? "Your browser is blocking location for this site.<br><br><b>How to fix:</b><ol style='margin:6px 0 0 18px;padding:0'><li>Click the lock icon next to the web address.</li><li>Set <b>Location</b> to <b>Allow</b>.</li><li>Press <b>Try again</b>.</li></ol>"
+                    : err.message + "<br><br>Turn on GPS / location on your device, then press <b>Try again</b>.",
+                buttons: [{ label: "Cancel", value: false }, { label: "Try again", value: true, primary: true }]
+            });
+            if (!again) throw new Error("Location is needed to mark attendance.");
+        }
+    }
+}
+
+/* ===== FACE: guided register (first time) and verify, with live help ===== */
+function createFaceModal() {
+    let modal = document.getElementById("attendanceFaceModal");
+    if (modal) modal.remove();
+    modal = document.createElement("div");
+    modal.id = "attendanceFaceModal";
+    modal.style.cssText = "position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;background:rgba(15,23,42,.7);padding:16px;";
+    modal.innerHTML = '<div style="width:100%;max-width:440px;background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.4);text-align:center">' +
+        '<div id="afmHead" style="padding:16px 20px;color:#fff;font-size:19px;font-weight:800;display:flex;justify-content:space-between;align-items:center"><span id="afmTitle">Face Verification</span><button type="button" id="afmClose" aria-label="Close" style="border:0;background:rgba(255,255,255,.2);color:#fff;border-radius:8px;width:32px;height:32px;font-size:20px;cursor:pointer">&times;</button></div>' +
+        '<div style="padding:16px 18px 18px">' +
+        '<div style="position:relative;width:100%;aspect-ratio:4/3;background:#0F172A;border-radius:14px;overflow:hidden">' +
+        '<video id="attendanceFaceVideo" autoplay muted playsinline style="width:100%;height:100%;object-fit:cover;transform:scaleX(-1)"></video>' +
+        '<div id="afmOval" style="position:absolute;left:50%;top:50%;width:46%;height:76%;transform:translate(-50%,-50%);border:4px dashed #fff;border-radius:50%;box-shadow:0 0 0 999px rgba(15,23,42,.45);transition:border-color .2s"></div></div>' +
+        '<div id="attendanceFaceStatus" style="margin-top:14px;font-size:16px;font-weight:700;color:#2563eb;min-height:24px">Starting camera...</div>' +
+        '<ul id="afmTips" style="text-align:left;margin:12px 4px 0;padding-left:20px;font-size:13px;color:#475569;line-height:1.7"></ul>' +
+        '<div id="afmBtns" style="display:flex;gap:10px;justify-content:center;margin-top:14px"></div></div></div>';
+    document.body.appendChild(modal);
+    return modal;
+}
+
+async function runFaceModal(mode) {
+    const register = mode === "register";
+    const modal = createFaceModal();
+    const video = document.getElementById("attendanceFaceVideo");
+    const status = document.getElementById("attendanceFaceStatus");
+    const oval = document.getElementById("afmOval");
+    const tips = document.getElementById("afmTips");
+    const btns = document.getElementById("afmBtns");
+    document.getElementById("afmHead").style.background = register ? "linear-gradient(135deg,#16A34A,#2563EB)" : "linear-gradient(135deg,#2563EB,#7C3AED)";
+    document.getElementById("afmTitle").textContent = register ? "Register your face (first time)" : "Verify your face";
+    tips.innerHTML = register
+        ? "<li>Look straight at the camera, like a mirror.</li><li>Stand in good light. Light should fall on your face.</li><li>Remove cap, mask and dark glasses.</li><li>Only your face should be in the oval.</li>"
+        : "<li>Look straight at the camera.</li><li>Keep your face inside the oval.</li>";
     modal.style.display = "flex";
-    status.innerText = "Starting camera...";
-    status.style.color = "#2563eb";
+
+    let cancelled = false;
+    document.getElementById("afmClose").onclick = () => { cancelled = true; };
+    const setStatus = (text, color) => { status.textContent = text; status.style.color = color || "#2563EB"; oval.style.borderColor = color === "#16A34A" ? "#22C55E" : color === "#DC2626" ? "#EF4444" : "#fff"; };
+    const showRetry = (label) => new Promise(res => {
+        btns.innerHTML = "";
+        [["Cancel", false], [label || "Try again", true]].forEach(([t, v]) => {
+            const b = document.createElement("button"); b.type = "button"; b.textContent = t;
+            b.style.cssText = "border-radius:10px;padding:10px 20px;font-size:14px;font-weight:700;cursor:pointer;border:1.5px solid " + (v ? "#2563EB" : "#D5DEEA") + ";background:" + (v ? "#2563EB" : "#fff") + ";color:" + (v ? "#fff" : "#334155");
+            b.onclick = () => { btns.innerHTML = ""; res(v); };
+            btns.appendChild(b);
+        });
+    });
+
     try {
-        await loadAttendanceHuman();
-        attendanceFaceStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user", width: { ideal: 640 }, height: { ideal: 480 } }, audio: false });
+        setStatus("Starting camera...");
+        try {
+            await loadAttendanceHuman();
+            attendanceFaceStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user", width: { ideal: 640 }, height: { ideal: 480 } }, audio: false });
+        } catch (e) {
+            const denied = e && (e.name === "NotAllowedError" || e.name === "SecurityError");
+            setStatus(denied ? "Camera is blocked." : "Camera not available.", "#DC2626");
+            tips.innerHTML = denied
+                ? "<li>Click the lock icon next to the web address.</li><li>Set <b>Camera</b> to <b>Allow</b>.</li><li>Press <b>Try again</b>.</li>"
+                : "<li>Close other apps that use the camera.</li><li>Check that a camera is connected.</li>";
+            if (await showRetry()) { modal.remove(); return await runFaceModal(mode); }
+            throw new Error("Camera is needed for face check.");
+        }
         video.srcObject = attendanceFaceStream;
         await video.play();
-        status.innerText = "Position your face inside the camera...";
-        await sleep(1000);
-        status.innerText = "Checking your face...";
 
-        let faceEmbedding = null;
-        for (let attempt = 0; attempt < 5; attempt++) {
-            const result = await attendanceHuman.detect(video);
-            if (result && Array.isArray(result.face) && result.face.length === 1 && result.face[0] && Array.isArray(result.face[0].embedding) && result.face[0].embedding.length > 0) { faceEmbedding = result.face[0].embedding; break; }
-            status.innerText = "Face not detected. Please look at the camera...";
-            await sleep(500);
+        let failedMatches = 0;
+        while (!cancelled) {
+            /* ---- guide until the face is clear ---- */
+            let good = 0, embedding = null, lastMsg = "";
+            const started = Date.now();
+            while (!cancelled && !embedding) {
+                if (Date.now() - started > 40000) { setStatus("We could not see your face clearly.", "#DC2626"); break; }
+                const result = await attendanceHuman.detect(video);
+                const faces = (result && result.face) || [];
+                const vw = video.videoWidth || 640, vh = video.videoHeight || 480;
+                let msg = null;
+                if (faces.length === 0) msg = "No face found. Look at the camera.";
+                else if (faces.length > 1) msg = "More than one face. Only you should be visible.";
+                else {
+                    const f = faces[0], box = f.box || [0, 0, 0, 0];
+                    const w = box[2] / vw, cx = (box[0] + box[2] / 2) / vw, cy = (box[1] + box[3] / 2) / vh;
+                    const score = (f.faceScore !== undefined ? f.faceScore : (f.score !== undefined ? f.score : 1));
+                    if (w < 0.22) msg = "Come a little closer.";
+                    else if (w > 0.62) msg = "Move a little back.";
+                    else if (Math.abs(cx - 0.5) > 0.14 || Math.abs(cy - 0.5) > 0.18) msg = "Keep your face in the middle of the oval.";
+                    else if (score < 0.6) msg = "Face not clear. Add more light, remove mask / cap / glasses.";
+                    else if (!Array.isArray(f.embedding) || !f.embedding.length) msg = "Hold still...";
+                    else { good++; if (good >= (register ? 4 : 2)) embedding = f.embedding; else msg = register ? "Good. Hold still..." : "Hold still..."; }
+                }
+                if (msg !== lastMsg) { setStatus(msg || "Good.", msg && /^Good|Hold/.test(msg) ? "#16A34A" : "#DC2626"); lastMsg = msg; }
+                if (!msg || /^Good|Hold/.test(msg) === false) good = msg ? 0 : good;
+                await sleep(350);
+            }
+            if (cancelled) break;
+            if (!embedding) {
+                if (await showRetry()) continue;
+                cancelled = true; break;
+            }
+
+            const faceData = JSON.stringify(embedding);
+            if (register) {
+                setStatus("Saving your face...");
+                const text = await fetchText(`${API_BASE_URL}/employee-face/register`, "Face registration failed.", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: employeeEmail, faceData }) });
+                if (!/registered successfully/i.test(text || "")) throw new Error(text || "Face registration failed.");
+                setStatus("Face registered. You are all set.", "#16A34A");
+                await sleep(900);
+                return faceData;
+            }
+
+            setStatus("Checking your face...");
+            const verifyText = await fetchText(`${API_BASE_URL}/employee-face/verify`, "Face verification failed.", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: employeeEmail, faceData }) });
+            if (String(verifyText || "").trim().toUpperCase() === "FACE_MATCH") {
+                setStatus("Face verified.", "#16A34A");
+                await sleep(500);
+                return faceData;
+            }
+            failedMatches++;
+            setStatus("Face does not match.", "#DC2626");
+            tips.innerHTML = "<li>Look straight, not tilted.</li><li>Remove cap, mask or dark glasses.</li><li>Stand in good light.</li><li>Only the registered employee can mark attendance.</li>" + (failedMatches >= 3 ? "<li><b>Still failing? Please contact your admin.</b></li>" : "");
+            if (await showRetry()) continue;
+            cancelled = true;
         }
-        if (!faceEmbedding) throw new Error("Unable to detect your face. Please look directly at the camera and try again.");
-
-        status.innerText = "Verifying your face...";
-        const faceData = JSON.stringify(faceEmbedding);
-        const verifyText = await fetchText(`${API_BASE_URL}/employee-face/verify`, "Face verification failed.", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ email: employeeEmail, faceData }) });
-        const result = String(verifyText || "").trim().toUpperCase();
-        if (result !== "FACE_MATCH") throw new Error(result === "FACE_MISMATCH" ? "Face does not match the registered face." : "Face verification failed.");
-
-        status.innerText = "Face verified successfully.";
-        status.style.color = "green";
-        await sleep(300);
-        return faceData;
+        throw new Error("Face check was cancelled.");
     } finally {
         stopAttendanceFaceCamera();
-        modal.style.display = "none";
+        const m = document.getElementById("attendanceFaceModal"); if (m) m.remove();
     }
 }
 
@@ -1938,8 +2161,8 @@ async function getFaceDataIfRequired() {
     const text = await fetchText(`${API_BASE_URL}/employee-face/status?email=${enc}`, "Face verification status request failed");
     const status = String(text || "").trim().toUpperCase();
     if (status === "FACE_NOT_REQUIRED") return null;
-    if (status === "FACE_NOT_REGISTERED") throw new Error("Face registration is required before attendance.");
-    if (status === "FACE_REGISTERED") return await captureCurrentFaceEmbedding();
+    if (status === "FACE_NOT_REGISTERED") return await runFaceModal("register");
+    if (status === "FACE_REGISTERED") return await runFaceModal("verify");
     throw new Error("Unable to verify face registration status.");
 }
 
@@ -1954,9 +2177,25 @@ async function buildAttendanceParams() {
     if (attendanceVerificationSettings.locationRequired) {
         message.innerText = "Getting your location...";
         message.style.color = "#2563eb";
-        const location = await getCurrentLocation();
+        const location = await getLocationWithHelp();
         params.append("latitude", String(location.latitude));
         params.append("longitude", String(location.longitude));
+
+        /* Step 2: is this the right place? The camera opens only after the server says yes. */
+        message.innerText = "Checking your location...";
+        const checkText = await fetchText(
+            `${API_BASE_URL}/attendance/location-check?email=${encodeURIComponent(employeeEmail)}&latitude=${location.latitude}&longitude=${location.longitude}`,
+            "Location check failed"
+        );
+        let check = {};
+        try { check = checkText ? JSON.parse(checkText) : {}; } catch (e) { check = {}; }
+        if (!check.allowed) {
+            await uiDialog({ tone: "#dc2626", title: "You are not at the office", html: (check.message || "You are outside your assigned branch location.") + "<br><br>Please go to your branch location and try again." });
+            throw new Error(check.message || "You are outside your assigned branch location.");
+        }
+        if (attendanceVerificationSettings.faceRequired) {
+            message.innerText = "Location OK. Opening camera...";
+        }
     }
 
     /* Face only when branch Face Verification is ON */

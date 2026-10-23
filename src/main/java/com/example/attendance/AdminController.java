@@ -19,7 +19,6 @@ public class AdminController {
         this.historyRepository = historyRepository;
     }
 
-
     // ================================
     // ADMIN LOGIN
     // ================================
@@ -30,7 +29,8 @@ public class AdminController {
             @RequestParam String password) {
 
         Admin admin = adminRepository
-                .findByEmailAndPassword(email, password)
+                .findByEmail(email == null ? "" : email.trim())
+                .filter(found -> PasswordUtil.matches(password, found.getPassword()))
                 .orElse(null);
 
         if (admin == null) {
@@ -39,18 +39,36 @@ public class AdminController {
                     false,
                     "Invalid Email or Password",
                     null,
+                    null,
                     null
             );
+        }
+
+        if (!admin.isActive()) {
+
+            return new AdminLoginResponse(
+                    false,
+                    "This admin account is switched off. Please contact the owner.",
+                    null,
+                    null,
+                    null
+            );
+        }
+
+        // An old plain-text password is replaced by a hash on the first successful login.
+        if (!PasswordUtil.isHashed(admin.getPassword())) {
+            admin.setPassword(PasswordUtil.hash(password));
+            adminRepository.save(admin);
         }
 
         return new AdminLoginResponse(
                 true,
                 "Admin Login Successful",
                 admin.getAdminName(),
-                admin.getEmail()
+                admin.getEmail(),
+                admin.getRole()
         );
     }
-
 
     // ================================
     // ADMIN ACTION HISTORY

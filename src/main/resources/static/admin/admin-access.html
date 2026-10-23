@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GROWBYTEE - Admin Access</title>
+<style>
+:root{--g:#16803C;--gd:#0B2E1A;--gl:#E8F5EC;--k:#171717;--line:#E1E8E3;--mut:#6B7A70;--bg:#F4F6F5;--red:#DC2626}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;background:var(--bg);color:var(--k);font-size:14px;min-height:100vh}
+button,input,select{font:inherit;color:inherit}button{cursor:pointer}
+.main{min-height:100vh}
+.topbar{height:60px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:20}
+.topbar h2{font-size:17px;font-weight:700}
+.who{display:flex;align-items:center;gap:10px}
+.who .nm{font-size:13px;font-weight:600;line-height:1.2;text-align:right}.who .nm span{display:block;font-size:11px;color:var(--mut);font-weight:400}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--gd);color:#fff;display:grid;place-items:center;font-weight:700}
+.content{padding:24px 28px;max-width:1100px}
+.page-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.page-head h1{font-size:22px;font-weight:700}.page-head p{color:var(--mut);margin-top:4px;max-width:620px;line-height:1.5}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:16px}
+.card h3{font-size:15px;font-weight:700;margin-bottom:2px}.card .hint{color:var(--mut);font-size:12.5px;margin-bottom:14px;line-height:1.5}
+.btn{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:#fff;border-radius:8px;padding:9px 15px;font-weight:600;font-size:13px}
+.btn:hover{background:var(--gl);border-color:#BFE0CB}
+.btn.primary{background:var(--g);border-color:var(--g);color:#fff}.btn.primary:hover{background:#0F642E}
+.btn.danger{color:var(--red);border-color:#F3C4C4}.btn.danger:hover{background:#FEE9E9}
+.btn.small{padding:6px 11px;font-size:12px}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12.5px;font-weight:700;margin-bottom:6px}
+.field input,.field select{width:100%;height:42px;padding:0 12px;border:1px solid #D5DED8;border-radius:8px;background:#fff;outline:0}
+.field input:focus,.field select:focus{border-color:var(--g);box-shadow:0 0 0 3px rgba(22,128,60,.13)}
+.row{display:flex;gap:8px}.row input{flex:1}
+.note{font-size:12px;color:var(--mut);margin-top:5px;line-height:1.45}
+.msg{display:none;margin:12px 0 0;padding:10px 13px;border-radius:8px;font-size:13px;font-weight:600;overflow-wrap:anywhere}
+.msg.show{display:block}.msg.ok{background:var(--gl);color:var(--gd);border:1px solid #C6E5D0}.msg.err{background:#FEE2E2;color:#991B1B;border:1px solid #FECACA}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--mut);padding:9px 10px;border-bottom:1px solid var(--line);background:#F7FAF8;white-space:nowrap}
+td{padding:12px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+td.act{white-space:nowrap}
+.badge{display:inline-block;padding:3px 10px;border-radius:99px;font-size:11.5px;font-weight:700}
+.badge.OWNER{background:var(--gd);color:#fff}.badge.HR{background:var(--gl);color:var(--g)}.badge.MANAGER{background:#EEF1EF;color:var(--k)}
+.you{font-size:11px;color:var(--mut);margin-left:6px}
+.levels{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.level{border:1px solid var(--line);border-radius:10px;padding:13px 14px}
+.level b{display:block;margin-bottom:4px}.level span{font-size:12.5px;color:var(--mut);line-height:1.5}
+.rules{list-style:none;display:grid;grid-template-columns:1fr 1fr;gap:3px 12px;margin:8px 0 0;font-size:12px;color:var(--mut)}
+.rules li::before{content:"\2022";margin-right:6px}.rules li.ok{color:var(--g);font-weight:600}.rules li.ok::before{content:"\2713"}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(15,26,20,.55);z-index:2000;align-items:center;justify-content:center;padding:16px}
+.modal-overlay.show{display:flex}
+.modal-box{width:min(520px,100%);max-height:92vh;background:#fff;border-radius:14px;box-shadow:0 20px 50px rgba(0,0,0,.25);overflow:hidden;display:flex;flex-direction:column}
+.modal-header{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.modal-header h3{font-size:16px}
+.x{border:0;background:transparent;font-size:22px;line-height:1;color:var(--mut)}
+.modal-body{padding:16px 20px;overflow-y:auto}
+.modal-footer{padding:12px 20px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:8px}
+.empty{padding:22px;text-align:center;color:var(--mut)}
+@media(max-width:600px){.who .nm{display:none}.content{padding:18px 16px}.topbar{padding:0 16px 0 56px}.rules{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main class="main">
+  <header class="topbar">
+    <h2>Admin Access</h2>
+    <div class="who"><div class="nm"><b id="adminName" style="font-weight:600">Admin</b><span id="adminRoleLabel">Owner</span></div><div class="avatar" id="avatarLetter">A</div></div>
+  </header>
+
+  <section class="content">
+    <div class="page-head">
+      <div>
+        <h1>Who can use the admin panel</h1>
+        <p id="pageSub">Add your HR or manager, give each person their own password, and remove access any time. Nobody can see another person's password.</p>
+      </div>
+    </div>
+
+    <!-- OWNER: unlock -->
+    <div class="card" id="lockCard" style="display:none">
+      <h3>Confirm it is you</h3>
+      <p class="hint">Enter your own admin password to manage access. It is asked once while this page stays open.</p>
+      <div class="field" style="max-width:360px">
+        <label for="ownerPassword">Your password</label>
+        <div class="row"><input type="password" id="ownerPassword" autocomplete="current-password" placeholder="Your admin password"><button class="btn primary" id="unlockBtn" type="button" onclick="unlock()">Unlock</button></div>
+      </div>
+      <div id="lockMsg" class="msg"></div>
+    </div>
+
+    <!-- OWNER: admin list -->
+    <div class="card" id="listCard" style="display:none">
+      <div class="page-head" style="margin-bottom:10px">
+        <div><h3>People with admin access</h3><p class="hint" style="margin:2px 0 0">The owner can add or remove HR and manager accounts.</p></div>
+        <button class="btn primary" type="button" onclick="openAdd()">+ Add admin</button>
+      </div>
+      <div id="listMsg" class="msg"></div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Added</th><th></th></tr></thead>
+          <tbody id="adminRows"><tr><td colspan="5" class="empty">Loading...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- what each role sees -->
+    <div class="card">
+      <h3>What each role can open</h3>
+      <p class="hint">Menus are simplified for each role so people see only what they need.</p>
+      <div class="levels">
+        <div class="level"><b><span class="badge OWNER">Owner</span></b><span>Everything, including Admin Access. Only the owner can add or remove admins.</span></div>
+        <div class="level"><b><span class="badge HR">HR</span></b><span>Dashboard, Employees, Leave &amp; Attendance, Salary, Monthly Report, Working Days, Shifts, Branches and History.</span></div>
+        <div class="level"><b><span class="badge MANAGER">Manager</span></b><span>Dashboard, Leave &amp; Attendance and Monthly Report only. No salary and no employee editing.</span></div>
+      </div>
+    </div>
+
+    <!-- everyone: change own password -->
+    <div class="card" id="pwCard">
+      <h3>Change my password</h3>
+      <p class="hint">Use a password only you know.</p>
+      <div style="max-width:420px">
+        <div class="field"><label for="curPw">Current password</label><input type="password" id="curPw" autocomplete="current-password"></div>
+        <div class="field"><label for="newPw">New password</label><input type="password" id="newPw" autocomplete="new-password" oninput="paintRules('myRules', this.value, myEmail())">
+          <ul class="rules" id="myRules"><li data-r="len">8+ characters</li><li data-r="upper">Uppercase letter</li><li data-r="lower">Lowercase letter</li><li data-r="digit">A number</li><li data-r="special">Special character</li><li data-r="space">No spaces</li></ul></div>
+        <div class="field"><label for="newPw2">Confirm new password</label><input type="password" id="newPw2" autocomplete="new-password"></div>
+        <button class="btn primary" type="button" onclick="changeMyPassword()">Save password</button>
+        <div id="pwMsg" class="msg"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ADD ADMIN -->
+<div id="addModal" class="modal-overlay" onclick="if(event.target===this)closeAdd()">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="addTitle">
+    <div class="modal-header"><h3 id="addTitle">Add admin</h3><button class="x" type="button" onclick="closeAdd()" aria-label="Close">&times;</button></div>
+    <div class="modal-body">
+      <div class="field"><label for="aName">Name</label><input id="aName" maxlength="60" placeholder="Full name" autocomplete="off"></div>
+      <div class="field"><label for="aEmail">Email</label><input id="aEmail" type="email" placeholder="name@gmail.com" autocomplete="off" oninput="paintRules('aRules', document.getElementById('aPw').value, this.value)"></div>
+      <div class="field"><label for="aRole">Role</label>
+        <select id="aRole"><option value="HR">HR</option><option value="MANAGER">Manager</option></select>
+        <div class="note" id="aRoleNote">HR: everything except Admin Access.</div></div>
+      <div class="field"><label for="aPw">Password for this person</label>
+        <div class="row"><input id="aPw" type="text" autocomplete="new-password" placeholder="Create a strong password" oninput="paintRules('aRules', this.value, document.getElementById('aEmail').value)"><button class="btn" type="button" onclick="generatePassword()">Generate</button></div>
+        <ul class="rules" id="aRules"><li data-r="len">8+ characters</li><li data-r="upper">Uppercase letter</li><li data-r="lower">Lowercase letter</li><li data-r="digit">A number</li><li data-r="special">Special character</li><li data-r="space">No spaces</li></ul>
+        <div class="note">Tell the person this password yourself. After saving it cannot be seen again, only reset by removing and adding the person, or by the person changing it.</div></div>
+      <div id="addMsg" class="msg"></div>
+    </div>
+    <div class="modal-footer"><button class="btn" type="button" onclick="closeAdd()">Cancel</button><button class="btn primary" id="addBtn" type="button" onclick="saveAdmin()">Add admin</button></div>
+  </div>
+</div>
+
+<script>
+const API_BASE_URL = (location.hostname === "localhost" || location.hostname === "127.0.0.1")
+  ? "http://localhost:8080"
+  : "https://attendance-management-d5h6.onrender.com";
+
+const myEmailValue = () => (localStorage.getItem("adminEmail") || "").trim();
+const myRole = () => (localStorage.getItem("adminRole") || "OWNER").toUpperCase();
+function myEmail() { return myEmailValue(); }
+
+let ownerPassword = "";
+let rows = [];
+
+function $(id) { return document.getElementById(id); }
+function esc(v) { return String(v == null ? "" : v).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+
+function show(id, text, ok) {
+  const box = $(id);
+  box.textContent = text;
+  box.className = "msg show " + (ok ? "ok" : "err");
+}
+function hide(id) { $(id).className = "msg"; }
+
+async function call(path, body) {
+  const response = await fetch(API_BASE_URL + path, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  const text = await response.text();
+  if (!response.ok) {
+    let message = text;
+    try { const j = JSON.parse(text); message = j.message || j.error || text; } catch (e) { }
+    throw new Error(message || ("Request failed (" + response.status + ")"));
+  }
+  try { return JSON.parse(text); } catch (e) { return text; }
+}
+
+/* ---------- password rules (same as the server) ---------- */
+function ruleStatus(p) {
+  return { len: p.length >= 8, upper: /[A-Z]/.test(p), lower: /[a-z]/.test(p), digit: /[0-9]/.test(p), special: /[^A-Za-z0-9\s]/.test(p), space: p.length > 0 && !/\s/.test(p) };
+}
+function paintRules(listId, p, email) {
+  const s = ruleStatus(p || "");
+  document.querySelectorAll("#" + listId + " li").forEach(li => li.classList.toggle("ok", !!s[li.dataset.r]));
+}
+function passwordProblem(p, email) {
+  const s = ruleStatus(p || "");
+  if (!Object.values(s).every(Boolean)) return "Password needs 8+ characters with an uppercase letter, a lowercase letter, a number and a special character, and no spaces.";
+  const local = String(email || "").split("@")[0].toLowerCase();
+  if (local.length >= 4 && p.toLowerCase().includes(local)) return "Password must not contain the email name.";
+  return "";
+}
+function generatePassword() {
+  const pick = set => { const b = new Uint32Array(1); crypto.getRandomValues(b); return set.charAt(b[0] % set.length); };
+  const U = "ABCDEFGHJKLMNPQRSTUVWXYZ", L = "abcdefghijkmnpqrstuvwxyz", D = "23456789", S = "@#$!%*?";
+  const out = [pick(U), pick(U), pick(L), pick(L), pick(L), pick(D), pick(D), pick(S)];
+  while (out.length < 12) out.push(pick(U + L + D));
+  for (let i = out.length - 1; i > 0; i--) { const b = new Uint32Array(1); crypto.getRandomValues(b); const j = b[0] % (i + 1); [out[i], out[j]] = [out[j], out[i]]; }
+  $("aPw").value = out.join("");
+  paintRules("aRules", $("aPw").value, $("aEmail").value);
+}
+
+/* ---------- owner: unlock + list ---------- */
+async function unlock() {
+  const pw = $("ownerPassword").value;
+  if (!pw) { show("lockMsg", "Enter your password.", false); return; }
+  $("unlockBtn").disabled = true;
+  try {
+    ownerPassword = pw;
+    await loadAdmins();
+    $("lockCard").style.display = "none";
+    $("listCard").style.display = "block";
+    $("ownerPassword").value = "";
+    hide("lockMsg");
+  } catch (e) {
+    ownerPassword = "";
+    show("lockMsg", e.message, false);
+  } finally {
+    $("unlockBtn").disabled = false;
+  }
+}
+
+async function loadAdmins() {
+  rows = await call("/admin/admins/list", { adminEmail: myEmailValue(), adminPassword: ownerPassword });
+  renderRows();
+}
+
+function renderRows() {
+  if (!rows.length) { $("adminRows").innerHTML = '<tr><td colspan="5" class="empty">No admins yet.</td></tr>'; return; }
+  $("adminRows").innerHTML = rows.map(a => {
+    const owner = a.role === "OWNER";
+    const added = a.createdBy ? (esc(a.createdAt || "") + "<br><span class='note'>by " + esc(a.createdBy) + "</span>") : "<span class='note'>Original owner</span>";
+    let actions = "";
+    if (!owner) {
+      actions = '<select class="btn small" onchange="changeRole(' + a.id + ', this.value)" aria-label="Change role">' +
+        '<option value="HR"' + (a.role === "HR" ? " selected" : "") + '>HR</option>' +
+        '<option value="MANAGER"' + (a.role === "MANAGER" ? " selected" : "") + '>Manager</option></select> ' +
+        '<button class="btn small danger" type="button" onclick="removeAdmin(' + a.id + ')">Remove</button>';
+    }
+    return "<tr><td><b>" + esc(a.name) + "</b>" + (a.you ? '<span class="you">(you)</span>' : "") + "</td><td>" + esc(a.email) +
+      '</td><td><span class="badge ' + esc(a.role) + '">' + esc(a.role === "HR" ? "HR" : a.role.charAt(0) + a.role.slice(1).toLowerCase()) + "</span></td><td>" + added + '</td><td class="act">' + actions + "</td></tr>";
+  }).join("");
+}
+
+async function changeRole(id, role) {
+  hide("listMsg");
+  try {
+    await call("/admin/admins/" + id + "/role", { adminEmail: myEmailValue(), adminPassword: ownerPassword, role: role });
+    await loadAdmins();
+    show("listMsg", "Role updated.", true);
+  } catch (e) { show("listMsg", e.message, false); await loadAdmins().catch(() => { }); }
+}
+
+async function removeAdmin(id) {
+  const a = rows.find(r => r.id === id);
+  if (!a || !confirm("Remove admin access for " + a.name + "?\nThis person will not be able to sign in to the admin panel any more.")) return;
+  hide("listMsg");
+  try {
+    await call("/admin/admins/" + id + "/remove", { adminEmail: myEmailValue(), adminPassword: ownerPassword });
+    await loadAdmins();
+    show("listMsg", a.name + " no longer has admin access.", true);
+  } catch (e) { show("listMsg", e.message, false); }
+}
+
+/* ---------- add admin ---------- */
+function openAdd() {
+  ["aName", "aEmail", "aPw"].forEach(id => $(id).value = "");
+  $("aRole").value = "HR"; roleNote(); paintRules("aRules", "", "");
+  hide("addMsg");
+  $("addModal").classList.add("show");
+  $("aName").focus();
+}
+function closeAdd() { $("addModal").classList.remove("show"); }
+function roleNote() {
+  $("aRoleNote").textContent = $("aRole").value === "HR"
+    ? "HR: everything except Admin Access."
+    : "Manager: Dashboard, Leave & Attendance and Monthly Report only.";
+}
+$("aRole").addEventListener("change", roleNote);
+
+async function saveAdmin() {
+  const name = $("aName").value.trim(), email = $("aEmail").value.trim(), pw = $("aPw").value, role = $("aRole").value;
+  if (name.length < 2) return show("addMsg", "Enter the person's name.", false);
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return show("addMsg", "Enter a valid email address (example: name@gmail.com).", false);
+  const problem = passwordProblem(pw, email);
+  if (problem) return show("addMsg", problem, false);
+  $("addBtn").disabled = true;
+  try {
+    await call("/admin/admins", { adminEmail: myEmailValue(), adminPassword: ownerPassword, name: name, email: email, role: role, password: pw });
+    closeAdd();
+    await loadAdmins();
+    show("listMsg", name + " was added as " + (role === "HR" ? "HR" : "Manager") + ". Share the password with them personally.", true);
+  } catch (e) { show("addMsg", e.message, false); }
+  finally { $("addBtn").disabled = false; }
+}
+
+/* ---------- everyone: change my password ---------- */
+async function changeMyPassword() {
+  const cur = $("curPw").value, next = $("newPw").value, again = $("newPw2").value;
+  if (!cur) return show("pwMsg", "Enter your current password.", false);
+  const problem = passwordProblem(next, myEmailValue());
+  if (problem) return show("pwMsg", problem, false);
+  if (next !== again) return show("pwMsg", "New password and confirm password do not match.", false);
+  try {
+    await call("/admin/admins/change-password", { email: myEmailValue(), currentPassword: cur, newPassword: next });
+    ["curPw", "newPw", "newPw2"].forEach(id => $(id).value = "");
+    paintRules("myRules", "", "");
+    ownerPassword = "";
+    show("pwMsg", "Password changed. Use the new password next time you sign in.", true);
+  } catch (e) { show("pwMsg", e.message, false); }
+}
+
+/* ---------- start ---------- */
+(function init() {
+  const name = localStorage.getItem("adminName") || "Admin";
+  $("adminName").textContent = name;
+  $("avatarLetter").textContent = name.trim().charAt(0).toUpperCase() || "A";
+  const role = myRole();
+  $("adminRoleLabel").textContent = role === "HR" ? "HR" : role.charAt(0) + role.slice(1).toLowerCase();
+  if (role === "OWNER") {
+    $("lockCard").style.display = "block";
+  } else {
+    $("pageSub").textContent = "Here you can change your own password.";
+  }
+  $("ownerPassword").addEventListener("keydown", e => { if (e.key === "Enter") unlock(); });
+})();
+</script>
+<script src="/admin/admin-sidebar.js?v=5" defer></script>
+</body>
+</html>

@@ -22,19 +22,25 @@ public class AdminEmployeeController {
         private final AdminActionHistoryRepository historyRepository;
         private final BranchRepository branchRepository;
         private final InternshipStipendRepository stipendRepository;
+        private final ShiftAssignmentRepository shiftAssignmentRepository;
+        private final ShiftSettingRepository shiftSettingRepository;
 
         public AdminEmployeeController(
                         EmployeeRepository employeeRepository,
                         AdminRepository adminRepository,
                         AdminActionHistoryRepository historyRepository,
                         BranchRepository branchRepository,
-                        InternshipStipendRepository stipendRepository) {
+                        InternshipStipendRepository stipendRepository,
+                        ShiftAssignmentRepository shiftAssignmentRepository,
+                        ShiftSettingRepository shiftSettingRepository) {
 
                 this.employeeRepository = employeeRepository;
                 this.adminRepository = adminRepository;
                 this.historyRepository = historyRepository;
                 this.branchRepository = branchRepository;
                 this.stipendRepository = stipendRepository;
+                this.shiftAssignmentRepository = shiftAssignmentRepository;
+                this.shiftSettingRepository = shiftSettingRepository;
         }
 
         // =====================================================
@@ -156,6 +162,24 @@ public class AdminEmployeeController {
 
                 applyEmploymentDetails(employee, request);
 
+                // FIRST PASSWORD CREATED BY THE ADMIN (optional)
+
+                String initialPassword = request.getInitialPassword();
+
+                if (initialPassword != null && !initialPassword.isEmpty()) {
+
+                        String passwordError = InputValidator.passwordError(
+                                        initialPassword, request.getEmail());
+
+                        if (passwordError != null) {
+                                throw new ResponseStatusException(
+                                                HttpStatus.BAD_REQUEST, passwordError);
+                        }
+
+                        employee.setPassword(PasswordUtil.hash(initialPassword));
+                        employee.setPasswordChangePending(true);
+                }
+
                 employee.setActive(true);
 
                 // REASON + ADMIN + DATE/TIME ON THE EMPLOYEE ROW
@@ -175,6 +199,8 @@ public class AdminEmployeeController {
                 // MONTHLY STIPEND ROWS (INTERNS ONLY)
 
                 saveInternshipStipends(savedEmployee, request);
+
+                applyShift(savedEmployee, request, true);
 
                 saveHistory(
                                 admin,
@@ -290,6 +316,8 @@ public class AdminEmployeeController {
                 // MONTHLY STIPEND ROWS (INTERNS ONLY)
 
                 saveInternshipStipends(updatedEmployee, request);
+
+                applyShift(updatedEmployee, request, false);
 
                 saveHistory(
                                 admin,
@@ -720,8 +748,7 @@ public class AdminEmployeeController {
         // GENERATE EMPLOYEE CODE
         // =====================================================
 
-        // INTERN -> INT, MANAGER (manager / director / head level) -> MGR, others ->
-        // EMP
+        // INTERN -> INT, MANAGER (manager / director / head level) -> MGR, others -> EMP
         private String personTypeOf(String designation) {
 
                 String value = designation == null ? "" : designation.trim();
@@ -877,6 +904,50 @@ public class AdminEmployeeController {
         // =====================================================
         // RESPONSE CONVERTER
         // =====================================================
+
+        // =====================================================
+        // SHIFT (new employee = GENERAL unless admin picks another)
+        // =====================================================
+
+        private void applyShift(
+                        Employee employee,
+                        AdminEmployeeActionRequest request,
+                        boolean isNew) {
+
+                String shiftType = request.getShiftType() == null
+                                ? ""
+                                : request.getShiftType().trim().toUpperCase();
+
+                if (shiftType.isEmpty()) {
+                        if (!isNew) {
+                                return; // edit without a shift change keeps the current shift
+                        }
+                        shiftType = "GENERAL";
+                }
+
+                if (shiftSettingRepository.findByShiftType(shiftType).isEmpty()) {
+                        throw new ResponseStatusException(
+                                        HttpStatus.BAD_REQUEST,
+                                        "Shift '" + shiftType + "' does not exist. Create it in Shift Settings first.");
+                }
+
+                ShiftAssignment assignment = shiftAssignmentRepository
+                                .findByAssignmentTypeAndEmployeeId("EMPLOYEE", employee.getId())
+                                .orElseGet(ShiftAssignment::new);
+
+                assignment.setAssignmentType("EMPLOYEE");
+                assignment.setEmployeeId(employee.getId());
+                assignment.setRole(null);
+                assignment.setShiftType(shiftType);
+
+                if (assignment.getCreatedAt() == null) {
+                        assignment.setCreatedAt(java.time.LocalDateTime.now());
+                }
+
+                assignment.setUpdatedAt(java.time.LocalDateTime.now());
+
+                shiftAssignmentRepository.save(assignment);
+        }
 
         private AdminEmployeeResponse convertToResponse(Employee employee) {
 

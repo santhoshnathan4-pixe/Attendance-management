@@ -7,8 +7,7 @@ import java.time.LocalDateTime;
 
 /**
  * Salary period set by the admin for ONE pay month.
- * Example: pay month October 2026 = 25-09-2026 to 25-10-2026 (both dates
- * included).
+ * Example: pay month October 2026 = 25-09-2026 to 25-10-2026 (both dates included).
  * If no row exists for a month, the normal calendar month is used.
  */
 @Entity

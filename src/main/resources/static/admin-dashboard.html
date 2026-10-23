@@ -82,7 +82,102 @@ button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer}
 .review-summary{background:var(--gl);border:1px solid #C6E5D0;border-radius:8px;padding:12px;margin-bottom:16px}
 .review-summary p{font-size:13px;color:#33433A;margin:5px 0;overflow-wrap:anywhere}.review-summary strong{color:var(--gd)}
 @media(max-width:900px){.grid2{grid-template-columns:1fr}.content{padding:18px 16px}.topbar{padding:0 16px 0 60px}}
+
+/* company at a glance */
+.sec-title{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:26px 0 12px;flex-wrap:wrap}
+.sec-title h3{font-size:16px;font-weight:700}.sec-title p{color:var(--mut);font-size:12px}
+.glance{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.gcard{background:#fff;border:1px solid var(--line);border-left:4px solid var(--k);border-radius:12px;padding:15px 16px;cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:6px;transition:border-color .15s,box-shadow .15s}
+.gcard:hover,.gcard:focus{box-shadow:0 4px 14px rgba(22,128,60,.12);outline:0;border-color:var(--g)}
+.gcard.ok{border-left-color:var(--g)}.gcard.warn{border-left-color:var(--red)}.gcard.info{border-left-color:var(--k)}
+.gtop{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.gtitle{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--mut)}
+.gchip{font-size:11px;font-weight:700;padding:2px 9px;border-radius:99px}
+.gcard.ok .gchip{background:var(--gl);color:var(--g)}.gcard.warn .gchip{background:#FEE9E9;color:var(--red)}.gcard.info .gchip{background:#EEF1EF;color:var(--k)}
+.ghead{font-size:15px;font-weight:700;line-height:1.35}
+.gdet{font-size:12.5px;color:var(--mut);line-height:1.45}
+.gmore{margin-top:auto;padding-top:6px;font-size:12px;font-weight:600;color:var(--g);display:flex;align-items:center;gap:5px}
+.gtable{width:100%;border-collapse:collapse;font-size:13px}
+.gtable th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--mut);padding:8px 10px;border-bottom:1px solid var(--line);background:#F7FAF8;position:sticky;top:0}
+.gtable td{padding:10px;border-bottom:1px solid var(--line);overflow-wrap:anywhere}
+.gempty{padding:26px 10px;text-align:center;color:var(--mut)}
+.gwrap{overflow-x:auto}a.btn{color:var(--k)}
 @media(max-width:600px){.who .nm{display:none}}
+
+/* ===== professional colourful look (CRM style) ===== */
+:root{--bg:#F3F6FB;--ink:#0F172A;--soft:#64748B;--blue:#2563EB;--amber:#D97706;--teal:#0891B2;--violet:#7C3AED}
+body{background:var(--bg);color:var(--ink)}
+.topbar{display:none}
+.content{max-width:1440px;padding:22px 28px}
+.hello{background:#fff;border:1px solid #E6ECF4;border-radius:16px;padding:22px 26px;box-shadow:0 1px 3px rgba(15,23,42,.05);align-items:center;margin-bottom:18px}
+.hello h1{font-size:28px;font-weight:800;color:var(--ink);letter-spacing:-.3px}
+.hello h1 .gname{color:var(--g)}
+.hello p{color:var(--soft);font-size:13px;margin-top:6px}
+.datepill{display:flex;align-items:center;gap:9px;background:#F3F6FB;border:1px solid #E1E8F2;border-radius:12px;padding:10px 16px;color:var(--soft);font-size:13px;flex-wrap:wrap}
+.datepill b{color:var(--ink);font-weight:700}.datepill i{width:1px;height:16px;background:#D5DEEA}.datepill .ic{width:16px;height:16px;color:var(--blue)}
+.hello .btn{display:none}
+.stats{grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px}
+.stat{border:1px solid #E6ECF4;border-radius:16px;padding:18px 20px 16px;box-shadow:0 1px 3px rgba(15,23,42,.05);position:relative;overflow:hidden}
+.stat::after{content:"";position:absolute;left:20px;right:20px;bottom:0;height:3px;border-radius:3px 3px 0 0;background:var(--acc,var(--g))}
+.stat:hover,.stat:focus{transform:translateY(-2px);box-shadow:0 10px 24px rgba(15,23,42,.1);border-color:var(--acc,var(--g))}
+.stat-top{font-size:11px;letter-spacing:.04em;gap:8px;text-transform:uppercase;font-weight:700;color:var(--soft)}
+.stat-ic{width:38px;height:38px;border-radius:11px;background:var(--tint,#E8F5EC)!important;color:var(--acc,var(--g))!important}
+.stat-val{font-size:34px;font-weight:800;color:var(--ink);margin:12px 0 8px;letter-spacing:-.5px}
+.stat-sub{font-size:12.5px;color:var(--soft);margin-bottom:8px}
+.stat:nth-child(1){--acc:var(--blue);--tint:#E6EEFF}
+.stat:nth-child(2){--acc:#16A34A;--tint:#E3F6EA}
+.stat:nth-child(3){--acc:var(--amber);--tint:#FEF1DC}
+.stat:nth-child(4){--acc:#DC2626;--tint:#FDE8E8}
+.stat:nth-child(5){--acc:var(--violet);--tint:#EFE7FE}
+.stat:nth-child(6){--acc:var(--teal);--tint:#DDF3F8}
+.card,.gcard{border:1px solid #E6ECF4;border-radius:16px;box-shadow:0 1px 3px rgba(15,23,42,.05)}
+.card h3,.sec-title h3{font-size:17px;font-weight:800;color:var(--ink)}
+.card .hint,.sec-title p,.gdet{color:var(--soft)}
+.sec-title h3{display:flex;align-items:center;gap:10px}.sec-title h3::before{content:"";width:5px;height:20px;border-radius:3px;background:var(--g)}
+.gcard{border-left-width:1px;border-top:4px solid var(--k)}
+.gcard.ok{border-top-color:#16A34A}.gcard.warn{border-top-color:#DC2626}.gcard.info{border-top-color:var(--blue)}
+.gcard.info .gchip{background:#E6EEFF;color:var(--blue)}
+.gtitle{color:var(--soft);font-size:11.5px}.ghead{font-size:16px;color:var(--ink)}
+.gmore{color:var(--g)}
+.attn-row b{background:var(--ink)}
+@media(max-width:900px){.hello h1{font-size:22px}.content{padding:16px}}
+
+/* ===== MD dashboard: charts ===== */
+.stat-sub{display:none}
+.stat{padding:16px 18px 18px}.stat-val{margin:10px 0 0;font-size:36px}
+.row{display:grid;gap:16px;margin-top:16px}
+.r-a{grid-template-columns:2fr 1fr}.r-b{grid-template-columns:1.2fr 1fr 1fr}
+.card{padding:18px 20px}
+.ch{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.card .hint{margin:2px 0 0!important;font-size:12px}
+.lg{display:flex;gap:14px;font-size:12px;color:var(--soft);flex-wrap:wrap}.lg i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:6px}
+.chart-box{width:100%}.chart-box svg{width:100%;height:auto;display:block}
+.donut-wrap{display:flex;align-items:center;gap:18px;flex-wrap:wrap;justify-content:center}
+.donut-wrap svg{width:150px;height:150px;flex-shrink:0}
+.dlg{display:flex;flex-direction:column;gap:9px;font-size:13px;color:var(--soft);min-width:120px}
+.dlg div{display:flex;align-items:center;gap:8px}.dlg i{width:10px;height:10px;border-radius:3px}.dlg b{margin-left:auto;color:var(--ink);padding-left:14px}
+.bars{display:flex;flex-direction:column;gap:11px}
+.brow{display:grid;grid-template-columns:118px 1fr 28px;align-items:center;gap:10px;font-size:13px}
+.brow span:first-child{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#334155;font-weight:600}
+.btrack{height:10px;background:#EEF2F8;border-radius:99px;overflow:hidden}.btrack i{display:block;height:100%;border-radius:99px}
+.brow b{text-align:right;color:var(--ink)}
+.todo{display:flex;flex-direction:column;gap:10px}
+.todo-row{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:12px;border:1px solid var(--c-b);background:var(--c-bg);text-decoration:none;color:inherit;text-align:left;width:100%;transition:transform .12s,box-shadow .15s}
+.todo-row:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(15,23,42,.08)}
+.t-red{--c:#DC2626;--c-bg:#FFF5F5;--c-b:#F9D2D2}.t-amber{--c:#D97706;--c-bg:#FFFAF0;--c-b:#F7DEB0}.t-violet{--c:#7C3AED;--c-bg:#F8F4FF;--c-b:#DDD0F8}
+.td-ic{width:36px;height:36px;border-radius:10px;background:#fff;color:var(--c);display:grid;place-items:center;flex-shrink:0;border:1px solid var(--c-b)}.td-ic svg{width:18px;height:18px}
+.td-tx{display:flex;flex-direction:column;flex:1}.td-tx b{font-size:13.5px;color:var(--ink)}.td-tx small{font-size:11.5px;color:var(--soft)}
+.td-n{min-width:34px;text-align:center;padding:4px 10px;border-radius:99px;background:var(--c);color:#fff;font-weight:800;font-size:14px}
+.gtiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.gtile{display:flex;align-items:center;gap:12px;text-align:left;background:#fff;border:1px solid #E6ECF4;border-radius:14px;padding:12px 14px;box-shadow:0 1px 3px rgba(15,23,42,.05);cursor:pointer;transition:transform .12s,box-shadow .15s;width:100%}
+.gtile:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(15,23,42,.09)}
+.gtile .gd{width:10px;height:10px;border-radius:50%;flex-shrink:0;background:var(--blue)}
+.gtile.ok .gd{background:#16A34A}.gtile.warn .gd{background:#F59E0B;box-shadow:0 0 0 4px rgba(245,158,11,.2)}
+.gtile span.tx{display:flex;flex-direction:column;min-width:0;flex:1}.gtile b{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--soft)}
+.gtile em{font-style:normal;font-size:13.5px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gtile .ar{color:#94A3B8;font-size:18px}
+@media(max-width:1100px){.r-a,.r-b{grid-template-columns:1fr}}
+@media(max-width:600px){.stats{grid-template-columns:1fr 1fr!important;gap:10px!important}.stat{padding:12px 14px 14px}.stat-val{font-size:28px;margin-top:6px}.stat-top{font-size:10px}.stat-ic{width:30px;height:30px}.hello{padding:16px 18px}}
 </style>
 </head>
 <body>
@@ -93,7 +188,8 @@ button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer}
   </header>
   <section class="content">
     <div class="hello">
-      <div><h1 id="greeting">Welcome</h1><p id="todayDate"></p></div>
+      <div><h1 id="greeting">Welcome</h1><p id="roleLine"></p></div>
+      <div class="datepill"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg><b id="todayDate"></b><i></i><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><b id="todayTime"></b></div>
       <button class="btn" onclick="refreshDashboard()"><svg class="ic " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 15-6.7L21 8M21 3v5h-5M21 12a9 9 0 0 1-15 6.7L3 16M3 21v-5h5"/></svg>Refresh</button>
     </div>
     <div id="dashboardMessage" class="message"></div>
@@ -110,26 +206,58 @@ button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer}
 <div class="stat-val" id="missingCheckOut">0</div><div class="stat-sub">Review requests<svg class="ic " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div><div class="stat" tabindex="0" role="button" onclick="openAttendanceDetails('LEAVE')" onkeydown="handleCardKeydown(event,'LEAVE')">
 <div class="stat-top"><span>Pending Leaves</span><div class="stat-ic k"><svg class="ic " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div></div>
 <div class="stat-val" id="pendingLeaves">0</div><div class="stat-sub">Open leave page<svg class="ic " viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></div></div></div>
-    <div class="grid2">
+    <div class="row r-a">
       <div class="card">
-        <h3>Today's attendance</h3><p class="hint">Share of employees who checked in today</p>
-        <div class="rate"><b id="rateValue">0%</b><span>present</span></div>
-        <div class="bar"><i id="barOnTime"></i><i id="barLate"></i><i id="barAbsent"></i></div>
-        <div class="legend">
-          <span><i class="dot" style="background:var(--g)"></i>On time<b id="lgOnTime">0</b></span>
-          <span><i class="dot" style="background:var(--k)"></i>Late<b id="lgLate">0</b></span>
-          <span><i class="dot" style="background:var(--red)"></i>Absent<b id="lgAbsent">0</b></span>
-        </div>
+        <div class="ch"><div><h3>Attendance, last 7 days</h3><p class="hint">How many people came each day</p></div>
+          <div class="lg"><span><i style="background:#16A34A"></i>On time</span><span><i style="background:#F59E0B"></i>Late</span><span><i style="background:#FCA5A5"></i>Absent</span></div></div>
+        <div id="trendChart" class="chart-box"><div class="gempty">Loading chart...</div></div>
       </div>
       <div class="card">
-        <h3>Needs your attention</h3><p class="hint">Items waiting for an admin action</p>
-        <div class="attn-row" onclick="openAttendanceDetails('LEAVE')"><span>Pending leave requests<small>Approve or reject</small></span><b id="attLeaves">0</b></div>
-        <div class="attn-row" onclick="openAttendanceDetails('MISSING_CHECKOUT')"><span>Missing check-out requests<small>Correct attendance</small></span><b id="attMissing">0</b></div>
-        <div class="attn-row" onclick="openAttendanceDetails('ABSENT')"><span>Absent today<small>Check leave status</small></span><b id="attAbsent">0</b></div>
+        <div class="ch"><div><h3>Today</h3><p class="hint">Who is in the office now</p></div></div>
+        <div class="donut-wrap"><div id="todayDonut"></div>
+          <div class="dlg" id="todayLegend"></div></div>
       </div>
     </div>
+
+    <div class="row r-b">
+      <div class="card">
+        <div class="ch"><div><h3>People by role</h3><p class="hint">Active employees</p></div></div>
+        <div id="roleChart" class="bars"><div class="gempty">Loading...</div></div>
+      </div>
+      <div class="card">
+        <div class="ch"><div><h3>Leave this month</h3><p class="hint">All leave requests</p></div></div>
+        <div class="donut-wrap"><div id="leaveDonut"></div><div class="dlg" id="leaveLegend"></div></div>
+      </div>
+      <div class="card">
+        <div class="ch"><div><h3>Needs your action</h3><p class="hint">Tap to open</p></div></div>
+        <div class="todo">
+          <button type="button" class="todo-row t-red" onclick="openAttendanceDetails('MISSING_CHECKOUT')"><span class="td-ic"><i data-lucide="log-out"></i></span><span class="td-tx"><b>Missing check-out</b><small>Correct attendance</small></span><span class="td-n" id="attMissing">0</span></button>
+          <a class="todo-row t-amber" href="/admin/leave.html"><span class="td-ic"><i data-lucide="calendar-check"></i></span><span class="td-tx"><b>Pending leaves</b><small>Approve or reject</small></span><span class="td-n" id="attLeaves">0</span></a>
+          <button type="button" class="todo-row t-violet" onclick="openAttendanceDetails('ABSENT')"><span class="td-ic"><i data-lucide="user-x"></i></span><span class="td-tx"><b>Absent today</b><small>Check leave status</small></span><span class="td-n" id="attAbsent">0</span></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec-title"><h3>Company alerts</h3><p>Tap a tile to see the full details here</p></div>
+    <div id="glance" class="gtiles"><div class="gdet">Loading...</div></div>
   </section>
 </main>
+
+
+<!-- COMPANY AT A GLANCE: FULL DETAILS -->
+<div id="glanceModal" class="modal-overlay" onclick="if(event.target===this)closeGlance()">
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="glanceTitle">
+    <div class="modal-header">
+      <div><h3 id="glanceTitle">Details</h3><p id="glanceSub"></p></div>
+      <button type="button" class="close-btn" onclick="closeGlance()" aria-label="Close"><i data-lucide="x"></i></button>
+    </div>
+    <div id="glanceBody" class="modal-body"></div>
+    <div class="modal-footer">
+      <a id="glanceLink" class="btn" href="#" style="text-decoration:none">Open module</a>
+      <button type="button" class="btn" onclick="closeGlance()">Close</button>
+    </div>
+  </div>
+</div>
 
 <!-- ATTENDANCE DETAILS MODAL -->
 <div id="attendanceDetailsModal" class="modal-overlay" onclick="handleModalOverlayClick(event)">
@@ -316,6 +444,7 @@ async function loadEmployees() {
         if (!response.ok) throw new Error(await getErrorMessage(response));
 
         employees = await response.json();
+        drawRoles();
         await updateDashboardStats();
     } catch (error) {
         console.error("Load employees error:", error);
@@ -328,7 +457,9 @@ async function loadLeaves() {
         const response = await apiFetch("/admin/leaves");
         if (!response.ok) throw new Error(await getErrorMessage(response));
 
-        updatePendingLeaveCount(await response.json());
+        const leavesData = await response.json();
+        updatePendingLeaveCount(leavesData);
+        drawLeaves(leavesData);
     } catch (error) {
         console.error("Load leaves error:", error);
         showMessage("dashboardMessage", error.message || "Unable to load leaves.", "error");
@@ -396,6 +527,7 @@ function updateDerived() {
         const row = document.getElementById(id)?.closest(".attn-row");
         if (row) row.classList.toggle("zero", num(id) === 0);
     });
+    if (typeof drawTodayDonut === "function") drawTodayDonut();
 }
 function setTxt(id, v) { const e = document.getElementById(id); if (e) e.textContent = v; }
 
@@ -403,14 +535,174 @@ function initHeader() {
     const h = new Date().getHours();
     const g = h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
     const name = localStorage.getItem("adminName") || "Admin";
-    setTxt("greeting", g + ", " + name);
-    setTxt("todayDate", new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" }));
+    var gEl = document.getElementById("greeting");
+    if (gEl) { gEl.textContent = g + ", "; var nEl = document.createElement("span"); nEl.className = "gname"; nEl.textContent = name; gEl.appendChild(nEl); gEl.appendChild(document.createTextNode(" !")); }
+    var roleTxt = ""; try { roleTxt = (localStorage.getItem("adminRole") || "OWNER").toUpperCase(); } catch (e) {}
+    setTxt("roleLine", "Role: " + roleTxt + " \u2022 Overviewing the whole company in one place");
+    function tickClock() {
+      var d = new Date();
+      setTxt("todayDate", d.toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "short", year: "numeric" }));
+      setTxt("todayTime", d.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", hour12: true }));
+    }
+    tickClock(); setInterval(tickClock, 30000);
     setTxt("avatarLetter", name.trim().charAt(0).toUpperCase() || "A");
 }
 
+
+
+/* ===== charts (plain SVG, no library) ===== */
+const C_GREEN = "#16A34A", C_AMBER = "#F59E0B", C_RED = "#FCA5A5", C_BLUE = "#2563EB", C_VIOLET = "#7C3AED", C_TEAL = "#0891B2", C_SLATE = "#CBD5E1";
+
+function donutSvg(parts, centerTop, centerSub) {
+    const total = parts.reduce((s, p) => s + p.v, 0), R = 54, r = 38, cx = 75, cy = 75;
+    let a0 = -Math.PI / 2, out = '<svg viewBox="0 0 150 150" role="img">';
+    if (total === 0) {
+        out += '<circle cx="75" cy="75" r="' + ((R + r) / 2) + '" fill="none" stroke="#E8EDF5" stroke-width="' + (R - r) + '"/>';
+    } else {
+        parts.filter(p => p.v > 0).forEach(p => {
+            const a1 = a0 + (p.v / total) * Math.PI * 2 - (parts.filter(q => q.v > 0).length > 1 ? 0.03 : 0);
+            if (p.v === total) { out += '<circle cx="75" cy="75" r="' + ((R + r) / 2) + '" fill="none" stroke="' + p.c + '" stroke-width="' + (R - r) + '"/>'; }
+            else {
+                const x0 = cx + R * Math.cos(a0), y0 = cy + R * Math.sin(a0), x1 = cx + R * Math.cos(a1), y1 = cy + R * Math.sin(a1);
+                const X0 = cx + r * Math.cos(a1), Y0 = cy + r * Math.sin(a1), X1 = cx + r * Math.cos(a0), Y1 = cy + r * Math.sin(a0);
+                const big = (a1 - a0) > Math.PI ? 1 : 0;
+                out += '<path d="M' + x0 + ' ' + y0 + ' A' + R + ' ' + R + ' 0 ' + big + ' 1 ' + x1 + ' ' + y1 + ' L' + X0 + ' ' + Y0 + ' A' + r + ' ' + r + ' 0 ' + big + ' 0 ' + X1 + ' ' + Y1 + ' Z" fill="' + p.c + '"/>';
+            }
+            a0 += (p.v / total) * Math.PI * 2;
+        });
+    }
+    out += '<text x="75" y="78" text-anchor="middle" font-size="24" font-weight="800" fill="#0F172A">' + centerTop + '</text>' +
+           '<text x="75" y="96" text-anchor="middle" font-size="10.5" fill="#64748B">' + centerSub + '</text></svg>';
+    return out;
+}
+function legendHtml(parts) { return parts.map(p => '<div><i style="background:' + p.c + '"></i>' + p.t + '<b>' + p.v + '</b></div>').join(""); }
+
+function drawTodayDonut() {
+    const box = document.getElementById("todayDonut"); if (!box) return;
+    const total = num("totalEmployees"), present = num("presentToday"), late = num("lateToday"), absent = num("absentToday");
+    const onTime = Math.max(0, present - late);
+    const parts = [{ t: "On time", v: onTime, c: C_GREEN }, { t: "Late", v: late, c: C_AMBER }, { t: "Absent", v: absent, c: C_RED }];
+    box.innerHTML = donutSvg(parts, total ? Math.round(present / total * 100) + "%" : "0%", "present");
+    document.getElementById("todayLegend").innerHTML = legendHtml(parts);
+}
+
+async function loadTrend() {
+    const box = document.getElementById("trendChart"); if (!box) return;
+    try {
+        const response = await apiFetch("/admin/dashboard/trend?days=7");
+        if (!response.ok) throw new Error("Server error " + response.status);
+        drawTrend(await response.json());
+    } catch (e) { box.innerHTML = '<div class="gempty">Chart is not available yet. Please update the server and refresh.</div>'; }
+}
+function drawTrend(rows) {
+    const box = document.getElementById("trendChart");
+    if (!Array.isArray(rows) || !rows.length) { box.innerHTML = '<div class="gempty">No attendance yet.</div>'; return; }
+    const W = 640, H = 230, padL = 30, padB = 30, padT = 16, innerH = H - padB - padT, bw = Math.min(46, (W - padL) / rows.length * 0.55);
+    const max = Math.max(1, ...rows.map(r => Math.max(r.total || 0, r.present || 0)));
+    const step = (W - padL) / rows.length;
+    let s = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Attendance in the last 7 days">';
+    for (let g = 0; g <= 4; g++) {
+        const y = padT + innerH - (innerH * g / 4), val = Math.round(max * g / 4);
+        s += '<line x1="' + padL + '" x2="' + W + '" y1="' + y + '" y2="' + y + '" stroke="#EEF2F8"/><text x="' + (padL - 6) + '" y="' + (y + 4) + '" text-anchor="end" font-size="10.5" fill="#94A3B8">' + val + '</text>';
+    }
+    rows.forEach((r, i) => {
+        const x = padL + i * step + (step - bw) / 2, total = r.total || 0, present = r.present || 0, late = Math.min(r.late || 0, present), onTime = present - late;
+        const hOn = innerH * onTime / max, hLate = innerH * late / max;
+        const off = present === 0;
+        const hAbs = off ? 0 : innerH * Math.max(0, total - present) / max;
+        let y = padT + innerH;
+        if (!off) {
+            s += '<rect x="' + x + '" y="' + (y - hOn) + '" width="' + bw + '" height="' + hOn + '" rx="4" fill="' + C_GREEN + '"/>'; y -= hOn;
+            if (late) { s += '<rect x="' + x + '" y="' + (y - hLate) + '" width="' + bw + '" height="' + hLate + '" fill="' + C_AMBER + '"/>'; y -= hLate; }
+            if (hAbs) { s += '<rect x="' + x + '" y="' + (y - hAbs) + '" width="' + bw + '" height="' + hAbs + '" rx="4" fill="' + C_RED + '"/>'; }
+            s += '<text x="' + (x + bw / 2) + '" y="' + (padT + innerH - hOn - hLate - hAbs - 6) + '" text-anchor="middle" font-size="11.5" font-weight="700" fill="#0F172A">' + present + '</text>';
+        } else {
+            s += '<text x="' + (x + bw / 2) + '" y="' + (padT + innerH - 8) + '" text-anchor="middle" font-size="10.5" fill="#94A3B8">Off</text>';
+        }
+        s += '<text x="' + (x + bw / 2) + '" y="' + (H - 9) + '" text-anchor="middle" font-size="11" fill="#64748B">' + escapeHtml(r.label || "") + '</text>';
+    });
+    box.innerHTML = s + '</svg>';
+}
+
+function drawRoles() {
+    const box = document.getElementById("roleChart"); if (!box) return;
+    const counts = {};
+    (employees || []).forEach(e => { const k = String(e.role || "Other").replace(/_/g, " ").toLowerCase().replace(/\b\w/g, c => c.toUpperCase()); counts[k] = (counts[k] || 0) + 1; });
+    const list = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 6);
+    if (!list.length) { box.innerHTML = '<div class="gempty">No employees yet.</div>'; return; }
+    const max = list[0][1], cols = [C_BLUE, C_GREEN, C_VIOLET, C_AMBER, C_TEAL, "#EC4899"];
+    box.innerHTML = list.map(([k, v], i) => '<div class="brow"><span title="' + escapeHtml(k) + '">' + escapeHtml(k) + '</span><div class="btrack"><i style="width:' + Math.max(6, v / max * 100) + '%;background:' + cols[i % cols.length] + '"></i></div><b>' + v + '</b></div>').join("");
+}
+
+function drawLeaves(leaves) {
+    const box = document.getElementById("leaveDonut"); if (!box) return;
+    const now = new Date(), ym = now.getFullYear() + "-" + String(now.getMonth() + 1).padStart(2, "0");
+    const month = (leaves || []).filter(l => String(l.leaveDate || l.startDate || "").slice(0, 7) === ym);
+    const cnt = s => month.filter(l => String(l.status || "").toUpperCase() === s).length;
+    const parts = [{ t: "Approved", v: cnt("APPROVED"), c: C_GREEN }, { t: "Pending", v: cnt("PENDING"), c: C_AMBER }, { t: "Rejected", v: cnt("REJECTED") + cnt("CANCELLED"), c: C_RED }];
+    box.innerHTML = donutSvg(parts, String(month.length), "requests");
+    document.getElementById("leaveLegend").innerHTML = legendHtml(parts);
+}
+
+/* ===== Company at a glance ===== */
+let glanceData = [];
+
+const GLANCE_CHIP = { ok: "All good", warn: "Needs attention", info: "Info" };
+
+async function loadGlance() {
+    const box = document.getElementById("glance");
+    if (!box) return;
+    try {
+        const response = await apiFetch("/admin/dashboard/overview");
+        if (!response.ok) throw new Error("Server error " + response.status);
+        glanceData = await response.json();
+        box.innerHTML = glanceData.map((m, i) =>
+            '<button type="button" class="gtile ' + escapeHtml(m.tone) + '" onclick="openGlance(' + i + ')">' +
+            '<span class="gd"></span><span class="tx"><b>' + escapeHtml(m.title) + '</b><em title="' + escapeHtml(m.headline) + '">' + escapeHtml(m.headline) + '</em></span><span class="ar">&rsaquo;</span></button>'
+        ).join("") || '<div class="gdet">No summary available.</div>';
+    } catch (error) {
+        box.innerHTML = '<div class="gdet">Could not load the summary. Press Refresh to try again.</div>';
+    }
+}
+
+function openGlance(index) {
+    const m = glanceData[index];
+    if (!m) return;
+    setText("glanceTitle", m.title);
+    setText("glanceSub", m.headline);
+    const body = document.getElementById("glanceBody");
+    if (!m.rows || m.rows.length === 0) {
+        body.innerHTML = '<div class="gempty">' + escapeHtml(m.empty || "Nothing to show.") + '</div>';
+    } else {
+        body.innerHTML = '<p class="gdet" style="margin-bottom:12px">' + escapeHtml(m.detail) + '</p>' +
+            '<div class="gwrap"><table class="gtable"><thead><tr>' +
+            m.columns.map(c => '<th>' + escapeHtml(c) + '</th>').join("") + '</tr></thead><tbody>' +
+            m.rows.map(r => '<tr>' + r.map(c => '<td>' + escapeHtml(c) + '</td>').join("") + '</tr>').join("") +
+            '</tbody></table></div>';
+    }
+    const link = document.getElementById("glanceLink");
+    if (m.link) {
+        link.href = m.link;
+        link.textContent = m.linkLabel || "Open module";
+        link.style.display = "";
+    } else {
+        link.style.display = "none";
+    }
+    document.getElementById("glanceModal").classList.add("show");
+    refreshIcons();
+}
+
+function closeGlance() {
+    document.getElementById("glanceModal")?.classList.remove("show");
+}
+
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeGlance(); });
+
 function refreshDashboard() {
+    loadTrend();
     loadEmployees();
     loadLeaves();
+    loadGlance();
 }
 
 async function openAttendanceDetails(type) {
@@ -974,13 +1266,15 @@ document.addEventListener("DOMContentLoaded", () => {
     refreshIcons();
     initHeader();
     loadAdminInfo();
+    loadTrend();
     loadEmployees();
     loadLeaves();
+    loadGlance();
 });
 
 </script>
 
 <script src="end-date-alert.js"></script>
-<script src="/admin/Admin-Sidebar.js" defer></script>
+<script src="/admin/admin-sidebar.js?v=7" defer></script>
 </body>
 </html>

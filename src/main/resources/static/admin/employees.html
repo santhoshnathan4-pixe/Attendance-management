@@ -102,6 +102,37 @@ tr:hover td{background:#F7FAF8}
 .combo-item:hover,.combo-item.hl{background:var(--gl);color:var(--gd)}
 .combo-add{color:var(--g);font-weight:600;border-top:1px solid var(--line)}
 .combo-empty{padding:10px;font-size:13px;color:var(--mut)}
+
+/* ===== colourful professional look ===== */
+:root{--bg:#F3F6FB;--blue:#2563EB;--amber:#D97706;--violet:#7C3AED;--teal:#0891B2}
+body{background:var(--bg)}
+.table-card,.modal-box{border-radius:16px}
+.modal-box{padding:0;overflow-x:hidden}
+.modal-box>.modal-header{margin:0;padding:18px 24px;border:0;background:linear-gradient(135deg,#0B2E1A,#16803C);color:#fff}
+.modal-box>.modal-header h2{color:#fff;font-size:19px}
+.modal-box>.modal-header .close-btn{background:rgba(255,255,255,.18);color:#fff;border:0;border-radius:8px}
+.modal-box>.modal-header .close-btn:hover{background:rgba(255,255,255,.3)}
+.modal-box>form,.modal-box>div:not(.modal-header):not(.modal-footer){padding-left:24px;padding-right:24px}
+.modal-box>.modal-header+*{padding-top:20px}
+.modal-box>.modal-footer{position:sticky;bottom:0;z-index:5;margin:0;padding:16px 24px;background:#F7F9FC;border-top:1px solid #E6ECF4}
+.form-group label{font-size:11.5px;letter-spacing:.05em;text-transform:uppercase;color:#475569}
+.form-group input,.form-group select{border:1.5px solid #D5DEEA;border-radius:10px;background:#FBFCFE}
+.form-group input:hover,.form-group select:hover{border-color:#A9B8CC}
+.form-group input:focus,.form-group select:focus{border-color:var(--g);background:#fff;box-shadow:0 0 0 4px rgba(22,128,60,.14)}
+.seg{background:#E9EEF6;border-radius:11px}
+.seg button.on{background:var(--g);color:#fff;box-shadow:0 2px 6px rgba(22,128,60,.35)}
+#segKind button[data-v="INTERN"].on{background:var(--amber);box-shadow:0 2px 6px rgba(217,119,6,.35)}
+#segKind button[data-v="MANAGER"].on{background:var(--violet);box-shadow:0 2px 6px rgba(124,58,237,.35)}
+#employeeShift{border-color:#BFD3FA;background:#EEF4FF;color:#1E40AF;font-weight:600}
+.combo-list{border:1.5px solid #BFE0CB;border-radius:12px;box-shadow:0 12px 28px rgba(15,23,42,.15);padding:4px}
+.combo-item{padding:9px 12px}.combo-item:hover,.combo-item.hl{background:var(--g);color:#fff}
+.combo-add{background:#E8F5EC;margin-top:4px}
+.btn-primary{background:linear-gradient(135deg,#16803C,#0F6A30);box-shadow:0 2px 8px rgba(22,128,60,.3)}
+.btn-secondary{border-color:#D5DEEA}
+.btn-danger{background:#DC2626}
+th{background:#EEF3FA;color:#475569}
+tbody tr:hover{background:#F5F9FF}
+.table-card{border-color:#E6ECF4;box-shadow:0 1px 3px rgba(15,23,42,.05)}
 </style>
 
 
@@ -148,8 +179,8 @@ tr:hover td{background:#F7FAF8}
 <div id="employeeEmailError" class="email-error-message"></div> </div> <div class="form-group"> <label>Contact Number</label> <input type="tel" id="employeeContact" placeholder="10-digit mobile number" maxlength="10" inputmode="numeric" autocomplete="off" oninput="validateEmployeeContact(false)" onblur="validateEmployeeContact(true)"> <div id="employeeContactError" class="email-error-message"></div> </div> <div class="form-group">
 <label>Role</label> <select id="employeeRole" onchange="handleEmployeeRoleChange()"> <option value="">Select Role</option> </select> </div> <div class="form-group"> <label>Technology / Tool <span style="color:#6B7A70;font-weight:400">(optional)</span></label>
 <select id="employeeTechnology" onchange="handleEmployeeTechnologyChange()"> <option value="">Select Technology / Tool</option> </select> </div> <div class="form-group"> <label>Designation</label>
-<select id="employeeDesignation" onchange="handleEmployeeDesignationChange()"> <option value="">Select Designation</option> </select> </div> <div class="form-group"> <label>Branch</label> <select id="employeeBranch">
-<option value="">Select Branch</option> </select> </div> <div class="form-group"> <label>Joining Date</label> <input type="date" id="employeeJoiningDate" onchange="refreshEmployeeDynamicFields()"> </div>
+<select id="employeeDesignation" onchange="handleEmployeeDesignationChange()"> <option value="">Select Designation</option> </select> </div> <div class="form-group"> <label>Branch <span style="color:#DC2626">*</span></label> <select id="employeeBranch">
+<option value="">Select Branch</option> </select> </div><div class="form-group" id="employeePasswordGroup"> <label>Login Password <span style="color:#6B7A70;font-weight:400">(optional)</span></label> <div style="display:flex;gap:8px;"><input type="text" id="employeePassword" style="flex:1;" autocomplete="new-password" placeholder="Create a strong password" oninput="validateEmployeePassword(false)"><button type="button" class="btn btn-secondary btn-small" onclick="generateEmployeePassword()">Generate</button></div> <div id="employeePasswordError" class="email-error-message"></div> <div style="font-size:12px;color:#6B7A70;margin-top:4px;">Tell this password to the employee. They are asked to change it at first login. Leave empty and the employee creates their own.</div> </div> <div class="form-group"> <label>Shift</label> <select id="employeeShift"><option value="GENERAL">General</option></select> <div class="field-hint" style="font-size:12px;color:#6B7A70;margin-top:4px;">Default is General. Change it only if this person works another shift.</div> </div> <div class="form-group"> <label>Joining Date</label> <input type="date" id="employeeJoiningDate" onchange="refreshEmployeeDynamicFields()"> </div>
 <div class="form-group" id="internDurationGroup" style="display:none;"> <label>Internship Duration</label> <select id="internshipMonths" onchange="refreshEmployeeDynamicFields()"> <option value="">Select Duration</option>
 <option value="1">1 Month</option> <option value="2">2 Months</option> <option value="3">3 Months</option> <option value="4">4 Months</option> <option value="5">5 Months</option> <option value="6">6 Months</option>
 <option value="9">9 Months</option> <option value="12">12 Months</option> </select> </div> <div class="form-group" id="employeeEndDateGroup" style="display:none;"> <label id="employeeEndDateLabel">End Date</label>
@@ -1019,7 +1050,7 @@ function validateEmployeeEmail(focusBack = false) {
     if (focusBack) {
       setTimeout(function () {
         emailInput.focus();
-        emailInput.setSelectionRange(emailInput.value.length, emailInput.value.length);
+        try { emailInput.setSelectionRange(emailInput.value.length, emailInput.value.length); } catch (e) {}
       }, 0);
     }
     return false;
@@ -1033,6 +1064,105 @@ function validateEmployeeEmail(focusBack = false) {
 /* =================================================
        LOAD ACTIVE BRANCHES
     ================================================= */
+
+function employeePasswordProblem(password, email) {
+  if (!password) {
+    return "";
+  }
+  if (password.length < 8) return "Use at least 8 characters.";
+  if (/\s/.test(password)) return "No spaces allowed.";
+  if (!/[A-Z]/.test(password)) return "Add an uppercase letter.";
+  if (!/[a-z]/.test(password)) return "Add a lowercase letter.";
+  if (!/[0-9]/.test(password)) return "Add a number.";
+  if (!/[^A-Za-z0-9]/.test(password)) return "Add a special character (like @ # $ !).";
+  const name = String(email || "").split("@")[0].toLowerCase();
+  if (name.length >= 3 && password.toLowerCase().indexOf(name) !== -1) return "The password must not contain the email name.";
+  return "";
+}
+
+function validateEmployeePassword(showEmpty) {
+  const input = document.getElementById("employeePassword");
+  const box = document.getElementById("employeePasswordError");
+  if (!input || !box) {
+    return true;
+  }
+  const problem = employeePasswordProblem(input.value, document.getElementById("employeeEmail").value);
+  box.textContent = problem;
+  box.classList.toggle("show", !!problem);
+  input.classList.toggle("email-error", !!problem);
+  return !problem;
+}
+
+function generateEmployeePassword() {
+  const pick = function (chars) {
+    const buffer = new Uint32Array(1);
+    crypto.getRandomValues(buffer);
+    return chars.charAt(buffer[0] % chars.length);
+  };
+  const upper = "ABCDEFGHJKLMNPQRSTUVWXYZ", lower = "abcdefghijkmnpqrstuvwxyz", digit = "23456789", special = "@#$!%*?";
+  let chars = [pick(upper), pick(upper), pick(lower), pick(lower), pick(lower), pick(digit), pick(digit), pick(special)];
+  const all = upper + lower + digit;
+  while (chars.length < 12) {
+    chars.push(pick(all));
+  }
+  for (let i = chars.length - 1; i > 0; i--) {
+    const buffer = new Uint32Array(1);
+    crypto.getRandomValues(buffer);
+    const j = buffer[0] % (i + 1);
+    const tmp = chars[i]; chars[i] = chars[j]; chars[j] = tmp;
+  }
+  document.getElementById("employeePassword").value = chars.join("");
+  validateEmployeePassword(false);
+}
+
+let shiftOriginal = "GENERAL";
+
+function prettyShift(type) {
+  const t = String(type || "").toLowerCase().replace(/_/g, " ");
+  return t.charAt(0).toUpperCase() + t.slice(1);
+}
+
+async function loadShiftOptions(selected) {
+  const select = document.getElementById("employeeShift");
+  if (!select) {
+    return;
+  }
+  let types = [];
+  try {
+    const response = await apiFetch("/admin/shift-settings");
+    if (response.ok) {
+      types = (await response.json()).map(function (item) {
+        return String(item.shiftType || "").toUpperCase();
+      }).filter(Boolean);
+    }
+  } catch (error) {
+    console.error("Load shifts error:", error);
+  }
+  if (types.indexOf("GENERAL") === -1) {
+    types.unshift("GENERAL");
+  }
+  const wanted = String(selected || "GENERAL").toUpperCase();
+  if (types.indexOf(wanted) === -1) {
+    types.push(wanted);
+  }
+  select.innerHTML = types.map(function (type) {
+    return '<option value="' + type + '">' + prettyShift(type) + "</option>";
+  }).join("");
+  select.value = wanted;
+}
+
+async function currentShiftOf(employeeId) {
+  try {
+    const response = await apiFetch("/admin/shift-assignments/employee/" + employeeId);
+    if (response.ok) {
+      const data = await response.json();
+      return String(data.shiftType || "GENERAL").toUpperCase();
+    }
+  } catch (error) {
+    console.error("Shift lookup error:", error);
+  }
+  return "GENERAL";
+}
 
 async function loadBranches() {
   try {
@@ -1067,6 +1197,10 @@ function populateBranchSelect(selectedBranchId = null) {
   });
   if (selectedBranchId !== null && selectedBranchId !== undefined) {
     branchSelect.value = String(selectedBranchId);
+  }
+  /* only one branch exists: pick it automatically for a new employee */
+  if (!branchSelect.value && branches.length === 1 && currentEmployeeAction !== "EDIT") {
+    branchSelect.value = String(branches[0].id);
   }
 }
 
@@ -1264,8 +1398,13 @@ async function openEmployeeModal(action, employeeId = null) {
   if (action === "ADD") {
     title.textContent = "Add Employee";
     clearEmployeeForm();
+    document.getElementById("employeePasswordGroup").style.display = "";
+    document.getElementById("employeePassword").value = "";
+    validateEmployeePassword(false);
     loadEmployeeRoles();
     populateBranchSelect();
+    shiftOriginal = "GENERAL";
+    await loadShiftOptions("GENERAL");
     if (addKind) {
       document.getElementById("employeeCode").value = nextCodePreview(addKind);
     }
@@ -1275,6 +1414,8 @@ async function openEmployeeModal(action, employeeId = null) {
     }
   } else {
     title.textContent = "Edit Employee";
+    document.getElementById("employeePasswordGroup").style.display = "none";
+    document.getElementById("employeePassword").value = "";
     const employee = employees.find(function (item) {
       return Number(item.id) === Number(employeeId);
     });
@@ -1298,6 +1439,8 @@ async function openEmployeeModal(action, employeeId = null) {
     const designationSelect = document.getElementById("employeeDesignation");
     designationSelect.value = employee.designation || "";
     populateBranchSelect(employee.branchId);
+    shiftOriginal = await currentShiftOf(employee.id);
+    await loadShiftOptions(shiftOriginal);
     if (joiningDateInput) {
       joiningDateInput.value = employee.joiningDate || "";
       joiningDateInput.readOnly = true;
@@ -1349,6 +1492,13 @@ function closeEmployeeModal() {
 }
 
 function openEmployeeReasonModal() {
+  // Adding a new employee needs no reason pop-up: it is saved straight away.
+  if (pendingAction === "ADD") {
+    const auto = document.getElementById("employeeReason");
+    if (auto) { auto.value = "New employee added"; }
+    confirmEmployeeAction();
+    return;
+  }
   const reason = document.getElementById("employeeReason");
   if (reason) {
     reason.value = "";
@@ -1380,6 +1530,10 @@ async function saveEmployee() {
   const designation = document.getElementById("employeeDesignation").value.trim();
   const branchValue = document.getElementById("employeeBranch").value;
   const branchId = branchValue ? Number(branchValue) : null;
+  const shiftSelect = document.getElementById("employeeShift");
+  const pickedShift = shiftSelect ? shiftSelect.value : "GENERAL";
+  // On edit, send the shift only when the admin really changed it.
+  const shiftValue = currentEmployeeAction === "EDIT" && pickedShift === shiftOriginal ? null : pickedShift;
   const joiningDateInput = document.getElementById("employeeJoiningDate");
   const existingEmployee =
     currentEmployeeAction === "EDIT"
@@ -1402,10 +1556,22 @@ async function saveEmployee() {
   if (!validateEmployeeEmail(true)) {
     return;
   }
+  if (!branchId && branches.length > 0) {
+    alert("Please select the Branch. Location and face check use the branch of the employee.");
+    document.getElementById("employeeBranch").focus();
+    return;
+  }
   if (!MOBILE_PATTERN.test(contactNumber)) {
     alert("Contact number must be exactly 10 digits and start with 6, 7, 8 or 9.");
     validateEmployeeContact(true);
     document.getElementById("employeeContact").focus();
+    return;
+  }
+  const passwordInput = document.getElementById("employeePassword");
+  const initialPassword = currentEmployeeAction === "ADD" && passwordInput ? passwordInput.value : "";
+  if (initialPassword && !validateEmployeePassword(true)) {
+    alert(employeePasswordProblem(initialPassword, email) || "Please correct the password.");
+    passwordInput.focus();
     return;
   }
   if (!role) {
@@ -1474,6 +1640,8 @@ async function saveEmployee() {
     // Never replace the original Joining Date during an edit.
     joiningDate: joiningDate,
     branchId: branchId,
+    shiftType: shiftValue,
+    initialPassword: initialPassword || null,
     internshipStartDate: isInternEmployee ? joiningDate : null,
     internshipDurationMonths: internshipMonths,
     internshipEndDate: isInternEmployee ? endDate : null,
@@ -1562,7 +1730,7 @@ async function confirmEmployeeAction() {
         if (emailInput) {
           setTimeout(function () {
             emailInput.focus();
-            emailInput.setSelectionRange(emailInput.value.length, emailInput.value.length);
+            try { emailInput.setSelectionRange(emailInput.value.length, emailInput.value.length); } catch (e) {}
           }, 100);
         }
         return;
@@ -1577,6 +1745,12 @@ async function confirmEmployeeAction() {
     showMessage("employeeMessage", action === "ADD" ? "Employee added successfully." : action === "EDIT" ? "Employee updated successfully." : "Employee deleted successfully.", "success");
   } catch (error) {
     console.error("Employee action error:", error);
+    if (pendingAction === "ADD") {
+      // no reason pop-up for Add: bring the form back so nothing typed is lost
+      document.getElementById("employeeModal").classList.add("show");
+      alert(error.message || "Unable to add employee.");
+      return;
+    }
     // The reason popup stays open, so the real error is shown inside it.
     const reasonError = document.getElementById("employeeReasonError");
     if (reasonError) {
@@ -2131,15 +2305,15 @@ document.addEventListener("DOMContentLoaded", function () {
   loadEmployees();
 });
 </script>
-<script src="/admin/admin-sidebar.js" defer></script>
+<script src="/admin/admin-sidebar.js?v=5" defer></script>
 <script>
 /* ===== SEARCH BOX for Role / Technology / Designation (type a word -> matching list, click to pick; any new text is accepted) ===== */
 (function () {
   const valueDesc = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, "value");
   const CONFIG = {
-    employeeRole: { placeholder: "Type to search role..." },
-    employeeTechnology: { multi: true, placeholder: "Type technology, e.g. Java, Spring, SQL (optional)...", needs: "employeeRole", needsText: "Select a role first" },
-    employeeDesignation: { placeholder: "Type to search designation (Lead, Developer...)", needs: "employeeRole", needsText: "Select a role first" }
+    employeeRole: { placeholder: "Start typing a role, e.g. so..." },
+    employeeTechnology: { multi: true, placeholder: "Type technology, e.g. Java, Spring, SQL (optional)", needs: "employeeRole", needsText: "Select a role first" },
+    employeeDesignation: { placeholder: "Start typing a designation...", needs: "employeeRole", needsText: "Select a role first" }
   };
   function build(id) {
     const sel = document.getElementById(id), cfg = CONFIG[id];
@@ -2171,7 +2345,7 @@ document.addEventListener("DOMContentLoaded", function () {
       list.innerHTML = ""; items = []; active = -1;
       if (needs && !needs.value) { const m = document.createElement("div"); m.className = "combo-empty"; m.textContent = cfg.needsText; list.appendChild(m); return; }
       const all = Array.from(sel.options).filter(o => o.value);
-      const hits = all.filter(o => words.every(w => o.textContent.toLowerCase().includes(w)));
+      const hits = all.filter(o => { const parts = o.textContent.toLowerCase().split(/[\s\/\-_,()]+/); return words.every(w => parts.some(x => x.startsWith(w))); });
       hits.slice(0, 60).forEach(o => { items.push({ value: o.value, label: o.textContent }); });
       const exact = all.some(o => o.textContent.trim().toLowerCase() === q);
       const whole = cfg.multi ? cleanMulti(full) : full.trim();
@@ -2184,7 +2358,7 @@ document.addEventListener("DOMContentLoaded", function () {
         list.appendChild(d);
       });
     }
-    const open = () => { render(); wrap.classList.add("open"); };
+    const open = () => { const q = (cfg.multi ? input.value.slice(input.value.lastIndexOf(",") + 1) : input.value).trim(); if (!q) { close(); return; } render(); wrap.classList.add("open"); };
     const close = () => wrap.classList.remove("open");
     function commit(v) {
       const before = valueDesc.get.call(sel);
@@ -2197,15 +2371,15 @@ document.addEventListener("DOMContentLoaded", function () {
       if (cfg.multi && !it.add) {
         const prefix = cleanMulti(input.value.slice(0, input.value.lastIndexOf(",") + 1));
         const joined = (prefix ? prefix + ", " : "") + it.label;
-        commit(joined); input.value = joined + ", "; render(); return;
+        commit(joined); input.value = joined + ", "; close(); return;
       }
       commit(it.value); input.value = selectedText(); close();
     }
     function highlight() { Array.from(list.children).forEach((c, i) => c.classList.toggle("hl", i === active)); const c = list.children[active]; if (c && c.scrollIntoView) c.scrollIntoView({ block: "nearest" }); }
-    input.addEventListener("focus", () => { input.select(); open(); });
+    input.addEventListener("focus", () => { input.select(); });
     input.addEventListener("input", open);
     input.addEventListener("keydown", e => {
-      if (e.key === "ArrowDown") { e.preventDefault(); if (!wrap.classList.contains("open")) open(); active = Math.min(items.length - 1, active + 1); highlight(); }
+      if (e.key === "ArrowDown") { e.preventDefault(); if (!wrap.classList.contains("open")) open(); if (!wrap.classList.contains("open")) return; active = Math.min(items.length - 1, active + 1); highlight(); }
       else if (e.key === "ArrowUp") { e.preventDefault(); active = Math.max(0, active - 1); highlight(); }
       else if (e.key === "Enter") { e.preventDefault(); if (active >= 0) pick(active); else { input.blur(); } }
       else if (e.key === "Escape") { close(); input.blur(); }
@@ -2221,6 +2395,6 @@ document.addEventListener("DOMContentLoaded", function () {
   Object.keys(CONFIG).forEach(build);
 })();
 </script>
-<script src="/admin/admin-sidebar.js" defer></script>
+
 </body>
 </html>

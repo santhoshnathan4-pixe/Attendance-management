@@ -601,9 +601,78 @@ body {
         transition: none !important;
     }
 }
+
+
+/* EXTRA SCREENS: change/keep password, forgot password */
+.extra-section { display: none; }
+.link-btn { display: block; margin: 10px auto 0; padding: 4px 8px; border: none; background: none; color: #15803d; font-size: 13px; font-weight: 650; cursor: pointer; }
+.link-btn:hover { text-decoration: underline; }
+.btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 4px; }
+.ghost-btn { min-height: 42px; border: 1px solid var(--border); border-radius: 8px; background: #fff; color: var(--text); font-size: 14px; font-weight: 650; cursor: pointer; }
+.ghost-btn:hover { background: #f0f9f1; border-color: #a8c8af; }
+.extra-msg { min-height: 18px; margin-top: 10px; font-size: 13px; text-align: center; }
+
+/* ===== COMPACT FIT: the whole login fits one screen, no page scroll ===== */
+html, body { height: 100%; }
+body { height: 100vh; height: 100dvh; min-height: 0; padding: 14px; overflow: hidden; }
+.page-container { max-width: 900px; height: min(560px, calc(100vh - 28px)); height: min(560px, calc(100dvh - 28px)); min-height: 0; }
+.brand-panel { padding: 28px 32px; }
+.brand-content { margin: 0; }
+.brand-content h2 { font-size: clamp(24px, 2.4vw, 32px); line-height: 1.2; }
+.brand-tag { margin-bottom: 14px; padding: 6px 12px; }
+.brand-description { margin-top: 12px; font-size: 13px; line-height: 1.6; }
+.brand-features { gap: 10px; margin-top: 20px; }
+.feature-icon { width: 30px; height: 30px; }
+.form-panel { padding: 24px 44px; overflow-y: auto; }
+.logo { margin-bottom: 16px; }
+.logo h1 { font-size: 19px; }
+.login-title, .face-title { font-size: 23px; margin-bottom: 6px; }
+.form-subtitle { margin-bottom: 18px; line-height: 1.5; }
+.input-group { margin-bottom: 14px; }
+.input-group label { margin-bottom: 6px; }
+.input-group input { height: 42px; }
+.login-btn, .continue-btn, .face-btn { min-height: 42px; padding: 10px 16px; }
+@media (max-height: 600px) {
+    .brand-description, .brand-features { display: none; }
+    .brand-tag { margin-bottom: 10px; }
+}
+@media (max-width: 800px) {
+    body { padding: 0; }
+    .page-container { max-width: none; width: 100%; height: 100vh; height: 100dvh; border: none; border-radius: 0; box-shadow: none; }
+    .form-panel { padding: 20px 22px; justify-content: center; }
+    .mobile-brand { margin-bottom: 18px; }
+    .logo { margin-bottom: 12px; }
+    .login-title, .face-title { font-size: 21px; }
+    .form-subtitle { margin-bottom: 14px; font-size: 12.5px; }
+}
+@media (max-width: 800px) and (max-height: 640px) {
+    .mobile-brand { margin-bottom: 10px; }
+    .logo { display: none; }
+    .input-group { margin-bottom: 10px; }
+}
 </style>
 
 
+
+<style>
+/* ===== colourful professional look (login) ===== */
+body{background:linear-gradient(135deg,#EAF2FF 0%,#F3F6FB 45%,#E6F6EC 100%)!important}
+.brand-panel{background:linear-gradient(160deg,#0B2E1A 0%,#0F3D6E 100%)!important}
+.brand-tag{background:rgba(96,165,250,.16)!important;border-color:rgba(96,165,250,.4)!important}
+.brand-feature:nth-child(1) .feature-icon,.brand-feature:nth-child(1)>*:first-child{background:rgba(34,197,94,.2)!important;color:#4ADE80!important}
+.brand-feature:nth-child(2) .feature-icon,.brand-feature:nth-child(2)>*:first-child{background:rgba(251,191,36,.2)!important;color:#FBBF24!important}
+.brand-feature:nth-child(3) .feature-icon,.brand-feature:nth-child(3)>*:first-child{background:rgba(96,165,250,.22)!important;color:#93C5FD!important}
+.login-btn,.continue-btn,.face-btn{background:linear-gradient(135deg,#16A34A,#0F7A35)!important;box-shadow:0 4px 14px rgba(22,163,74,.32)}
+.link-btn{color:#2563EB!important}
+input:focus{border-color:#2563EB!important;box-shadow:0 0 0 4px rgba(37,99,235,.14)!important}
+</style>
+
+<style>
+#message:not(:empty){padding:10px 14px;border-radius:10px;font-weight:600;line-height:1.45}
+#message[style*="red"]{background:#FEF2F2;border:1px solid #FECACA;color:#B91C1C!important}
+#message[style*="2563eb"],#message[style*="rgb(37, 99, 235)"]{background:#EEF4FF;border:1px solid #C9D9FB}
+#message[style*="green"]{background:#E3F6EA;border:1px solid #BFE6CC}
+</style>
 </head>
 
 <body>
@@ -726,6 +795,8 @@ body {
                 Sign In
             </button>
 
+            <button type="button" class="link-btn" onclick="showForgot()">Forgot password?</button>
+
             <p id="message" role="status" aria-live="polite"></p>
 
             <div class="security-note">
@@ -832,6 +903,85 @@ body {
 
         </div>
 
+        <!-- FIRST LOGIN WITH ADMIN PASSWORD: CHANGE OR KEEP -->
+
+        <div id="changeOfferSection" class="extra-section">
+            <div class="logo"><h1>GROWBYTEE</h1><p>Attendance Management System</p></div>
+            <h2 class="login-title">Welcome!</h2>
+            <p class="form-subtitle">Your admin created this password for you. Do you want to set your own password now?</p>
+
+            <div id="offerChoice">
+                <div class="btn-row">
+                    <button type="button" class="ghost-btn" onclick="keepAdminPassword()">Keep this password</button>
+                    <button type="button" class="login-btn" onclick="showChangeForm()">Change password</button>
+                </div>
+            </div>
+
+            <div id="offerForm" style="display:none">
+                <div class="input-group">
+                    <label for="offerNew">New Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="offerNew" placeholder="Enter new password" autocomplete="new-password" oninput="renderOfferRules()">
+                        <button type="button" class="eye-btn" onclick="togglePassword('offerNew', this)">Show</button>
+                    </div>
+                </div>
+                <ul class="pw-rules" id="offerRules" aria-live="polite">
+                    <li data-rule="len">At least 8 characters</li>
+                    <li data-rule="upper">One uppercase letter</li>
+                    <li data-rule="lower">One lowercase letter</li>
+                    <li data-rule="digit">One number</li>
+                    <li data-rule="special">One special character (@ # $ % !)</li>
+                    <li data-rule="space">No spaces</li>
+                </ul>
+                <div class="input-group">
+                    <label for="offerConfirm">Confirm Password</label>
+                    <input type="password" id="offerConfirm" placeholder="Confirm new password" autocomplete="new-password">
+                </div>
+                <button type="button" class="login-btn" onclick="saveNewPassword()">Save and continue</button>
+                <button type="button" class="link-btn" onclick="keepAdminPassword()">Skip, keep the current password</button>
+            </div>
+            <p id="offerMessage" class="extra-msg" role="status" aria-live="polite"></p>
+        </div>
+
+        <!-- FORGOT PASSWORD -->
+
+        <div id="forgotSection" class="extra-section">
+            <div class="logo"><h1>GROWBYTEE</h1><p>Attendance Management System</p></div>
+            <h2 class="login-title">Forgot password</h2>
+            <p class="form-subtitle" id="forgotSub">Enter your registered email. We will send a 6-digit code to it.</p>
+
+            <div class="input-group">
+                <label for="forgotEmail">Email Address</label>
+                <input type="email" id="forgotEmail" placeholder="name@company.com" autocomplete="username">
+            </div>
+
+            <div id="forgotStep2" style="display:none">
+                <div class="input-group">
+                    <label for="forgotOtp">6-digit code</label>
+                    <input type="text" id="forgotOtp" inputmode="numeric" maxlength="6" placeholder="Code from your email" autocomplete="one-time-code">
+                </div>
+                <div class="input-group">
+                    <label for="forgotNew">New Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="forgotNew" placeholder="Enter new password" autocomplete="new-password" oninput="renderForgotRules()">
+                        <button type="button" class="eye-btn" onclick="togglePassword('forgotNew', this)">Show</button>
+                    </div>
+                </div>
+                <ul class="pw-rules" id="forgotRules" aria-live="polite">
+                    <li data-rule="len">At least 8 characters</li>
+                    <li data-rule="upper">One uppercase letter</li>
+                    <li data-rule="lower">One lowercase letter</li>
+                    <li data-rule="digit">One number</li>
+                    <li data-rule="special">One special character (@ # $ % !)</li>
+                    <li data-rule="space">No spaces</li>
+                </ul>
+            </div>
+
+            <button type="button" class="login-btn" id="forgotBtn" onclick="forgotNext()">Send code</button>
+            <button type="button" class="link-btn" onclick="leaveExtra()">Back to login</button>
+            <p id="forgotMessage" class="extra-msg" role="status" aria-live="polite"></p>
+        </div>
+
         <!-- FIRST-TIME FACE REGISTRATION -->
 
         <div id="faceRegistrationSection" class="face-registration">
@@ -914,6 +1064,9 @@ body {
     // ==========================================
     // API BASE URL
     // ==========================================
+
+    // The employee page after login (your file: employee-dashboard.html)
+    const EMPLOYEE_HOME = "employee-dashboard.html";
 
     const API_BASE_URL =
         (window.location.hostname === "localhost" ||
@@ -1174,7 +1327,7 @@ body {
 
 
                 window.location.href =
-                    "dashboard.html";
+                    EMPLOYEE_HOME;
 
 
                 return;
@@ -1198,7 +1351,7 @@ body {
 
 
                 window.location.href =
-                    "dashboard.html";
+                    EMPLOYEE_HOME;
 
 
                 return;
@@ -1313,6 +1466,12 @@ body {
         message.style.color =
             "#2563eb";
 
+        const loginControl = new AbortController();
+        const loginGiveUp = setTimeout(() => loginControl.abort(), 70000);
+        const loginSlow = setTimeout(() => {
+            message.innerText = "Server is waking up. Please wait, this can take up to a minute...";
+            message.style.color = "#2563eb";
+        }, 4000);
 
         fetch(
             `${API_BASE_URL}/employee/login`,
@@ -1321,7 +1480,8 @@ body {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
                 },
-                body: new URLSearchParams({ email: email, password: password })
+                body: new URLSearchParams({ email: email, password: password }),
+                signal: loginControl.signal
             }
         )
 
@@ -1407,6 +1567,15 @@ body {
 
 
             // ==================================
+            // PASSWORD CREATED BY ADMIN: CHANGE OR KEEP
+            // ==================================
+
+            if (data === "PASSWORD_CHANGE_OFFER") {
+                showChangeOffer(email, password);
+                return;
+            }
+
+            // ==================================
             // NORMAL LOGIN
             // ==================================
 
@@ -1446,14 +1615,20 @@ body {
 
             console.error(error);
 
-            message.innerText =
-                error.message ||
-                "Server connection failed.";
+            if (error.name === "AbortError") {
+                message.innerText = "The server is taking too long. Please try again in a moment.";
+            } else if (error instanceof TypeError) {
+                message.innerText = "Cannot reach the server. Check your internet connection and try again.";
+            } else {
+                message.innerText = error.message || "Something went wrong. Please try again.";
+            }
 
             message.style.color =
                 "red";
 
-        });
+        })
+
+        .finally(() => { clearTimeout(loginSlow); clearTimeout(loginGiveUp); });
 
     }
 
@@ -1835,7 +2010,7 @@ body {
             ) {
 
                 window.location.href =
-                    "dashboard.html";
+                    EMPLOYEE_HOME;
 
                 return;
 
@@ -1852,7 +2027,7 @@ body {
             ) {
 
                 window.location.href =
-                    "dashboard.html";
+                    EMPLOYEE_HOME;
 
                 return;
 
@@ -2344,7 +2519,7 @@ body {
 
 
         window.location.href =
-            "dashboard.html";
+            EMPLOYEE_HOME;
 
     }
 
@@ -2411,6 +2586,177 @@ body {
 </script>
 
 
+
+<script>
+// =====================================================
+// CHANGE OR KEEP THE ADMIN PASSWORD  +  FORGOT PASSWORD
+// =====================================================
+(function () {
+    let offerEmail = "";
+    let offerPassword = "";
+
+    function el(id) { return document.getElementById(id); }
+
+    function say(id, text, color) {
+        const box = el(id);
+        box.innerText = text;
+        box.style.color = color || "#b91c1c";
+    }
+
+    function showOnly(id) {
+        ["loginSection", "passwordSetupSection", "faceRegistrationSection", "changeOfferSection", "forgotSection"]
+            .forEach(section => { el(section).style.display = section === id ? "block" : "none"; });
+    }
+
+    function paintRules(listId, password) {
+        const status = passwordRuleStatus(password);
+        document.querySelectorAll("#" + listId + " li").forEach(item => {
+            item.classList.toggle("ok", !!status[item.dataset.rule]);
+        });
+    }
+
+    window.leaveExtra = function () {
+        showOnly("loginSection");
+        el("message").innerText = "";
+        el("password").value = "";
+    };
+
+    // ---------- change or keep ----------
+
+    window.showChangeOffer = function (email, password) {
+        offerEmail = email;
+        offerPassword = password;
+        el("offerChoice").style.display = "block";
+        el("offerForm").style.display = "none";
+        el("offerNew").value = "";
+        el("offerConfirm").value = "";
+        el("offerMessage").innerText = "";
+        paintRules("offerRules", "");
+        showOnly("changeOfferSection");
+    };
+
+    window.showChangeForm = function () {
+        el("offerChoice").style.display = "none";
+        el("offerForm").style.display = "block";
+        el("offerNew").focus();
+    };
+
+    window.renderOfferRules = function () {
+        paintRules("offerRules", el("offerNew").value);
+    };
+
+    async function post(path, body) {
+        const response = await fetch(API_BASE_URL + path, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+        });
+        const text = await response.text();
+        if (!response.ok) {
+            let message = text;
+            try { message = JSON.parse(text).message || text; } catch (e) { }
+            throw new Error(message || "Something went wrong.");
+        }
+        return text;
+    }
+
+    async function finishLogin() {
+        localStorage.setItem("employeeEmail", offerEmail);
+        showOnly("loginSection");
+        offerPassword = "";
+        await continueAfterLogin(offerEmail, el("message"));
+    }
+
+    window.keepAdminPassword = async function () {
+        say("offerMessage", "Please wait...", "#2563eb");
+        try {
+            await post("/employee/keep-password", { email: offerEmail, password: offerPassword });
+            await finishLogin();
+        } catch (error) {
+            say("offerMessage", error.message);
+        }
+    };
+
+    window.saveNewPassword = async function () {
+        const next = el("offerNew").value;
+        const confirm = el("offerConfirm").value;
+        const problem = passwordError(next, offerEmail);
+        if (problem) { say("offerMessage", problem); return; }
+        if (next !== confirm) { say("offerMessage", "Password and Confirm Password do not match."); return; }
+        if (next === offerPassword) { say("offerMessage", "Choose a password different from the current one."); return; }
+        say("offerMessage", "Saving...", "#2563eb");
+        try {
+            await post("/employee/change-password", { email: offerEmail, currentPassword: offerPassword, newPassword: next });
+            offerPassword = next;
+            await finishLogin();
+        } catch (error) {
+            say("offerMessage", error.message);
+        }
+    };
+
+    // ---------- forgot password ----------
+
+    window.showForgot = function () {
+        el("forgotEmail").value = el("email").value.trim();
+        el("forgotEmail").disabled = false;
+        el("forgotStep2").style.display = "none";
+        el("forgotOtp").value = "";
+        el("forgotNew").value = "";
+        el("forgotBtn").innerText = "Send code";
+        el("forgotBtn").dataset.step = "1";
+        el("forgotSub").innerText = "Enter your registered email. We will send a 6-digit code to it.";
+        el("forgotMessage").innerText = "";
+        paintRules("forgotRules", "");
+        showOnly("forgotSection");
+    };
+
+    window.renderForgotRules = function () {
+        paintRules("forgotRules", el("forgotNew").value);
+    };
+
+    window.forgotNext = async function () {
+        const email = el("forgotEmail").value.trim();
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+            say("forgotMessage", "Enter a valid email address.");
+            return;
+        }
+        const button = el("forgotBtn");
+
+        if (button.dataset.step !== "2") {
+            say("forgotMessage", "Sending code...", "#2563eb");
+            try {
+                await post("/employee/forgot-password", { email: email });
+                el("forgotEmail").disabled = true;
+                el("forgotStep2").style.display = "block";
+                el("forgotSub").innerText = "A 6-digit code was sent if this email is registered. Enter it below with your new password. It is valid for 10 minutes.";
+                button.innerText = "Change password";
+                button.dataset.step = "2";
+                say("forgotMessage", "Check your email (also the spam folder).", "#15803d");
+            } catch (error) {
+                say("forgotMessage", error.message);
+            }
+            return;
+        }
+
+        const otp = el("forgotOtp").value.trim();
+        const next = el("forgotNew").value;
+        if (!/^\d{6}$/.test(otp)) { say("forgotMessage", "Enter the 6-digit code."); return; }
+        const problem = passwordError(next, email);
+        if (problem) { say("forgotMessage", problem); return; }
+        say("forgotMessage", "Saving...", "#2563eb");
+        try {
+            await post("/employee/reset-password", { email: email, otp: otp, newPassword: next });
+            showOnly("loginSection");
+            el("email").value = email;
+            el("password").value = "";
+            el("message").innerText = "Password changed. Please sign in with the new password.";
+            el("message").style.color = "#15803d";
+        } catch (error) {
+            say("forgotMessage", error.message);
+        }
+    };
+})();
+</script>
 </body>
 
 </html>

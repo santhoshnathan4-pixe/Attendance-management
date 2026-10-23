@@ -44,6 +44,12 @@ public class AdminEmployeeActionRequest {
     // Reason for ADD / EDIT / DELETE
     private String reason;
 
+    // SHIFT (optional; GENERAL when empty on a new employee)
+    private String shiftType;
+
+    // PASSWORD (optional: admin creates the first password; employee is asked to change it at first login)
+    private String initialPassword;
+
     // EMPLOYEE CODE
     public String getEmployeeCode() {
         return employeeCode;
@@ -222,5 +228,23 @@ public class AdminEmployeeActionRequest {
 
     public void setReason(String reason) {
         this.reason = reason;
+    }
+
+    // SHIFT
+    public String getShiftType() {
+        return shiftType;
+    }
+
+    public void setShiftType(String shiftType) {
+        this.shiftType = shiftType;
+    }
+
+    // INITIAL PASSWORD
+    public String getInitialPassword() {
+        return initialPassword;
+    }
+
+    public void setInitialPassword(String initialPassword) {
+        this.initialPassword = initialPassword;
     }
 }

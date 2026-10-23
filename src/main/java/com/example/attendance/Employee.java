@@ -97,6 +97,25 @@ public class Employee {
     @JoinColumn(name = "branch_id")
     private Branch branch;
 
+
+    // =========================
+    // PASSWORD SAFETY
+    // =========================
+
+    /** True while the employee still uses the password the admin created. */
+    @Column(name = "password_change_pending")
+    private Boolean passwordChangePending = false;
+
+    /** Forgot-password code (stored only as a hash) and its expiry. */
+    @Column(name = "reset_otp_hash")
+    private String resetOtpHash;
+
+    @Column(name = "reset_otp_expires_at")
+    private java.time.LocalDateTime resetOtpExpiresAt;
+
+    @Column(name = "reset_otp_attempts")
+    private Integer resetOtpAttempts = 0;
+
     // =========================
     // GETTERS
     // =========================
@@ -311,5 +330,37 @@ public class Employee {
 
     public void setLastActionAt(OffsetDateTime lastActionAt) {
         this.lastActionAt = lastActionAt;
+    }
+
+    public boolean isPasswordChangePending() {
+        return Boolean.TRUE.equals(passwordChangePending);
+    }
+
+    public void setPasswordChangePending(Boolean passwordChangePending) {
+        this.passwordChangePending = passwordChangePending;
+    }
+
+    public String getResetOtpHash() {
+        return resetOtpHash;
+    }
+
+    public void setResetOtpHash(String resetOtpHash) {
+        this.resetOtpHash = resetOtpHash;
+    }
+
+    public java.time.LocalDateTime getResetOtpExpiresAt() {
+        return resetOtpExpiresAt;
+    }
+
+    public void setResetOtpExpiresAt(java.time.LocalDateTime resetOtpExpiresAt) {
+        this.resetOtpExpiresAt = resetOtpExpiresAt;
+    }
+
+    public int getResetOtpAttempts() {
+        return resetOtpAttempts == null ? 0 : resetOtpAttempts;
+    }
+
+    public void setResetOtpAttempts(Integer resetOtpAttempts) {
+        this.resetOtpAttempts = resetOtpAttempts;
     }
 }
