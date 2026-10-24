@@ -180,7 +180,7 @@ tbody tr:hover{background:#F5F9FF}
 <label>Role</label> <select id="employeeRole" onchange="handleEmployeeRoleChange()"> <option value="">Select Role</option> </select> </div> <div class="form-group"> <label>Technology / Tool <span style="color:#6B7A70;font-weight:400">(optional)</span></label>
 <select id="employeeTechnology" onchange="handleEmployeeTechnologyChange()"> <option value="">Select Technology / Tool</option> </select> </div> <div class="form-group"> <label>Designation</label>
 <select id="employeeDesignation" onchange="handleEmployeeDesignationChange()"> <option value="">Select Designation</option> </select> </div> <div class="form-group"> <label>Branch <span style="color:#DC2626">*</span></label> <select id="employeeBranch">
-<option value="">Select Branch</option> </select> </div><div class="form-group" id="employeePasswordGroup"> <label>Login Password <span style="color:#6B7A70;font-weight:400">(optional)</span></label> <div style="display:flex;gap:8px;"><input type="text" id="employeePassword" style="flex:1;" autocomplete="new-password" placeholder="Create a strong password" oninput="validateEmployeePassword(false)"><button type="button" class="btn btn-secondary btn-small" onclick="generateEmployeePassword()">Generate</button></div> <div id="employeePasswordError" class="email-error-message"></div> <div style="font-size:12px;color:#6B7A70;margin-top:4px;">Tell this password to the employee. They are asked to change it at first login. Leave empty and the employee creates their own.</div> </div> <div class="form-group"> <label>Shift</label> <select id="employeeShift"><option value="GENERAL">General</option></select> <div class="field-hint" style="font-size:12px;color:#6B7A70;margin-top:4px;">Default is General. Change it only if this person works another shift.</div> </div> <div class="form-group"> <label>Joining Date</label> <input type="date" id="employeeJoiningDate" onchange="refreshEmployeeDynamicFields()"> </div>
+<option value="">Select Branch</option> </select> </div><div class="form-group" id="employeePasswordGroup"> <label>Login Password <span style="color:#D93025">*</span></label> <div style="display:flex;gap:8px;"><input type="text" id="employeePassword" style="flex:1;" autocomplete="new-password" placeholder="Create a strong password" oninput="validateEmployeePassword(false)"><button type="button" class="btn btn-secondary btn-small" onclick="generateEmployeePassword()">Generate</button></div> <div id="employeePasswordError" class="email-error-message"></div> <div style="font-size:12px;color:#6B7A70;margin-top:4px;">Tell this password to the employee. The employee logs in with this password and is then asked to set a new one.</div> </div> <div class="form-group"> <label>Shift</label> <select id="employeeShift"><option value="GENERAL">General</option></select> <div class="field-hint" style="font-size:12px;color:#6B7A70;margin-top:4px;">Default is General. Change it only if this person works another shift.</div> </div> <div class="form-group"> <label>Joining Date</label> <input type="date" id="employeeJoiningDate" onchange="refreshEmployeeDynamicFields()"> </div>
 <div class="form-group" id="internDurationGroup" style="display:none;"> <label>Internship Duration</label> <select id="internshipMonths" onchange="refreshEmployeeDynamicFields()"> <option value="">Select Duration</option>
 <option value="1">1 Month</option> <option value="2">2 Months</option> <option value="3">3 Months</option> <option value="4">4 Months</option> <option value="5">5 Months</option> <option value="6">6 Months</option>
 <option value="9">9 Months</option> <option value="12">12 Months</option> </select> </div> <div class="form-group" id="employeeEndDateGroup" style="display:none;"> <label id="employeeEndDateLabel">End Date</label>
@@ -1067,7 +1067,7 @@ function validateEmployeeEmail(focusBack = false) {
 
 function employeePasswordProblem(password, email) {
   if (!password) {
-    return "";
+    return "Login password is required. Type one or press Generate.";
   }
   if (password.length < 8) return "Use at least 8 characters.";
   if (/\s/.test(password)) return "No spaces allowed.";
@@ -1086,7 +1086,7 @@ function validateEmployeePassword(showEmpty) {
   if (!input || !box) {
     return true;
   }
-  const problem = employeePasswordProblem(input.value, document.getElementById("employeeEmail").value);
+  const problem = (!input.value && !showEmpty) ? "" : employeePasswordProblem(input.value, document.getElementById("employeeEmail").value);
   box.textContent = problem;
   box.classList.toggle("show", !!problem);
   input.classList.toggle("email-error", !!problem);
@@ -1569,6 +1569,11 @@ async function saveEmployee() {
   }
   const passwordInput = document.getElementById("employeePassword");
   const initialPassword = currentEmployeeAction === "ADD" && passwordInput ? passwordInput.value : "";
+  if (currentEmployeeAction === "ADD" && !initialPassword) {
+    alert("Login password is required. Type one or press Generate.");
+    passwordInput.focus();
+    return;
+  }
   if (initialPassword && !validateEmployeePassword(true)) {
     alert(employeePasswordProblem(initialPassword, email) || "Please correct the password.");
     passwordInput.focus();

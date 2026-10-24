@@ -177,6 +177,8 @@ body{background:var(--bg);color:var(--ink)}
 .gtile em{font-style:normal;font-size:13.5px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .gtile .ar{color:#94A3B8;font-size:18px}
 @media(max-width:1100px){.r-a,.r-b{grid-template-columns:1fr}}
+@media(min-width:1000px){.stats{grid-template-columns:repeat(6,1fr)!important}}
+@media(min-width:601px) and (max-width:999px){.stats{grid-template-columns:repeat(3,1fr)!important}}
 @media(max-width:600px){.stats{grid-template-columns:1fr 1fr!important;gap:10px!important}.stat{padding:12px 14px 14px}.stat-val{font-size:28px;margin-top:6px}.stat-top{font-size:10px}.stat-ic{width:30px;height:30px}.hello{padding:16px 18px}}
 </style>
 </head>
@@ -1275,6 +1277,6 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 
 <script src="end-date-alert.js"></script>
-<script src="/admin/admin-sidebar.js?v=6" defer></script>
+<script src="/admin/admin-sidebar.js?v=8" defer></script>
 </body>
 </html>

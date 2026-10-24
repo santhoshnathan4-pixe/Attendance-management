@@ -67,7 +67,7 @@ public class EmployeeController {
                 .orElse(null);
 
         if (employee == null) {
-            return "Invalid Email or Password";
+            return "Email is wrong. This email is not registered (or the account is switched off).";
         }
 
         if (employee.getPassword() == null || employee.getPassword().trim().isEmpty()) {
@@ -75,7 +75,7 @@ public class EmployeeController {
         }
 
         if (!PasswordUtil.matches(password, employee.getPassword())) {
-            return "Invalid Email or Password";
+            return "Password is wrong. Please try again, or use Forgot password.";
         }
 
         // an old plain-text password is replaced by a hash after a good login

@@ -1,6 +1,31 @@
 /* GROWBYTEE admin sidebar - one shared file for every admin page.
    Usage: <script src="admin-sidebar.js" defer></script> (old <aside class="sidebar"> is hidden automatically)
    Always-visible dark icon rail; hover to see names. */
+/* ===== waiting banner: if the server is slow (sleeping), tell the user instead of showing a blank page ===== */
+(function () {
+  if (window.__waitBanner || !window.fetch) return;
+  window.__waitBanner = true;
+  var pending = 0, timer = null, el = null, orig = window.fetch;
+  function show() {
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'waitBanner';
+      el.style.cssText = 'position:fixed;left:50%;top:14px;transform:translateX(-50%);z-index:100050;background:#0F172A;color:#fff;padding:10px 16px;border-radius:12px;font:600 13px/1.4 "Segoe UI",system-ui,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.25);display:flex;align-items:center;gap:10px;max-width:92vw';
+      el.innerHTML = '<span style="width:14px;height:14px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;display:inline-block;animation:wbspin .8s linear infinite;flex-shrink:0"></span><span>Server is waking up. Please wait, loading your data (can take up to 1 minute)...</span><style>@keyframes wbspin{to{transform:rotate(360deg)}}</style>';
+      document.body.appendChild(el);
+    }
+    el.style.display = 'flex';
+  }
+  function hide() { if (el) el.style.display = 'none'; }
+  window.fetch = function () {
+    pending++;
+    if (pending === 1) { clearTimeout(timer); timer = setTimeout(function () { if (pending > 0) show(); }, 3000); }
+    var p = orig.apply(this, arguments);
+    var done = function () { pending = Math.max(0, pending - 1); if (pending === 0) { clearTimeout(timer); hide(); } };
+    p.then(done, done);
+    return p;
+  };
+})();
 (function () {
   var P = {
     dash: '<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>',
@@ -29,6 +54,7 @@
      person; real protection of the server needs login tokens (planned next). */
   var ROLE = 'OWNER';
   try { ROLE = (localStorage.getItem('adminRole') || 'OWNER').toUpperCase(); } catch (e) {}
+  if (ROLE !== 'HR' && ROLE !== 'MANAGER') ROLE = 'OWNER'; /* old or unknown role = full access */
   var ACCESS_LABEL = ROLE === 'OWNER' ? 'Admin Access' : 'My Account';
   var MANAGER_PAGES = ['admin-dashboard.html', 'leave.html', 'monthly-report.html', 'admin-access.html'];
   function allowed(href) {
@@ -73,6 +99,34 @@
   '.close-btn{background:#EEF3FA!important;border-radius:9px!important}.close-btn:hover{background:var(--red-l)!important;color:#DC2626}' +
   '.tab,.tabs button,[data-tab]{border-radius:10px}[data-tab].active,.tab.active{background:var(--blue-l)!important;color:var(--blue)!important;border-color:var(--blue)!important}' +
   '.message.success{background:#E3F6EA;border-color:#BFE6CC;color:#0B5A2B}.message.error{background:var(--red-l);border-color:#F9C9C9;color:#991B1B}';
+
+  /* ---- density + polish (Zoho / HCL style): compact tables, no cut-off buttons, calm spacing ---- */
+  THEME += '' +
+  'body{font-family:"Segoe UI",Inter,system-ui,-apple-system,Arial,sans-serif!important;-webkit-font-smoothing:antialiased}' +
+  '.content,.page,.container{max-width:1500px}' +
+  '.table-wrapper,.gwrap,.details-table-wrapper{overflow-x:auto;-webkit-overflow-scrolling:touch}' +
+  'table{border-collapse:separate;border-spacing:0;width:100%}' +
+  'th{padding:11px 9px!important;font-size:11px!important;letter-spacing:.06em;white-space:nowrap}' +
+  'td{padding:11px 9px!important;font-size:13px;border-bottom:1px solid #EEF2F7;vertical-align:middle}' +
+  'tbody tr:last-child td{border-bottom:0}' +
+  'td:last-child{white-space:nowrap}' +
+  'td .btn+.btn{margin-left:6px}' +
+  '.btn-small,.btn-sm{padding:6px 12px!important;font-size:12px!important;border-radius:8px!important}' +
+  'td .btn-primary{background:#E6EEFF!important;color:#1D4ED8!important;box-shadow:none!important;border:1px solid #C9D9FB!important}' +
+  'td .btn-primary:hover{background:#2563EB!important;color:#fff!important}' +
+  'td .btn-danger{background:#FDECEC!important;color:#B91C1C!important;box-shadow:none!important;border:1px solid #F7CFCF!important}' +
+  'td .btn-danger:hover{background:#DC2626!important;color:#fff!important}' +
+  '.empty-row,.empty-state{color:var(--soft);padding:32px 12px!important;text-align:center}' +
+  '.badge-blue{background:#E6EEFF!important;color:#1D4ED8!important;border-radius:8px!important;padding:4px 9px;font-size:11.5px;font-weight:700}' +
+  '.dept-chip{background:#EFE7FE!important;color:#6D28D9!important;border-radius:6px;padding:2px 7px;font-size:10.5px;font-weight:700;margin-left:6px}' +
+  '.top-bar{background:#fff;border:1px solid var(--edge);border-radius:14px;padding:12px 14px;gap:10px}' +
+  '.main>.content,.main>section{padding-top:20px}' +
+  '@media(max-width:760px){th,td{padding:9px 10px!important}.content{padding:14px!important}.topbar{padding-left:62px!important}}';
+
+  THEME += '' +
+  '.table-wrapper table th:last-child{position:sticky;right:0;background:#EEF3FA!important;box-shadow:-8px 0 8px -8px rgba(15,23,42,.18);z-index:2}' +
+  '.table-wrapper table td:last-child{position:sticky;right:0;background:#fff;box-shadow:-8px 0 8px -8px rgba(15,23,42,.12)}' +
+  '.table-wrapper tbody tr:hover td:last-child{background:#F5F9FF}';
   var RAIL = 76, WIDE = 232;
   function lbl(m) { return m[1].indexOf('admin-access.html') !== -1 ? ACCESS_LABEL : m[0]; }
   function svg(k) { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">' + P[k] + '</svg>'; }
@@ -129,7 +183,11 @@
     var mb = document.createElement('button'); mb.id = 'asbm'; mb.setAttribute('aria-label', 'Menu'); mb.innerHTML = svg('dash'); document.body.appendChild(mb);
     var t = null;
     function wide() { return window.innerWidth > 760; }
-    el.addEventListener('mouseenter', function () { if (wide()) { clearTimeout(t); el.classList.add('open'); } });
+    var armed = false; /* open only after the mouse really moves, so a stationary pointer never keeps it open */
+    window.addEventListener('mousemove', function () { armed = true; }, { once: true });
+    el.addEventListener('mousemove', function () { if (armed && wide() && !el.classList.contains('open')) { clearTimeout(t); el.classList.add('open'); } });
+    el.addEventListener('mouseenter', function () { if (armed && wide()) { clearTimeout(t); el.classList.add('open'); } });
+    el.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('a')) el.classList.remove('open'); });
     el.addEventListener('mouseleave', function () { if (wide()) { t = setTimeout(function () { el.classList.remove('open'); }, 150); } });
     mb.onclick = function (e) { e.stopPropagation(); el.classList.toggle('open'); };
     document.addEventListener('click', function (e) { if (!wide() && !el.contains(e.target)) el.classList.remove('open'); });

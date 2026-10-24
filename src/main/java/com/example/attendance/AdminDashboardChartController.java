@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -38,10 +39,7 @@ public class AdminDashboardChartController {
         this.attendanceRepository = attendanceRepository;
     }
 
-    /**
-     * GET /admin/dashboard/trend?days=7 -> [{date,label,present,late,total}] oldest
-     * first
-     */
+    /** GET /admin/dashboard/trend?days=7  ->  [{date,label,present,late,total}] oldest first */
     @GetMapping("/trend")
     public List<Map<String, Object>> trend(@RequestParam(defaultValue = "7") int days) {
 
@@ -51,6 +49,15 @@ public class AdminDashboardChartController {
 
         List<Map<String, Object>> result = new ArrayList<>();
 
+        // ONE query for the whole range (was one query per day).
+        Map<LocalDate, List<Attendance>> byDay = new HashMap<>();
+        for (Attendance a : attendanceRepository
+                .findByAttendanceDateBetween(today.minusDays(count - 1), today)) {
+            if (a.getAttendanceDate() != null) {
+                byDay.computeIfAbsent(a.getAttendanceDate(), k -> new ArrayList<>()).add(a);
+            }
+        }
+
         for (int i = count - 1; i >= 0; i--) {
 
             LocalDate day = today.minusDays(i);
@@ -58,7 +65,7 @@ public class AdminDashboardChartController {
             Set<Integer> present = new HashSet<>();
             Set<Integer> late = new HashSet<>();
 
-            for (Attendance a : attendanceRepository.findByAttendanceDateOrderByAttendanceDateDesc(day)) {
+            for (Attendance a : byDay.getOrDefault(day, new ArrayList<>())) {
 
                 if (a.getEmployeeId() == null) {
                     continue;

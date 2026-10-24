@@ -59,6 +59,9 @@ public interface AttendanceRepository
         // MONTHLY ATTENDANCE REPORT
         // =====================================================
 
+        List<Attendance> findByCheckOutIsNullAndCheckInIsNotNullAndAttendanceDateLessThanEqual(
+                        LocalDate date);
+
         List<Attendance> findByAttendanceDateBetween(
                         LocalDate startDate,
                         LocalDate endDate);

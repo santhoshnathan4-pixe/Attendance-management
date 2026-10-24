@@ -30,14 +30,24 @@ public class AdminController {
 
         Admin admin = adminRepository
                 .findByEmail(email == null ? "" : email.trim())
-                .filter(found -> PasswordUtil.matches(password, found.getPassword()))
                 .orElse(null);
 
         if (admin == null) {
 
             return new AdminLoginResponse(
                     false,
-                    "Invalid Email or Password",
+                    "Email is wrong. This email is not registered as admin.",
+                    null,
+                    null,
+                    null
+            );
+        }
+
+        if (!PasswordUtil.matches(password, admin.getPassword())) {
+
+            return new AdminLoginResponse(
+                    false,
+                    "Password is wrong. Please try again.",
                     null,
                     null,
                     null

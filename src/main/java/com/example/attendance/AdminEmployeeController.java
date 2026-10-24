@@ -166,8 +166,13 @@ public class AdminEmployeeController {
 
                 String initialPassword = request.getInitialPassword();
 
-                if (initialPassword != null && !initialPassword.isEmpty()) {
+                if (initialPassword == null || initialPassword.isBlank()) {
+                        throw new ResponseStatusException(
+                                        HttpStatus.BAD_REQUEST,
+                                        "Login password is required. Admin must create the first password.");
+                }
 
+                {
                         String passwordError = InputValidator.passwordError(
                                         initialPassword, request.getEmail());
 

@@ -140,6 +140,7 @@ function adminLogin() {
   const button = document.querySelector(".login-btn");
   const show = (text, color) => { message.innerText = text; message.style.color = color; };
   if (email === "") { show("Please enter your email.", "red"); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { show("Email is wrong. Enter it like name@gmail.com.", "red"); return; }
   if (password === "") { show("Please enter your password.", "red"); return; }
   const backendUrl = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" ? "" : "https://attendance-management-d5h6.onrender.com";
   const control = new AbortController();
@@ -175,6 +176,15 @@ function adminLogin() {
 document.getElementById("password").addEventListener("keypress", function (event) {
   if (event.key === "Enter") { adminLogin(); }
 });
+</script>
+
+<script>
+/* wake the server while the person types the email and password, so login feels fast */
+(function () {
+  var h = location.hostname;
+  if (h === "localhost" || h === "127.0.0.1") return;
+  try { fetch("https://attendance-management-d5h6.onrender.com/", { mode: "no-cors" }).catch(function () {}); } catch (e) {}
+})();
 </script>
 </body>
 </html>

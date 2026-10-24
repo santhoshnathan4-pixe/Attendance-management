@@ -16,8 +16,7 @@ import java.util.List;
  *
  * Every owner action asks for the owner's own password again, so a stolen
  * browser tab alone cannot create or remove an admin. Passwords are stored
- * only as hashes, so nobody (including the owner) can read another admin's
- * password.
+ * only as hashes, so nobody (including the owner) can read another admin's password.
  */
 @RestController
 @RequestMapping("/admin/admins")
@@ -247,10 +246,7 @@ public class AdminAccessController {
         return admin;
     }
 
-    /**
-     * The admin to change: must exist, must not be the owner himself, must not be
-     * an owner.
-     */
+    /** The admin to change: must exist, must not be the owner himself, must not be an owner. */
     private Admin findOther(Integer id, Admin owner) {
 
         Admin target = adminRepository.findById(id)

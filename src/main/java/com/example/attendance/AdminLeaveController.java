@@ -42,13 +42,24 @@ public class AdminLeaveController {
         @GetMapping
         public List<AdminLeaveResponse> getAllLeaves() {
 
+                // Load employees and admins ONCE (was: 1-2 queries per leave row).
+                java.util.Map<String, Employee> employeeMap = new java.util.HashMap<>();
+                for (Employee e : employeeRepository.findAll()) {
+                        employeeMap.put(String.valueOf(e.getId()), e);
+                }
+
+                java.util.Map<String, Admin> adminMap = new java.util.HashMap<>();
+                for (Admin a : adminRepository.findAll()) {
+                        adminMap.put(String.valueOf(a.getId()), a);
+                }
+
                 return leaveRequestRepository.findAll()
                                 .stream()
                                 .map(leave -> {
 
-                                        Employee employee = employeeRepository
-                                                        .findById(leave.getEmployeeId())
-                                                        .orElse(null);
+                                        Employee employee = leave.getEmployeeId() == null
+                                                        ? null
+                                                        : employeeMap.get(String.valueOf(leave.getEmployeeId()));
 
                                         if (employee == null) {
                                                 return null;
@@ -75,9 +86,7 @@ public class AdminLeaveController {
                                         // Resolve the saved admin ID to admin name.
                                         if (leave.getDecidedBy() != null) {
 
-                                                Admin decisionMaker = adminRepository
-                                                                .findById(leave.getDecidedBy())
-                                                                .orElse(null);
+                                                Admin decisionMaker = adminMap.get(String.valueOf(leave.getDecidedBy()));
 
                                                 if (decisionMaker != null) {
                                                         response.setDecidedByName(

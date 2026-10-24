@@ -61,8 +61,24 @@ public class AdminDashboardOverviewController {
         this.payrollPeriodService = payrollPeriodService;
     }
 
+    private volatile List<Map<String, Object>> overviewCache = null;
+    private volatile long overviewCacheAt = 0;
+
     @GetMapping("/overview")
     public List<Map<String, Object>> overview() {
+
+        List<Map<String, Object>> cached = overviewCache;
+        if (cached != null && System.currentTimeMillis() - overviewCacheAt < 30000) {
+            return cached;
+        }
+
+        List<Map<String, Object>> fresh = computeOverview();
+        overviewCache = fresh;
+        overviewCacheAt = System.currentTimeMillis();
+        return fresh;
+    }
+
+    private List<Map<String, Object>> computeOverview() {
 
         LocalDate today = LocalDate.now(INDIA);
         List<Employee> staff = employeeRepository.findByActiveTrue();
@@ -93,7 +109,8 @@ public class AdminDashboardOverviewController {
 
     private Map<String, Object> leaveModule(LocalDate today, Map<Integer, Employee> byId) {
 
-        List<LeaveRequest> all = leaveRequestRepository.findAll();
+        List<LeaveRequest> all = leaveRequestRepository
+                .findByLeaveDateBetween(today.minusDays(7), today.plusDays(180));
 
         Set<String> seen = new HashSet<>();
         List<List<String>> rows = new ArrayList<>();
@@ -278,11 +295,7 @@ public class AdminDashboardOverviewController {
         List<Branch> branches = branchRepository.findByActiveTrueOrderByBranchNameAsc();
 
         Set<Long> registered = new HashSet<>();
-        for (EmployeeFace f : faceRepository.findAll()) {
-            if (Boolean.TRUE.equals(f.getActive()) && f.getEmployeeId() != null) {
-                registered.add(f.getEmployeeId());
-            }
-        }
+        registered.addAll(faceRepository.findActiveEmployeeIds());
 
         boolean anyFace = branches.stream().anyMatch(b -> Boolean.TRUE.equals(b.getFaceVerificationEnabled()));
 

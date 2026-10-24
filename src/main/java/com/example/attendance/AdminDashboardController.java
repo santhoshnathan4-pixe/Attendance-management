@@ -46,8 +46,25 @@ public class AdminDashboardController {
         // DASHBOARD STATS
         // =====================================================
 
+        private volatile Map<String, Object> statsCache = null;
+        private volatile long statsCacheAt = 0;
+
         @GetMapping("/stats")
         public Map<String, Object> getDashboardStats() {
+
+                // 20-second cache: many admins / refreshes do not hit the DB each time.
+                Map<String, Object> cached = statsCache;
+                if (cached != null && System.currentTimeMillis() - statsCacheAt < 20000) {
+                        return cached;
+                }
+
+                Map<String, Object> fresh = computeDashboardStats();
+                statsCache = fresh;
+                statsCacheAt = System.currentTimeMillis();
+                return fresh;
+        }
+
+        private Map<String, Object> computeDashboardStats() {
 
                 Map<String, Object> stats = new HashMap<>();
 
@@ -115,11 +132,9 @@ public class AdminDashboardController {
                 int absentToday = totalEmployees - presentToday;
 
                 long pendingLeaves = leaveRequestRepository
-                                .findAll()
+                                .findByLeaveDateBetween(today, today)
                                 .stream()
-                                .filter(leave -> leave.getLeaveDate() != null
-                                                && today.equals(leave.getLeaveDate())
-                                                && "PENDING".equalsIgnoreCase(leave.getStatus()))
+                                .filter(leave -> "PENDING".equalsIgnoreCase(leave.getStatus()))
                                 .count();
 
                 stats.put("totalEmployees", totalEmployees);
@@ -278,11 +293,7 @@ public class AdminDashboardController {
                 else if ("ABSENT".equalsIgnoreCase(type)) {
 
                         List<LeaveRequest> todayLeaves = leaveRequestRepository
-                                        .findAll()
-                                        .stream()
-                                        .filter(leave -> leave.getLeaveDate() != null
-                                                        && today.equals(leave.getLeaveDate()))
-                                        .toList();
+                                        .findByLeaveDateBetween(today, today);
 
                         for (Employee employee : activeEmployees) {
 
@@ -337,7 +348,13 @@ public class AdminDashboardController {
 
                 List<Map<String, Object>> missingRecords = new ArrayList<>();
 
-                List<Attendance> allAttendance = attendanceRepository.findAll();
+                // Only open sessions up to today (was: whole table).
+                List<Attendance> allAttendance = attendanceRepository
+                                .findByCheckOutIsNullAndCheckInIsNotNullAndAttendanceDateLessThanEqual(todayDate);
+
+                // Load the small settings tables ONCE (was: 4 queries per row).
+                loadShiftCaches();
+                Map<Integer, LocalTime> shiftEndCache = new HashMap<>();
 
                 Map<Integer, Employee> activeEmployeeMap = new HashMap<>();
 
@@ -367,7 +384,8 @@ public class AdminDashboardController {
                                 continue;
                         }
 
-                        LocalTime effectiveShiftEnd = getEffectiveShiftEndTime(employee);
+                        LocalTime effectiveShiftEnd = shiftEndCache.computeIfAbsent(
+                                        employee.getId(), k -> getEffectiveShiftEndTime(employee));
 
                         if (effectiveShiftEnd == null) {
                                 effectiveShiftEnd = DEFAULT_SHIFT_END;
@@ -403,59 +421,73 @@ public class AdminDashboardController {
         // Priority: EMPLOYEE -> ROLE -> DEFAULT
         // =====================================================
 
+        private Map<String, LeavePermissionSetting> cEmp = new HashMap<>();
+        private Map<String, LeavePermissionSetting> cRole = new HashMap<>();
+        private LeavePermissionSetting cDefault = null;
+        private Map<String, LocalTime> cShiftEnd = new HashMap<>();
+
+        private synchronized void loadShiftCaches() {
+
+                cEmp = new HashMap<>();
+                cRole = new HashMap<>();
+                cDefault = null;
+                cShiftEnd = new HashMap<>();
+
+                for (LeavePermissionSetting st : leavePermissionSettingRepository.findAll()) {
+
+                        String type = st.getSettingType() == null ? "" : st.getSettingType();
+
+                        if ("EMPLOYEE".equals(type) && st.getEmployeeId() != null) {
+                                cEmp.put(String.valueOf(st.getEmployeeId()), st);
+                        } else if ("ROLE".equals(type) && st.getRole() != null) {
+                                cRole.put(st.getRole().trim().toUpperCase(), st);
+                        } else if ("DEFAULT".equals(type)) {
+                                cDefault = st;
+                        }
+                }
+
+                for (ShiftSetting sh : shiftSettingRepository.findAll()) {
+                        if (sh.getShiftType() != null && sh.getEndTime() != null) {
+                                cShiftEnd.put(sh.getShiftType(), sh.getEndTime());
+                        }
+                }
+        }
+
         private LocalTime getEffectiveShiftEndTime(Employee employee) {
 
                 String shiftType = "GENERAL";
 
-                var employeeSetting = leavePermissionSettingRepository
-                                .findBySettingTypeAndEmployeeId(
-                                                "EMPLOYEE",
-                                                employee.getId());
+                LeavePermissionSetting employeeSetting = cEmp.get(String.valueOf(employee.getId()));
 
-                if (employeeSetting.isPresent()
-                                && employeeSetting.get().getShiftType() != null
-                                && !employeeSetting.get().getShiftType().isBlank()) {
-
-                        shiftType = normalizeShiftType(
-                                        employeeSetting.get().getShiftType());
+                if (employeeSetting != null
+                                && employeeSetting.getShiftType() != null
+                                && !employeeSetting.getShiftType().isBlank()) {
+                        shiftType = normalizeShiftType(employeeSetting.getShiftType());
                 }
 
                 if ("GENERAL".equals(shiftType)
                                 && employee.getRole() != null
                                 && !employee.getRole().isBlank()) {
 
-                        var roleSetting = leavePermissionSettingRepository
-                                        .findBySettingTypeAndRole(
-                                                        "ROLE",
-                                                        employee.getRole().trim().toUpperCase());
+                        LeavePermissionSetting roleSetting = cRole.get(employee.getRole().trim().toUpperCase());
 
-                        if (roleSetting.isPresent()
-                                        && roleSetting.get().getShiftType() != null
-                                        && !roleSetting.get().getShiftType().isBlank()) {
-
-                                shiftType = normalizeShiftType(
-                                                roleSetting.get().getShiftType());
+                        if (roleSetting != null
+                                        && roleSetting.getShiftType() != null
+                                        && !roleSetting.getShiftType().isBlank()) {
+                                shiftType = normalizeShiftType(roleSetting.getShiftType());
                         }
                 }
 
-                if ("GENERAL".equals(shiftType)) {
-
-                        var defaultSetting = leavePermissionSettingRepository
-                                        .findBySettingType("DEFAULT");
-
-                        if (defaultSetting.isPresent()
-                                        && defaultSetting.get().getShiftType() != null
-                                        && !defaultSetting.get().getShiftType().isBlank()) {
-
-                                shiftType = normalizeShiftType(
-                                                defaultSetting.get().getShiftType());
-                        }
+                if ("GENERAL".equals(shiftType)
+                                && cDefault != null
+                                && cDefault.getShiftType() != null
+                                && !cDefault.getShiftType().isBlank()) {
+                        shiftType = normalizeShiftType(cDefault.getShiftType());
                 }
 
-                return shiftSettingRepository
-                                .findByShiftType(shiftType)
-                                .map(ShiftSetting::getEndTime)
-                                .orElse(DEFAULT_SHIFT_END);
+                LocalTime end = cShiftEnd.get(shiftType);
+
+                return end != null ? end : DEFAULT_SHIFT_END;
         }
 
         private String normalizeShiftType(String shiftType) {
