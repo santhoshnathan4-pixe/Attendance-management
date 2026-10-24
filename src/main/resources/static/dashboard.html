@@ -1416,6 +1416,33 @@ body{background:var(--bg)!important}
 .mc-box>.submit-btn,.ec-box>.submit-btn{width:calc(100% - 40px)!important;box-sizing:border-box}
 @media(max-height:600px){.mc-box>.mc-note{display:none}}
 </style>
+<script>
+/* ===== waiting banner: if the server is slow (sleeping), tell the user instead of showing a blank page ===== */
+(function () {
+  if (window.__waitBanner || !window.fetch) return;
+  window.__waitBanner = true;
+  var pending = 0, timer = null, el = null, orig = window.fetch;
+  function show() {
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'waitBanner';
+      el.style.cssText = 'position:fixed;left:50%;top:14px;transform:translateX(-50%);z-index:100050;background:#0F172A;color:#fff;padding:10px 16px;border-radius:12px;font:600 13px/1.4 "Segoe UI",system-ui,sans-serif;box-shadow:0 10px 30px rgba(0,0,0,.25);display:flex;align-items:center;gap:10px;max-width:92vw';
+      el.innerHTML = '<span style="width:14px;height:14px;border:2px solid #fff;border-top-color:transparent;border-radius:50%;display:inline-block;animation:wbspin .8s linear infinite;flex-shrink:0"></span><span>Server is waking up. Please wait, loading your data (can take up to 1 minute)...</span><style>@keyframes wbspin{to{transform:rotate(360deg)}}</style>';
+      document.body.appendChild(el);
+    }
+    el.style.display = 'flex';
+  }
+  function hide() { if (el) el.style.display = 'none'; }
+  window.fetch = function () {
+    pending++;
+    if (pending === 1) { clearTimeout(timer); timer = setTimeout(function () { if (pending > 0) show(); }, 3000); }
+    var p = orig.apply(this, arguments);
+    var done = function () { pending = Math.max(0, pending - 1); if (pending === 0) { clearTimeout(timer); hide(); } };
+    p.then(done, done);
+    return p;
+  };
+})();
+</script>
 </head>
 
 <body>

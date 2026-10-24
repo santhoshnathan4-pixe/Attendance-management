@@ -1065,8 +1065,8 @@ input:focus{border-color:#2563EB!important;box-shadow:0 0 0 4px rgba(37,99,235,.
     // API BASE URL
     // ==========================================
 
-    // The employee page after login (your file: employee-dashboard.html)
-    const EMPLOYEE_HOME = "employee-dashboard.html";
+    // The employee page after login (your file: dashboard.html)
+    const EMPLOYEE_HOME = "dashboard.html";
 
     const API_BASE_URL =
         (window.location.hostname === "localhost" ||
@@ -1438,6 +1438,19 @@ input:focus{border-color:#2563EB!important;box-shadow:0 0 0 4px rgba(37,99,235,.
 
             message.innerText =
                 "Please enter your employee email.";
+
+            message.style.color =
+                "red";
+
+            return;
+
+        }
+
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+
+            message.innerText =
+                "Email is wrong. Enter it like name@gmail.com.";
 
             message.style.color =
                 "red";
@@ -2755,6 +2768,15 @@ input:focus{border-color:#2563EB!important;box-shadow:0 0 0 4px rgba(37,99,235,.
             say("forgotMessage", error.message);
         }
     };
+})();
+</script>
+
+<script>
+/* wake the server while the person types the email and password, so login feels fast */
+(function () {
+  var h = location.hostname;
+  if (h === "localhost" || h === "127.0.0.1") return;
+  try { fetch("https://attendance-management-d5h6.onrender.com/", { mode: "no-cors" }).catch(function () {}); } catch (e) {}
 })();
 </script>
 </body>
