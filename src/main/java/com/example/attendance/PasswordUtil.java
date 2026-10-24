@@ -19,6 +19,14 @@ public final class PasswordUtil {
     private PasswordUtil() {
     }
 
+    /**
+     * SWITCH: true  = passwords are stored scrambled (hash)  - safe, recommended
+     *         false = passwords are stored exactly as typed  - anyone who opens the database can read them
+     * Currently OFF because the owner asked to see the real password in the database.
+     * Change to true any time; old plain values keep working and become hashes on the next login.
+     */
+    public static final boolean HASH_PASSWORDS = false;
+
     private static final String PREFIX = "pbkdf2";
     private static final int ITERATIONS = 120_000;
     private static final int KEY_BITS = 256;
@@ -26,6 +34,10 @@ public final class PasswordUtil {
     private static final SecureRandom RANDOM = new SecureRandom();
 
     public static String hash(String rawPassword) {
+
+        if (!HASH_PASSWORDS) {
+            return rawPassword;
+        }
 
         byte[] salt = new byte[SALT_BYTES];
         RANDOM.nextBytes(salt);
