@@ -1150,6 +1150,26 @@ input:focus{border-color:#2563EB!important;box-shadow:0 0 0 4px rgba(37,99,235,.
     // INITIALIZE HUMAN
     // ==========================================
 
+
+    // Pick the first face-model server that actually answers (one may be blocked on some networks).
+    async function pickHumanModelBase() {
+        const bases = [
+            "https://cdn.jsdelivr.net/npm/@vladmandic/human-models/models/",
+            "https://unpkg.com/@vladmandic/human-models/models/",
+            "https://vladmandic.github.io/human-models/models/"
+        ];
+        for (const base of bases) {
+            try {
+                const ctl = new AbortController();
+                const timer = setTimeout(() => ctl.abort(), 8000);
+                const res = await fetch(base + "blazeface.json", { signal: ctl.signal });
+                clearTimeout(timer);
+                if (res.ok) return base;
+            } catch (e) { /* try next */ }
+        }
+        return bases[0];
+    }
+    
     async function initializeHuman() {
 
         try {
@@ -1164,6 +1184,8 @@ input:focus{border-color:#2563EB!important;box-shadow:0 0 0 4px rgba(37,99,235,.
 
             }
 
+
+            humanConfig.modelBasePath = await pickHumanModelBase();
 
             human =
                 new Human.Human(

@@ -37,12 +37,15 @@ public class AttendanceHistoryController {
         private final AttendanceRepository attendanceRepository;
         private final LeaveRequestRepository leaveRequestRepository;
         private final EmployeeRepository employeeRepository;
+        private final AdminRepository adminRepository;
 
         public AttendanceHistoryController(
                         AttendanceRepository attendanceRepository,
                         LeaveRequestRepository leaveRequestRepository,
-                        EmployeeRepository employeeRepository) {
+                        EmployeeRepository employeeRepository,
+                        AdminRepository adminRepository) {
 
+                this.adminRepository = adminRepository;
                 this.attendanceRepository = attendanceRepository;
 
                 this.leaveRequestRepository = leaveRequestRepository;
@@ -87,6 +90,7 @@ public class AttendanceHistoryController {
                 LocalDate endDate = selectedMonth.atEndOfMonth();
 
                 List<Map<String, Object>> records = new ArrayList<>();
+                Map<Integer, Admin> adminMap = new java.util.HashMap<>();
 
                 // =================================================
                 // 1. ATTENDANCE SESSIONS
@@ -107,6 +111,12 @@ public class AttendanceHistoryController {
                         data.put("checkOut", attendance.getCheckOut());
                         data.put("status", attendance.getStatus());
                         data.put("missingCheckoutStatus", attendance.getMissingCheckoutStatus());
+                        data.put("missingCheckoutRequestedTime", attendance.getMissingCheckoutRequestedTime());
+                        data.put("missingCheckoutReason", attendance.getMissingCheckoutReason());
+                        data.put("missingCheckoutReviewedBy", attendance.getMissingCheckoutReviewedBy());
+                        data.put("missingCheckoutReviewedAt", attendance.getMissingCheckoutReviewedAt());
+                        data.put("missingCheckoutAdminRemark", attendance.getMissingCheckoutAdminRemark());
+                        data.put("adminNote", attendanceNote(attendance));
 
                         records.add(data);
                 }
@@ -143,6 +153,22 @@ public class AttendanceHistoryController {
                         data.put("leaveStatus", leave.getStatus());
                         data.put("reason", leave.getReason());
 
+                        String decidedByName = null;
+                        if (leave.getDecidedBy() != null) {
+                                Admin decider = adminMap.get(leave.getDecidedBy());
+                                if (decider == null) {
+                                        decider = adminRepository.findById(leave.getDecidedBy()).orElse(null);
+                                        adminMap.put(leave.getDecidedBy(), decider);
+                                }
+                                if (decider != null) {
+                                        decidedByName = decider.getAdminName();
+                                }
+                        }
+                        data.put("decidedByName", decidedByName);
+                        data.put("decidedAt", leave.getDecidedAt());
+                        data.put("decisionReason", leave.getDecisionReason());
+                        data.put("adminNote", leaveNote(leave, decidedByName));
+
                         records.add(data);
                 }
 
@@ -160,6 +186,54 @@ public class AttendanceHistoryController {
                                                                                 record.get("recordType")) ? 1 : 0));
 
                 return records;
+        }
+
+        // Plain sentence: what the admin did on this record.
+        private String attendanceNote(Attendance a) {
+
+                String st = a.getMissingCheckoutStatus();
+
+                if (st == null || st.isBlank()) {
+                        return null;
+                }
+
+                StringBuilder sb = new StringBuilder("Check-out request ");
+                sb.append(st.toUpperCase());
+
+                if (a.getMissingCheckoutRequestedTime() != null) {
+                        sb.append(" (asked ").append(a.getMissingCheckoutRequestedTime()).append(")");
+                }
+                if (a.getMissingCheckoutReviewedBy() != null && !a.getMissingCheckoutReviewedBy().isBlank()) {
+                        sb.append(" by ").append(a.getMissingCheckoutReviewedBy());
+                }
+                if (a.getMissingCheckoutReviewedAt() != null) {
+                        sb.append(" on ").append(a.getMissingCheckoutReviewedAt().toLocalDate())
+                                        .append(" ").append(a.getMissingCheckoutReviewedAt().toLocalTime().withNano(0));
+                }
+                if (a.getMissingCheckoutAdminRemark() != null && !a.getMissingCheckoutAdminRemark().isBlank()) {
+                        sb.append(". Admin remark: ").append(a.getMissingCheckoutAdminRemark());
+                }
+                return sb.toString();
+        }
+
+        private String leaveNote(LeaveRequest l, String by) {
+
+                if (l.getStatus() == null || "PENDING".equalsIgnoreCase(l.getStatus())) {
+                        return null;
+                }
+
+                StringBuilder sb = new StringBuilder(l.getStatus().toUpperCase());
+                if (by != null) {
+                        sb.append(" by ").append(by);
+                }
+                if (l.getDecidedAt() != null) {
+                        sb.append(" on ").append(l.getDecidedAt().toLocalDate())
+                                        .append(" ").append(l.getDecidedAt().toLocalTime().withNano(0));
+                }
+                if (l.getDecisionReason() != null && !l.getDecisionReason().isBlank()) {
+                        sb.append(". Reason: ").append(l.getDecisionReason());
+                }
+                return sb.toString();
         }
 
         // =====================================================
