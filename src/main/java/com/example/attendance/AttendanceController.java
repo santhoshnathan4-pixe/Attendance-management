@@ -19,8 +19,8 @@ import java.util.Map;
 @RestController
 @CrossOrigin(origins = {
                 "https://attendance-management-3d-webinar.vercel.app",
-                "https://attendance-management-git-main-3d-webinar.vercel.app",
-                "https://attendance-management-lhsosyu8t-3d-webinar.vercel.app",
+                "attendance-management-git-main-3d-webinar.vercel.app",
+                "attendance-management-h43414kik-3d-webinar.vercel.app",
                 "https://attendance-management-nine-beige.vercel.app"
 })
 @RequestMapping("/attendance")
@@ -1056,8 +1056,7 @@ public class AttendanceController {
         // Permission is never cancelled.
         // =====================================================
 
-        private static final String CHECK_IN_CANCEL_REASON =
-                        "Cancelled automatically - employee came to office that day";
+        private static final String CHECK_IN_CANCEL_REASON = "Cancelled automatically - employee came to office that day";
 
         private void cancelApprovedLeaveForCheckIn(
                         Integer employeeId,
